@@ -43,4 +43,17 @@
 #define IS_IPHONEX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 #define RGBA(r, g, b, a) [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f alpha:(a)]
 
+#import <BGTool.h>
+#import <AFNetworking/AFNetworkReachabilityManager.h>
+#import "NSObject+BGModel.h"
+#import "UIColor+Hex.h"
+#import "UIColor+Equal.h"
+#import "NSString+NetworkingState.h"
+#import "NSString+JsonConvert.h"
+#import "NSObject+DictConvert.h"
+#import "NSString+TimeConvert.h"
+#import "NSString+MD5.h"
+#import "NSArray+CheckUtil.h"
+#import "NetworkService.h"
+#import "DEFIN.h"
 #endif /* PrefixHeader_pch */

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2C1AD062CC26859D1B3BB8CC /* libPods-KTDoctor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */; };
 		5BECDBAF22365CA10025D6F2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBAE22365CA10025D6F2 /* AppDelegate.m */; };
 		5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBB122365CA10025D6F2 /* ViewController.m */; };
 		5BECDBB522365CA10025D6F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BECDBB322365CA10025D6F2 /* Main.storyboard */; };
@@ -15,6 +16,19 @@
 		5BECDBBD22365CA50025D6F2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBBC22365CA50025D6F2 /* main.m */; };
 		5BECDBC722365CA50025D6F2 /* KTDoctorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBC622365CA50025D6F2 /* KTDoctorTests.m */; };
 		5BECDBD222365CA50025D6F2 /* KTDoctorUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBD122365CA50025D6F2 /* KTDoctorUITests.m */; };
+		5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBE022365EDB0025D6F2 /* UIColor+Equal.m */; };
+		5BECDBF322365EDC0025D6F2 /* NSArray+CheckUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBE122365EDB0025D6F2 /* NSArray+CheckUtil.m */; };
+		5BECDBF422365EDC0025D6F2 /* NSString+CPSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBE222365EDB0025D6F2 /* NSString+CPSignature.m */; };
+		5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBEA22365EDC0025D6F2 /* UIColor+Hex.m */; };
+		5BECDBF622365EDC0025D6F2 /* NSObject+DictConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBEB22365EDC0025D6F2 /* NSObject+DictConvert.m */; };
+		5BECDBF722365EDC0025D6F2 /* NSString+HMAC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBEC22365EDC0025D6F2 /* NSString+HMAC.m */; };
+		5BECDBF822365EDC0025D6F2 /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBED22365EDC0025D6F2 /* NSString+MD5.m */; };
+		5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBEE22365EDC0025D6F2 /* NSString+TimeConvert.m */; };
+		5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBF022365EDC0025D6F2 /* NSString+JsonConvert.m */; };
+		5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDC00223662F90025D6F2 /* HttpClient.m */; };
+		5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDC02223662F90025D6F2 /* NetworkService.m */; };
+		5BECDC082236639A0025D6F2 /* NSString+NetworkingState.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDC072236639A0025D6F2 /* NSString+NetworkingState.m */; };
+		5BECDC0E223665390025D6F2 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDC0D223665390025D6F2 /* UserModel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +49,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KTDoctor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B9F526F7A8B7AED9BFEF069 /* Pods-KTDoctor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.release.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.release.xcconfig"; sourceTree = "<group>"; };
 		5BECDBAA22365CA10025D6F2 /* KTDoctor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KTDoctor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BECDBAD22365CA10025D6F2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5BECDBAE22365CA10025D6F2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -51,6 +67,35 @@
 		5BECDBCD22365CA50025D6F2 /* KTDoctorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KTDoctorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BECDBD122365CA50025D6F2 /* KTDoctorUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KTDoctorUITests.m; sourceTree = "<group>"; };
 		5BECDBD322365CA50025D6F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5BECDBE022365EDB0025D6F2 /* UIColor+Equal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Equal.m"; sourceTree = "<group>"; };
+		5BECDBE122365EDB0025D6F2 /* NSArray+CheckUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+CheckUtil.m"; sourceTree = "<group>"; };
+		5BECDBE222365EDB0025D6F2 /* NSString+CPSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+CPSignature.m"; sourceTree = "<group>"; };
+		5BECDBE322365EDB0025D6F2 /* NSString+TimeConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+TimeConvert.h"; sourceTree = "<group>"; };
+		5BECDBE422365EDB0025D6F2 /* NSObject+DictConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+DictConvert.h"; sourceTree = "<group>"; };
+		5BECDBE522365EDB0025D6F2 /* UIColor+Equal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Equal.h"; sourceTree = "<group>"; };
+		5BECDBE622365EDB0025D6F2 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
+		5BECDBE722365EDB0025D6F2 /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
+		5BECDBE822365EDC0025D6F2 /* NSString+HMAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HMAC.h"; sourceTree = "<group>"; };
+		5BECDBE922365EDC0025D6F2 /* NSString+JsonConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JsonConvert.h"; sourceTree = "<group>"; };
+		5BECDBEA22365EDC0025D6F2 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
+		5BECDBEB22365EDC0025D6F2 /* NSObject+DictConvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+DictConvert.m"; sourceTree = "<group>"; };
+		5BECDBEC22365EDC0025D6F2 /* NSString+HMAC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HMAC.m"; sourceTree = "<group>"; };
+		5BECDBED22365EDC0025D6F2 /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
+		5BECDBEE22365EDC0025D6F2 /* NSString+TimeConvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+TimeConvert.m"; sourceTree = "<group>"; };
+		5BECDBEF22365EDC0025D6F2 /* NSString+CPSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+CPSignature.h"; sourceTree = "<group>"; };
+		5BECDBF022365EDC0025D6F2 /* NSString+JsonConvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+JsonConvert.m"; sourceTree = "<group>"; };
+		5BECDBF122365EDC0025D6F2 /* NSArray+CheckUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+CheckUtil.h"; sourceTree = "<group>"; };
+		5BECDBFB22365F020025D6F2 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		5BECDBFF223662F90025D6F2 /* NetworkService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkService.h; sourceTree = "<group>"; };
+		5BECDC00223662F90025D6F2 /* HttpClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpClient.m; sourceTree = "<group>"; };
+		5BECDC01223662F90025D6F2 /* HttpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpClient.h; sourceTree = "<group>"; };
+		5BECDC02223662F90025D6F2 /* NetworkService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkService.m; sourceTree = "<group>"; };
+		5BECDC062236639A0025D6F2 /* NSString+NetworkingState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NetworkingState.h"; sourceTree = "<group>"; };
+		5BECDC072236639A0025D6F2 /* NSString+NetworkingState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+NetworkingState.m"; sourceTree = "<group>"; };
+		5BECDC09223663C20025D6F2 /* DEFIN.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DEFIN.h; sourceTree = "<group>"; };
+		5BECDC0C223665390025D6F2 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
+		5BECDC0D223665390025D6F2 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
+		7253866FC6DCF0EB352C5605 /* Pods-KTDoctor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C1AD062CC26859D1B3BB8CC /* libPods-KTDoctor.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +131,8 @@
 				5BECDBC522365CA50025D6F2 /* KTDoctorTests */,
 				5BECDBD022365CA50025D6F2 /* KTDoctorUITests */,
 				5BECDBAB22365CA10025D6F2 /* Products */,
+				C9C17725038C658B3CEE8F51 /* Pods */,
+				798A1E0D406711D80658C665 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -105,11 +153,15 @@
 				5BECDBAE22365CA10025D6F2 /* AppDelegate.m */,
 				5BECDBB022365CA10025D6F2 /* ViewController.h */,
 				5BECDBB122365CA10025D6F2 /* ViewController.m */,
+				5BECDC0A223664F40025D6F2 /* Login */,
+				5BECDBFC2236626F0025D6F2 /* Tool */,
 				5BECDBB322365CA10025D6F2 /* Main.storyboard */,
 				5BECDBB622365CA50025D6F2 /* Assets.xcassets */,
 				5BECDBB822365CA50025D6F2 /* LaunchScreen.storyboard */,
 				5BECDBBB22365CA50025D6F2 /* Info.plist */,
 				5BECDBBC22365CA50025D6F2 /* main.m */,
+				5BECDC09223663C20025D6F2 /* DEFIN.h */,
+				5BECDBFB22365F020025D6F2 /* PrefixHeader.pch */,
 			);
 			path = KTDoctor;
 			sourceTree = "<group>";
@@ -132,6 +184,95 @@
 			path = KTDoctorUITests;
 			sourceTree = "<group>";
 		};
+		5BECDBDF22365EA80025D6F2 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				5BECDBF122365EDC0025D6F2 /* NSArray+CheckUtil.h */,
+				5BECDBE122365EDB0025D6F2 /* NSArray+CheckUtil.m */,
+				5BECDBE422365EDB0025D6F2 /* NSObject+DictConvert.h */,
+				5BECDBEB22365EDC0025D6F2 /* NSObject+DictConvert.m */,
+				5BECDBEF22365EDC0025D6F2 /* NSString+CPSignature.h */,
+				5BECDBE222365EDB0025D6F2 /* NSString+CPSignature.m */,
+				5BECDBE822365EDC0025D6F2 /* NSString+HMAC.h */,
+				5BECDBEC22365EDC0025D6F2 /* NSString+HMAC.m */,
+				5BECDBE922365EDC0025D6F2 /* NSString+JsonConvert.h */,
+				5BECDBF022365EDC0025D6F2 /* NSString+JsonConvert.m */,
+				5BECDBE722365EDB0025D6F2 /* NSString+MD5.h */,
+				5BECDBED22365EDC0025D6F2 /* NSString+MD5.m */,
+				5BECDBE322365EDB0025D6F2 /* NSString+TimeConvert.h */,
+				5BECDBEE22365EDC0025D6F2 /* NSString+TimeConvert.m */,
+				5BECDBE522365EDB0025D6F2 /* UIColor+Equal.h */,
+				5BECDBE022365EDB0025D6F2 /* UIColor+Equal.m */,
+				5BECDBE622365EDB0025D6F2 /* UIColor+Hex.h */,
+				5BECDBEA22365EDC0025D6F2 /* UIColor+Hex.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		5BECDBFC2236626F0025D6F2 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				5BECDC05223663730025D6F2 /* NetworkCheck */,
+				5BECDBFE223662BD0025D6F2 /* Network */,
+				5BECDBDF22365EA80025D6F2 /* Categories */,
+			);
+			path = Tool;
+			sourceTree = "<group>";
+		};
+		5BECDBFE223662BD0025D6F2 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				5BECDC01223662F90025D6F2 /* HttpClient.h */,
+				5BECDC00223662F90025D6F2 /* HttpClient.m */,
+				5BECDBFF223662F90025D6F2 /* NetworkService.h */,
+				5BECDC02223662F90025D6F2 /* NetworkService.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		5BECDC05223663730025D6F2 /* NetworkCheck */ = {
+			isa = PBXGroup;
+			children = (
+				5BECDC062236639A0025D6F2 /* NSString+NetworkingState.h */,
+				5BECDC072236639A0025D6F2 /* NSString+NetworkingState.m */,
+			);
+			path = NetworkCheck;
+			sourceTree = "<group>";
+		};
+		5BECDC0A223664F40025D6F2 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				5BECDC0B223665030025D6F2 /* Model */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		5BECDC0B223665030025D6F2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5BECDC0C223665390025D6F2 /* UserModel.h */,
+				5BECDC0D223665390025D6F2 /* UserModel.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		798A1E0D406711D80658C665 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C9C17725038C658B3CEE8F51 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7253866FC6DCF0EB352C5605 /* Pods-KTDoctor.debug.xcconfig */,
+				3B9F526F7A8B7AED9BFEF069 /* Pods-KTDoctor.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -139,6 +280,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5BECDBD622365CA50025D6F2 /* Build configuration list for PBXNativeTarget "KTDoctor" */;
 			buildPhases = (
+				9829D4BE364DDE12B08D9923 /* [CP] Check Pods Manifest.lock */,
 				5BECDBA622365CA10025D6F2 /* Sources */,
 				5BECDBA722365CA10025D6F2 /* Frameworks */,
 				5BECDBA822365CA10025D6F2 /* Resources */,
@@ -257,13 +399,47 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		9829D4BE364DDE12B08D9923 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-KTDoctor-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5BECDBA622365CA10025D6F2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BECDBF322365EDC0025D6F2 /* NSArray+CheckUtil.m in Sources */,
+				5BECDBF622365EDC0025D6F2 /* NSObject+DictConvert.m in Sources */,
+				5BECDBF822365EDC0025D6F2 /* NSString+MD5.m in Sources */,
+				5BECDBF422365EDC0025D6F2 /* NSString+CPSignature.m in Sources */,
 				5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */,
+				5BECDBF722365EDC0025D6F2 /* NSString+HMAC.m in Sources */,
+				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
+				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
+				5BECDC082236639A0025D6F2 /* NSString+NetworkingState.m in Sources */,
+				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,
+				5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */,
+				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
+				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
+				5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */,
 				5BECDBAF22365CA10025D6F2 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -360,6 +536,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = KTDoctor/PrefixHeader.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -417,6 +594,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = KTDoctor/PrefixHeader.pch;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -433,10 +611,12 @@
 		};
 		5BECDBD722365CA50025D6F2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7253866FC6DCF0EB352C5605 /* Pods-KTDoctor.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 42DB6E592F;
+				GCC_PREFIX_HEADER = KTDoctor/PrefixHeader.pch;
 				INFOPLIST_FILE = KTDoctor/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -451,10 +631,12 @@
 		};
 		5BECDBD822365CA50025D6F2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B9F526F7A8B7AED9BFEF069 /* Pods-KTDoctor.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 42DB6E592F;
+				GCC_PREFIX_HEADER = KTDoctor/PrefixHeader.pch;
 				INFOPLIST_FILE = KTDoctor/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
