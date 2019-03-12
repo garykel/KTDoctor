@@ -34,6 +34,7 @@
 @property (nonatomic,strong)UIButton *loginBtn;
 @property (nonatomic,strong)UIButton *forgotBtn;
 @property (nonatomic,strong)UIButton *registBtn;
+@property (nonatomic,strong)UILabel *versionLbl;
 @end
 
 @implementation LoginViewController
@@ -69,7 +70,7 @@
         make.left.equalTo(self.whiteView.mas_left).offset(kDash_LeftMargin);
         make.right.equalTo(self.whiteView.mas_right).offset(-kDash_RightMargin);
         make.top.equalTo(self.whiteView.mas_top).offset(48);
-        make.bottom.equalTo(self.whiteView.mas_bottom).offset(25);
+        make.bottom.equalTo(self.whiteView.mas_bottom).offset(-25);
     }];
     
     UIImage *doctorImage = [UIImage imageNamed:@"doctor"];
@@ -93,7 +94,7 @@
     [self.passwordBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.dashView.mas_top).offset(28);
         make.left.equalTo(self.dashView.mas_left).offset(19);
-        make.width.equalTo(@130);
+        make.width.equalTo(@80);
         make.height.equalTo(@15);
     }];
     
@@ -116,7 +117,7 @@
     [self.dashView addSubview:self.codeBtn];
     [self.codeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.passwordBtn.mas_centerY);
-        make.width.equalTo(@200);
+        make.width.equalTo(@150);
         make.height.equalTo(@15);
         make.left.equalTo(self.seperateView.mas_right).offset(13);
     }];
@@ -181,6 +182,7 @@
     
     self.passwordTF = [[UITextField alloc] init];
     self.passwordTF.backgroundColor = [UIColor colorWithHexString:@"#cceef3"];
+    self.passwordTF.secureTextEntry = YES;
     [self.dashView addSubview:self.passwordTF];
     [self.passwordTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@26);
@@ -196,19 +198,66 @@
     [self.loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
     [self.whiteView addSubview:self.loginBtn];
     [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.whiteView.mas_centerX);
+        make.centerX.equalTo(self.dashView.mas_centerX);
         make.bottom.equalTo(self.whiteView.mas_bottom).offset(-80);
         make.width.equalTo(@200);
         make.height.equalTo(@44);
     }];
+    
+    self.forgotBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.forgotBtn.backgroundColor = [UIColor colorWithHexString:@"#12aac8"];
+    [self.forgotBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.forgotBtn setTitle:@"忘记密码" forState:UIControlStateNormal];
+    [self.forgotBtn addTarget:self action:@selector(forgot:) forControlEvents:UIControlEventTouchUpInside];
+    [self.whiteView addSubview:self.forgotBtn];
+
+    self.registBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.registBtn.backgroundColor = [UIColor colorWithHexString:@"#12aac8"];
+    [self.registBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.registBtn setTitle:@"新医师注册" forState:UIControlStateNormal];
+    [self.registBtn addTarget:self action:@selector(regist:) forControlEvents:UIControlEventTouchUpInside];
+    [self.whiteView addSubview:self.registBtn];
+    
+    [self.registBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.dashView.mas_bottom).offset(-20);
+        make.left.equalTo(self.dashView.mas_right).offset(20);
+        make.right.equalTo(self.whiteView.mas_right).offset(-20);
+        make.height.equalTo(@26);
+    }];
+    
+    [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.registBtn.mas_top).offset(-30);
+        make.left.equalTo(self.registBtn.mas_left);
+        make.right.equalTo(self.registBtn.mas_right);
+        make.height.equalTo(@26);
+    }];
+    
+    self.versionLbl = [[UILabel alloc] init];
+    self.versionLbl.textColor = [UIColor whiteColor];
+    self.versionLbl.font = [UIFont systemFontOfSize:30.0];
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+    self.versionLbl.text = [NSString stringWithFormat:@"V%@",app_Version];
+    [self.bgImg addSubview:self.versionLbl];
+    [self.versionLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.blueView.mas_bottom).offset(10);
+        make.left.equalTo(self.blueView.mas_right).offset(20);
+        make.right.equalTo(self.bgImg.mas_right).offset(-20);
+        make.height.equalTo(@30);
+    }];
+    [self.bgImg addSubview:self.versionLbl];
 }
 
+#pragma mark - Button click events
+
 - (void)passwordBtnClick:(UIButton*)sender {
-    NSLog(@"密码登录");
+    [self.passwordBtn setTitleColor:[UIColor colorWithHexString:@"12aac8"] forState:UIControlStateNormal];
+    [self.codeBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
 
 - (void)codeBtnClick:(UIButton*)sender {
-    NSLog(@"短信随机码登录");
+    [self.passwordBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.codeBtn setTitleColor:[UIColor colorWithHexString:@"12aac8"] forState:UIControlStateNormal];
 }
 
 - (void)login:(UIButton*)sender {
@@ -219,11 +268,26 @@
         [parameter setValue:username forKey:@"username"];
         [parameter setValue:password forKey:@"password"];
         [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_LOGIN_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
-            NSLog(@"登录成功");
+            NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+            if (code != 0) {
+                NSString *msg = [responseObject valueForKey:@"msg"];
+                [STTextHudTool showText:msg];
+            } else {
+                [STTextHudTool showText:@"登录成功"];
+            }
+            NSLog(@"dict :%@",responseObject);
         } andFaild:^(NSError *error) {
             NSLog(@"error :%@",error);
         }];
     }
+}
+
+- (void)forgot:(UIButton*)sender {
+    NSLog(@"忘记密码");
+}
+
+- (void)regist:(UIButton*)sender {
+    NSLog(@"注册新医师");
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size

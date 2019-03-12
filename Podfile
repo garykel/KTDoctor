@@ -3,4 +3,5 @@ target 'KTDoctor' do
    pod 'Reachability'
    pod 'BGFMDB'
    pod 'Masonry'
+   pod 'IQKeyboardManager'
 end

@@ -45,7 +45,9 @@
 
 #import <BGTool.h>
 #import <AFNetworking/AFNetworkReachabilityManager.h>
+#import <IQKeyboardManager.h>
 #import <Masonry.h>
+#import "STTextHudTool.h"
 #import "NSObject+BGModel.h"
 #import "UIColor+Hex.h"
 #import "UIColor+Equal.h"

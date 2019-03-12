@@ -20,28 +20,24 @@ PODS:
   - BGFMDB/BG (2.0.13):
     - BGFMDB/FMDB
   - BGFMDB/FMDB (2.0.13)
+  - IQKeyboardManager (6.2.0)
   - Masonry (1.1.0)
   - Reachability (3.2)
 
 DEPENDENCIES:
   - AFNetworking
   - BGFMDB
+  - IQKeyboardManager
   - Masonry
   - Reachability
-
-SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - AFNetworking
-    - BGFMDB
-    - Masonry
-    - Reachability
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
   BGFMDB: 48e6823027232402a678acc7f71484b1fc9171d0
+  IQKeyboardManager: 6194101620b73af5e67900b8f89707a99de0b804
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
 
-PODFILE CHECKSUM: 557a91068cd53d17072a485ddbb0587045930343
+PODFILE CHECKSUM: 6baa1d9cea21f62a55d8f256ec1f3a028e0a3f93
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.4.0

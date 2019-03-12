@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09E47CB22237F97D00B33249 /* STTextHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA72237F97C00B33249 /* STTextHud.xib */; };
+		09E47CB32237F97D00B33249 /* angle-mask@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA92237F97D00B33249 /* angle-mask@3x.png */; };
+		09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CAB2237F97D00B33249 /* NSString+Size.m */; };
+		09E47CB52237F97D00B33249 /* STError@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CAC2237F97D00B33249 /* STError@2x.png */; };
+		09E47CB62237F97D00B33249 /* GCLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CAD2237F97D00B33249 /* GCLoadingView.m */; };
+		09E47CB72237F97D00B33249 /* STSuccess@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CAE2237F97D00B33249 /* STSuccess@2x.png */; };
+		09E47CB82237F97D00B33249 /* STTextHud.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CAF2237F97D00B33249 /* STTextHud.m */; };
+		09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CB12237F97D00B33249 /* STTextHudTool.m */; };
 		2C1AD062CC26859D1B3BB8CC /* libPods-KTDoctor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
 		5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE8130B2237609C005C0648 /* LoginViewController.m */; };
@@ -51,6 +59,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		09E47CA62237F97C00B33249 /* STTextHud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTextHud.h; sourceTree = "<group>"; };
+		09E47CA72237F97C00B33249 /* STTextHud.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STTextHud.xib; sourceTree = "<group>"; };
+		09E47CA82237F97C00B33249 /* GCLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCLoadingView.h; sourceTree = "<group>"; };
+		09E47CA92237F97D00B33249 /* angle-mask@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "angle-mask@3x.png"; sourceTree = "<group>"; };
+		09E47CAA2237F97D00B33249 /* NSString+Size.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Size.h"; sourceTree = "<group>"; };
+		09E47CAB2237F97D00B33249 /* NSString+Size.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Size.m"; sourceTree = "<group>"; };
+		09E47CAC2237F97D00B33249 /* STError@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "STError@2x.png"; sourceTree = "<group>"; };
+		09E47CAD2237F97D00B33249 /* GCLoadingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCLoadingView.m; sourceTree = "<group>"; };
+		09E47CAE2237F97D00B33249 /* STSuccess@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "STSuccess@2x.png"; sourceTree = "<group>"; };
+		09E47CAF2237F97D00B33249 /* STTextHud.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STTextHud.m; sourceTree = "<group>"; };
+		09E47CB02237F97D00B33249 /* STTextHudTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTextHudTool.h; sourceTree = "<group>"; };
+		09E47CB12237F97D00B33249 /* STTextHudTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STTextHudTool.m; sourceTree = "<group>"; };
 		0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KTDoctor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B9F526F7A8B7AED9BFEF069 /* Pods-KTDoctor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.release.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.release.xcconfig"; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
@@ -130,6 +150,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09E47CA52237F94F00B33249 /* STTextHudTool */ = {
+			isa = PBXGroup;
+			children = (
+				09E47CA92237F97D00B33249 /* angle-mask@3x.png */,
+				09E47CA82237F97C00B33249 /* GCLoadingView.h */,
+				09E47CAD2237F97D00B33249 /* GCLoadingView.m */,
+				09E47CAA2237F97D00B33249 /* NSString+Size.h */,
+				09E47CAB2237F97D00B33249 /* NSString+Size.m */,
+				09E47CAC2237F97D00B33249 /* STError@2x.png */,
+				09E47CAE2237F97D00B33249 /* STSuccess@2x.png */,
+				09E47CA62237F97C00B33249 /* STTextHud.h */,
+				09E47CAF2237F97D00B33249 /* STTextHud.m */,
+				09E47CA72237F97C00B33249 /* STTextHud.xib */,
+				09E47CB02237F97D00B33249 /* STTextHudTool.h */,
+				09E47CB12237F97D00B33249 /* STTextHudTool.m */,
+			);
+			path = STTextHudTool;
+			sourceTree = "<group>";
+		};
 		5B518ECA223794EA0071AF80 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -236,6 +275,7 @@
 		5BECDBFC2236626F0025D6F2 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				09E47CA52237F94F00B33249 /* STTextHudTool */,
 				5BECDC05223663730025D6F2 /* NetworkCheck */,
 				5BECDBFE223662BD0025D6F2 /* Network */,
 				5BECDBDF22365EA80025D6F2 /* Categories */,
@@ -310,6 +350,8 @@
 				5BECDBA622365CA10025D6F2 /* Sources */,
 				5BECDBA722365CA10025D6F2 /* Frameworks */,
 				5BECDBA822365CA10025D6F2 /* Resources */,
+				FE339A9B4B94CBD066BE2107 /* [CP] Embed Pods Frameworks */,
+				84C2B5F71CCFB0102A6D169B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -403,9 +445,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				09E47CB32237F97D00B33249 /* angle-mask@3x.png in Resources */,
 				5BECDBBA22365CA50025D6F2 /* LaunchScreen.storyboard in Resources */,
 				5BECDBB722365CA50025D6F2 /* Assets.xcassets in Resources */,
 				5BECDBB522365CA10025D6F2 /* Main.storyboard in Resources */,
+				09E47CB72237F97D00B33249 /* STSuccess@2x.png in Resources */,
+				09E47CB52237F97D00B33249 /* STError@2x.png in Resources */,
+				09E47CB22237F97D00B33249 /* STTextHud.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,6 +472,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		84C2B5F71CCFB0102A6D169B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor-resources.sh",
+				"${PODS_ROOT}/IQKeyboardManager/IQKeyboardManager/Resources/IQKeyboardManager.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IQKeyboardManager.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9829D4BE364DDE12B08D9923 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -444,6 +508,21 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		FE339A9B4B94CBD066BE2107 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -460,9 +539,13 @@
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
 				5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
+				09E47CB62237F97D00B33249 /* GCLoadingView.m in Sources */,
+				09E47CB82237F97D00B33249 /* STTextHud.m in Sources */,
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
+				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,
 				5BECDC082236639A0025D6F2 /* NSString+NetworkingState.m in Sources */,
 				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,
+				09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */,
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
 				5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
