@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2C1AD062CC26859D1B3BB8CC /* libPods-KTDoctor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */; };
+		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
+		5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE8130B2237609C005C0648 /* LoginViewController.m */; };
 		5BECDBAF22365CA10025D6F2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBAE22365CA10025D6F2 /* AppDelegate.m */; };
 		5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBB122365CA10025D6F2 /* ViewController.m */; };
 		5BECDBB522365CA10025D6F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BECDBB322365CA10025D6F2 /* Main.storyboard */; };
@@ -51,6 +53,10 @@
 /* Begin PBXFileReference section */
 		0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KTDoctor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B9F526F7A8B7AED9BFEF069 /* Pods-KTDoctor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.release.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.release.xcconfig"; sourceTree = "<group>"; };
+		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
+		5B518ECC223795050071AF80 /* DashView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashView.m; sourceTree = "<group>"; };
+		5BE8130A2237609C005C0648 /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		5BE8130B2237609C005C0648 /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		5BECDBAA22365CA10025D6F2 /* KTDoctor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KTDoctor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BECDBAD22365CA10025D6F2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5BECDBAE22365CA10025D6F2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -124,6 +130,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5B518ECA223794EA0071AF80 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5B518ECB223795050071AF80 /* DashView.h */,
+				5B518ECC223795050071AF80 /* DashView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5B7E09F72237605600294F1A /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5BE8130A2237609C005C0648 /* LoginViewController.h */,
+				5BE8130B2237609C005C0648 /* LoginViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		5BECDBA122365CA10025D6F2 = {
 			isa = PBXGroup;
 			children = (
@@ -242,6 +266,8 @@
 		5BECDC0A223664F40025D6F2 /* Login */ = {
 			isa = PBXGroup;
 			children = (
+				5B518ECA223794EA0071AF80 /* View */,
+				5B7E09F72237605600294F1A /* Controller */,
 				5BECDC0B223665030025D6F2 /* Model */,
 			);
 			path = Login;
@@ -432,10 +458,12 @@
 				5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */,
 				5BECDBF722365EDC0025D6F2 /* NSString+HMAC.m in Sources */,
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
+				5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
 				5BECDC082236639A0025D6F2 /* NSString+NetworkingState.m in Sources */,
 				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,
+				5B518ECD223795050071AF80 /* DashView.m in Sources */,
 				5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
@@ -547,7 +575,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -601,7 +629,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -617,8 +645,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 42DB6E592F;
 				GCC_PREFIX_HEADER = KTDoctor/PrefixHeader.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib／libsqlite3.dylib",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+					"\"${PODS_ROOT}/Headers/Public/BGFMDB\"",
+					"\"${PODS_ROOT}/Headers/Public/Reachability\"",
+					"$(SRCROOT)",
+				);
 				INFOPLIST_FILE = KTDoctor/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -637,8 +674,17 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 42DB6E592F;
 				GCC_PREFIX_HEADER = KTDoctor/PrefixHeader.pch;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib／libsqlite3.dylib",
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/AFNetworking\"",
+					"\"${PODS_ROOT}/Headers/Public/BGFMDB\"",
+					"\"${PODS_ROOT}/Headers/Public/Reachability\"",
+					"$(SRCROOT)",
+				);
 				INFOPLIST_FILE = KTDoctor/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

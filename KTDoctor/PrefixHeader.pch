@@ -45,6 +45,7 @@
 
 #import <BGTool.h>
 #import <AFNetworking/AFNetworkReachabilityManager.h>
+#import <Masonry.h>
 #import "NSObject+BGModel.h"
 #import "UIColor+Hex.h"
 #import "UIColor+Equal.h"
@@ -56,4 +57,5 @@
 #import "NSArray+CheckUtil.h"
 #import "NetworkService.h"
 #import "DEFIN.h"
+
 #endif /* PrefixHeader_pch */
