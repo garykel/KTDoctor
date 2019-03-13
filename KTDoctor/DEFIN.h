@@ -13,5 +13,7 @@
 #define kSECRET @"b6c1b3c02ad45546a4f4027d3ecbfb2d"
 //#define kSERVER_URL @"http://srv.coolplay.tv:8090" //服务器地址
 #define kSERVER_URL @"https://health-api.coolplay.tv/" //服务器地址
-#define kDOCTOR_LOGIN_URL             @"/doctor/password_login"//医师登陆
+#define kDOCTOR_LOGIN_URL @"/doctor/password_login"//医师登陆
+#define kSEND_SMS_URL @"/send_sms"//发送短信验证码
+#define kSMS_LOGIN_URL @"/doctor/sms_login"//短信验证码登录
 #endif /* DEFIN_h */

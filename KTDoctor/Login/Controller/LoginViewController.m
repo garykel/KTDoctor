@@ -6,9 +6,6 @@
 //  Copyright © 2019 dz. All rights reserved.
 //
 
-#import "LoginViewController.h"
-#import "DashView.h"
-#import <sys/utsname.h>
 #define kBlueView_LeftMargin 157
 #define kBlueView_TopMargin 125
 #define kWhiteView_LeftMargin 172
@@ -24,21 +21,24 @@
 #define kPassword_Btn_TopMargin 28
 #define kPassword_Btn_LeftMargin 19
 #define kPassword_Btn_Width 80
-#define kPassword_Btn_Height 15
+#define kPassword_Btn_Height 30
 #define kSeperateView_Width 5
-#define kSeperateView_Height 30
+#define kSeperateView_Height 25
 #define kSeperateView_LeftMargin 13
 #define kCode_Btn_Width 150
-#define kSeperate_Line_TopMargin 15
+#define kSeperate_Line_TopMargin 25
 #define kSeperate_Line_RightMargin 13
-#define kSeperate_Line_Height 2
+#define kSeperate_Line_Height 1
 #define kMiddle_Line_Height 1
 #define kPhoneLbl_Font_Size 13.0
 #define kPhone_Lbl_BottomMargin 30
 #define kPhone_Lbl_Width 80
 #define kPhone_Lbl_Heigh 26
-#define kPhone_Textfield_LeftMargin 10
+#define kPhone_Textfield_LeftMargin 8
 #define kPhone_Textfield_RightMargin 15
+#define kVerify_Btn_LeftMargin  10
+#define kVerify_Btn_Width 80
+#define kVerify_Btn_FontSize 13.0
 #define kPassword_Lbl_TopMargin 30
 #define kLogin_Btn_BottomMargin 80
 #define kLogin_Btn_Width 200
@@ -51,6 +51,11 @@
 #define kVersion_Lbl_TopMargin 10
 #define kVersion_Lbl_LeftMargin 20
 #define kVersion_Lbl_Height 30
+#define kButton_CornerRadius 2
+
+#import "LoginViewController.h"
+#import "DashView.h"
+#import "MainViewController.h"
 
 @interface LoginViewController ()
 @property (nonatomic,strong)UIImageView *bgImg;
@@ -64,15 +69,22 @@
 @property (nonatomic,strong)UIView *seperateLine;//分割线
 @property (nonatomic,strong)UILabel *phoneLbl;//手机号码
 @property (nonatomic,strong)UITextField *phoneTF;
+@property (nonatomic,strong)UILabel *verifyCodeLbl;//验证码
+@property (nonatomic,strong)UITextField *verifyCodeTF;
+@property (nonatomic,strong)UIButton *verifyCodeBtn;
 @property (nonatomic,strong)UIView *middleLine;
 @property (nonatomic,strong)UILabel *passwordLbl;//密码
 @property (nonatomic,strong)UITextField *passwordTF;
-@property (nonatomic,strong)UIButton *loginBtn;
-@property (nonatomic,strong)UIButton *forgotBtn;
-@property (nonatomic,strong)UIButton *registBtn;
-@property (nonatomic,strong)UILabel *versionLbl;
+@property (nonatomic,strong)UIButton *loginBtn;//登录
+@property (nonatomic,strong)UIButton *forgotBtn;//忘记密码
+@property (nonatomic,strong)UIButton *registBtn;//新医师注册
+@property (nonatomic,strong)UILabel *versionLbl;//版本号
 @property (nonatomic,assign)CGFloat xscale;
 @property (nonatomic,assign)CGFloat yscale;
+@property (nonatomic,strong)NSTimer *verifyCodeTimer;
+@property (nonatomic,assign)NSInteger seconds;
+@property (nonatomic,copy)NSString *smsCode;
+@property (nonatomic,assign)BOOL isPasswordLogin;//是否是密码登录
 @end
 
 @implementation LoginViewController
@@ -82,79 +94,15 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor greenColor];
     self.navigationController.navigationBar.hidden = YES;
+    self.isPasswordLogin = YES;
     self.xscale = kWidth / kIpadMiniSize.width;
     self.yscale = kHeight / kIpadMiniSize.height;
     [self configUI];
-    NSString *deviceStr = [self deviceVersion];
-    NSLog(@"设备型号:%@ 宽:%lf  高:%lf",deviceStr,kWidth,kHeight);
 }
 
-- (NSString*)deviceVersion
-{
-    // 需要#import "sys/utsname.h"
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-    
-    //iPhone
-    if ([deviceString isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
-    if ([deviceString isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
-    if ([deviceString isEqualToString:@"iPhone2,1"])    return @"iPhone 3GS";
-    if ([deviceString isEqualToString:@"iPhone3,1"])    return @"iPhone 4";
-    if ([deviceString isEqualToString:@"iPhone3,2"])    return @"Verizon iPhone 4";
-    if ([deviceString isEqualToString:@"iPhone4,1"])    return @"iPhone 4S";
-    if ([deviceString isEqualToString:@"iPhone5,1"])    return @"iPhone 5";
-    if ([deviceString isEqualToString:@"iPhone5,2"])    return @"iPhone 5";
-    if ([deviceString isEqualToString:@"iPhone5,3"])    return @"iPhone 5C";
-    if ([deviceString isEqualToString:@"iPhone5,4"])    return @"iPhone 5C";
-    if ([deviceString isEqualToString:@"iPhone6,1"])    return @"iPhone 5S";
-    if ([deviceString isEqualToString:@"iPhone6,2"])    return @"iPhone 5S";
-    if ([deviceString isEqualToString:@"iPhone7,1"])    return @"iPhone 6 Plus";
-    if ([deviceString isEqualToString:@"iPhone7,2"])    return @"iPhone 6";
-    if ([deviceString isEqualToString:@"iPhone8,1"])    return @"iPhone 6s";
-    if ([deviceString isEqualToString:@"iPhone8,2"])    return @"iPhone 6s Plus";
-    
-    //iPod
-    if ([deviceString isEqualToString:@"iPod1,1"])      return @"iPod Touch 1G";
-    if ([deviceString isEqualToString:@"iPod2,1"])      return @"iPod Touch 2G";
-    if ([deviceString isEqualToString:@"iPod3,1"])      return @"iPod Touch 3G";
-    if ([deviceString isEqualToString:@"iPod4,1"])      return @"iPod Touch 4G";
-    if ([deviceString isEqualToString:@"iPod5,1"])      return @"iPod Touch 5G";
-    
-    //iPad
-    if ([deviceString isEqualToString:@"iPad1,1"])      return @"iPad";
-    if ([deviceString isEqualToString:@"iPad2,1"])      return @"iPad 2 (WiFi)";
-    if ([deviceString isEqualToString:@"iPad2,2"])      return @"iPad 2 (GSM)";
-    if ([deviceString isEqualToString:@"iPad2,3"])      return @"iPad 2 (CDMA)";
-    if ([deviceString isEqualToString:@"iPad2,4"])      return @"iPad 2 (32nm)";
-    if ([deviceString isEqualToString:@"iPad2,5"])      return @"iPad mini (WiFi)";
-    if ([deviceString isEqualToString:@"iPad2,6"])      return @"iPad mini (GSM)";
-    if ([deviceString isEqualToString:@"iPad2,7"])      return @"iPad mini (CDMA)";
-    
-    if ([deviceString isEqualToString:@"iPad3,1"])      return @"iPad 3(WiFi)";
-    if ([deviceString isEqualToString:@"iPad3,2"])      return @"iPad 3(CDMA)";
-    if ([deviceString isEqualToString:@"iPad3,3"])      return @"iPad 3(4G)";
-    if ([deviceString isEqualToString:@"iPad3,4"])      return @"iPad 4 (WiFi)";
-    if ([deviceString isEqualToString:@"iPad3,5"])      return @"iPad 4 (4G)";
-    if ([deviceString isEqualToString:@"iPad3,6"])      return @"iPad 4 (CDMA)";
-    
-    if ([deviceString isEqualToString:@"iPad4,1"])      return @"iPad Air";
-    if ([deviceString isEqualToString:@"iPad4,2"])      return @"iPad Air";
-    if ([deviceString isEqualToString:@"iPad4,3"])      return @"iPad Air";
-    if ([deviceString isEqualToString:@"iPad5,3"])      return @"iPad Air 2";
-    if ([deviceString isEqualToString:@"iPad5,4"])      return @"iPad Air 2";
-    if ([deviceString isEqualToString:@"i386"])         return @"Simulator";
-    if ([deviceString isEqualToString:@"x86_64"])       return @"Simulator";
-    
-    if ([deviceString isEqualToString:@"iPad4,4"]
-        ||[deviceString isEqualToString:@"iPad4,5"]
-        ||[deviceString isEqualToString:@"iPad4,6"])      return @"iPad mini 2";
-    
-    if ([deviceString isEqualToString:@"iPad4,7"]
-        ||[deviceString isEqualToString:@"iPad4,8"]
-        ||[deviceString isEqualToString:@"iPad4,9"])      return @"iPad mini 3";
-    
-    return deviceString;
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.hidden = YES;
 }
 
 - (void)configUI {
@@ -182,7 +130,7 @@
         make.top.equalTo(self.whiteView.mas_top).offset(kDash_TopMargin * self.yscale);
         make.bottom.equalTo(self.whiteView.mas_bottom).offset(-kDash_BottomMargin * self.yscale);
     }];
-    
+
     UIImage *doctorImage = [UIImage imageNamed:@"doctor"];
     self.doctorImg = [[UIImageView alloc] initWithImage:doctorImage];
     [self.whiteView addSubview:self.doctorImg];
@@ -305,12 +253,61 @@
         make.centerY.equalTo(self.passwordLbl.mas_centerY);
     }];
     
+    //验证码
+    self.verifyCodeLbl = [[UILabel alloc] init];
+    self.verifyCodeLbl.text = @"验  证  码 ";
+    self.verifyCodeLbl.textColor = [UIColor blackColor];
+    self.verifyCodeLbl.textAlignment = NSTextAlignmentCenter;
+    self.verifyCodeLbl.font = [UIFont systemFontOfSize:kPhoneLbl_Font_Size * self.yscale];
+    [self.dashView addSubview:self.verifyCodeLbl];
+    self.verifyCodeLbl.hidden = YES;
+    [self.verifyCodeLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.passwordLbl.mas_top);
+        make.left.equalTo(self.passwordLbl.mas_left);
+        make.width.equalTo(@(kPhone_Lbl_Width * self.xscale));
+        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
+    }];
+    
+    self.verifyCodeTF = [[UITextField alloc] init];
+    self.verifyCodeTF.backgroundColor = [UIColor colorWithHexString:@"#cceef3"];
+    self.verifyCodeTF.placeholder = @"请输入验证码";
+    self.verifyCodeTF.hidden = YES;
+    self.verifyCodeTF.font = [UIFont systemFontOfSize:kVerify_Btn_FontSize];
+    [self.dashView addSubview:self.verifyCodeTF];
+    
+    self.verifyCodeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.verifyCodeBtn.backgroundColor = [UIColor colorWithHexString:@"#12aac8"];
+    [self.verifyCodeBtn.titleLabel setFont:[UIFont systemFontOfSize:kVerify_Btn_FontSize]];
+    [self.verifyCodeBtn setTitle:@"获取验证码" forState:UIControlStateNormal];
+    [self.verifyCodeBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.verifyCodeBtn addTarget:self action:@selector(sendVerifyCode:) forControlEvents:UIControlEventTouchUpInside];
+    self.verifyCodeBtn.layer.cornerRadius = kButton_CornerRadius;
+    self.verifyCodeBtn.layer.masksToBounds = YES;
+    self.verifyCodeBtn.hidden = YES;
+    [self.dashView addSubview:self.verifyCodeBtn];
+    
+    [self.verifyCodeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.verifyCodeLbl.mas_centerY);
+        make.right.equalTo(self.phoneTF.mas_right);
+        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
+        make.width.equalTo(@(kVerify_Btn_Width));
+    }];
+    
+    [self.verifyCodeTF mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
+        make.left.equalTo(self.passwordLbl.mas_right).offset(kPhone_Textfield_LeftMargin * self.xscale);
+        make.right.equalTo(self.verifyCodeBtn.mas_left).offset(-kVerify_Btn_LeftMargin * self.xscale);
+        make.centerY.equalTo(self.verifyCodeLbl.mas_centerY);
+    }];
+    
     //登录按钮
     self.loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.loginBtn.backgroundColor = [UIColor colorWithHexString:@"#12aac8"];
     [self.loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.loginBtn setTitle:@"登录" forState:UIControlStateNormal];
     [self.loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
+    self.loginBtn.layer.cornerRadius = kButton_CornerRadius;
+    self.loginBtn.layer.masksToBounds = YES;
     [self.whiteView addSubview:self.loginBtn];
     [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.dashView.mas_centerX);
@@ -325,6 +322,8 @@
     [self.forgotBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.forgotBtn setTitle:@"忘记密码" forState:UIControlStateNormal];
     [self.forgotBtn addTarget:self action:@selector(forgot:) forControlEvents:UIControlEventTouchUpInside];
+    self.forgotBtn.layer.cornerRadius = kButton_CornerRadius;
+    self.forgotBtn.layer.masksToBounds = YES;
     [self.whiteView addSubview:self.forgotBtn];
 
     self.registBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -332,6 +331,8 @@
     [self.registBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.registBtn setTitle:@"新医师注册" forState:UIControlStateNormal];
     [self.registBtn addTarget:self action:@selector(regist:) forControlEvents:UIControlEventTouchUpInside];
+    self.registBtn.layer.cornerRadius = kButton_CornerRadius;
+    self.registBtn.layer.masksToBounds = YES;
     [self.whiteView addSubview:self.registBtn];
     
     //注册按钮
@@ -371,32 +372,70 @@
 - (void)passwordBtnClick:(UIButton*)sender {
     [self.passwordBtn setTitleColor:[UIColor colorWithHexString:@"12aac8"] forState:UIControlStateNormal];
     [self.codeBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    self.passwordLbl.hidden = NO;
+    self.passwordTF.hidden = NO;
+    self.verifyCodeLbl.hidden = YES;
+    self.verifyCodeTF.hidden = YES;
+    self.verifyCodeBtn.hidden = YES;
+    self.isPasswordLogin = YES;
 }
 
 - (void)codeBtnClick:(UIButton*)sender {
     [self.passwordBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.codeBtn setTitleColor:[UIColor colorWithHexString:@"12aac8"] forState:UIControlStateNormal];
+    self.passwordLbl.hidden = YES;
+    self.passwordTF.hidden = YES;
+    self.verifyCodeLbl.hidden = NO;
+    self.verifyCodeTF.hidden = NO;
+    self.verifyCodeBtn.hidden = NO;
+    self.isPasswordLogin = NO;
+}
+
+- (void)sendVerifyCode:(UIButton*)sender {
+    NSLog(@"发送验证码");
+    self.smsCode = @"";
+    if (self.phoneTF.text.length == 0) {
+        [STTextHudTool showText:@"您输入的用户名错误"];
+    } else {
+        self.verifyCodeBtn.enabled = NO;
+        self.verifyCodeBtn.backgroundColor = [UIColor lightGrayColor];
+        self.seconds = 60;
+        self.verifyCodeTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verifyTimerRepeat) userInfo:nil repeats:YES];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        [parameter setValue:@0 forKey:@"type"];
+        [parameter setValue:self.phoneTF.text forKey:@"mobile"];
+        [self sendSMS:parameter];
+    }
 }
 
 - (void)login:(UIButton*)sender {
-    NSString *username = self.phoneTF.text;
-    NSString *password = self.passwordTF.text;
-    if (username.length > 0 && password.length > 0) {
-        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        [parameter setValue:username forKey:@"username"];
-        [parameter setValue:password forKey:@"password"];
-        [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_LOGIN_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
-            NSInteger code = [[responseObject valueForKey:@"code"] longValue];
-            if (code != 0) {
-                NSString *msg = [responseObject valueForKey:@"msg"];
-                [STTextHudTool showText:msg];
-            } else {
-                [STTextHudTool showText:@"登录成功"];
-            }
-            NSLog(@"dict :%@",responseObject);
-        } andFaild:^(NSError *error) {
-            NSLog(@"error :%@",error);
-        }];
+    BOOL isMobile = [NSString isPhoneNumber:self.phoneTF.text];
+    if (self.isPasswordLogin) {
+        NSString *username = self.phoneTF.text;
+        NSString *password = self.passwordTF.text;
+        if (username.length > 0 && password.length > 0) {
+            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            [parameter setValue:username forKey:@"username"];
+            [parameter setValue:password forKey:@"password"];
+            [self loginWithPassword:parameter];
+        } else if (username.length == 0 || !isMobile){
+            [STTextHudTool showText:@"您输入的用户名错误"];
+        } else {
+            [STTextHudTool showText:@"请输入密码"];
+        }
+    } else {
+        NSString *mobile = self.phoneTF.text;
+        NSString *smsCode = self.verifyCodeTF.text;
+        if (mobile.length > 0 && smsCode.length > 0) {
+            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            [parameter setValue:smsCode forKey:@"smsCode"];
+            [parameter setValue:mobile forKey:@"mobile"];
+            [self loginWithSMS:parameter];
+        } else if (mobile.length == 0 || !isMobile) {
+            [STTextHudTool showText:@"您输入的用户名错误"];
+        } else {
+            [STTextHudTool showText:@"请输入验证码"];
+        }
     }
 }
 
@@ -408,6 +447,18 @@
     NSLog(@"注册新医师");
 }
 
+- (void)verifyTimerRepeat {
+    if (self.seconds == 0) {
+        [self.verifyCodeTimer invalidate];
+        self.verifyCodeBtn.enabled = YES;
+        self.verifyCodeBtn.backgroundColor = [UIColor colorWithHexString:@"#12aac8"];
+        [self.verifyCodeBtn setTitle:@"获取验证码" forState:UIControlStateNormal];
+    } else {
+        [self.verifyCodeBtn setTitle:[NSString stringWithFormat:@"%ld",(long)self.seconds] forState:UIControlStateNormal];
+    }
+    self.seconds --;
+}
+
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
 {
     UIGraphicsBeginImageContext(size);
@@ -416,6 +467,57 @@
     UIGraphicsEndImageContext();
     return newImage;
 }
+
+#pragma mark - net functions
+//密码登录
+- (void)loginWithPassword:(NSMutableDictionary*)parameter {
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_LOGIN_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        if (code != 0) {
+            NSString *msg = [responseObject valueForKey:@"msg"];
+            [STTextHudTool showText:msg];
+        } else {
+            [STTextHudTool showText:@"登录成功"];
+            MainViewController *main = [[MainViewController alloc] init];
+            [self.navigationController pushViewController:main animated:YES];
+        }
+        NSLog(@"dict :%@",responseObject);
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+//发送验证码
+- (void)sendSMS:(NSMutableDictionary*)parameter {
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kSEND_SMS_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        if (code == 0) {
+            NSString *code = [responseObject valueForKey:@"code"];
+            self.smsCode = code;
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+//短信验证啊登录
+- (void)loginWithSMS:(NSMutableDictionary *)parameter {
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kSMS_LOGIN_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        if (code == 0) {
+            [STTextHudTool showText:@"登录成功"];
+            MainViewController *main = [[MainViewController alloc] init];
+            [self.navigationController pushViewController:main animated:YES];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+        [STTextHudTool showText:@"error"];
+    }];
+}
+
 /*
 #pragma mark - Navigation
 

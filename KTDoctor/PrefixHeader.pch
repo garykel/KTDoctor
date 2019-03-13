@@ -57,6 +57,7 @@
 #import "NSObject+DictConvert.h"
 #import "NSString+TimeConvert.h"
 #import "NSString+MD5.h"
+#import "NSString+mobile.h"
 #import "NSArray+CheckUtil.h"
 #import "NetworkService.h"
 #import "DEFIN.h"

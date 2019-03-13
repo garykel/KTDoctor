@@ -17,6 +17,8 @@
 		09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CB12237F97D00B33249 /* STTextHudTool.m */; };
 		2C1AD062CC26859D1B3BB8CC /* libPods-KTDoctor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
+		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
+		5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD9640A22390AC2006FD9CD /* MainViewController.m */; };
 		5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE8130B2237609C005C0648 /* LoginViewController.m */; };
 		5BECDBAF22365CA10025D6F2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBAE22365CA10025D6F2 /* AppDelegate.m */; };
 		5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBB122365CA10025D6F2 /* ViewController.m */; };
@@ -75,6 +77,10 @@
 		3B9F526F7A8B7AED9BFEF069 /* Pods-KTDoctor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.release.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.release.xcconfig"; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
 		5B518ECC223795050071AF80 /* DashView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashView.m; sourceTree = "<group>"; };
+		5BD964052239052D006FD9CD /* NSString+mobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+mobile.h"; sourceTree = "<group>"; };
+		5BD964062239052D006FD9CD /* NSString+mobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+mobile.m"; sourceTree = "<group>"; };
+		5BD9640922390AC2006FD9CD /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		5BD9640A22390AC2006FD9CD /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		5BE8130A2237609C005C0648 /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		5BE8130B2237609C005C0648 /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		5BECDBAA22365CA10025D6F2 /* KTDoctor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KTDoctor.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -187,6 +193,15 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		5BD9640822390AA6006FD9CD /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				5BD9640922390AC2006FD9CD /* MainViewController.h */,
+				5BD9640A22390AC2006FD9CD /* MainViewController.m */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
 		5BECDBA122365CA10025D6F2 = {
 			isa = PBXGroup;
 			children = (
@@ -216,6 +231,7 @@
 				5BECDBAE22365CA10025D6F2 /* AppDelegate.m */,
 				5BECDBB022365CA10025D6F2 /* ViewController.h */,
 				5BECDBB122365CA10025D6F2 /* ViewController.m */,
+				5BD9640822390AA6006FD9CD /* Main */,
 				5BECDC0A223664F40025D6F2 /* Login */,
 				5BECDBFC2236626F0025D6F2 /* Tool */,
 				5BECDBB322365CA10025D6F2 /* Main.storyboard */,
@@ -268,6 +284,8 @@
 				5BECDBE022365EDB0025D6F2 /* UIColor+Equal.m */,
 				5BECDBE622365EDB0025D6F2 /* UIColor+Hex.h */,
 				5BECDBEA22365EDC0025D6F2 /* UIColor+Hex.m */,
+				5BD964052239052D006FD9CD /* NSString+mobile.h */,
+				5BD964062239052D006FD9CD /* NSString+mobile.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -536,6 +554,7 @@
 				5BECDBF422365EDC0025D6F2 /* NSString+CPSignature.m in Sources */,
 				5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */,
 				5BECDBF722365EDC0025D6F2 /* NSString+HMAC.m in Sources */,
+				5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */,
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
 				5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
@@ -548,6 +567,7 @@
 				09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */,
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
 				5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */,
+				5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
 				5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */,
