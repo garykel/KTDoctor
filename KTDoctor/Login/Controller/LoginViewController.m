@@ -14,9 +14,9 @@
 #define kDash_RightMargin 163
 #define kDash_TopMargin 48
 #define kDash_BottomMargin 25
-#define kDoctor_LeftMargin 60
-#define kDoctor_RightMargin 18
-#define kDoctor_TopMargin 20
+#define kDoctor_LeftMargin 50
+#define kDoctor_RightMargin 8
+#define kDoctor_TopMargin 40
 #define kDoctor_BottomMargin 60
 #define kPassword_Btn_TopMargin 28
 #define kPassword_Btn_LeftMargin 19
@@ -56,6 +56,7 @@
 #import "LoginViewController.h"
 #import "DashView.h"
 #import "MainViewController.h"
+#import "RegistOrResetView.h"
 
 @interface LoginViewController ()
 @property (nonatomic,strong)UIImageView *bgImg;
@@ -219,6 +220,7 @@
     
     self.phoneTF = [[UITextField alloc] init];
     self.phoneTF.backgroundColor = [UIColor colorWithHexString:@"#cceef3"];
+    self.phoneTF.placeholder = @"请输入手机号";
     [self.dashView addSubview:self.phoneTF];
     [self.phoneTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
@@ -245,6 +247,7 @@
     self.passwordTF = [[UITextField alloc] init];
     self.passwordTF.backgroundColor = [UIColor colorWithHexString:@"#cceef3"];
     self.passwordTF.secureTextEntry = YES;
+    self.passwordTF.placeholder = @"请输入密码";
     [self.dashView addSubview:self.passwordTF];
     [self.passwordTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
@@ -445,6 +448,8 @@
 
 - (void)regist:(UIButton*)sender {
     NSLog(@"注册新医师");
+    RegistOrResetView *registView = [[RegistOrResetView alloc] initWithTitle:@"医师注册" endTitle:@"下一步"];
+    [registView show];
 }
 
 - (void)verifyTimerRepeat {
