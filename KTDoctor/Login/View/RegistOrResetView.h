@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface RegistOrResetView : UIView
-- (instancetype)initWithTitle:(NSString*)title endTitle:(NSString*)endTitle;
+- (instancetype)initWithFrame:(CGRect) frame title:(NSString*)title endTitle:(NSString*)endTitle;
 
 - (void)show;
 @end

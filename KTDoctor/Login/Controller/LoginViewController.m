@@ -448,7 +448,7 @@
 
 - (void)regist:(UIButton*)sender {
     NSLog(@"注册新医师");
-    RegistOrResetView *registView = [[RegistOrResetView alloc] initWithTitle:@"医师注册" endTitle:@"下一步"];
+    RegistOrResetView *registView = [[RegistOrResetView alloc] initWithFrame:CGRectMake(0, 0, self.whiteView.frame.size.width - 2 * 50, self.whiteView.frame.size.height - 2 * 20) title:@"医师注册" endTitle:@"下一步"];
     [registView show];
 }
 

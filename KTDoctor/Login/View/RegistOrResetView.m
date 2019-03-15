@@ -14,6 +14,7 @@
 #define kAlertView_TitleLbl_FontSize 40.0
 #import "RegistOrResetView.h"
 @interface RegistOrResetView()
+@property (nonatomic,assign)CGRect contentFrame;
 @property (nonatomic,strong)UIView *contentView;
 @property (nonatomic,copy)NSString *title;
 @property (nonatomic,copy)NSString *endTitle;
@@ -21,8 +22,9 @@
 
 @implementation RegistOrResetView
 
-- (instancetype)initWithTitle:(NSString*)title endTitle:(NSString*)endTitle {
+- (instancetype)initWithFrame:(CGRect) frame title:(NSString*)title endTitle:(NSString*)endTitle; {
     if (self = [super init]) {
+        self.contentFrame = frame;
         self.title = title;
         self.endTitle = endTitle;
         [self setUpView];
@@ -40,6 +42,7 @@
     //弹窗主体内容
     self.contentView = [[UIView alloc] init];
     self.contentView.frame = CGRectMake(0, 0, kWidth - 2 * kAlertView_LeftMargin, kHeight - 2 * kAlertViewTopMargin);
+    self.contentView.frame = self.contentFrame;
     self.contentView.center = self.center;
     self.contentView.backgroundColor = [UIColor whiteColor];
     self.contentView.layer.cornerRadius = 6;
