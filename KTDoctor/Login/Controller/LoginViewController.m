@@ -222,6 +222,7 @@
     self.phoneTF = [[UITextField alloc] init];
     self.phoneTF.backgroundColor = [UIColor colorWithHexString:@"#cceef3"];
     self.phoneTF.placeholder = @"请输入手机号";
+    self.phoneTF.keyboardType = UIKeyboardTypeNumberPad;
     [self.dashView addSubview:self.phoneTF];
     [self.phoneTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
@@ -310,7 +311,7 @@
     [self.loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.loginBtn setTitle:@"登录" forState:UIControlStateNormal];
     [self.loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
-    self.loginBtn.layer.cornerRadius = kButton_CornerRadius;
+    self.loginBtn.layer.cornerRadius = kLogin_Btn_Height * kYScal / 2;
     self.loginBtn.layer.masksToBounds = YES;
     [self.whiteView addSubview:self.loginBtn];
     [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -445,11 +446,13 @@
 
 - (void)forgot:(UIButton*)sender {
     NSLog(@"忘记密码");
+    RegistOrResetView *registView = [[RegistOrResetView alloc] initWithFrame:CGRectMake(0, 0, self.whiteView.frame.size.width - 2 * kRegistOrRestView_LeftMargin, self.whiteView.frame.size.height) title:@"设置新密码" endTitle:@"确定" type:ResetPopView];
+    [registView show];
 }
 
 - (void)regist:(UIButton*)sender {
     NSLog(@"注册新医师");
-    RegistOrResetView *registView = [[RegistOrResetView alloc] initWithFrame:CGRectMake(0, 0, self.whiteView.frame.size.width - 2 * kRegistOrRestView_LeftMargin, self.whiteView.frame.size.height) title:@"医师注册" endTitle:@"下一步"];
+    RegistOrResetView *registView = [[RegistOrResetView alloc] initWithFrame:CGRectMake(0, 0, self.whiteView.frame.size.width - 2 * kRegistOrRestView_LeftMargin, self.whiteView.frame.size.height) title:@"医师注册" endTitle:@"下一步" type:RegistPopView];
     [registView show];
 }
 
