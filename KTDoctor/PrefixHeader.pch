@@ -24,6 +24,8 @@
 #define kTabBarHeight       ([[UIApplication sharedApplication] statusBarFrame].size.height>20?83:49)
 
 #define kIpadMiniSize CGSizeMake(1024, 768)
+#define kXScal (kWidth / kIpadMiniSize.width)
+#define kYScal (kHeight / kIpadMiniSize.height)
 //自适应
 #define SizingOne CGSizeMake(kWidth - 2 * 105, kHeight - 20 - 40 - 10 - 40 - 2 * 10)
 #define SizingTwo CGSizeMake((kWidth - 2 * 30 - 7)/2, kHeight - 20 - 40 - 10 - 40 - 2 * 92)

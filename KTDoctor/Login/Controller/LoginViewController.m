@@ -52,6 +52,7 @@
 #define kVersion_Lbl_LeftMargin 20
 #define kVersion_Lbl_Height 30
 #define kButton_CornerRadius 2
+#define kRegistOrRestView_LeftMargin 100
 
 #import "LoginViewController.h"
 #import "DashView.h"
@@ -80,8 +81,6 @@
 @property (nonatomic,strong)UIButton *forgotBtn;//忘记密码
 @property (nonatomic,strong)UIButton *registBtn;//新医师注册
 @property (nonatomic,strong)UILabel *versionLbl;//版本号
-@property (nonatomic,assign)CGFloat xscale;
-@property (nonatomic,assign)CGFloat yscale;
 @property (nonatomic,strong)NSTimer *verifyCodeTimer;
 @property (nonatomic,assign)NSInteger seconds;
 @property (nonatomic,copy)NSString *smsCode;
@@ -96,8 +95,6 @@
     self.view.backgroundColor = [UIColor greenColor];
     self.navigationController.navigationBar.hidden = YES;
     self.isPasswordLogin = YES;
-    self.xscale = kWidth / kIpadMiniSize.width;
-    self.yscale = kHeight / kIpadMiniSize.height;
     [self configUI];
 }
 
@@ -114,32 +111,36 @@
     
     CGFloat bgImgWidth = self.view.frame.size.width;
     CGFloat bgImgHeight = self.view.frame.size.height;
-    self.blueView = [[UIView alloc] initWithFrame:CGRectMake(kBlueView_LeftMargin * self.xscale, kBlueView_TopMargin * self.yscale, bgImgWidth - 2 * kBlueView_LeftMargin * self.xscale, bgImgHeight - 2 * kBlueView_TopMargin * self.yscale)];
+    self.blueView = [[UIView alloc] initWithFrame:CGRectMake(kBlueView_LeftMargin * kXScal, kBlueView_TopMargin * kYScal, bgImgWidth - 2 * kBlueView_LeftMargin * kXScal, bgImgHeight - 2 * kBlueView_TopMargin * kYScal)];
     self.blueView.backgroundColor = [UIColor colorWithHexString:@"#10aacb"];
+    self.blueView.layer.cornerRadius = 2;
+    self.blueView.layer.masksToBounds = YES;
     [self.view addSubview:self.blueView];
     
-    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(kWhiteView_LeftMargin * self.xscale, kWhiteView_TopMargin * self.yscale, bgImgWidth - 2 * kWhiteView_LeftMargin * self.xscale, bgImgHeight - kWhiteView_TopMargin * self.yscale - (kBlueView_TopMargin * self.yscale + (kBlueView_TopMargin * self.yscale - kWhiteView_TopMargin * self.yscale)))];
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(kWhiteView_LeftMargin * kXScal, kWhiteView_TopMargin * kYScal, bgImgWidth - 2 * kWhiteView_LeftMargin * kXScal, bgImgHeight - kWhiteView_TopMargin * kYScal - (kBlueView_TopMargin * kYScal + (kBlueView_TopMargin * kYScal - kWhiteView_TopMargin * kYScal)))];
     self.whiteView.backgroundColor = [UIColor whiteColor];
     self.whiteView.userInteractionEnabled = YES;
+    self.whiteView.layer.cornerRadius = 2;
+    self.whiteView.layer.masksToBounds = YES;
     [self.view addSubview:self.whiteView];
     self.dashView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"dash"]];
     [self.whiteView addSubview:self.dashView];
     self.dashView.userInteractionEnabled = YES;
     [self.dashView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.whiteView.mas_left).offset(kDash_LeftMargin * self.xscale);
-        make.right.equalTo(self.whiteView.mas_right).offset(-kDash_RightMargin * self.yscale);
-        make.top.equalTo(self.whiteView.mas_top).offset(kDash_TopMargin * self.yscale);
-        make.bottom.equalTo(self.whiteView.mas_bottom).offset(-kDash_BottomMargin * self.yscale);
+        make.left.equalTo(self.whiteView.mas_left).offset(kDash_LeftMargin * kXScal);
+        make.right.equalTo(self.whiteView.mas_right).offset(-kDash_RightMargin * kYScal);
+        make.top.equalTo(self.whiteView.mas_top).offset(kDash_TopMargin * kYScal);
+        make.bottom.equalTo(self.whiteView.mas_bottom).offset(-kDash_BottomMargin * kYScal);
     }];
 
     UIImage *doctorImage = [UIImage imageNamed:@"doctor"];
     self.doctorImg = [[UIImageView alloc] initWithImage:doctorImage];
     [self.whiteView addSubview:self.doctorImg];
     [self.doctorImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.whiteView.mas_left).offset(kDoctor_LeftMargin * self.xscale);
-        make.right.equalTo(self.dashView.mas_left).offset(-kDoctor_RightMargin * self.xscale);
-        make.top.equalTo(self.dashView.mas_top).offset(kDoctor_TopMargin * self.yscale);
-        make.bottom.equalTo(self.dashView.mas_bottom).offset(-kDoctor_BottomMargin * self.yscale);
+        make.left.equalTo(self.whiteView.mas_left).offset(kDoctor_LeftMargin * kXScal);
+        make.right.equalTo(self.dashView.mas_left).offset(-kDoctor_RightMargin * kXScal);
+        make.top.equalTo(self.dashView.mas_top).offset(kDoctor_TopMargin * kYScal);
+        make.bottom.equalTo(self.dashView.mas_bottom).offset(-kDoctor_BottomMargin * kYScal);
     }];
     
     //密码登录按钮
@@ -152,10 +153,10 @@
     [self.passwordBtn addTarget:self action:@selector(passwordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.dashView addSubview:self.passwordBtn];
     [self.passwordBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.dashView.mas_top).offset(kPassword_Btn_TopMargin * self.yscale);
-        make.left.equalTo(self.dashView.mas_left).offset(kPassword_Btn_LeftMargin * self.xscale);
-        make.width.equalTo(@(kPassword_Btn_Width * self.xscale));
-        make.height.equalTo(@(kPassword_Btn_Height * self.yscale));
+        make.top.equalTo(self.dashView.mas_top).offset(kPassword_Btn_TopMargin * kYScal);
+        make.left.equalTo(self.dashView.mas_left).offset(kPassword_Btn_LeftMargin * kXScal);
+        make.width.equalTo(@(kPassword_Btn_Width * kXScal));
+        make.height.equalTo(@(kPassword_Btn_Height * kYScal));
     }];
     
     //分割视图
@@ -164,9 +165,9 @@
     [self.dashView addSubview:self.seperateView];
     [self.seperateView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.passwordBtn.mas_centerY);
-        make.width.equalTo(@(kSeperateView_Width * self.xscale));
-        make.height.equalTo(@(kSeperateView_Height * self.yscale));
-        make.left.equalTo(self.passwordBtn.mas_right).offset(kSeperateView_LeftMargin * self.xscale);
+        make.width.equalTo(@(kSeperateView_Width * kXScal));
+        make.height.equalTo(@(kSeperateView_Height * kYScal));
+        make.left.equalTo(self.passwordBtn.mas_right).offset(kSeperateView_LeftMargin * kXScal);
     }];
     
     //短信随机码登录按钮
@@ -177,9 +178,9 @@
     [self.dashView addSubview:self.codeBtn];
     [self.codeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.passwordBtn.mas_centerY);
-        make.width.equalTo(@(kCode_Btn_Width * self.xscale));
-        make.height.equalTo(@(kPassword_Btn_Height * self.yscale));
-        make.left.equalTo(self.seperateView.mas_right).offset(kSeperateView_LeftMargin * self.xscale);
+        make.width.equalTo(@(kCode_Btn_Width * kXScal));
+        make.height.equalTo(@(kPassword_Btn_Height * kYScal));
+        make.left.equalTo(self.seperateView.mas_right).offset(kSeperateView_LeftMargin * kXScal);
     }];
     
     //分割线
@@ -187,9 +188,9 @@
     self.seperateLine.backgroundColor = [UIColor colorWithHexString:@"#12aac8"];
     [self.dashView addSubview:self.seperateLine];
     [self.seperateLine mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.passwordBtn.mas_bottom).offset(kSeperate_Line_TopMargin * self.yscale);
+        make.top.equalTo(self.passwordBtn.mas_bottom).offset(kSeperate_Line_TopMargin * kYScal);
         make.left.equalTo(self.passwordBtn.mas_left);
-        make.right.equalTo(self.dashView.mas_right).offset(-kSeperate_Line_RightMargin * self.xscale);
+        make.right.equalTo(self.dashView.mas_right).offset(-kSeperate_Line_RightMargin * kXScal);
         make.height.equalTo(@(kSeperate_Line_Height));
     }];
     
@@ -208,14 +209,14 @@
     self.phoneLbl.text = @"手机号码";
     self.phoneLbl.textColor = [UIColor blackColor];
     self.phoneLbl.textAlignment = NSTextAlignmentCenter;
-    self.phoneLbl.font = [UIFont systemFontOfSize:kPhoneLbl_Font_Size * self.yscale];
+    self.phoneLbl.font = [UIFont systemFontOfSize:kPhoneLbl_Font_Size * kYScal];
     
     [self.dashView addSubview:self.phoneLbl];
     [self.phoneLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.middleLine.mas_top).offset(-kPhone_Lbl_BottomMargin * self.yscale);
+        make.bottom.equalTo(self.middleLine.mas_top).offset(-kPhone_Lbl_BottomMargin * kYScal);
         make.left.equalTo(self.passwordBtn.mas_left);
-        make.width.equalTo(@(kPhone_Lbl_Width * self.xscale));
-        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
+        make.width.equalTo(@(kPhone_Lbl_Width * kXScal));
+        make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
     }];
     
     self.phoneTF = [[UITextField alloc] init];
@@ -223,9 +224,9 @@
     self.phoneTF.placeholder = @"请输入手机号";
     [self.dashView addSubview:self.phoneTF];
     [self.phoneTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
-        make.left.equalTo(self.phoneLbl.mas_right).offset(kPhone_Textfield_LeftMargin * self.xscale);
-        make.right.equalTo(self.dashView.mas_right).offset(-kPhone_Textfield_RightMargin * self.xscale);
+        make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
+        make.left.equalTo(self.phoneLbl.mas_right).offset(kPhone_Textfield_LeftMargin * kXScal);
+        make.right.equalTo(self.dashView.mas_right).offset(-kPhone_Textfield_RightMargin * kXScal);
         make.centerY.equalTo(self.phoneLbl.mas_centerY);
     }];
     
@@ -234,14 +235,14 @@
     self.passwordLbl.text = @"密       码";
     self.passwordLbl.textColor = [UIColor blackColor];
     self.passwordLbl.textAlignment = NSTextAlignmentCenter;
-    self.passwordLbl.font = [UIFont systemFontOfSize:kPhoneLbl_Font_Size * self.yscale];
+    self.passwordLbl.font = [UIFont systemFontOfSize:kPhoneLbl_Font_Size * kYScal];
     
     [self.dashView addSubview:self.passwordLbl];
     [self.passwordLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.phoneTF.mas_bottom).offset(kPassword_Lbl_TopMargin * self.yscale);
+        make.top.equalTo(self.phoneTF.mas_bottom).offset(kPassword_Lbl_TopMargin * kYScal);
         make.left.equalTo(self.passwordBtn.mas_left);
-        make.width.equalTo(@(kPhone_Lbl_Width * self.xscale));
-        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
+        make.width.equalTo(@(kPhone_Lbl_Width * kXScal));
+        make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
     }];
     
     self.passwordTF = [[UITextField alloc] init];
@@ -250,9 +251,9 @@
     self.passwordTF.placeholder = @"请输入密码";
     [self.dashView addSubview:self.passwordTF];
     [self.passwordTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
-        make.left.equalTo(self.passwordLbl.mas_right).offset(kPhone_Textfield_LeftMargin * self.xscale);
-        make.right.equalTo(self.dashView.mas_right).offset(-kPhone_Textfield_RightMargin * self.xscale);
+        make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
+        make.left.equalTo(self.passwordLbl.mas_right).offset(kPhone_Textfield_LeftMargin * kXScal);
+        make.right.equalTo(self.dashView.mas_right).offset(-kPhone_Textfield_RightMargin * kXScal);
         make.centerY.equalTo(self.passwordLbl.mas_centerY);
     }];
     
@@ -261,14 +262,14 @@
     self.verifyCodeLbl.text = @"验  证  码 ";
     self.verifyCodeLbl.textColor = [UIColor blackColor];
     self.verifyCodeLbl.textAlignment = NSTextAlignmentCenter;
-    self.verifyCodeLbl.font = [UIFont systemFontOfSize:kPhoneLbl_Font_Size * self.yscale];
+    self.verifyCodeLbl.font = [UIFont systemFontOfSize:kPhoneLbl_Font_Size * kYScal];
     [self.dashView addSubview:self.verifyCodeLbl];
     self.verifyCodeLbl.hidden = YES;
     [self.verifyCodeLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.passwordLbl.mas_top);
         make.left.equalTo(self.passwordLbl.mas_left);
-        make.width.equalTo(@(kPhone_Lbl_Width * self.xscale));
-        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
+        make.width.equalTo(@(kPhone_Lbl_Width * kXScal));
+        make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
     }];
     
     self.verifyCodeTF = [[UITextField alloc] init];
@@ -292,14 +293,14 @@
     [self.verifyCodeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(self.verifyCodeLbl.mas_centerY);
         make.right.equalTo(self.phoneTF.mas_right);
-        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
+        make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
         make.width.equalTo(@(kVerify_Btn_Width));
     }];
     
     [self.verifyCodeTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.height.equalTo(@(kPhone_Lbl_Heigh * self.yscale));
-        make.left.equalTo(self.passwordLbl.mas_right).offset(kPhone_Textfield_LeftMargin * self.xscale);
-        make.right.equalTo(self.verifyCodeBtn.mas_left).offset(-kVerify_Btn_LeftMargin * self.xscale);
+        make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
+        make.left.equalTo(self.passwordLbl.mas_right).offset(kPhone_Textfield_LeftMargin * kXScal);
+        make.right.equalTo(self.verifyCodeBtn.mas_left).offset(-kVerify_Btn_LeftMargin * kXScal);
         make.centerY.equalTo(self.verifyCodeLbl.mas_centerY);
     }];
     
@@ -314,9 +315,9 @@
     [self.whiteView addSubview:self.loginBtn];
     [self.loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.dashView.mas_centerX);
-        make.bottom.equalTo(self.whiteView.mas_bottom).offset(-kLogin_Btn_BottomMargin * self.yscale);
-        make.width.equalTo(@(kLogin_Btn_Width * self.xscale));
-        make.height.equalTo(@(kLogin_Btn_Height * self.yscale));
+        make.bottom.equalTo(self.whiteView.mas_bottom).offset(-kLogin_Btn_BottomMargin * kYScal);
+        make.width.equalTo(@(kLogin_Btn_Width * kXScal));
+        make.height.equalTo(@(kLogin_Btn_Height * kYScal));
     }];
     
     //忘记密码按钮
@@ -340,17 +341,17 @@
     
     //注册按钮
     [self.registBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.dashView.mas_bottom).offset(-kRegist_Btn_Bottom * self.yscale);
-        make.left.equalTo(self.dashView.mas_right).offset(kRegist_Btn_LeftMargin * self.xscale);
-        make.right.equalTo(self.whiteView.mas_right).offset(-kRegist_Btn_LeftMargin * self.xscale);
-        make.height.equalTo(@(kRegist_Btn_Height * self.yscale));
+        make.bottom.equalTo(self.dashView.mas_bottom).offset(-kRegist_Btn_Bottom * kYScal);
+        make.left.equalTo(self.dashView.mas_right).offset(kRegist_Btn_LeftMargin * kXScal);
+        make.right.equalTo(self.whiteView.mas_right).offset(-kRegist_Btn_LeftMargin * kXScal);
+        make.height.equalTo(@(kRegist_Btn_Height * kYScal));
     }];
     
     [self.forgotBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.registBtn.mas_top).offset(-kForgot_Btn_BottomMargin * self.yscale);
+        make.bottom.equalTo(self.registBtn.mas_top).offset(-kForgot_Btn_BottomMargin * kYScal);
         make.left.equalTo(self.registBtn.mas_left);
         make.right.equalTo(self.registBtn.mas_right);
-        make.height.equalTo(@(kRegist_Btn_Height * self.yscale));
+        make.height.equalTo(@(kRegist_Btn_Height * kYScal));
     }];
     
     //版本按钮
@@ -362,10 +363,10 @@
     self.versionLbl.text = [NSString stringWithFormat:@"V%@",app_Version];
     [self.bgImg addSubview:self.versionLbl];
     [self.versionLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.blueView.mas_bottom).offset(kVersion_Lbl_TopMargin * self.yscale);
-        make.left.equalTo(self.blueView.mas_right).offset(kVersion_Lbl_LeftMargin * self.xscale);
-        make.right.equalTo(self.bgImg.mas_right).offset(-kVersion_Lbl_LeftMargin * self.xscale);
-        make.height.equalTo(@(kVersion_Lbl_Height * self.yscale));
+        make.top.equalTo(self.blueView.mas_bottom).offset(kVersion_Lbl_TopMargin * kYScal);
+        make.left.equalTo(self.blueView.mas_right).offset(kVersion_Lbl_LeftMargin * kXScal);
+        make.right.equalTo(self.bgImg.mas_right).offset(-kVersion_Lbl_LeftMargin * kXScal);
+        make.height.equalTo(@(kVersion_Lbl_Height * kYScal));
     }];
     [self.bgImg addSubview:self.versionLbl];
 }
@@ -448,7 +449,7 @@
 
 - (void)regist:(UIButton*)sender {
     NSLog(@"注册新医师");
-    RegistOrResetView *registView = [[RegistOrResetView alloc] initWithFrame:CGRectMake(0, 0, self.whiteView.frame.size.width - 2 * 50, self.whiteView.frame.size.height - 2 * 20) title:@"医师注册" endTitle:@"下一步"];
+    RegistOrResetView *registView = [[RegistOrResetView alloc] initWithFrame:CGRectMake(0, 0, self.whiteView.frame.size.width - 2 * kRegistOrRestView_LeftMargin, self.whiteView.frame.size.height) title:@"医师注册" endTitle:@"下一步"];
     [registView show];
 }
 
