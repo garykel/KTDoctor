@@ -7,6 +7,10 @@
 //
 
 #import "DoctorRegistView.h"
+#import <AVFoundation/AVCaptureDevice.h>
+#import <AVFoundation/AVMediaFormat.h>
+#import "LoginViewController.h"
+#import "DropdownMenu.h"
 
 #define kRegistView_LeftMargin 200
 #define kRegistView_TopMargin 150
@@ -30,7 +34,7 @@
 #define kRegistView_TextField_Width 150
 #define kRegistView_Vertical_Space 10
 #define kRegistView_TextField_LeftMargin 15
-#define kRegistView_SexSelect_Width 100
+#define kRegistView_SexSelect_Width 80
 #define kRegistView_BirthSelect_Width 180
 #define kRegistView_SkillsLbl_Height 50
 #define kRegistView_SkillsView_Height 130
@@ -40,7 +44,7 @@
 #define kRegistView_OKBtn_TopMargin 20
 #define kRegistView_OKBtn_Height 44
 
-@interface DoctorRegistView()
+@interface DoctorRegistView()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,DropdownMenuDelegate>
 @property (nonatomic,assign)CGRect contentFrame;
 @property (nonatomic,strong)UIView *contentView;
 @property (nonatomic,copy)NSString *title;
@@ -53,10 +57,10 @@
 @property (nonatomic,strong)UITextField *usernameTF;
 @property (nonatomic,strong)UILabel *sexLbl;
 @property (nonatomic,strong)UIImageView *sexRedStar;
-@property (nonatomic,strong)UITextField *sexTF;
+@property (nonatomic,strong)DropdownMenu *sexMenu;
 @property (nonatomic,strong)UILabel *birthLbl;
 @property (nonatomic,strong)UIImageView *birthRedStar;
-@property (nonatomic,strong)UITextField *birthTF;
+@property (nonatomic,strong)UIButton *birthTF;
 @property (nonatomic,strong)UILabel *organizeLbl;
 @property (nonatomic,strong)UIImageView *organizeRedStar;
 @property (nonatomic,strong)UITextField *organizeTF;
@@ -64,6 +68,8 @@
 @property (nonatomic,strong)UIImageView *skillsRedStar;
 @property (nonatomic,strong)UITextView *skillsView;
 @property (nonatomic,strong)UIButton *okBtn;
+@property (nonatomic,strong)NSArray *sexArr;
+@property (nonatomic,copy)NSString *sex;
 @end
 
 @implementation DoctorRegistView
@@ -119,7 +125,7 @@
     [topView addSubview:exitBtn];
     
     self.headImg = [[UIImageView alloc] initWithFrame:CGRectMake(kRegistView_HeadImg_LeftMargin * kXScal,CGRectGetMaxY(topView.frame) + kRegistView_HeadImg_TopMargin * kYScal, kRegistView_HeadImg_Width * kXScal, kRegistView_HeadImg_Width * kXScal)];
-    self.headImg.backgroundColor = [UIColor lightGrayColor];
+    self.headImg.image = [UIImage imageNamed:@"default_head"];
     self.headImg.layer.cornerRadius = kRegistView_HeadImg_Width * kXScal / 2.0;
     self.headImg.layer.masksToBounds = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePhoto:)];
@@ -140,7 +146,7 @@
     CGFloat headRedStarX = CGRectGetMaxX(self.headLbl.frame) + kRegistView_RedStar_LeftMargin * kXScal;
     CGFloat headRedStarY = self.headLbl.center.y;
     self.headRedStar.center = CGPointMake(headRedStarX, headRedStarY);
-    self.headRedStar.backgroundColor = [UIColor redColor];
+    self.headRedStar.image = [UIImage imageNamed:@"redStar"];
     [self.contentView addSubview:self.headRedStar];
     
     self.usernameLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImg.frame) + kRegistView_LblLeftMargin * kXScal, CGRectGetMaxY(topView.frame) + kRegistView_NameLbl_TopMargin * kYScal, kRegistView_NameLbl_Width * kXScal, kRegistView_TextField_Height * kYScal)];
@@ -153,7 +159,7 @@
     CGFloat usernameStarX = CGRectGetMaxX(self.usernameLbl.frame) + kRegistView_RedStar_LeftMargin * kXScal;
     CGFloat usernameRedStarY = self.usernameLbl.center.y;
     self.usernameRedStar.center = CGPointMake(usernameStarX, usernameRedStarY);
-    self.usernameRedStar.backgroundColor = [UIColor redColor];
+    self.usernameRedStar.image = [UIImage imageNamed:@"redStar"];
     [self.contentView addSubview:self.usernameRedStar];
     
     self.usernameTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.usernameRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.usernameLbl.frame.origin.y, kRegistView_TextField_Width * kXScal, kRegistView_TextField_Height * kYScal)];
@@ -171,13 +177,14 @@
     CGFloat sexStarX = CGRectGetMaxX(self.sexLbl.frame) + kRegistView_RedStar_LeftMargin * kXScal;
     CGFloat sexRedStarY = self.sexLbl.center.y;
     self.sexRedStar.center = CGPointMake(sexStarX, sexRedStarY);
-    self.sexRedStar.backgroundColor = [UIColor redColor];
+    self.sexRedStar.image = [UIImage imageNamed:@"redStar"];
     [self.contentView addSubview:self.sexRedStar];
-    
-    self.sexTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.sexLbl.frame.origin.y, kRegistView_SexSelect_Width * kXScal, kRegistView_TextField_Height * kYScal)];
-    self.sexTF.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
-    self.sexTF.placeholder = @"请选择";
-    [self.contentView addSubview:self.sexTF];
+
+    self.sexArr = @[@"男",@"女"];
+    self.sexMenu = [[DropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.sexLbl.frame.origin.y, kRegistView_SexSelect_Width * kXScal, kRegistView_TextField_Height * kYScal)];
+    [self.sexMenu setMenuTitlesWithMainTitle:@"请选择" bgColor:[UIColor colorWithHexString:@"#c6eff2"] titleArr:self.sexArr rowHeight:kRegistView_TextField_Height * kYScal];
+    self.sexMenu.delegate = self;
+    [self.contentView addSubview:self.sexMenu];
     
     self.birthLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.usernameLbl.frame.origin.x, CGRectGetMaxY(self.sexLbl.frame) + kRegistView_Vertical_Space * kYScal, kRegistView_NameLbl_Width * kXScal, kRegistView_TextField_Height * kYScal)];
     self.birthLbl.text = @"出生日期";
@@ -189,12 +196,17 @@
     CGFloat birthStarX = CGRectGetMaxX(self.birthLbl.frame) + kRegistView_RedStar_LeftMargin * kXScal;
     CGFloat birthRedStarY = self.birthLbl.center.y;
     self.birthRedStar.center = CGPointMake(birthStarX, birthRedStarY);
-    self.birthRedStar.backgroundColor = [UIColor redColor];
+    self.birthRedStar.image = [UIImage imageNamed:@"redStar"];
     [self.contentView addSubview:self.birthRedStar];
     
-    self.birthTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.birthRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.birthLbl.frame.origin.y, kRegistView_BirthSelect_Width * kXScal, kRegistView_TextField_Height * kYScal)];
+    self.birthTF = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.birthRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.birthLbl.frame.origin.y, kRegistView_BirthSelect_Width * kXScal, kRegistView_TextField_Height * kYScal)];
     self.birthTF.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
-    self.birthTF.placeholder = @"请选择出生日期";
+    [self.birthTF setImage:[UIImage imageNamed:@"dropdownMenu"] forState:UIControlStateNormal];
+    [self.birthTF setTitle:@"请选择出生日期" forState:UIControlStateNormal];
+    [self.birthTF setTitleColor:[UIColor colorWithHexString:@"#9fb5bd"] forState:UIControlStateNormal];
+    [self.birthTF setImageEdgeInsets:UIEdgeInsetsMake(0, self.birthTF.frame.size.width - 20, 0, 0)];
+    [self.birthTF setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 35)];
+    [self.birthTF addTarget:self action:@selector(chooseBirthDay:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.birthTF];
     
     self.organizeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.usernameLbl.frame.origin.x, CGRectGetMaxY(self.birthLbl.frame) + kRegistView_Vertical_Space * kYScal, kRegistView_NameLbl_Width * kXScal, kRegistView_TextField_Height * kYScal)];
@@ -207,7 +219,7 @@
     CGFloat organizeStarX = CGRectGetMaxX(self.organizeLbl.frame) + kRegistView_RedStar_LeftMargin * kXScal;
     CGFloat organizeRedStarY = self.organizeLbl.center.y;
     self.organizeRedStar.center = CGPointMake(organizeStarX, organizeRedStarY);
-    self.organizeRedStar.backgroundColor = [UIColor redColor];
+    self.organizeRedStar.image = [UIImage imageNamed:@"redStar"];
     [self.contentView addSubview:self.organizeRedStar];
     
     self.organizeTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.organizeLbl.frame.origin.y, kRegistView_TextField_Width * kXScal, kRegistView_TextField_Height * kYScal)];
@@ -226,16 +238,22 @@
     CGFloat skillsStarX = CGRectGetMaxX(self.skillsLbl.frame) + kRegistView_RedStar_LeftMargin * kXScal;
     CGFloat skillsRedStarY = self.skillsLbl.center.y;
     self.skillsRedStar.center = CGPointMake(skillsStarX, skillsRedStarY);
-    self.skillsRedStar.backgroundColor = [UIColor redColor];
+    self.skillsRedStar.image = [UIImage imageNamed:@"redStar"];
     [self.contentView addSubview:self.skillsRedStar];
     
     self.skillsView = [[UITextView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.skillsRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.skillsLbl.frame.origin.y, kRegistView_SkillsView_Width * kXScal, kRegistView_SkillsView_Height * kYScal)];
     self.skillsView.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
-    self.skillsView.text = @"限制400字";
     [self.contentView addSubview:self.skillsView];
+    UILabel *placeholderLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.skillsView.frame.size.width, kRegistView_TextField_Height * kYScal)];
+    placeholderLbl.textColor = [UIColor colorWithHexString:@"#9fb5bd"];
+    placeholderLbl.textColor = [UIColor lightGrayColor];
+    placeholderLbl.text = @"限制400字";
+    placeholderLbl.font = [UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal];
+    [placeholderLbl setEnabled:NO];
+    [self.skillsView addSubview:placeholderLbl];
     
     self.okBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.okBtn.backgroundColor = [UIColor blueColor];
+    self.okBtn.backgroundColor = [UIColor colorWithHexString:@"#0fa8cb"];
     [self.okBtn setTitle:@"完成" forState:UIControlStateNormal];
     [self.okBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     CGFloat okBtn_x = topView.center.x;
@@ -249,7 +267,41 @@
 }
 
 - (void)changePhoto:(UITapGestureRecognizer*)gesture {
-    NSLog(@"修改头像");
+    BOOL useable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+    if (useable) {
+        UIImagePickerController *photoPicker = [UIImagePickerController new];
+        photoPicker.delegate = self;
+        photoPicker.allowsEditing = NO;
+        photoPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        photoPicker.allowsEditing = NO;
+//        photoPicker.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionAny;
+        [[self currentViewController] presentViewController:photoPicker animated:YES completion:nil];
+    }
+}
+
+- (UIViewController *)currentViewController
+{
+    UIWindow *keyWindow  = [UIApplication sharedApplication].keyWindow;
+    UIViewController *vc = keyWindow.rootViewController;
+    while (vc.presentedViewController)
+    {
+        vc = vc.presentedViewController;
+        
+        if ([vc isKindOfClass:[UINavigationController class]])
+        {
+            vc = [(UINavigationController *)vc visibleViewController];
+        }
+        else if ([vc isKindOfClass:[UITabBarController class]])
+        {
+            vc = [(UITabBarController *)vc selectedViewController];
+        }
+    }
+    return vc;
+}
+
+#pragma mark - button click events
+- (void)chooseBirthDay:(UIButton*)sender {
+    NSLog(@"选择出生日期");
 }
 
 - (void)finish:(UIButton*)sender {
@@ -268,4 +320,17 @@
 - (void)dismiss {
     [self removeFromSuperview];
 }
+
+#pragma mark - DropdownMenuDelegate Delegate
+
+- (void)dropdownMenu:(DropdownMenu *)menu selectedCellNumber:(NSInteger)number{
+    NSLog(@"你选择了：%@",self.sexArr[number]);
+    NSString *selectedStr = self.sexArr[number];
+    if ([selectedStr isEqualToString:@"男"]) {
+        self.sex = @"1";
+    } else {
+        self.sex = @"2";
+    }
+}
+
 @end

@@ -27,7 +27,6 @@
     return YES;
 }
 
-
 - (void)configIQKeyboard{
     IQKeyboardManager *manager = [IQKeyboardManager sharedManager];
     manager.enable = YES;
