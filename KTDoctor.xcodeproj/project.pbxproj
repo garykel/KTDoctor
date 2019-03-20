@@ -18,6 +18,18 @@
 		09E47CBC223A8FD700B33249 /* RegistOrResetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CBB223A8FD700B33249 /* RegistOrResetView.m */; };
 		2C1AD062CC26859D1B3BB8CC /* libPods-KTDoctor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */; };
 		5B02F7762240E7F600BE8269 /* DropdownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7752240E7F600BE8269 /* DropdownMenu.m */; };
+		5B02F77F2241DC6A00BE8269 /* NSDate+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7782241DC6900BE8269 /* NSDate+Extension.m */; };
+		5B02F7802241DC6A00BE8269 /* UIView+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7792241DC6A00BE8269 /* UIView+Extension.m */; };
+		5B02F7812241DC6A00BE8269 /* WSDatePickerView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B02F77D2241DC6A00BE8269 /* WSDatePickerView.xib */; };
+		5B02F7822241DC6A00BE8269 /* WSDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F77E2241DC6A00BE8269 /* WSDatePickerView.m */; };
+		5B02F78C2242269400BE8269 /* WHC_PictureListVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B02F7832242269200BE8269 /* WHC_PictureListVC.xib */; };
+		5B02F78D2242269400BE8269 /* WHC_CameraVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B02F7842242269300BE8269 /* WHC_CameraVC.xib */; };
+		5B02F78E2242269400BE8269 /* WHC_CameraVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7862242269300BE8269 /* WHC_CameraVC.m */; };
+		5B02F78F2242269400BE8269 /* WHC_PictureListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7882242269400BE8269 /* WHC_PictureListVC.m */; };
+		5B02F7902242269400BE8269 /* WHC_ChoicePictureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7892242269400BE8269 /* WHC_ChoicePictureVC.m */; };
+		5B02F7912242269400BE8269 /* WHC_ChoicePictureVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B02F78B2242269400BE8269 /* WHC_ChoicePictureVC.xib */; };
+		5B02F7962242275300BE8269 /* WHC_Asset.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7922242275200BE8269 /* WHC_Asset.m */; };
+		5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7952242275200BE8269 /* WHC_PhotoListCell.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
 		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
@@ -82,6 +94,26 @@
 		3B9F526F7A8B7AED9BFEF069 /* Pods-KTDoctor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.release.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.release.xcconfig"; sourceTree = "<group>"; };
 		5B02F7742240E7F600BE8269 /* DropdownMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DropdownMenu.h; sourceTree = "<group>"; };
 		5B02F7752240E7F600BE8269 /* DropdownMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DropdownMenu.m; sourceTree = "<group>"; };
+		5B02F7782241DC6900BE8269 /* NSDate+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extension.m"; sourceTree = "<group>"; };
+		5B02F7792241DC6A00BE8269 /* UIView+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extension.m"; sourceTree = "<group>"; };
+		5B02F77A2241DC6A00BE8269 /* WSDatePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WSDatePickerView.h; sourceTree = "<group>"; };
+		5B02F77B2241DC6A00BE8269 /* UIView+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extension.h"; sourceTree = "<group>"; };
+		5B02F77C2241DC6A00BE8269 /* NSDate+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extension.h"; sourceTree = "<group>"; };
+		5B02F77D2241DC6A00BE8269 /* WSDatePickerView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WSDatePickerView.xib; sourceTree = "<group>"; };
+		5B02F77E2241DC6A00BE8269 /* WSDatePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WSDatePickerView.m; sourceTree = "<group>"; };
+		5B02F7832242269200BE8269 /* WHC_PictureListVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WHC_PictureListVC.xib; sourceTree = "<group>"; };
+		5B02F7842242269300BE8269 /* WHC_CameraVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WHC_CameraVC.xib; sourceTree = "<group>"; };
+		5B02F7852242269300BE8269 /* WHC_CameraVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHC_CameraVC.h; sourceTree = "<group>"; };
+		5B02F7862242269300BE8269 /* WHC_CameraVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHC_CameraVC.m; sourceTree = "<group>"; };
+		5B02F7872242269300BE8269 /* WHC_ChoicePictureVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHC_ChoicePictureVC.h; sourceTree = "<group>"; };
+		5B02F7882242269400BE8269 /* WHC_PictureListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHC_PictureListVC.m; sourceTree = "<group>"; };
+		5B02F7892242269400BE8269 /* WHC_ChoicePictureVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHC_ChoicePictureVC.m; sourceTree = "<group>"; };
+		5B02F78A2242269400BE8269 /* WHC_PictureListVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHC_PictureListVC.h; sourceTree = "<group>"; };
+		5B02F78B2242269400BE8269 /* WHC_ChoicePictureVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WHC_ChoicePictureVC.xib; sourceTree = "<group>"; };
+		5B02F7922242275200BE8269 /* WHC_Asset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHC_Asset.m; sourceTree = "<group>"; };
+		5B02F7932242275200BE8269 /* WHC_Asset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHC_Asset.h; sourceTree = "<group>"; };
+		5B02F7942242275200BE8269 /* WHC_PhotoListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHC_PhotoListCell.h; sourceTree = "<group>"; };
+		5B02F7952242275200BE8269 /* WHC_PhotoListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHC_PhotoListCell.m; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
@@ -193,9 +225,36 @@
 			path = DropdownMenu;
 			sourceTree = "<group>";
 		};
+		5B02F7772241DC0300BE8269 /* WSDatePickerView */ = {
+			isa = PBXGroup;
+			children = (
+				5B02F77C2241DC6A00BE8269 /* NSDate+Extension.h */,
+				5B02F7782241DC6900BE8269 /* NSDate+Extension.m */,
+				5B02F77B2241DC6A00BE8269 /* UIView+Extension.h */,
+				5B02F7792241DC6A00BE8269 /* UIView+Extension.m */,
+				5B02F77A2241DC6A00BE8269 /* WSDatePickerView.h */,
+				5B02F77E2241DC6A00BE8269 /* WSDatePickerView.m */,
+				5B02F77D2241DC6A00BE8269 /* WSDatePickerView.xib */,
+			);
+			path = WSDatePickerView;
+			sourceTree = "<group>";
+		};
 		5B518ECA223794EA0071AF80 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				5B02F7852242269300BE8269 /* WHC_CameraVC.h */,
+				5B02F7862242269300BE8269 /* WHC_CameraVC.m */,
+				5B02F7842242269300BE8269 /* WHC_CameraVC.xib */,
+				5B02F7872242269300BE8269 /* WHC_ChoicePictureVC.h */,
+				5B02F7892242269400BE8269 /* WHC_ChoicePictureVC.m */,
+				5B02F78B2242269400BE8269 /* WHC_ChoicePictureVC.xib */,
+				5B02F78A2242269400BE8269 /* WHC_PictureListVC.h */,
+				5B02F7882242269400BE8269 /* WHC_PictureListVC.m */,
+				5B02F7832242269200BE8269 /* WHC_PictureListVC.xib */,
+				5B02F7932242275200BE8269 /* WHC_Asset.h */,
+				5B02F7922242275200BE8269 /* WHC_Asset.m */,
+				5B02F7942242275200BE8269 /* WHC_PhotoListCell.h */,
+				5B02F7952242275200BE8269 /* WHC_PhotoListCell.m */,
 				5B518ECB223795050071AF80 /* DashView.h */,
 				5B518ECC223795050071AF80 /* DashView.m */,
 				09E47CBA223A8FD700B33249 /* RegistOrResetView.h */,
@@ -315,6 +374,7 @@
 		5BECDBFC2236626F0025D6F2 /* Tool */ = {
 			isa = PBXGroup;
 			children = (
+				5B02F7772241DC0300BE8269 /* WSDatePickerView */,
 				5B02F7732240E7A800BE8269 /* DropdownMenu */,
 				09E47CA52237F94F00B33249 /* STTextHudTool */,
 				5BECDC05223663730025D6F2 /* NetworkCheck */,
@@ -486,12 +546,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B02F7912242269400BE8269 /* WHC_ChoicePictureVC.xib in Resources */,
 				09E47CB32237F97D00B33249 /* angle-mask@3x.png in Resources */,
+				5B02F78C2242269400BE8269 /* WHC_PictureListVC.xib in Resources */,
 				5BECDBBA22365CA50025D6F2 /* LaunchScreen.storyboard in Resources */,
 				5BECDBB722365CA50025D6F2 /* Assets.xcassets in Resources */,
 				5BECDBB522365CA10025D6F2 /* Main.storyboard in Resources */,
 				09E47CB72237F97D00B33249 /* STSuccess@2x.png in Resources */,
+				5B02F78D2242269400BE8269 /* WHC_CameraVC.xib in Resources */,
 				09E47CB52237F97D00B33249 /* STError@2x.png in Resources */,
+				5B02F7812241DC6A00BE8269 /* WSDatePickerView.xib in Resources */,
 				09E47CB22237F97D00B33249 /* STTextHud.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -571,18 +635,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B02F78F2242269400BE8269 /* WHC_PictureListVC.m in Sources */,
+				5B02F77F2241DC6A00BE8269 /* NSDate+Extension.m in Sources */,
+				5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */,
 				5BECDBF322365EDC0025D6F2 /* NSArray+CheckUtil.m in Sources */,
 				5BECDBF622365EDC0025D6F2 /* NSObject+DictConvert.m in Sources */,
+				5B02F78E2242269400BE8269 /* WHC_CameraVC.m in Sources */,
 				5BECDBF822365EDC0025D6F2 /* NSString+MD5.m in Sources */,
 				5BECDBF422365EDC0025D6F2 /* NSString+CPSignature.m in Sources */,
 				5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */,
 				5BECDBF722365EDC0025D6F2 /* NSString+HMAC.m in Sources */,
 				5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */,
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
+				5B02F7802241DC6A00BE8269 /* UIView+Extension.m in Sources */,
 				5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
 				09E47CB62237F97D00B33249 /* GCLoadingView.m in Sources */,
+				5B02F7962242275300BE8269 /* WHC_Asset.m in Sources */,
 				09E47CB82237F97D00B33249 /* STTextHud.m in Sources */,
+				5B02F7822241DC6A00BE8269 /* WSDatePickerView.m in Sources */,
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
 				5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */,
 				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,
@@ -593,6 +664,7 @@
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
 				5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */,
 				5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */,
+				5B02F7902242269400BE8269 /* WHC_ChoicePictureVC.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
 				09E47CBC223A8FD700B33249 /* RegistOrResetView.m in Sources */,

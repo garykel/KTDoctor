@@ -44,6 +44,7 @@
         self.title = title;
         self.endTitle = endTitle;
         self.type = type;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideRegist:) name:@"HideRegistViewNotification" object:nil];
         [self setUpView];
     }
     return self;
@@ -189,6 +190,10 @@
     [self removeFromSuperview];
 }
 
+- (void)hideRegist:(NSNotification*)noti {
+    [self dismiss];
+}
+
 - (void)requestCode:(UIButton*)sender {
     NSLog(@"发送验证码");
     self.smsCode = @"";
@@ -270,7 +275,8 @@
     if (username.length > 0 && password.length > 0 && smsCode.length > 0 && conformPwd.length > 0 && isMobile && hasConformPwdLength && hasConformPwd) {
         if (self.type == RegistPopView ) {
             CGRect frame = CGRectMake(kWhiteView_LeftMargin * kXScal, kWhiteView_TopMargin * kYScal, kWidth - 2 * kWhiteView_LeftMargin * kXScal, kHeight - kWhiteView_TopMargin * kYScal - (kBlueView_TopMargin * kYScal + (kBlueView_TopMargin * kYScal - kWhiteView_TopMargin * kYScal)));
-            DoctorRegistView *registView = [[DoctorRegistView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - 2 * kDoctor_RegistView_LeftMargin, frame.size.height) basicInfo:nil];
+            NSDictionary *dict = @{@"smsCode":self.codeTF.text,@"mobile":self.phoneTF.text,@"password":self.passwordTF.text};
+            DoctorRegistView *registView = [[DoctorRegistView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - 2 * kDoctor_RegistView_LeftMargin, frame.size.height) basicInfo:dict];
             [registView show];
         } else {
             //重置密码

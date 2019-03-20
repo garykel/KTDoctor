@@ -11,6 +11,10 @@
 #import <AVFoundation/AVMediaFormat.h>
 #import "LoginViewController.h"
 #import "DropdownMenu.h"
+#import "WHC_PhotoListCell.h"
+#import "WHC_PictureListVC.h"
+#import "WHC_CameraVC.h"
+#import <AFNetworking/AFURLSessionManager.h>
 
 #define kRegistView_LeftMargin 200
 #define kRegistView_TopMargin 150
@@ -44,7 +48,7 @@
 #define kRegistView_OKBtn_TopMargin 20
 #define kRegistView_OKBtn_Height 44
 
-@interface DoctorRegistView()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,DropdownMenuDelegate>
+@interface DoctorRegistView()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,DropdownMenuDelegate,UITextViewDelegate,WHC_ChoicePictureVCDelegate,WHC_CameraVCDelegate>
 @property (nonatomic,assign)CGRect contentFrame;
 @property (nonatomic,strong)UIView *contentView;
 @property (nonatomic,copy)NSString *title;
@@ -67,9 +71,13 @@
 @property (nonatomic,strong)UILabel *skillsLbl;
 @property (nonatomic,strong)UIImageView *skillsRedStar;
 @property (nonatomic,strong)UITextView *skillsView;
+@property (nonatomic,strong)UILabel *placeholderLbl;
 @property (nonatomic,strong)UIButton *okBtn;
+@property (nonatomic,strong)NSDictionary *basicinfo;
 @property (nonatomic,strong)NSArray *sexArr;
 @property (nonatomic,copy)NSString *sex;
+@property (nonatomic,copy)NSString *birthday;
+@property (nonatomic,strong)UIImage *selectedImg;
 @end
 
 @implementation DoctorRegistView
@@ -77,6 +85,7 @@
 - (instancetype)initWithFrame:(CGRect)frame basicInfo:(NSDictionary*)basicInfo {
     if (self = [super init]) {
         self.contentFrame = frame;
+        self.basicinfo = [NSDictionary dictionaryWithDictionary:basicInfo];
         [self setUpView];
     }
     return self;
@@ -243,14 +252,16 @@
     
     self.skillsView = [[UITextView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.skillsRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.skillsLbl.frame.origin.y, kRegistView_SkillsView_Width * kXScal, kRegistView_SkillsView_Height * kYScal)];
     self.skillsView.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
+    self.skillsView.font = [UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal];
+    self.skillsView.delegate = self;
     [self.contentView addSubview:self.skillsView];
-    UILabel *placeholderLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.skillsView.frame.size.width, kRegistView_TextField_Height * kYScal)];
-    placeholderLbl.textColor = [UIColor colorWithHexString:@"#9fb5bd"];
-    placeholderLbl.textColor = [UIColor lightGrayColor];
-    placeholderLbl.text = @"限制400字";
-    placeholderLbl.font = [UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal];
-    [placeholderLbl setEnabled:NO];
-    [self.skillsView addSubview:placeholderLbl];
+    self.placeholderLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.skillsView.frame.size.width, kRegistView_TextField_Height * kYScal)];
+    self.placeholderLbl.textColor = [UIColor colorWithHexString:@"#b6d6dc"];
+    self.placeholderLbl.textColor = [UIColor lightGrayColor];
+    self.placeholderLbl.text = @"限制400字";
+    self.placeholderLbl.font = [UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal];
+    [self.placeholderLbl setEnabled:NO];
+    [self.skillsView addSubview:self.placeholderLbl];
     
     self.okBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.okBtn.backgroundColor = [UIColor colorWithHexString:@"#0fa8cb"];
@@ -269,13 +280,29 @@
 - (void)changePhoto:(UITapGestureRecognizer*)gesture {
     BOOL useable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     if (useable) {
-        UIImagePickerController *photoPicker = [UIImagePickerController new];
-        photoPicker.delegate = self;
-        photoPicker.allowsEditing = NO;
-        photoPicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        photoPicker.allowsEditing = NO;
-//        photoPicker.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionAny;
-        [[self currentViewController] presentViewController:photoPicker animated:YES completion:nil];
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"获取头像"
+                                                                       message:@""
+                                                                preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"从相册获取图片" style:UIAlertActionStyleDestructive
+                                                             handler:^(UIAlertAction * action) {
+                                                                 //响应事件
+                                                                 WHC_PictureListVC  * vc = [WHC_PictureListVC new];
+                                                                 vc.delegate = self;
+                                                                 vc.maxChoiceImageNumberumber = 1;
+                                                                 [[self currentViewController] presentViewController:[[UINavigationController alloc]initWithRootViewController:vc] animated:YES completion:nil];
+                                                             }];
+        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:@"从相机获取图片" style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * action) {
+                                                               //响应事件
+                                                               WHC_CameraVC * vc = [WHC_CameraVC new];
+                                                               vc.delegate = self;
+                                                               [[self currentViewController] presentViewController:vc animated:YES completion:nil];
+                                                           }];
+        [alert addAction:saveAction];
+        [alert addAction:deleteAction];
+        alert.popoverPresentationController.sourceView = self;
+        alert.popoverPresentationController.sourceRect = CGRectMake(0,0,1.0,1.0);
+        [[self currentViewController] presentViewController:alert animated:YES completion:nil]; 
     }
 }
 
@@ -302,10 +329,60 @@
 #pragma mark - button click events
 - (void)chooseBirthDay:(UIButton*)sender {
     NSLog(@"选择出生日期");
+//    self.hidden = YES;
+    __weak typeof (self)weakSelf = self;
+    WSDatePickerView *datepicker = [[WSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDay CompleteBlock:^(NSDate *selectDate) {
+        
+        NSString *date = [selectDate stringWithFormat:@"yyyy-MM-dd"];
+        NSLog(@"选择的日期：%@",date);
+        [weakSelf.birthTF setTitle:date forState:UIControlStateNormal];
+        weakSelf.birthday = date;
+//        weakSelf.hidden = NO;
+    }];
+    datepicker.dateLabelColor = [UIColor orangeColor];//年-月-日-时-分 颜色
+    datepicker.datePickerColor = [UIColor blackColor];//滚轮日期颜色
+    datepicker.doneButtonColor = [UIColor grayColor];//确定按钮的颜色
+    [datepicker show];
+}
+
+- (void)dateChange:(UIDatePicker*)datesender {
+    UIDatePicker *picker = (UIDatePicker*)datesender;
+    NSDate *date = picker.date;
+    NSLog(@"选择了:%@",date);
 }
 
 - (void)finish:(UIButton*)sender {
-    NSLog(@"完成！！！！");
+    NSString *username = self.usernameTF.text;
+    NSString *organizeId = self.organizeTF.text;
+    NSString *skills = self.skillsView.text;
+    if (username.length > 0 && self.sex.length > 0 && self.birthday.length > 0 && organizeId.length > 0 && skills.length > 0) {
+        [self upLoadImage];
+    } else if (username.length == 0) {
+        [STTextHudTool showText:@"请填写用户名"];
+    } else if (self.sex.length == 0) {
+        [STTextHudTool showText:@"请选择性别"];
+    } else if (self.birthday.length == 0) {
+        [STTextHudTool showText:@"请选择出生日期"];
+    } else if (organizeId.length == 0) {
+        [STTextHudTool showText:@"请填写组织机构ID"];
+    } else if (skills.length == 0) {
+        [STTextHudTool showText:@"请填写擅长治疗病症"];
+    }
+}
+
+- (void)regist:(NSMutableDictionary *)parameter {
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kSEND_SMS_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        if (code == 0) {
+            [self dismiss];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"HideRegistViewNotification" object:nil];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 
 - (void)show {
@@ -321,6 +398,24 @@
     [self removeFromSuperview];
 }
 
+#pragma mark - UITextViewDelegate
+
+- (void)textViewDidBeginEditing:(UITextView *)textView {
+    if (textView.text.length > 0) {
+        self.placeholderLbl.hidden = YES;
+    } else {
+        self.placeholderLbl.hidden = NO;
+    }
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    if (textView.text.length > 0) {
+        self.placeholderLbl.hidden = YES;
+    } else {
+        self.placeholderLbl.hidden = NO;
+    }
+}
+
 #pragma mark - DropdownMenuDelegate Delegate
 
 - (void)dropdownMenu:(DropdownMenu *)menu selectedCellNumber:(NSInteger)number{
@@ -333,4 +428,74 @@
     }
 }
 
+#pragma mark - WHC_ChoicePictureVCDelegate
+- (void)WHCChoicePictureVC:(WHC_ChoicePictureVC *)choicePictureVC didSelectedPhotoArr:(NSArray *)photoArr{
+    NSLog(@"photoArr:%@",photoArr);
+    if (photoArr.count > 0) {
+        UIImage *image = photoArr[0];
+        self.headImg.image = image;
+        self.selectedImg = image;
+    }
+}
+
+#pragma mark - WHC_CameraVCDelegate
+- (void)WHCCameraVC:(WHC_CameraVC *)cameraVC didSelectedPhoto:(UIImage *)photo{
+    if (photo) {
+        self.headImg.image = photo;
+        self.selectedImg = photo;
+    }
+    [self WHCChoicePictureVC:nil didSelectedPhotoArr:@[photo]];
+}
+
+- (void)upLoadImage {
+    UIImage *image = self.selectedImg;
+    NSData *data = UIImageJPEGRepresentation(image, 1.0);
+    NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    NSString *contentStr = [NSString stringWithFormat:@"data:image/jpeg;base64,%@",encodedImageStr];
+    NSString  *jpgPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Portrait.jpg"];
+    BOOL success = [UIImageJPEGRepresentation(image, 0.5) writeToFile:jpgPath atomically:YES]; //其中0.5表示压缩比例，1表示不压缩，数值越小压缩比例越大
+    if (success) {
+        NSLog(@"写入本地成功");
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+//        [parameter setObject:@"coolplayhrcoach001" forKey:@"channel"];
+//        [parameter setObject:@"Portrait.jpg" forKey:@"file"];
+        [parameter setObject:contentStr forKey:@"file"];
+        [STTextHudTool loading];
+        [self uploadPhoto:parameter];
+    }
+}
+
+//上传头像
+- (void)uploadPhoto:(NSMutableDictionary*)parameter {
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUPLOAD_IMAGE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSLog(@"%@",responseObject);
+        long code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"msg is :%@",msg);
+        NSLog(@"responseObject is:%@",responseObject);
+        if (code == 0) {
+            NSString *username = self.usernameTF.text;
+            NSString *organizeId = self.organizeTF.text;
+            NSString *skills = self.skillsView.text;
+            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            NSString *smsCode = [self.basicinfo valueForKey:@"smsCode"];
+            NSString *mobile = [self.basicinfo valueForKey:@"mobile"];
+            NSString *password = [self.basicinfo valueForKey:@"password"];
+            [parameter setValue:organizeId forKey:@"orgCode"];
+            [parameter setValue:smsCode forKey:@"smsCode"];
+            [parameter setValue:mobile forKey:@"mobile"];
+            [parameter setValue:password forKey:@"password"];
+            [parameter setValue:username forKey:@"name"];
+            [parameter setValue:self.sex forKey:@"sex"];
+            [parameter setValue:self.birthday forKey:@"birthdate"];
+            [parameter setValue:@"" forKey:@"headUrl"];
+            [parameter setValue:skills forKey:@"speciality"];
+            [self regist:parameter];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        [STTextHudTool hideSTHud];
+    }];
+}
 @end

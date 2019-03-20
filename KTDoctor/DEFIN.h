@@ -17,4 +17,6 @@
 #define kSEND_SMS_URL @"/send_sms"//发送短信验证码
 #define kSMS_LOGIN_URL @"/doctor/sms_login"//短信验证码登录
 #define kMODIFY_PASSWORD_URL @"/doctor/modify_password"//医师修改密码
+#define kDOCTOR_REGISTER_URL @"/doctor/register"//医师注册
+#define kUPLOAD_IMAGE_URL @"/file/upload_image"//上传图片
 #endif /* DEFIN_h */

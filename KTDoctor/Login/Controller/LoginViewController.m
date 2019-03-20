@@ -16,6 +16,8 @@
 #define kDash_BottomMargin 25
 #define kDoctor_LeftMargin 50
 #define kDoctor_RightMargin 8
+#define kDoctor_Width 188
+#define kDoctor_Height 312
 #define kDoctor_TopMargin 40
 #define kDoctor_BottomMargin 60
 #define kPassword_Btn_TopMargin 28
@@ -137,10 +139,10 @@
     self.doctorImg = [[UIImageView alloc] initWithImage:doctorImage];
     [self.whiteView addSubview:self.doctorImg];
     [self.doctorImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.whiteView.mas_left).offset(kDoctor_LeftMargin * kXScal);
         make.right.equalTo(self.dashView.mas_left).offset(-kDoctor_RightMargin * kXScal);
-        make.top.equalTo(self.dashView.mas_top).offset(kDoctor_TopMargin * kYScal);
         make.bottom.equalTo(self.dashView.mas_bottom).offset(-kDoctor_BottomMargin * kYScal);
+        make.width.equalTo(@(kDoctor_Width * kXScal));
+        make.height.equalTo(@(kDoctor_Height * kYScal));
     }];
     
     //密码登录按钮
