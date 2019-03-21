@@ -105,6 +105,57 @@ static const NSString * ERROR_NET = @"网络连接失败";
     
 }
 
++ (void)postJSONWithUrl:(NSString *)urlStr
+             parameters:(id)parameters
+               progress:(void (^)(NSProgress* progress))progress
+                success:(void (^)(NSDictionary* responseObject))success
+                   fail:(void (^)(NSError *error))fail {
+    AFHTTPSessionManager *manager = [HttpClient sharedSessionManager];
+    NSString *token = @"";
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    if (user) {
+        token = [user valueForKey:@"token"];
+    }
+    NSString *signatureString = [[NSString signtureWithDict:parameters token:token] lowercaseString];
+    NSLog(@"signature value:%@",signatureString);
+    NSString *timestamp = [NSString obtainCurrentDateUTCTimeString];
+    NSString *authString = [NSString stringWithFormat:@"sports-auth-v2/%@/%@/%@",kAPPKEY,timestamp,signatureString];
+    NSLog(@"authString:%@",authString);
+    
+    [manager.requestSerializer setValue:authString forHTTPHeaderField:@"Authorization"];
+    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
+    [manager POST:urlStr parameters:parameters constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+        NSString *filePath = [parameters valueForKey:@"file"];
+        NSLog(@"filePath :%@",filePath);
+        UIImage *image  = [[UIImage alloc] initWithContentsOfFile:filePath];
+        NSData *data = UIImagePNGRepresentation(image);
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        // 设置时间格式
+        formatter.dateFormat = @"yyyyMMddHHmmss";
+        NSString *str = [formatter stringFromDate:[NSDate date]];
+        NSString *fileName = [NSString stringWithFormat:@"%@.png", str];
+        [formData appendPartWithFileData:data name:@"file" fileName:fileName mimeType:@"image/png"];
+    } progress:^(NSProgress * _Nonnull uploadProgress) {
+        if (progress) {
+            progress(uploadProgress);
+        }
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if (responseObject) {
+            NSDictionary *jsonObject=[NSJSONSerialization
+                                      JSONObjectWithData:responseObject
+                                      options:NSJSONReadingMutableLeaves
+                                      error:nil];
+            success(jsonObject);
+        } else{
+            //            DLog(@"error = %@", responseObject);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        if (fail) {
+            fail(error);
+        }
+    }];
+}
+
 + (void)getJsonWithUrl:(NSString *)urlStr
             parameters:(id)parameters
                success:(void (^)(NSDictionary* responseObject))success

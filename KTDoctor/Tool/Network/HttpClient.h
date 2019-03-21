@@ -30,6 +30,12 @@
                 success:(void (^)(NSDictionary* responseObject))success
                    fail:(void (^)(NSError *error))fail;
 
++ (void)postJSONWithUrl:(NSString *)urlStr
+             parameters:(id)parameters
+               progress:(void (^)(NSProgress* progress))progress
+                success:(void (^)(NSDictionary* responseObject))success
+                   fail:(void (^)(NSError *error))fail;
+
 + (void)getJsonWithUrl:(NSString *)urlStr
             parameters:(id)parameters
                success:(void (^)(NSDictionary* responseObject))success

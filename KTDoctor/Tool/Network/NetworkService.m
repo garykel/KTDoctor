@@ -65,4 +65,17 @@ static const NSString * ERROR_NET = @"网络连接失败";
     }];
 }
 
+-(void)requestWithUrl:(NSString *)url
+            andParams:(NSDictionary *)params
+          andProgress:(void (^)(NSProgress * progress))progress
+           andSucceed:(void (^)(NSDictionary* responseObject))success
+             andFaild:(void (^)(NSError *error))fail {
+    [HttpClient postJSONWithUrl:url parameters:params progress:^(NSProgress *progress) {
+        NSLog(@"progress :%@",progress);
+    } success:^(NSDictionary *responseObject) {
+        success(responseObject);
+    } fail:^(NSError *error) {
+        fail(error);
+    }];
+}
 @end

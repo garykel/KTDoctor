@@ -371,7 +371,7 @@
 }
 
 - (void)regist:(NSMutableDictionary *)parameter {
-    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kSEND_SMS_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_REGISTER_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
         if (code == 0) {
@@ -449,53 +449,51 @@
 
 - (void)upLoadImage {
     UIImage *image = self.selectedImg;
-    NSData *data = UIImageJPEGRepresentation(image, 1.0);
-    NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-    NSString *contentStr = [NSString stringWithFormat:@"data:image/jpeg;base64,%@",encodedImageStr];
     NSString  *jpgPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Portrait.jpg"];
     BOOL success = [UIImageJPEGRepresentation(image, 0.5) writeToFile:jpgPath atomically:YES]; //其中0.5表示压缩比例，1表示不压缩，数值越小压缩比例越大
     if (success) {
         NSLog(@"写入本地成功");
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-//        [parameter setObject:@"coolplayhrcoach001" forKey:@"channel"];
-//        [parameter setObject:@"Portrait.jpg" forKey:@"file"];
-        [parameter setObject:contentStr forKey:@"file"];
-        [STTextHudTool loading];
+        [parameter setObject:jpgPath forKey:@"file"];
         [self uploadPhoto:parameter];
     }
 }
 
 //上传头像
 - (void)uploadPhoto:(NSMutableDictionary*)parameter {
-    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUPLOAD_IMAGE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
-        NSLog(@"%@",responseObject);
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUPLOAD_IMAGE_URL] andParams:parameter andProgress:^(NSProgress *progress) {
+        
+    } andSucceed:^(NSDictionary *responseObject) {
         long code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSLog(@"msg is :%@",msg);
         NSLog(@"responseObject is:%@",responseObject);
         if (code == 0) {
-            NSString *username = self.usernameTF.text;
-            NSString *organizeId = self.organizeTF.text;
-            NSString *skills = self.skillsView.text;
-            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            NSDictionary *dataDict = [responseObject valueForKey:@"data"];
+            NSString *url = [dataDict valueForKey:@"url"];
+            NSLog(@"image url is :%@",url);
+            NSLog(@"上传成功");
             NSString *smsCode = [self.basicinfo valueForKey:@"smsCode"];
             NSString *mobile = [self.basicinfo valueForKey:@"mobile"];
             NSString *password = [self.basicinfo valueForKey:@"password"];
-            [parameter setValue:organizeId forKey:@"orgCode"];
-            [parameter setValue:smsCode forKey:@"smsCode"];
-            [parameter setValue:mobile forKey:@"mobile"];
-            [parameter setValue:password forKey:@"password"];
-            [parameter setValue:username forKey:@"name"];
-            [parameter setValue:self.sex forKey:@"sex"];
-            [parameter setValue:self.birthday forKey:@"birthdate"];
-            [parameter setValue:@"" forKey:@"headUrl"];
-            [parameter setValue:skills forKey:@"speciality"];
-            [self regist:parameter];
+            NSMutableDictionary *para = [NSMutableDictionary dictionary];
+            [para setValue:self.organizeTF.text forKey:@"orgCode"];
+            [para setValue:smsCode forKey:@"smsCode"];
+            [para setValue:mobile forKey:@"mobile"];
+            [para setValue:password forKey:@"password"];
+            [para setValue:self.usernameTF.text forKey:@"name"];
+            [para setValue:self.sex forKey:@"sex"];
+            [para setValue:self.birthday forKey:@"birthdate"];
+            [para setValue:url forKey:@"headUrl"];
+            [para setValue:self.skillsView.text forKey:@"speciality"];
+            [para setValue:@"" forKey:@"openid"];
+            [self regist:para];
         } else {
             [STTextHudTool showText:msg];
         }
     } andFaild:^(NSError *error) {
         [STTextHudTool hideSTHud];
+        NSLog(@"error :%@",error);
     }];
 }
 @end

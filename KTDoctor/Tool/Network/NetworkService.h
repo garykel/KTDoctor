@@ -29,4 +29,19 @@
             andParams:(NSDictionary *)params
            andSucceed:(void (^)(NSDictionary* responseObject))success
              andFaild:(void (^)(NSError *error))fail;
+
+/**
+ *  网络请求
+ *
+ *  @param url     请求url
+ *  @param params  参数
+ *  @param progress 进度
+ *  @param success 成功
+ *  @param fail    失败
+ */
+-(void)requestWithUrl:(NSString *)url
+            andParams:(NSDictionary *)params
+          andProgress:(void (^)(NSProgress * progress))progress
+           andSucceed:(void (^)(NSDictionary* responseObject))success
+             andFaild:(void (^)(NSError *error))fail;
 @end
