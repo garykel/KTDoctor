@@ -78,14 +78,16 @@
 @property (nonatomic,copy)NSString *sex;
 @property (nonatomic,copy)NSString *birthday;
 @property (nonatomic,strong)UIImage *selectedImg;
+@property (nonatomic,assign)DocotorReistPopViewType type;
 @end
 
 @implementation DoctorRegistView
 
-- (instancetype)initWithFrame:(CGRect)frame basicInfo:(NSDictionary*)basicInfo {
+- (instancetype)initWithFrame:(CGRect)frame basicInfo:(NSDictionary*)basicInfo type:(DocotorReistPopViewType)type{
     if (self = [super init]) {
         self.contentFrame = frame;
         self.basicinfo = [NSDictionary dictionaryWithDictionary:basicInfo];
+        self.type = type;
         [self setUpView];
     }
     return self;
@@ -117,7 +119,13 @@
     
     UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, topView.frame.size.width, kRegistView_TitleLbl_FontSize * kYScal)];
     titleLbl.center = topView.center;
-    titleLbl.text = @"医师注册";
+    NSString *title = @"";
+    if (self.type == DoctorRegistPopView) {
+        title = @"医师注册";
+    } else {
+        title = @"医师资料修改";
+    }
+    titleLbl.text = title;
     titleLbl.font = [UIFont systemFontOfSize:kRegistView_TitleLbl_FontSize * kYScal];
     titleLbl.textColor = [UIColor blackColor];
     titleLbl.textAlignment = NSTextAlignmentCenter;

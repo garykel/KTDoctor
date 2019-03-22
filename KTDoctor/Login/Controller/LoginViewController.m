@@ -60,6 +60,7 @@
 #import "DashView.h"
 #import "MainViewController.h"
 #import "RegistOrResetView.h"
+#import "UserModel.h"
 
 @interface LoginViewController ()
 @property (nonatomic,strong)UIImageView *bgImg;
@@ -490,6 +491,22 @@
             [STTextHudTool showText:msg];
         } else {
             [STTextHudTool showText:@"登录成功"];
+            NSDictionary *dict = [responseObject valueForKey:@"data"];
+            UserModel *user = [[UserModel alloc] init];
+            user.birthdate = [dict valueForKey:@"birthdate"];
+            user.email = [dict valueForKey:@"email"];
+            user.headUrl = [dict valueForKey:@"headUrl"];
+            user.mobile = [dict valueForKey:@"mobile"];
+            user.name = [dict valueForKey:@"name"];
+            user.organ = [dict valueForKey:@"organ"];
+            user.sex = [dict valueForKey:@"sex"];
+            user.speciality = [dict valueForKey:@"speciality"];
+            user.token = [dict valueForKey:@"token"];
+            user.userId = [dict valueForKey:@"userId"];
+            [user bg_saveOrUpdate];
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setValue:user.userId forKey:@"currentUserId"];
+            NSLog(@"user :%@",user);
             MainViewController *main = [[MainViewController alloc] init];
             [self.navigationController pushViewController:main animated:YES];
         }

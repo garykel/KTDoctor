@@ -30,6 +30,8 @@
 		5B02F7912242269400BE8269 /* WHC_ChoicePictureVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5B02F78B2242269400BE8269 /* WHC_ChoicePictureVC.xib */; };
 		5B02F7962242275300BE8269 /* WHC_Asset.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7922242275200BE8269 /* WHC_Asset.m */; };
 		5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7952242275200BE8269 /* WHC_PhotoListCell.m */; };
+		5B02F79F2244C79600BE8269 /* IndexPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F79E2244C79600BE8269 /* IndexPopoverViewController.m */; };
+		5B02F7A32244D02200BE8269 /* IndexPopCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7A22244D02200BE8269 /* IndexPopCell.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
 		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
@@ -114,6 +116,10 @@
 		5B02F7932242275200BE8269 /* WHC_Asset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHC_Asset.h; sourceTree = "<group>"; };
 		5B02F7942242275200BE8269 /* WHC_PhotoListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WHC_PhotoListCell.h; sourceTree = "<group>"; };
 		5B02F7952242275200BE8269 /* WHC_PhotoListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WHC_PhotoListCell.m; sourceTree = "<group>"; };
+		5B02F79D2244C79600BE8269 /* IndexPopoverViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IndexPopoverViewController.h; sourceTree = "<group>"; };
+		5B02F79E2244C79600BE8269 /* IndexPopoverViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IndexPopoverViewController.m; sourceTree = "<group>"; };
+		5B02F7A12244D02200BE8269 /* IndexPopCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IndexPopCell.h; sourceTree = "<group>"; };
+		5B02F7A22244D02200BE8269 /* IndexPopCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IndexPopCell.m; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
@@ -239,6 +245,24 @@
 			path = WSDatePickerView;
 			sourceTree = "<group>";
 		};
+		5B02F79C2244C72400BE8269 /* PopoverController */ = {
+			isa = PBXGroup;
+			children = (
+				5B02F79D2244C79600BE8269 /* IndexPopoverViewController.h */,
+				5B02F79E2244C79600BE8269 /* IndexPopoverViewController.m */,
+			);
+			path = PopoverController;
+			sourceTree = "<group>";
+		};
+		5B02F7A02244D00000BE8269 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				5B02F7A12244D02200BE8269 /* IndexPopCell.h */,
+				5B02F7A22244D02200BE8269 /* IndexPopCell.m */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
 		5B518ECA223794EA0071AF80 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -277,8 +301,10 @@
 		5BD9640822390AA6006FD9CD /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				5B02F7A02244D00000BE8269 /* Cell */,
 				5BD9640922390AC2006FD9CD /* MainViewController.h */,
 				5BD9640A22390AC2006FD9CD /* MainViewController.m */,
+				5B02F79C2244C72400BE8269 /* PopoverController */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -645,9 +671,11 @@
 				5BECDBF422365EDC0025D6F2 /* NSString+CPSignature.m in Sources */,
 				5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */,
 				5BECDBF722365EDC0025D6F2 /* NSString+HMAC.m in Sources */,
+				5B02F7A32244D02200BE8269 /* IndexPopCell.m in Sources */,
 				5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */,
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
 				5B02F7802241DC6A00BE8269 /* UIView+Extension.m in Sources */,
+				5B02F79F2244C79600BE8269 /* IndexPopoverViewController.m in Sources */,
 				5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
 				09E47CB62237F97D00B33249 /* GCLoadingView.m in Sources */,

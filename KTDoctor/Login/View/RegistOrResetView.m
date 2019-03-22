@@ -105,6 +105,7 @@
     self.phoneTF.delegate = self;
     self.phoneTF.tag = 10;
     self.phoneTF.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
+    [self.phoneTF becomeFirstResponder];
     [self.contentView addSubview:self.phoneTF];
     
     UILabel *codeLbl = [[UILabel alloc] initWithFrame:CGRectMake(phoneLbl.frame.origin.x, CGRectGetMaxY(phoneLbl.frame) + 20 * kYScal, 100 * kXScal, 50 * kYScal)];
@@ -237,6 +238,7 @@
         NSString *msg = [responseObject valueForKey:@"msg"];
         if (code == 0) {
             [self dismiss];
+            [STTextHudTool showText:@"成功"];
         } else {
             [STTextHudTool showText:msg];
         }
@@ -276,7 +278,7 @@
         if (self.type == RegistPopView ) {
             CGRect frame = CGRectMake(kWhiteView_LeftMargin * kXScal, kWhiteView_TopMargin * kYScal, kWidth - 2 * kWhiteView_LeftMargin * kXScal, kHeight - kWhiteView_TopMargin * kYScal - (kBlueView_TopMargin * kYScal + (kBlueView_TopMargin * kYScal - kWhiteView_TopMargin * kYScal)));
             NSDictionary *dict = @{@"smsCode":self.codeTF.text,@"mobile":self.phoneTF.text,@"password":self.passwordTF.text};
-            DoctorRegistView *registView = [[DoctorRegistView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - 2 * kDoctor_RegistView_LeftMargin, frame.size.height) basicInfo:dict];
+            DoctorRegistView *registView = [[DoctorRegistView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - 2 * kDoctor_RegistView_LeftMargin, frame.size.height) basicInfo:dict type:DoctorRegistPopView];
             [registView show];
         } else {
             //重置密码
