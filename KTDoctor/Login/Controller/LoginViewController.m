@@ -32,10 +32,10 @@
 #define kSeperate_Line_RightMargin 13
 #define kSeperate_Line_Height 1
 #define kMiddle_Line_Height 1
-#define kPhoneLbl_Font_Size 13.0
+#define kPhoneLbl_Font_Size 15.0
 #define kPhone_Lbl_BottomMargin 30
 #define kPhone_Lbl_Width 80
-#define kPhone_Lbl_Heigh 26
+#define kPhone_Lbl_Heigh 30
 #define kPhone_Textfield_LeftMargin 8
 #define kPhone_Textfield_RightMargin 15
 #define kVerify_Btn_LeftMargin  10
@@ -279,6 +279,7 @@
     self.verifyCodeTF.backgroundColor = [UIColor colorWithHexString:@"#cceef3"];
     self.verifyCodeTF.placeholder = @"请输入验证码";
     self.verifyCodeTF.hidden = YES;
+    self.verifyCodeTF.keyboardType = UIKeyboardTypeNumberPad;
     self.verifyCodeTF.font = [UIFont systemFontOfSize:kVerify_Btn_FontSize];
     [self.dashView addSubview:self.verifyCodeTF];
     
