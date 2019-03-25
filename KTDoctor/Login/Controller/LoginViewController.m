@@ -503,6 +503,7 @@
             user.speciality = [dict valueForKey:@"speciality"];
             user.token = [dict valueForKey:@"token"];
             user.userId = [dict valueForKey:@"userId"];
+            user.bg_tableName = @"tb_user";
             [user bg_saveOrUpdate];
             NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
             [defaults setValue:user.userId forKey:@"currentUserId"];

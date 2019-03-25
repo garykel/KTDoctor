@@ -48,7 +48,6 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationController.navigationBar.hidden = YES;
-    self.title = @"首页";
     [self setNavBar];
     [self setUpContentView];
 }
@@ -62,14 +61,13 @@
     UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
     NSString *username = [user valueForKey:@"name"];
     [self.logoutBtn setTitle:username forState:UIControlStateNormal];
+    self.logoutBtn.adjustsImageWhenHighlighted = NO;//取消图片的高亮状态
     CGFloat logoutBtnY = (self.navView.frame.size.height - kMain_NavView_LogoutBtn_Height) / 2;
-    if (self.logoutBtn.titleLabel.text.length == 0) {
-        self.logoutBtn.frame = CGRectMake(kMain_NavView_LogoutBtn_LeftMargin, logoutBtnY, kMain_NavView_LogoutBtn_Height, kMain_NavView_LogoutBtn_Height);
-    } else {
-        self.logoutBtn.frame = CGRectMake(kMain_NavView_LogoutBtn_LeftMargin, logoutBtnY, kMain_NavView_LogoutBtn_Width, kMain_NavView_LogoutBtn_Height);
-        self.logoutBtn.imageEdgeInsets = UIEdgeInsetsMake(0, -kMain_NavView_LogoutBtn_ImgLeftMargin, 0, 0);
-        self.logoutBtn.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -kMain_NavView_LogoutBtn_Height);
-    }
+    self.logoutBtn.frame = CGRectMake(kMain_NavView_LogoutBtn_LeftMargin, logoutBtnY, kMain_NavView_LogoutBtn_Width, kMain_NavView_LogoutBtn_Height);
+    self.logoutBtn.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    self.logoutBtn.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.logoutBtn.imageEdgeInsets = UIEdgeInsetsMake(0, kMain_NavView_LogoutBtn_Height - 5, 0, 0);
+    self.logoutBtn.titleEdgeInsets = UIEdgeInsetsMake(0, kMain_NavView_LogoutBtn_Height + 5, 0, 0);
     [self.logoutBtn setImage:[UIImage imageNamed:@"set"] forState:UIControlStateNormal];
     [self.logoutBtn.titleLabel setFont:[UIFont systemFontOfSize:kMain_NavView_LogoutBtn_FontSize]];
     self.logoutBtn.layer.masksToBounds = YES;
