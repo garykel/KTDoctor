@@ -32,6 +32,8 @@
 		5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7952242275200BE8269 /* WHC_PhotoListCell.m */; };
 		5B02F79F2244C79600BE8269 /* IndexPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F79E2244C79600BE8269 /* IndexPopoverViewController.m */; };
 		5B02F7A32244D02200BE8269 /* IndexPopCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7A22244D02200BE8269 /* IndexPopCell.m */; };
+		5B02F7A72248810000BE8269 /* MonitorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7A62248810000BE8269 /* MonitorViewController.m */; };
+		5B02F7AA2248B45100BE8269 /* SortViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7A92248B45100BE8269 /* SortViewController.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
 		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
@@ -120,6 +122,10 @@
 		5B02F79E2244C79600BE8269 /* IndexPopoverViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IndexPopoverViewController.m; sourceTree = "<group>"; };
 		5B02F7A12244D02200BE8269 /* IndexPopCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IndexPopCell.h; sourceTree = "<group>"; };
 		5B02F7A22244D02200BE8269 /* IndexPopCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IndexPopCell.m; sourceTree = "<group>"; };
+		5B02F7A52248810000BE8269 /* MonitorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonitorViewController.h; sourceTree = "<group>"; };
+		5B02F7A62248810000BE8269 /* MonitorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MonitorViewController.m; sourceTree = "<group>"; };
+		5B02F7A82248B45100BE8269 /* SortViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SortViewController.h; sourceTree = "<group>"; };
+		5B02F7A92248B45100BE8269 /* SortViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SortViewController.m; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
@@ -250,6 +256,8 @@
 			children = (
 				5B02F79D2244C79600BE8269 /* IndexPopoverViewController.h */,
 				5B02F79E2244C79600BE8269 /* IndexPopoverViewController.m */,
+				5B02F7A82248B45100BE8269 /* SortViewController.h */,
+				5B02F7A92248B45100BE8269 /* SortViewController.m */,
 			);
 			path = PopoverController;
 			sourceTree = "<group>";
@@ -261,6 +269,17 @@
 				5B02F7A22244D02200BE8269 /* IndexPopCell.m */,
 			);
 			path = Cell;
+			sourceTree = "<group>";
+		};
+		5B02F7A422487E6900BE8269 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5BD9640922390AC2006FD9CD /* MainViewController.h */,
+				5BD9640A22390AC2006FD9CD /* MainViewController.m */,
+				5B02F7A52248810000BE8269 /* MonitorViewController.h */,
+				5B02F7A62248810000BE8269 /* MonitorViewController.m */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		5B518ECA223794EA0071AF80 /* View */ = {
@@ -301,9 +320,8 @@
 		5BD9640822390AA6006FD9CD /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				5B02F7A422487E6900BE8269 /* Controller */,
 				5B02F7A02244D00000BE8269 /* Cell */,
-				5BD9640922390AC2006FD9CD /* MainViewController.h */,
-				5BD9640A22390AC2006FD9CD /* MainViewController.m */,
 				5B02F79C2244C72400BE8269 /* PopoverController */,
 			);
 			path = Main;
@@ -682,6 +700,7 @@
 				5B02F7962242275300BE8269 /* WHC_Asset.m in Sources */,
 				09E47CB82237F97D00B33249 /* STTextHud.m in Sources */,
 				5B02F7822241DC6A00BE8269 /* WSDatePickerView.m in Sources */,
+				5B02F7AA2248B45100BE8269 /* SortViewController.m in Sources */,
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
 				5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */,
 				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,
@@ -696,6 +715,7 @@
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
 				09E47CBC223A8FD700B33249 /* RegistOrResetView.m in Sources */,
+				5B02F7A72248810000BE8269 /* MonitorViewController.m in Sources */,
 				5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */,
 				5BECDBAF22365CA10025D6F2 /* AppDelegate.m in Sources */,
 			);

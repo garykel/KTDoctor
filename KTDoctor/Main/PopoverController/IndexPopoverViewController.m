@@ -45,7 +45,7 @@
 
 - (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UIView *seperateLine = [[UIView alloc] init];
-    seperateLine.backgroundColor = [UIColor colorWithRed:161/255.0 green:183/255.0 blue:191/255.0 alpha:1.0];
+    seperateLine.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
     return seperateLine;
 }
 

@@ -23,6 +23,9 @@
 #define kTopHeight          (kStatusBarHeight + kNavBarHeight + kStatusBarTopMargin)
 #define kTabBarHeight       ([[UIApplication sharedApplication] statusBarFrame].size.height>20?83:49)
 
+#define kNavView_TopMargin 20
+#define kNavView_Height 60
+
 #define kIpadMiniSize CGSizeMake(1024, 768)
 #define kXScal (kWidth / kIpadMiniSize.width)
 #define kYScal (kHeight / kIpadMiniSize.height)

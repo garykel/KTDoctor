@@ -8,18 +8,17 @@
 
 #import "MainViewController.h"
 #import "IndexPopoverViewController.h"
+#import "MonitorViewController.h"
 #import "RegistOrResetView.h"
 #import "DoctorRegistView.h"
 #import "UserModel.h"
 
-#define kMain_NavView_TopMargin 20
-#define kMain_NavView_Height 60
 #define kMain_NavView_LogoutBtn_LeftMargin 15
-#define kMain_NavView_LogoutBtn_Height 20
+#define kMain_NavView_LogoutBtn_Height 30
 #define kMain_NavView_LogoutBtn_Width 150
 #define kMain_NavView_LogoutBtn_FontSize 15.0
 #define kMain_NavView_LogoutBtn_ImgLeftMargin 15
-#define kMain_Btn_TopMargin (kHeight - kMain_NavView_TopMargin - kMain_NavView_Height - 2 * kMain_Btn_Height * kYScal - kMain_Btn_VerticalSpace * kYScal)/2
+#define kMain_Btn_TopMargin (kHeight - kNavView_TopMargin - kNavView_Height - 2 * kMain_Btn_Height * kYScal - kMain_Btn_VerticalSpace * kYScal)/2
 #define kMain_Btn_LeftMargin (kWidth - kMain_Btn_Width * kXScal * 3 - 2 * kMain_Btn_HorizontalSpace * kXScal)/2
 #define kMain_Btn_Height 83
 #define kMain_Btn_Width 190
@@ -53,7 +52,7 @@
 }
 
 - (void)setNavBar {
-    self.navView = [[UIView alloc] initWithFrame:CGRectMake(0, kMain_NavView_TopMargin, kWidth, kMain_NavView_Height)];
+    self.navView = [[UIView alloc] initWithFrame:CGRectMake(0, kNavView_TopMargin, kWidth, kNavView_Height)];
     self.navView.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
     [self.view addSubview:self.navView];
     
@@ -139,11 +138,11 @@
     self.popController.sourceView = self.logoutBtn;
     self.popController.sourceRect = self.logoutBtn.bounds;
     [self presentViewController:self.pop animated:YES completion:nil];
-//    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)monitor:(UITapGestureRecognizer*)sender {
-    NSLog(@"实时监控");
+    MonitorViewController *monitor = [[MonitorViewController alloc] init];
+    [self.navigationController pushViewController:monitor animated:NO];
 }
 
 - (void)history:(UITapGestureRecognizer*)sender {
