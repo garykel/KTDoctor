@@ -34,6 +34,8 @@
 		5B02F7A32244D02200BE8269 /* IndexPopCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7A22244D02200BE8269 /* IndexPopCell.m */; };
 		5B02F7A72248810000BE8269 /* MonitorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7A62248810000BE8269 /* MonitorViewController.m */; };
 		5B02F7AA2248B45100BE8269 /* SortViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7A92248B45100BE8269 /* SortViewController.m */; };
+		5B02F7B12249D91A00BE8269 /* PatientListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B02249D91A00BE8269 /* PatientListView.m */; };
+		5B02F7B4224A262F00BE8269 /* PatientCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B3224A262F00BE8269 /* PatientCell.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
 		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
@@ -126,6 +128,10 @@
 		5B02F7A62248810000BE8269 /* MonitorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MonitorViewController.m; sourceTree = "<group>"; };
 		5B02F7A82248B45100BE8269 /* SortViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SortViewController.h; sourceTree = "<group>"; };
 		5B02F7A92248B45100BE8269 /* SortViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SortViewController.m; sourceTree = "<group>"; };
+		5B02F7AF2249D91A00BE8269 /* PatientListView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientListView.h; sourceTree = "<group>"; };
+		5B02F7B02249D91A00BE8269 /* PatientListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientListView.m; sourceTree = "<group>"; };
+		5B02F7B2224A262F00BE8269 /* PatientCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell.h; sourceTree = "<group>"; };
+		5B02F7B3224A262F00BE8269 /* PatientCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell.m; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
@@ -267,6 +273,8 @@
 			children = (
 				5B02F7A12244D02200BE8269 /* IndexPopCell.h */,
 				5B02F7A22244D02200BE8269 /* IndexPopCell.m */,
+				5B02F7B2224A262F00BE8269 /* PatientCell.h */,
+				5B02F7B3224A262F00BE8269 /* PatientCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -280,6 +288,15 @@
 				5B02F7A62248810000BE8269 /* MonitorViewController.m */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		5B02F7AE2249D8EC00BE8269 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5B02F7AF2249D91A00BE8269 /* PatientListView.h */,
+				5B02F7B02249D91A00BE8269 /* PatientListView.m */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		5B518ECA223794EA0071AF80 /* View */ = {
@@ -320,6 +337,7 @@
 		5BD9640822390AA6006FD9CD /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				5B02F7AE2249D8EC00BE8269 /* View */,
 				5B02F7A422487E6900BE8269 /* Controller */,
 				5B02F7A02244D00000BE8269 /* Cell */,
 				5B02F79C2244C72400BE8269 /* PopoverController */,
@@ -679,6 +697,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B02F7B12249D91A00BE8269 /* PatientListView.m in Sources */,
 				5B02F78F2242269400BE8269 /* WHC_PictureListVC.m in Sources */,
 				5B02F77F2241DC6A00BE8269 /* NSDate+Extension.m in Sources */,
 				5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */,
@@ -701,6 +720,7 @@
 				09E47CB82237F97D00B33249 /* STTextHud.m in Sources */,
 				5B02F7822241DC6A00BE8269 /* WSDatePickerView.m in Sources */,
 				5B02F7AA2248B45100BE8269 /* SortViewController.m in Sources */,
+				5B02F7B4224A262F00BE8269 /* PatientCell.m in Sources */,
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
 				5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */,
 				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,

@@ -8,6 +8,8 @@
 
 #import "MonitorViewController.h"
 #import "SortViewController.h"
+#import "PatientListView.h"
+
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
 #define kTimeLbl_LeftMargin 15
@@ -15,6 +17,8 @@
 #define kTimeLbl_Width 150
 #define kTitle_FontSize 22
 #define kAddPersonBtn_Width 25
+#define kAlertView_LeftMargin 200
+#define kAlertViewTopMargin 150
 
 @interface MonitorViewController ()<SortDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -25,6 +29,7 @@
 @property (nonatomic,strong)UIButton *sortBtn;
 @property (nonatomic,strong)SortViewController *sort;
 @property (nonatomic,strong)UIPopoverPresentationController *popController;
+@property (nonatomic,strong)NSTimer *timer;
 @end
 
 @implementation MonitorViewController
@@ -32,7 +37,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showCurrentTime) userInfo:nil repeats:YES];
     [self setNavBar];
+}
+
+- (void)dealloc {
+    [self.timer invalidate];
 }
 
 - (void)setNavBar {
@@ -52,7 +62,8 @@
     
     self.timeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.backButton.frame) + kTimeLbl_LeftMargin, self.backButton.frame.origin.y, kTimeLbl_Width, kButton_Height)];
     self.timeLbl.textAlignment = NSTextAlignmentLeft;
-    self.timeLbl.text = @"下午1:57";
+    NSString *currentDateStr = [self getCurrentTimeString];
+    self.timeLbl.text = currentDateStr;
     self.timeLbl.textColor = [UIColor whiteColor];
     [self.navView addSubview:self.timeLbl];
     
@@ -84,6 +95,24 @@
     [self.navView addSubview:self.sortBtn];
 }
 
+- (NSString *)getCurrentTimeString{
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
+    format.AMSymbol = @"上午";
+    format.PMSymbol = @"下午";
+    format.dateFormat = @"aaa HH:mm";
+    NSDate *currentDate = [NSDate date];
+    NSString *currentDateStr = [format stringFromDate:currentDate];
+    return currentDateStr;
+}
+
+- (void)showCurrentTime {
+    NSString *timeStr = [self getCurrentTimeString];
+    NSString *lastTimeStr = self.timeLbl.text;
+    if (![timeStr isEqualToString:lastTimeStr]) {
+        self.timeLbl.text = timeStr;
+    }
+}
+
 #pragma mark - button click events
 
 - (void)back:(UIButton*)sender {
@@ -92,6 +121,8 @@
 
 - (void)addPerson:(UIButton*)sender {
     NSLog(@"患者管理");
+    PatientListView *listView = [[PatientListView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kAlertView_LeftMargin, kHeight - 2 * kAlertViewTopMargin)];
+    [listView show];
 }
 
 - (void)sort:(UIButton*)sender {
