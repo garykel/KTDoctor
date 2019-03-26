@@ -161,8 +161,6 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     NSMutableDictionary *dict = (NSMutableDictionary*)[self.conditionsArr objectAtIndexCheck:indexPath.section];
-    NSLog(@"dict is ***************:%@",dict);
-    BOOL hasSelected = [[dict valueForKey:@"hasSelected"] boolValue];
     cell.textLabel.text = [dict valueForKey:@"sortkey"];
     cell.textLabel.font = [UIFont systemFontOfSize:15.0];
     return cell;
@@ -195,18 +193,15 @@
         sortField = @"currentHR";
     }
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //上次排序信息
-    NSLog(@"color :%@",self.ascBtn.backgroundColor);
     BOOL isAsc = YES;
     UIColor *lightBlue = [UIColor colorWithHexString:@"#10a9cc"];
     UIColor *ascBtnColor = self.ascBtn.backgroundColor;
     if (CGColorEqualToColor(lightBlue.CGColor, ascBtnColor.CGColor)) {
-        NSLog(@"两个颜色相等");
         isAsc = YES;
     } else {
-        NSLog(@"两个颜色不相等");
         isAsc = NO;
     }
+    //上次排序信息
     NSDictionary *lastSortInfo = [defaults valueForKey:@"lastSortInfo"];
     if (lastSortInfo) {
         NSInteger lastSelectIndex = [[lastSortInfo valueForKey:@"selectedRow"] integerValue];
@@ -223,7 +218,7 @@
     NSMutableDictionary *newSortDict = [NSMutableDictionary dictionary];
     [newSortDict setValue:[NSNumber numberWithBool:YES] forKey:@"hasSelected"];
     [newSortDict setValue:[sortDict valueForKey:@"sortkey"] forKey:@"sortkey"];
-    [self.conditionsArr replaceObjectAtIndex:indexPath.row withObject:newSortDict];
+    [self.conditionsArr replaceObjectAtIndex:indexPath.section withObject:newSortDict];
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setValue:self.conditionsArr forKey:@"classSort"];
     NSMutableDictionary *currentSortDict = [NSMutableDictionary dictionary];

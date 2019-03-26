@@ -134,7 +134,9 @@
 #pragma mark - SortDelegate
 
 - (void)conditionChoose:(NSDictionary*)condition {
-    NSLog(@"condition :%@",condition);
+    NSString *fieldName = [condition valueForKey:@"sortField"];
+    BOOL isAsc = [[condition valueForKey:@"sortType"] boolValue];
+    NSLog(@"fieldName :%@ isAsc :%hhd",fieldName,isAsc);
 }
 /*
 #pragma mark - Navigation
