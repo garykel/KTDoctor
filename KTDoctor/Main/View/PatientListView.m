@@ -15,7 +15,7 @@
 #define KTitleLbl_Width 250
 #define kTitleLbl_Height 40
 #define kTitleLbl_TopMargin 10
-#define kRightButton_Width 35
+#define kRightButton_Width 30
 #define kRightButton_RightMargin 15
 #define kFunctionButton_TopMargin 10
 #define kFunctionButton_LeftMargin 20
@@ -47,6 +47,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.contentFrame = frame;
+        self.dataArr = [@[@{@"hrDeviceId":@"21cDb2c",@"deviceId":@"22:21:30:C0:AF",@"name":@"Andrew",@"id":@"5"},@{@"hrDeviceId":@"21BDb2c",@"deviceId":@"22:21:31:C0:AF",@"name":@"Jerry",@"id":@"6"},@{@"hrDeviceId":@"21cDA2c",@"deviceId":@"22:20:30:C0:AF",@"name":@"Tom",@"id":@"7"},@{@"hrDeviceId":@"2FcDb2c",@"deviceId":@"22:21:30:C5:AF",@"name":@"Tony",@"id":@"8"}] mutableCopy];
         [self setupUI];
     }
     return self;
@@ -139,11 +140,13 @@
     [self.contentView addSubview:self.idBtn];
     
     CGFloat listView_Height = self.frame.size.height - CGRectGetMaxX(self.hrDeviceIDBtn.frame) - KListView_TopMargin;
-    self.listView = [[UITableView alloc] initWithFrame:CGRectMake(self.hrDeviceIDBtn.frame.origin.x, CGRectGetMaxY(self.hrDeviceIDBtn.frame), self.contentView.frame.size.width - kFunctionButton_LeftMargin, listView_Height) style:UITableViewStylePlain];
+    self.listView = [[UITableView alloc] initWithFrame:CGRectMake(self.hrDeviceIDBtn.frame.origin.x, CGRectGetMaxY(self.hrDeviceIDBtn.frame) + KListView_TopMargin, self.contentView.frame.size.width - kFunctionButton_LeftMargin, listView_Height) style:UITableViewStylePlain];
+    self.listView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    self.listView.scrollEnabled = NO;
+    self.listView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.listView.tableFooterView = [[UIView alloc] init];
     self.listView.dataSource = self;
     self.listView.delegate = self;
-    self.listView.backgroundColor = [UIColor redColor];
     [self.contentView addSubview:self.listView];
 }
 
@@ -159,7 +162,7 @@
 #pragma mark - UITableviewDelegate && UITableviewDatasource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return self.dataArr.count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -177,10 +180,17 @@
         cell = [[PatientCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellId];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    [cell.hrDeviceIdBtn setTitle:@"21cDB2C" forState:UIControlStateNormal];
-    [cell.deviceIdBtn setTitle:@"22:22:2C:30:C0:AF" forState:UIControlStateNormal];
-    [cell.nameBtn setTitle:@"Andrew" forState:UIControlStateNormal];
-    [cell.idBtn setTitle:@"5" forState:UIControlStateNormal];
+    NSDictionary *dict = [self.dataArr objectAtIndex:indexPath.row];
+    NSString *hrDeviceId = [dict valueForKey:@"hrDeviceId"];
+    NSString *deviceId = [dict valueForKey:@"deviceId"];
+    NSString *name = [dict valueForKey:@"name"];
+    NSString *idStr = [dict valueForKey:@"id"];
+    [cell.hrDeviceIdBtn setTitle:hrDeviceId forState:UIControlStateNormal];
+    [cell.deviceIdBtn setTitle:deviceId forState:UIControlStateNormal];
+    [cell.nameBtn setTitle:name forState:UIControlStateNormal];
+    [cell.idBtn setTitle:idStr forState:UIControlStateNormal];
+    cell.deleteBtn.tag = 20000 + indexPath.row;
+    [cell.deleteBtn addTarget:self action:@selector(remove:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 
@@ -201,6 +211,14 @@
 }
 - (void)addPatient:(UIButton*)sender {
     NSLog(@"添加患者");
+}
+
+- (void)remove:(UIButton*)sender {
+    NSInteger row = sender.tag - 20000;
+    if (self.dataArr.count > 0) {
+        [self.dataArr removeObjectAtIndex:row];
+        [self.listView reloadData];
+    }
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {

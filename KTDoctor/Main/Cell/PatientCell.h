@@ -10,10 +10,8 @@
 
 @interface PatientCell : UITableViewCell
 @property (nonatomic,strong)UIButton *hrDeviceIdBtn;
-@property (nonatomic,strong)UIView *seperateLine1;
 @property (nonatomic,strong)UIButton *deviceIdBtn;
-@property (nonatomic,strong)UIView *seperateLine2;
 @property (nonatomic,strong)UIButton *nameBtn;
-@property (nonatomic,strong)UIView *seperateLine3;
 @property (nonatomic,strong)UIButton *idBtn;
+@property (nonatomic,strong)UIButton *deleteBtn;
 @end

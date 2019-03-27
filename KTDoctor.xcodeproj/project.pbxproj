@@ -132,6 +132,7 @@
 		5B02F7B02249D91A00BE8269 /* PatientListView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientListView.m; sourceTree = "<group>"; };
 		5B02F7B2224A262F00BE8269 /* PatientCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell.h; sourceTree = "<group>"; };
 		5B02F7B3224A262F00BE8269 /* PatientCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell.m; sourceTree = "<group>"; };
+		5B02F7B5224B636100BE8269 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
@@ -488,6 +489,7 @@
 		798A1E0D406711D80658C665 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5B02F7B5224B636100BE8269 /* CoreBluetooth.framework */,
 				0E3FB88C57EF8A2177BBE91F /* libPods-KTDoctor.a */,
 			);
 			name = Frameworks;

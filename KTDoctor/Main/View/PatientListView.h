@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface PatientListView : UIView
+@property (nonatomic,strong)NSMutableArray *dataArr;
 - (instancetype)initWithFrame:(CGRect) frame;
 - (void)show;
 @end
