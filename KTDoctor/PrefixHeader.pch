@@ -66,6 +66,7 @@
 #import "NSString+mobile.h"
 #import "NSArray+CheckUtil.h"
 #import "NetworkService.h"
+#import "GCDAsyncUdpSocket.h"
 #import "DEFIN.h"
 
 #endif /* PrefixHeader_pch */

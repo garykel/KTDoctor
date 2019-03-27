@@ -9,6 +9,7 @@
 #import "MonitorViewController.h"
 #import "SortViewController.h"
 #import "PatientListView.h"
+#import "SportDataModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -20,7 +21,8 @@
 #define kAlertView_LeftMargin 200
 #define kAlertViewTopMargin 150
 
-@interface MonitorViewController ()<SortDelegate>
+NSMutableArray *patientsArr;
+@interface MonitorViewController ()<SortDelegate,GCDAsyncUdpSocketDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *timeLbl;
@@ -30,6 +32,7 @@
 @property (nonatomic,strong)SortViewController *sort;
 @property (nonatomic,strong)UIPopoverPresentationController *popController;
 @property (nonatomic,strong)NSTimer *timer;
+@property (nonatomic,strong)GCDAsyncUdpSocket *udpClient;
 @end
 
 @implementation MonitorViewController
@@ -37,6 +40,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    patientsArr = [NSMutableArray array];
+    self.udpClient = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    NSError *err = nil;
+    [self.udpClient enableBroadcast:YES error:&err];
+    [self.udpClient bindToPort:5946 error:&err];
+    if (err) {
+        NSLog(@"err is :%@",err);
+    } else {
+        [self.udpClient beginReceiving:&err];
+    }
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showCurrentTime) userInfo:nil repeats:YES];
     [self setNavBar];
 }
@@ -168,6 +181,78 @@
     NSString *fieldName = [condition valueForKey:@"sortField"];
     BOOL isAsc = [[condition valueForKey:@"sortType"] boolValue];
     NSLog(@"fieldName :%@ isAsc :%hhd",fieldName,isAsc);
+}
+
+#pragma mark - GCDAsyncUdpSocketDelegate
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didConnectToAddress:(NSData *)address {
+    NSLog(@"address :%@",address);
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data
+      fromAddress:(NSData *)address
+withFilterContext:(nullable id)filterContext {
+    NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSDictionary *dict = [self dictionaryWithJsonString:str];
+    SportDataModel *model = [[SportDataModel alloc] init];
+    model.alHr = [[dict valueForKey:@"alHr"] integerValue];
+    model.avgHr = [[dict valueForKey:@"avgHr"] integerValue];
+    model.currHr = [[dict valueForKey:@"currHr"] integerValue];
+    model.dId = [dict valueForKey:@"dId"];
+    model.diff = [[dict valueForKey:@"diff"] integerValue];
+    model.dqxjzxj = [[dict valueForKey:@"dqxjzxj"] integerValue];
+    model.endTime = [dict valueForKey:@"endTime"];
+    model.headUrl = [dict valueForKey:@"headUrl"];
+    model.isEnd = [[dict valueForKey:@"isEnd"] integerValue];
+    model.isxiuxi = [[dict valueForKey:@"isxiuxi"] integerValue];
+    model.kcal = [[dict valueForKey:@"kcal"] floatValue];
+    model.lc = [[dict valueForKey:@"lc"] floatValue];
+    model.maxHr = [[dict valueForKey:@"maxHr"] integerValue];
+    model.maxRestHr = [[dict valueForKey:@"maxRestHr"] integerValue];
+    model.name = [dict valueForKey:@"name"];
+    model.percentum = [dict valueForKey:@"percentum"];
+    model.speed = [[dict valueForKey:@"speed"] floatValue];
+    model.time = [[dict valueForKey:@"time"] integerValue];
+    model.userId = [[dict valueForKey:@"userId"] integerValue];
+    model.xId = [dict valueForKey:@"xId"];
+    model.xiaojietime = [[dict valueForKey:@"xiaojietime"] integerValue];
+    [self handlerPatient:model];
+}
+
+- (void)handlerPatient:(SportDataModel*)data {
+    if (patientsArr.count > 0) {
+        for (NSInteger i = 0; i < patientsArr.count; i++) {
+            SportDataModel *model = patientsArr[i];
+            if (data.userId == model.userId) {
+                [patientsArr replaceObjectAtIndex:i withObject:model];
+            } else {
+                [patientsArr addObject:model];
+            }
+        }
+    }
+}
+
+- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError * _Nullable)error {
+    NSLog(@"error is:%@",error);
+}
+
+- (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString
+{
+    if (jsonString == nil) {
+        return nil;
+    }
+    
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *err;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData
+                                                        options:NSJSONReadingMutableContainers
+                                                          error:&err];
+    if(err)
+    {
+        NSLog(@"json解析失败：%@",err);
+        return nil;
+    }
+    return dic;
 }
 /*
 #pragma mark - Navigation
