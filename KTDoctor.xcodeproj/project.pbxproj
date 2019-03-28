@@ -40,6 +40,15 @@
 		5B02F7BD224B7F4F00BE8269 /* SportDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
+		5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */; };
+		5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B89224CAE3E00736FC2 /* PatientCell1.m */; };
+		5B875B8D224CAE7400736FC2 /* PatientCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B8C224CAE7400736FC2 /* PatientCell2.m */; };
+		5B875B90224CAE8900736FC2 /* PatientCell3.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B8F224CAE8900736FC2 /* PatientCell3.m */; };
+		5B875B93224CAE9D00736FC2 /* PatientCell4.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B92224CAE9D00736FC2 /* PatientCell4.m */; };
+		5B875B96224CAEAF00736FC2 /* PatientCell6.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B95224CAEAF00736FC2 /* PatientCell6.m */; };
+		5B875B99224CAEC400736FC2 /* PatientCell9.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B98224CAEC400736FC2 /* PatientCell9.m */; };
+		5B875B9C224CAEDB00736FC2 /* PatientCell12.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B9B224CAEDB00736FC2 /* PatientCell12.m */; };
+		5B875B9F224CAEFB00736FC2 /* PatientCell16.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B9E224CAEFB00736FC2 /* PatientCell16.m */; };
 		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
 		5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD9640A22390AC2006FD9CD /* MainViewController.m */; };
 		5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE8130B2237609C005C0648 /* LoginViewController.m */; };
@@ -143,6 +152,24 @@
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
 		5B518ECC223795050071AF80 /* DashView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashView.m; sourceTree = "<group>"; };
+		5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EqualCellSqpceFlowLayout.m; sourceTree = "<group>"; };
+		5B875B85224CA9F000736FC2 /* EqualCellSqpceFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EqualCellSqpceFlowLayout.h; sourceTree = "<group>"; };
+		5B875B88224CAE3E00736FC2 /* PatientCell1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell1.h; sourceTree = "<group>"; };
+		5B875B89224CAE3E00736FC2 /* PatientCell1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell1.m; sourceTree = "<group>"; };
+		5B875B8B224CAE7400736FC2 /* PatientCell2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell2.h; sourceTree = "<group>"; };
+		5B875B8C224CAE7400736FC2 /* PatientCell2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell2.m; sourceTree = "<group>"; };
+		5B875B8E224CAE8900736FC2 /* PatientCell3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell3.h; sourceTree = "<group>"; };
+		5B875B8F224CAE8900736FC2 /* PatientCell3.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell3.m; sourceTree = "<group>"; };
+		5B875B91224CAE9D00736FC2 /* PatientCell4.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell4.h; sourceTree = "<group>"; };
+		5B875B92224CAE9D00736FC2 /* PatientCell4.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell4.m; sourceTree = "<group>"; };
+		5B875B94224CAEAF00736FC2 /* PatientCell6.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell6.h; sourceTree = "<group>"; };
+		5B875B95224CAEAF00736FC2 /* PatientCell6.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell6.m; sourceTree = "<group>"; };
+		5B875B97224CAEC400736FC2 /* PatientCell9.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell9.h; sourceTree = "<group>"; };
+		5B875B98224CAEC400736FC2 /* PatientCell9.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell9.m; sourceTree = "<group>"; };
+		5B875B9A224CAEDB00736FC2 /* PatientCell12.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell12.h; sourceTree = "<group>"; };
+		5B875B9B224CAEDB00736FC2 /* PatientCell12.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell12.m; sourceTree = "<group>"; };
+		5B875B9D224CAEFB00736FC2 /* PatientCell16.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell16.h; sourceTree = "<group>"; };
+		5B875B9E224CAEFB00736FC2 /* PatientCell16.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell16.m; sourceTree = "<group>"; };
 		5BD964052239052D006FD9CD /* NSString+mobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+mobile.h"; sourceTree = "<group>"; };
 		5BD964062239052D006FD9CD /* NSString+mobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+mobile.m"; sourceTree = "<group>"; };
 		5BD9640922390AC2006FD9CD /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
@@ -278,6 +305,8 @@
 		5B02F7A02244D00000BE8269 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				5B875B87224CADC500736FC2 /* Adaptive */,
+				5BCD15C6224CA98C00E7CBA4 /* Layout */,
 				5B02F7A12244D02200BE8269 /* IndexPopCell.h */,
 				5B02F7A22244D02200BE8269 /* IndexPopCell.m */,
 				5B02F7B2224A262F00BE8269 /* PatientCell.h */,
@@ -348,6 +377,38 @@
 				5BE8130B2237609C005C0648 /* LoginViewController.m */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		5B875B87224CADC500736FC2 /* Adaptive */ = {
+			isa = PBXGroup;
+			children = (
+				5B875B88224CAE3E00736FC2 /* PatientCell1.h */,
+				5B875B89224CAE3E00736FC2 /* PatientCell1.m */,
+				5B875B8B224CAE7400736FC2 /* PatientCell2.h */,
+				5B875B8C224CAE7400736FC2 /* PatientCell2.m */,
+				5B875B8E224CAE8900736FC2 /* PatientCell3.h */,
+				5B875B8F224CAE8900736FC2 /* PatientCell3.m */,
+				5B875B91224CAE9D00736FC2 /* PatientCell4.h */,
+				5B875B92224CAE9D00736FC2 /* PatientCell4.m */,
+				5B875B94224CAEAF00736FC2 /* PatientCell6.h */,
+				5B875B95224CAEAF00736FC2 /* PatientCell6.m */,
+				5B875B97224CAEC400736FC2 /* PatientCell9.h */,
+				5B875B98224CAEC400736FC2 /* PatientCell9.m */,
+				5B875B9A224CAEDB00736FC2 /* PatientCell12.h */,
+				5B875B9B224CAEDB00736FC2 /* PatientCell12.m */,
+				5B875B9D224CAEFB00736FC2 /* PatientCell16.h */,
+				5B875B9E224CAEFB00736FC2 /* PatientCell16.m */,
+			);
+			path = Adaptive;
+			sourceTree = "<group>";
+		};
+		5BCD15C6224CA98C00E7CBA4 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				5B875B85224CA9F000736FC2 /* EqualCellSqpceFlowLayout.h */,
+				5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */,
+			);
+			path = Layout;
 			sourceTree = "<group>";
 		};
 		5BD9640822390AA6006FD9CD /* Main */ = {
@@ -533,7 +594,6 @@
 				5BECDBA622365CA10025D6F2 /* Sources */,
 				5BECDBA722365CA10025D6F2 /* Frameworks */,
 				5BECDBA822365CA10025D6F2 /* Resources */,
-				FE339A9B4B94CBD066BE2107 /* [CP] Embed Pods Frameworks */,
 				84C2B5F71CCFB0102A6D169B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -695,21 +755,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FE339A9B4B94CBD066BE2107 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -722,7 +767,9 @@
 				5B02F78F2242269400BE8269 /* WHC_PictureListVC.m in Sources */,
 				5B02F77F2241DC6A00BE8269 /* NSDate+Extension.m in Sources */,
 				5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */,
+				5B875B99224CAEC400736FC2 /* PatientCell9.m in Sources */,
 				5B02F7BA224B75D700BE8269 /* GCDAsyncUdpSocket.m in Sources */,
+				5B875B8D224CAE7400736FC2 /* PatientCell2.m in Sources */,
 				5BECDBF322365EDC0025D6F2 /* NSArray+CheckUtil.m in Sources */,
 				5BECDBF622365EDC0025D6F2 /* NSObject+DictConvert.m in Sources */,
 				5B02F78E2242269400BE8269 /* WHC_CameraVC.m in Sources */,
@@ -734,8 +781,10 @@
 				5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */,
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
 				5B02F7802241DC6A00BE8269 /* UIView+Extension.m in Sources */,
+				5B875B96224CAEAF00736FC2 /* PatientCell6.m in Sources */,
 				5B02F79F2244C79600BE8269 /* IndexPopoverViewController.m in Sources */,
 				5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */,
+				5B875B9C224CAEDB00736FC2 /* PatientCell12.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
 				09E47CB62237F97D00B33249 /* GCLoadingView.m in Sources */,
 				5B02F7962242275300BE8269 /* WHC_Asset.m in Sources */,
@@ -744,10 +793,13 @@
 				5B02F7AA2248B45100BE8269 /* SortViewController.m in Sources */,
 				5B02F7B4224A262F00BE8269 /* PatientCell.m in Sources */,
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
+				5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */,
+				5B875B90224CAE8900736FC2 /* PatientCell3.m in Sources */,
 				5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */,
 				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,
 				5B02F7762240E7F600BE8269 /* DropdownMenu.m in Sources */,
 				5BECDC082236639A0025D6F2 /* NSString+NetworkingState.m in Sources */,
+				5B875B93224CAE9D00736FC2 /* PatientCell4.m in Sources */,
 				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,
 				09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */,
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
@@ -756,9 +808,11 @@
 				5B02F7902242269400BE8269 /* WHC_ChoicePictureVC.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
+				5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */,
 				09E47CBC223A8FD700B33249 /* RegistOrResetView.m in Sources */,
 				5B02F7A72248810000BE8269 /* MonitorViewController.m in Sources */,
 				5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */,
+				5B875B9F224CAEFB00736FC2 /* PatientCell16.m in Sources */,
 				5BECDBAF22365CA10025D6F2 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

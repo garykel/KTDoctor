@@ -4,4 +4,5 @@ target 'KTDoctor' do
    pod 'BGFMDB'
    pod 'Masonry'
    pod 'IQKeyboardManager'
+   pod 'SDWebImage'
 end

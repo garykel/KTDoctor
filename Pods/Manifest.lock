@@ -23,6 +23,9 @@ PODS:
   - IQKeyboardManager (6.2.0)
   - Masonry (1.1.0)
   - Reachability (3.2)
+  - SDWebImage (4.4.3):
+    - SDWebImage/Core (= 4.4.3)
+  - SDWebImage/Core (4.4.3)
 
 DEPENDENCIES:
   - AFNetworking
@@ -30,6 +33,16 @@ DEPENDENCIES:
   - IQKeyboardManager
   - Masonry
   - Reachability
+  - SDWebImage
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AFNetworking
+    - BGFMDB
+    - IQKeyboardManager
+    - Masonry
+    - Reachability
+    - SDWebImage
 
 SPEC CHECKSUMS:
   AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
@@ -37,7 +50,8 @@ SPEC CHECKSUMS:
   IQKeyboardManager: 6194101620b73af5e67900b8f89707a99de0b804
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
 
-PODFILE CHECKSUM: 6baa1d9cea21f62a55d8f256ec1f3a028e0a3f93
+PODFILE CHECKSUM: 7ffe922b7ed854e64e8e8ed0cebb0dc699116b19
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3

@@ -30,7 +30,7 @@
 #define kXScal (kWidth / kIpadMiniSize.width)
 #define kYScal (kHeight / kIpadMiniSize.height)
 //自适应
-#define SizingOne CGSizeMake(kWidth - 2 * 105, kHeight - 20 - 40 - 10 - 40 - 2 * 10)
+#define SizingOne CGSizeMake(kWidth - 2 * 105, kHeight - 20 - 60 - 2 * 100)
 #define SizingTwo CGSizeMake((kWidth - 2 * 30 - 7)/2, kHeight - 20 - 40 - 10 - 40 - 2 * 92)
 #define SizingFour CGSizeMake((kWidth - 2 * 103 - 8)/2, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 5)/2)
 #define SizingSix CGSizeMake((kWidth - 2 * 30 - 2 * 7)/3, (kHeight - 20 - 40 - 10 - 40 - 2 * 92 - 5)/2)
@@ -53,6 +53,7 @@
 #import <AFNetworking/AFNetworkReachabilityManager.h>
 #import <IQKeyboardManager.h>
 #import <Masonry.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 #import "STTextHudTool.h"
 #import "WSDatePickerView.h"
 #import "NSObject+BGModel.h"
