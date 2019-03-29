@@ -8,10 +8,23 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface PatientCell3 : UICollectionViewCell
-
+@property (nonatomic,strong)UIImageView *headImg;
+@property (nonatomic,strong)UILabel *nameLbl;
+@property (nonatomic,strong)UILabel *idLbl;
+@property (nonatomic,strong)UIImageView *timeImg;
+@property (nonatomic,strong)UILabel *timeLbl;
+@property (nonatomic,strong)UIImageView *heartImg;
+@property (nonatomic,strong)UILabel *currentHrLbl;
+@property (nonatomic,strong)UILabel *avgHRLbl;
+@property (nonatomic,strong)UILabel *avgHRValueLbl;
+@property (nonatomic,strong)UILabel *avgHRUnitLbl;
+@property (nonatomic,strong)UILabel *maxHRLbl;
+@property (nonatomic,strong)UILabel *maxHRValueLbl;
+@property (nonatomic,strong)UILabel *maxHRUnitLbl;
+@property (nonatomic,strong)UILabel *speedLbl;
+@property (nonatomic,strong)UILabel *speedValueLbl;
+@property (nonatomic,strong)UILabel *speedUnitLbl;
+@property (nonatomic,strong)UILabel *intensionLbl;
+@property (nonatomic,strong)UILabel *intensionValueLbl;
 @end
-
-NS_ASSUME_NONNULL_END

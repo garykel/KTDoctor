@@ -30,6 +30,15 @@
 #define kAlertView_LeftMargin 200
 #define kAlertViewTopMargin 150
 
+#define SizingOne CGSizeMake(kWidth - 2 * 105, kHeight - (CGRectGetMaxY(self.navView.frame) + 100) - 100 - 10)
+#define SizingTwo CGSizeMake((kWidth - 2 * 19 - 7)/2, kHeight - (CGRectGetMaxY(self.navView.frame) + 167) - 167 - 10)
+#define SizingThree CGSizeMake((kWidth - 2 * 17 - 2 * 7)/3, kHeight - (CGRectGetMaxY(self.navView.frame) + 181) - 181 - 10)
+#define SizingFour CGSizeMake((kWidth - 2 * 19 - 7)/2, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17) - 17 - 2 * 7)/2 + 2)
+#define SizingSix CGSizeMake((kWidth - 2 * 17 - 2 * 7)/3, (kHeight - (CGRectGetMaxY(self.navView.frame) + 46) - 46 - 7) / 2)
+#define SizingNine CGSizeMake((kWidth - 2 * 19 - 2 * 7)/3, (kHeight - (CGRectGetMaxY(self.navView.frame) + 20) - 20 - 2 * 7) / 3)
+#define SizingTwelve CGSizeMake((kWidth - 2 * 17 - 3 * 7)/4, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17) - 17 - 2 * 7) / 3)
+#define SizingSixteen CGSizeMake((kWidth - 2 * 17 - 3 * 7)/4, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17) - 17 - 3 * 7) / 4)
+
 NSMutableArray *patientsArr;
 @interface MonitorViewController ()<SortDelegate,GCDAsyncUdpSocketDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 @property (nonatomic,strong)UIView *navView;
@@ -51,15 +60,34 @@ NSMutableArray *patientsArr;
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     patientsArr = [NSMutableArray array];
-    self.udpClient = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-    NSError *err = nil;
-    [self.udpClient enableBroadcast:YES error:&err];
-    [self.udpClient bindToPort:5946 error:&err];
-    if (err) {
-        NSLog(@"err is :%@",err);
-    } else {
-        [self.udpClient beginReceiving:&err];
-    }
+    SportDataModel *model = [[SportDataModel alloc] init];
+    model.name = @"Andrew";
+    model.userId = 7;
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    self.udpClient = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+//    NSError *err = nil;
+//    [self.udpClient enableBroadcast:YES error:&err];
+//    [self.udpClient bindToPort:5946 error:&err];
+//    if (err) {
+//        NSLog(@"err is :%@",err);
+//    } else {
+//        [self.udpClient beginReceiving:&err];
+//    }
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showCurrentTime) userInfo:nil repeats:YES];
     [self setNavBar];
     [self setupPatientListview];
@@ -87,45 +115,52 @@ NSMutableArray *patientsArr;
         }];
     } else if (count > 1 && count<=2) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(92);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-92);
-            make.left.equalTo(self.view.mas_left).offset(0);
-            make.right.equalTo(self.view.mas_right).offset(0);
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 167);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-167);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
-    } else if (count > 2 && count<=4) {
+    } else if (count > 2 && count<=3) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(7);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-            make.left.equalTo(self.view.mas_left).offset(0);
-            make.right.equalTo(self.view.mas_right).offset(0);
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 181);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-181);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
+        }];
+    } else if (count > 3 && count<=4) {
+        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 17);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-17);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
     } else if (count > 4 && count<=6) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(92);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-92);
-            make.left.equalTo(self.view.mas_left).offset(30);
-            make.right.equalTo(self.view.mas_right).offset(-30);
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 46);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-46);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
     } else if (count > 6 && count<=9) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(7);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-            make.left.equalTo(self.view.mas_left).offset(104);
-            make.right.equalTo(self.view.mas_right).offset(-104);
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 20);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-20);
+            make.left.equalTo(self.view.mas_left).offset(20);
+            make.right.equalTo(self.view.mas_right).offset(-20);
         }];
     } else if (count > 9 && count <= 12) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(20);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-20);
-            make.left.equalTo(self.view.mas_left).offset(0);
-            make.right.equalTo(self.view.mas_right).offset(0);
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 17);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-17);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
     } else if (count > 12 && count <= 16) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(7);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-            make.left.equalTo(self.view.mas_left).offset(105);
-            make.right.equalTo(self.view.mas_right).offset(-105);
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 17);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-17);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
     }
 }
@@ -212,32 +247,18 @@ NSMutableArray *patientsArr;
         return SizingOne;
     } else if (count > 1 && count<=2) {
         return SizingTwo;
-    } else if (count > 2 && count<=4) {
+    } else if (count > 2 && count<=3) {
+        return SizingThree;
+    } else if (count > 3 && count<=4) {
         return SizingFour;
     } else if (count > 4 && count<=6) {
         return SizingSix;
-    } else if (count > 6 && count<=9) {
+    } else if (count > 6 && count <= 9) {
         return SizingNine;
     } else if (count > 9 && count <= 12) {
         return SizingTwelve;
     } else if (count > 12 && count <= 16) {
         return SizingSixteen;
-    } else if (count > 16 && count <= 20) {
-        return SizingTwenty;
-    } else if(count > 20 && count <= 25) {
-        return SizingTwentyFive;
-    } else if (count > 25 && count <= 30) {
-        return SizingThirty;
-    } else if (count > 30 && count <= 36) {
-        return SizingThirtySix;
-    } else if (count > 36 && count <= 42) {
-        return SizingFortyTwo;
-    } else if (count > 42 && count <= 49) {
-        return SizingFortyNine;
-    } else if (count > 49 && count <= 56) {
-        return SizingFiftySix;
-    } else if (count > 56 && count <= 60) {
-        return SizingSixty;
     } else {
         return CGSizeZero;
     }
@@ -285,27 +306,216 @@ NSMutableArray *patientsArr;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-//    NSInteger count = patientsArr.count;
-    NSString *reuseCellId = [NSString stringWithFormat:@"patientsCellId:%d%d",indexPath.section,indexPath.row];
-    [collectionView registerClass:[PatientCell1 class] forCellWithReuseIdentifier:reuseCellId];
-    PatientCell1 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
-    if (cell == nil) {
-        cell = [[PatientCell1 alloc] initWithFrame:CGRectZero];
+    NSInteger count = patientsArr.count;
+    if (count == 1) {
+        NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell1Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
+        [collectionView registerClass:[PatientCell1 class] forCellWithReuseIdentifier:reuseCellId];
+        PatientCell1 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[PatientCell1 alloc] initWithFrame:CGRectZero];
+        }
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
+        NSString *headUrl = model.headUrl;
+        if (imgUrlArr.count > 0) {
+            NSString *forwardStr = imgUrlArr[0];
+            NSString *backwardStr = imgUrlArr[1];
+            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        cell.nameLbl.text = model.name;
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
+        cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
+        cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.avgHr];
+        cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.maxHr];
+        cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
+        cell.intensionValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.diff];
+        cell.timeLbl.text = [self getTimeString:model.time];
+        return cell;
+    } else if (count <= 2) {
+        NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell2Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
+        [collectionView registerClass:[PatientCell2 class] forCellWithReuseIdentifier:reuseCellId];
+        PatientCell2 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[PatientCell2 alloc] initWithFrame:CGRectZero];
+        }
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
+        NSString *headUrl = model.headUrl;
+        if (imgUrlArr.count > 0) {
+            NSString *forwardStr = imgUrlArr[0];
+            NSString *backwardStr = imgUrlArr[1];
+            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        cell.nameLbl.text = model.name;
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
+        cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
+        cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.avgHr];
+        cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.maxHr];
+        cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
+        cell.intensionValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.diff];
+        cell.timeLbl.text = [self getTimeString:model.time];
+        return cell;
+    } else if (count <= 3) {
+        NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell3Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
+        [collectionView registerClass:[PatientCell3 class] forCellWithReuseIdentifier:reuseCellId];
+        PatientCell3 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[PatientCell3 alloc] initWithFrame:CGRectZero];
+        }
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
+        NSString *headUrl = model.headUrl;
+        if (imgUrlArr.count > 0) {
+            NSString *forwardStr = imgUrlArr[0];
+            NSString *backwardStr = imgUrlArr[1];
+            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        cell.nameLbl.text = model.name;
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
+        cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
+        cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.avgHr];
+        cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.maxHr];
+        cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
+        cell.intensionValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.diff];
+        cell.timeLbl.text = [self getTimeString:model.time];
+        return cell;
+    } else if (count <= 4) {
+        NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell4Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
+        [collectionView registerClass:[PatientCell4 class] forCellWithReuseIdentifier:reuseCellId];
+        PatientCell4 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[PatientCell4 alloc] initWithFrame:CGRectZero];
+        }
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
+        NSString *headUrl = model.headUrl;
+        if (imgUrlArr.count > 0) {
+            NSString *forwardStr = imgUrlArr[0];
+            NSString *backwardStr = imgUrlArr[1];
+            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        cell.nameLbl.text = model.name;
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
+        cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
+        cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.avgHr];
+        cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.maxHr];
+        cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
+        cell.intensionValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.diff];
+        cell.timeLbl.text = [self getTimeString:model.time];
+        return cell;
+    } else if (count <= 6) {
+        NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell6Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
+        [collectionView registerClass:[PatientCell6 class] forCellWithReuseIdentifier:reuseCellId];
+        PatientCell6 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[PatientCell6 alloc] initWithFrame:CGRectZero];
+        }
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
+        NSString *headUrl = model.headUrl;
+        if (imgUrlArr.count > 0) {
+            NSString *forwardStr = imgUrlArr[0];
+            NSString *backwardStr = imgUrlArr[1];
+            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        cell.nameLbl.text = model.name;
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
+        cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
+        cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.avgHr];
+        cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.maxHr];
+        cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
+        cell.intensionValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.diff];
+        cell.timeLbl.text = [self getTimeString:model.time];
+        return cell;
+    } else if (count <= 9) {
+        NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell9Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
+        [collectionView registerClass:[PatientCell9 class] forCellWithReuseIdentifier:reuseCellId];
+        PatientCell9 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[PatientCell9 alloc] initWithFrame:CGRectZero];
+        }
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
+        NSString *headUrl = model.headUrl;
+        if (imgUrlArr.count > 0) {
+            NSString *forwardStr = imgUrlArr[0];
+            NSString *backwardStr = imgUrlArr[1];
+            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        cell.nameLbl.text = model.name;
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
+        cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
+        cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.avgHr];
+        cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.maxHr];
+        cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
+        cell.intensionValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.diff];
+        cell.timeLbl.text = [self getTimeString:model.time];
+        return cell;
+    } else if (count <= 12) {
+        NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell12Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
+        [collectionView registerClass:[PatientCell12 class] forCellWithReuseIdentifier:reuseCellId];
+        PatientCell12 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[PatientCell12 alloc] initWithFrame:CGRectZero];
+        }
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
+        NSString *headUrl = model.headUrl;
+        if (imgUrlArr.count > 0) {
+            NSString *forwardStr = imgUrlArr[0];
+            NSString *backwardStr = imgUrlArr[1];
+            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        cell.nameLbl.text = model.name;
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
+        cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
+        cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.avgHr];
+        cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.maxHr];
+        cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
+        cell.intensionValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.diff];
+        cell.timeLbl.text = [self getTimeString:model.time];
+        return cell;
+    } else {
+        NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell16Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
+        [collectionView registerClass:[PatientCell16 class] forCellWithReuseIdentifier:reuseCellId];
+        PatientCell16 *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseCellId forIndexPath:indexPath];
+        if (cell == nil) {
+            cell = [[PatientCell16 alloc] initWithFrame:CGRectZero];
+        }
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
+        NSString *headUrl = model.headUrl;
+        if (imgUrlArr.count > 0) {
+            NSString *forwardStr = imgUrlArr[0];
+            NSString *backwardStr = imgUrlArr[1];
+            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        cell.nameLbl.text = model.name;
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
+        cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
+        cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.avgHr];
+        cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.maxHr];
+        cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
+        cell.intensionValueLbl.text = [NSString stringWithFormat:@"%ld",(long)model.diff];
+        cell.timeLbl.text = [self getTimeString:model.time];
+        return cell;
     }
-    SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
-    [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
-    [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
-        NSLog(@"错误信息:%@ imageURL:%@",error,imageURL);
-    }];
-    cell.nameLbl.text = model.name;
-    cell.idLbl.text = [NSString stringWithFormat:@"ID:%d",model.userId];
-    cell.currentHrLbl.text = [NSString stringWithFormat:@"%d bpm",model.currHr];
-    cell.avgHRValueLbl.text = [NSString stringWithFormat:@"%d",model.avgHr];
-    cell.maxHRValueLbl.text = [NSString stringWithFormat:@"%d",model.maxHr];
-    cell.speedValueLbl.text = [NSString stringWithFormat:@"%.1f",model.speed];
-    cell.intensionValueLbl.text = [NSString stringWithFormat:@"%d",model.diff];
-    cell.timeLbl.text = [self getTimeString:model.time];
-    return cell;
 }
 
 - (NSString *)getTimeString:(NSInteger)seconds {
@@ -414,9 +624,9 @@ withFilterContext:(nullable id)filterContext {
         for (NSInteger i = 0; i < patientsArr.count; i++) {
             SportDataModel *model = patientsArr[i];
             if (data.userId == model.userId) {
-                [patientsArr replaceObjectAtIndex:i withObject:model];
+                [patientsArr replaceObjectAtIndex:i withObject:data];
             } else {
-                [patientsArr addObject:model];
+                [patientsArr addObject:data];
             }
         }
     } else {
@@ -437,45 +647,53 @@ withFilterContext:(nullable id)filterContext {
         }];
     } else if (count > 1 && count<=2) {
         [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(92);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-92);
-            make.left.equalTo(self.view.mas_left).offset(0);
-            make.right.equalTo(self.view.mas_right).offset(0);
-        }];
-    } else if (count > 2 && count<=4) {
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 167);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-167);
+            make.left.equalTo(self.view.mas_left).offset(19);
+            make.right.equalTo(self.view.mas_right).offset(-19);        }];
+    } else if (count > 2 && count<=3) {
         [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(7);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-            make.left.equalTo(self.view.mas_left).offset(0);
-            make.right.equalTo(self.view.mas_right).offset(0);
+            [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 181);
+                make.bottom.equalTo(self.view.mas_bottom).offset(-181);
+                make.left.equalTo(self.view.mas_left).offset(17);
+                make.right.equalTo(self.view.mas_right).offset(-17);
+            }];
+        }];
+    } else if (count > 3 && count<=4) {
+        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 17);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-17);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
     } else if (count > 4 && count<=6) {
-        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(92);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-92);
-            make.left.equalTo(self.view.mas_left).offset(30);
-            make.right.equalTo(self.view.mas_right).offset(-30);
+        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 46);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-46);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
-    } else if (count > 6 && count<=9) {
-        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(7);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-            make.left.equalTo(self.view.mas_left).offset(104);
-            make.right.equalTo(self.view.mas_right).offset(-104);
+    } else if (count > 6 && count <= 9) {
+        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 20);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-20);
+            make.left.equalTo(self.view.mas_left).offset(20);
+            make.right.equalTo(self.view.mas_right).offset(-20);
         }];
     } else if (count > 9 && count <= 12) {
-        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(20);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-20);
-            make.left.equalTo(self.view.mas_left).offset(0);
-            make.right.equalTo(self.view.mas_right).offset(0);
+        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 17);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-17);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
     } else if (count > 12 && count <= 16) {
-        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.mas_top).offset(7);
-            make.bottom.equalTo(self.view.mas_bottom).offset(-10);
-            make.left.equalTo(self.view.mas_left).offset(105);
-            make.right.equalTo(self.view.mas_right).offset(-105);
+        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 17);
+            make.bottom.equalTo(self.view.mas_bottom).offset(-17);
+            make.left.equalTo(self.view.mas_left).offset(17);
+            make.right.equalTo(self.view.mas_right).offset(-17);
         }];
     }
 }

@@ -29,22 +29,7 @@
 #define kIpadMiniSize CGSizeMake(1024, 768)
 #define kXScal (kWidth / kIpadMiniSize.width)
 #define kYScal (kHeight / kIpadMiniSize.height)
-//自适应
-#define SizingOne CGSizeMake(kWidth - 2 * 105, kHeight - 20 - 60 - 2 * 100)
-#define SizingTwo CGSizeMake((kWidth - 2 * 30 - 7)/2, kHeight - 20 - 40 - 10 - 40 - 2 * 92)
-#define SizingFour CGSizeMake((kWidth - 2 * 103 - 8)/2, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 5)/2)
-#define SizingSix CGSizeMake((kWidth - 2 * 30 - 2 * 7)/3, (kHeight - 20 - 40 - 10 - 40 - 2 * 92 - 5)/2)
-#define SizingNine CGSizeMake((kWidth - 2 * 104 - 2 * 7)/3, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 2 * 4)/3)
-#define SizingTwelve CGSizeMake((kWidth - 2 * 30 - 3 * 4)/4, (kHeight - 20 - 40 - 10 - 40 - 2 * 20 - 2 * 3)/3)
-#define SizingSixteen CGSizeMake((kWidth - 2 * 105 - 3 * 7)/4, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 3 * 4)/4)
-#define SizingTwenty CGSizeMake((kWidth - 2 * 32 - 4 * 5)/5, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 3 * 3)/4)
-#define SizingTwentyFive CGSizeMake((kWidth - 2 * 32 - 4 * 5)/5, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 4 * 3)/5)
-#define SizingThirty CGSizeMake((kWidth - 2 * 30 - 5 * 4)/6, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 4 * 3)/5)
-#define SizingThirtySix CGSizeMake((kWidth - 2 * 30 - 5 * 4)/6, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 5 * 3)/6)
-#define SizingFortyTwo CGSizeMake((kWidth - 2 * 50 - 6 * 3)/7, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 5 * 3)/6)
-#define SizingFortyNine CGSizeMake((kWidth - 2 * 110 - 6 * 4)/7, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 6 * 3)/7)
-#define SizingFiftySix CGSizeMake((kWidth - 2 * 55 - 7 * 5)/8, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 6 * 3)/7)
-#define SizingSixty CGSizeMake((kWidth - 2 * 5 - 8 * 3)/9, (kHeight - 20 - 40 - 10 - 40 - 2 * 10 - 6 * 3)/7)
+
 //iPhone X
 #define IS_IPHONEX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 #define RGBA(r, g, b, a) [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f alpha:(a)]
@@ -53,7 +38,7 @@
 #import <AFNetworking/AFNetworkReachabilityManager.h>
 #import <IQKeyboardManager.h>
 #import <Masonry.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+WebCache.h"
 #import "STTextHudTool.h"
 #import "WSDatePickerView.h"
 #import "NSObject+BGModel.h"
