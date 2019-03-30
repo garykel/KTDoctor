@@ -65,16 +65,16 @@ NSMutableArray *patientsArr;
     model.userId = 7;
     [patientsArr addObject:model];
     [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
@@ -621,14 +621,14 @@ withFilterContext:(nullable id)filterContext {
 
 - (void)handlerPatient:(SportDataModel*)data {
     if (patientsArr.count > 0) {
+        NSMutableArray *tempArr = [NSMutableArray array];
         for (NSInteger i = 0; i < patientsArr.count; i++) {
             SportDataModel *model = patientsArr[i];
-            if (data.userId == model.userId) {
-                [patientsArr replaceObjectAtIndex:i withObject:data];
-            } else {
-                [patientsArr addObject:data];
+            if (model.isEnd == 0) {
+                [tempArr addObject:data];
             }
         }
+        patientsArr = [tempArr mutableCopy];
     } else {
         [patientsArr addObject:data];
     }

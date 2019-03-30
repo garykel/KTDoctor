@@ -13,27 +13,27 @@
 #define kInnerContentView_RightMargin 10
 #define kInnerContentView_BottomMargin 10
 #define kBigLbl_Height 30
-#define kNameLbl_FontSize 20.0
+#define kNameLbl_FontSize 26.0
 #define KNameLbl_Width 100
-#define kIdLbl_LeftMargin 10
-#define kIdLbl_FontSize 16.0
-#define kCurrentHRLbl_FontSize 14.0
-#define kHeadImage_TopMargin 20
+#define kIdLbl_LeftMargin 15
+#define kIdLbl_FontSize 18
+#define kCurrentHRLbl_FontSize 18.0
+#define kHeadImage_TopMargin 40
 #define kHeadImage_LeftMargin 15
-#define kHeadImage_Width 80
-#define KCurrentHRLbl_Width 80
+#define kHeadImage_Width 90
+#define KCurrentHRLbl_Width 100
 #define kCurrentHRLbl_Height 20
-#define kTimeImage_TopMargin 80
+#define kTimeImage_TopMargin 50
 #define kTimeImage_RightMargin 10
-#define kTimeImage_Width 30
+#define kTimeImage_Width 40
 #define kTimeLbl_TopMargin 5
 #define kTimeLbl_Width 100
 #define kAvgHRLbl_TopMargin 150
 #define kAvgHRLbl_LeftMargin 100
-#define kLeftLbl_Width 100
+#define kLeftLbl_Width 150
 #define kLeftLbl_BottomMargin 50
-#define kLeftValueLbl_LeftMargin 100
-#define kValueLbl_Width 80
+#define kLeftValueLbl_LeftMargin 40
+#define kValueLbl_Width 150
 #define kUnitLbl_Width 80
 #define kHeartImage_BottomMargin 50
 @interface PatientCell1 ()
@@ -128,7 +128,7 @@
     [self.innerContentView addSubview:self.maxHRUnitLbl];
     
     self.speedLbl = [[UILabel alloc] init];
-    self.speedLbl.text = @"速       度";
+    self.speedLbl.text = @"速         度";
     self.speedLbl.textColor = [UIColor blackColor];
     self.speedLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.innerContentView addSubview:self.speedLbl];
@@ -147,7 +147,7 @@
     [self.innerContentView addSubview:self.speedUnitLbl];
     
     self.intensionLbl = [[UILabel alloc] init];
-    self.intensionLbl.text = @"强       度";
+    self.intensionLbl.text = @"强          度";
     self.intensionLbl.textColor = [UIColor blackColor];
     self.intensionLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.innerContentView addSubview:self.intensionLbl];
@@ -196,7 +196,7 @@
         make.bottom.equalTo(self.headImg.mas_bottom).offset(0);
         make.left.equalTo(self.nameLbl.mas_left);
         make.width.equalTo(@(KNameLbl_Width * kXScal));
-        make.height.equalTo(@(kBigLbl_Height * kYScal));
+        make.height.equalTo(@(kIdLbl_FontSize * kYScal));
     }];
     
     [self.heartImg mas_makeConstraints:^(MASConstraintMaker *make) {

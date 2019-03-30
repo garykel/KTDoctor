@@ -14,13 +14,13 @@
 #define kInnerContentView_BottomMargin 10
 #define kBigLbl_Height 20
 #define kNameLbl_FontSize 15.0
-#define KNameLbl_Width 60
+#define KNameLbl_Width 120
 #define kIdLbl_LeftMargin 5
 #define kIdLbl_FontSize 10.0
 #define kCurrentHRLbl_FontSize 10.0
 #define kHeadImage_TopMargin 20
-#define kHeadImage_LeftMargin 10
-#define kHeadImage_Width 45
+#define kHeadImage_LeftMargin 8
+#define kHeadImage_Width 42
 #define KCurrentHRLbl_Width 80
 #define kCurrentHRLbl_Height 14
 #define kTimeImage_TopMargin 20
@@ -29,10 +29,10 @@
 #define kTimeLbl_TopMargin 5
 #define kTimeLbl_Width 100
 #define kAvgHRLbl_TopMargin 80
-#define kAvgHRLbl_LeftMargin 10
+#define kAvgHRLbl_LeftMargin 8
 #define kLeftLbl_Width 70
-#define kLeftLbl_BottomMargin 10
-#define kLeftValueLbl_LeftMargin 10
+#define kLeftLbl_BottomMargin 9
+#define kLeftValueLbl_LeftMargin 5
 #define kValueLbl_Width 40
 #define kUnitLbl_Width 40
 #define kHeartImage_BottomMargin 10
@@ -128,7 +128,7 @@
     [self.innerContentView addSubview:self.maxHRUnitLbl];
     
     self.speedLbl = [[UILabel alloc] init];
-    self.speedLbl.text = @"速       度";
+    self.speedLbl.text = @"速        度";
     self.speedLbl.textColor = [UIColor blackColor];
     self.speedLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.innerContentView addSubview:self.speedLbl];
@@ -147,7 +147,7 @@
     [self.innerContentView addSubview:self.speedUnitLbl];
     
     self.intensionLbl = [[UILabel alloc] init];
-    self.intensionLbl.text = @"强       度";
+    self.intensionLbl.text = @"强        度";
     self.intensionLbl.textColor = [UIColor blackColor];
     self.intensionLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.innerContentView addSubview:self.intensionLbl];
@@ -196,7 +196,7 @@
         make.bottom.equalTo(self.headImg.mas_bottom).offset(0);
         make.left.equalTo(self.nameLbl.mas_left);
         make.width.equalTo(@(KNameLbl_Width * kXScal));
-        make.height.equalTo(@(kBigLbl_Height * kYScal));
+        make.height.equalTo(@(kIdLbl_FontSize * kYScal));
     }];
     
     [self.heartImg mas_makeConstraints:^(MASConstraintMaker *make) {

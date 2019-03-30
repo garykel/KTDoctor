@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "LoginViewController.h"
+#import "MonitorViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -20,6 +21,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
     LoginViewController *login = [[LoginViewController alloc] init];
+//    MonitorViewController *login = [[MonitorViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];

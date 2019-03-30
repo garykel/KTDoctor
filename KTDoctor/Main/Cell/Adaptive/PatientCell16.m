@@ -14,18 +14,18 @@
 #define kInnerContentView_BottomMargin 10
 #define kBigLbl_Height 10
 #define kNameLbl_FontSize 10.0
-#define KNameLbl_Width 50
+#define KNameLbl_Width 120
 #define kIdLbl_LeftMargin 5
 #define kIdLbl_FontSize 8.0
 #define kCurrentHRLbl_FontSize 10.0
 #define kHeadImage_TopMargin 10
 #define kHeadImage_LeftMargin 7
-#define kHeadImage_Width 40
+#define kHeadImage_Width 35
 #define KCurrentHRLbl_Width 80
 #define kCurrentHRLbl_Height 14
 #define kTimeImage_TopMargin 20
 #define kTimeImage_RightMargin 10
-#define kTimeImage_Width 20
+#define kTimeImage_Width 18
 #define kTimeLbl_TopMargin 5
 #define kTimeLbl_Width 100
 #define kAvgHRLbl_TopMargin 60
@@ -195,7 +195,7 @@
         make.bottom.equalTo(self.headImg.mas_bottom).offset(0);
         make.left.equalTo(self.nameLbl.mas_left);
         make.width.equalTo(@(KNameLbl_Width * kXScal));
-        make.height.equalTo(@(kBigLbl_Height * kYScal));
+        make.height.equalTo(@(kIdLbl_FontSize * kYScal));
     }];
     
     [self.heartImg mas_makeConstraints:^(MASConstraintMaker *make) {
