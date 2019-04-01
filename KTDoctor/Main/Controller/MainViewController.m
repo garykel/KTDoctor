@@ -123,7 +123,7 @@
     self.intensionBtn.frame = CGRectMake(CGRectGetMaxX(self.customTemplateBtn.frame) + kMain_Btn_HorizontalSpace * kXScal, self.addPatientBtn.frame.origin.y, kMain_Btn_Width * kXScal, kMain_Btn_Height * kYScal);
     UITapGestureRecognizer *intensionTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(intensionTest:)];
     [self.intensionBtn addGestureRecognizer:intensionTap];
-    [self.bgImg addSubview:self.intensionBtn];
+    [self.bgImg addSubview:self.intensionBtn];    
 }
 
 #pragma mark - click events

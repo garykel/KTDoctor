@@ -49,6 +49,7 @@
 		5B875B99224CAEC400736FC2 /* PatientCell9.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B98224CAEC400736FC2 /* PatientCell9.m */; };
 		5B875B9C224CAEDB00736FC2 /* PatientCell12.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B9B224CAEDB00736FC2 /* PatientCell12.m */; };
 		5B875B9F224CAEFB00736FC2 /* PatientCell16.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B9E224CAEFB00736FC2 /* PatientCell16.m */; };
+		5BCEB8B02251A8AB005185B5 /* MonitorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BCEB8AF2251A8AB005185B5 /* MonitorDetailViewController.m */; };
 		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
 		5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD9640A22390AC2006FD9CD /* MainViewController.m */; };
 		5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE8130B2237609C005C0648 /* LoginViewController.m */; };
@@ -170,6 +171,8 @@
 		5B875B9B224CAEDB00736FC2 /* PatientCell12.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell12.m; sourceTree = "<group>"; };
 		5B875B9D224CAEFB00736FC2 /* PatientCell16.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell16.h; sourceTree = "<group>"; };
 		5B875B9E224CAEFB00736FC2 /* PatientCell16.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell16.m; sourceTree = "<group>"; };
+		5BCEB8AE2251A8AB005185B5 /* MonitorDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonitorDetailViewController.h; sourceTree = "<group>"; };
+		5BCEB8AF2251A8AB005185B5 /* MonitorDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MonitorDetailViewController.m; sourceTree = "<group>"; };
 		5BD964052239052D006FD9CD /* NSString+mobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+mobile.h"; sourceTree = "<group>"; };
 		5BD964062239052D006FD9CD /* NSString+mobile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+mobile.m"; sourceTree = "<group>"; };
 		5BD9640922390AC2006FD9CD /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
@@ -322,6 +325,8 @@
 				5BD9640A22390AC2006FD9CD /* MainViewController.m */,
 				5B02F7A52248810000BE8269 /* MonitorViewController.h */,
 				5B02F7A62248810000BE8269 /* MonitorViewController.m */,
+				5BCEB8AE2251A8AB005185B5 /* MonitorDetailViewController.h */,
+				5BCEB8AF2251A8AB005185B5 /* MonitorDetailViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -795,6 +800,7 @@
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
 				5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */,
 				5B875B90224CAE8900736FC2 /* PatientCell3.m in Sources */,
+				5BCEB8B02251A8AB005185B5 /* MonitorDetailViewController.m in Sources */,
 				5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */,
 				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,
 				5B02F7762240E7F600BE8269 /* DropdownMenu.m in Sources */,

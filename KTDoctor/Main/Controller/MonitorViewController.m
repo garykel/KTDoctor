@@ -8,6 +8,7 @@
 
 #import "MonitorViewController.h"
 #import "SortViewController.h"
+#import "MonitorDetailViewController.h"
 #import "PatientListView.h"
 #import "SportDataModel.h"
 #import "EqualCellSqpceFlowLayout.h"
@@ -60,11 +61,9 @@ NSMutableArray *patientsArr;
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     patientsArr = [NSMutableArray array];
-    SportDataModel *model = [[SportDataModel alloc] init];
-    model.name = @"Andrew";
-    model.userId = 7;
-    [patientsArr addObject:model];
-    [patientsArr addObject:model];
+//    SportDataModel *model = [[SportDataModel alloc] init];
+//    model.name = @"Andrew";
+//    model.userId = 7;
 //    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
@@ -79,15 +78,17 @@ NSMutableArray *patientsArr;
 //    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
-//    self.udpClient = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-//    NSError *err = nil;
-//    [self.udpClient enableBroadcast:YES error:&err];
-//    [self.udpClient bindToPort:5946 error:&err];
-//    if (err) {
-//        NSLog(@"err is :%@",err);
-//    } else {
-//        [self.udpClient beginReceiving:&err];
-//    }
+//    [patientsArr addObject:model];
+//    [patientsArr addObject:model];
+    self.udpClient = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    NSError *err = nil;
+    [self.udpClient enableBroadcast:YES error:&err];
+    [self.udpClient bindToPort:5946 error:&err];
+    if (err) {
+        NSLog(@"err is :%@",err);
+    } else {
+        [self.udpClient beginReceiving:&err];
+    }
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showCurrentTime) userInfo:nil repeats:YES];
     [self setNavBar];
     [self setupPatientListview];
@@ -288,6 +289,9 @@ NSMutableArray *patientsArr;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+    MonitorDetailViewController *detail = [[MonitorDetailViewController alloc] init];
+    detail.selectedIndex = indexPath.row;
+    [self.navigationController pushViewController:detail animated:NO];
 }
 
 // 返回这个UICollectionView是否可以被选择
