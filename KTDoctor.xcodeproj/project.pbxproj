@@ -38,6 +38,7 @@
 		5B02F7B4224A262F00BE8269 /* PatientCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B3224A262F00BE8269 /* PatientCell.m */; };
 		5B02F7BA224B75D700BE8269 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B9224B75D700BE8269 /* GCDAsyncUdpSocket.m */; };
 		5B02F7BD224B7F4F00BE8269 /* SportDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */; };
+		5B0AC3112254A1570001C48F /* DS-DIGIB.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
 		5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */; };
@@ -149,6 +150,7 @@
 		5B02F7B9224B75D700BE8269 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		5B02F7BB224B7F4F00BE8269 /* SportDataModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SportDataModel.h; sourceTree = "<group>"; };
 		5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SportDataModel.m; sourceTree = "<group>"; };
+		5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DS-DIGIB.TTF"; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
@@ -456,6 +458,7 @@
 				5BECDBAE22365CA10025D6F2 /* AppDelegate.m */,
 				5BECDBB022365CA10025D6F2 /* ViewController.h */,
 				5BECDBB122365CA10025D6F2 /* ViewController.m */,
+				5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */,
 				5BD9640822390AA6006FD9CD /* Main */,
 				5BECDC0A223664F40025D6F2 /* Login */,
 				5BECDBFC2236626F0025D6F2 /* Tool */,
@@ -700,6 +703,7 @@
 				5BECDBB722365CA50025D6F2 /* Assets.xcassets in Resources */,
 				5BECDBB522365CA10025D6F2 /* Main.storyboard in Resources */,
 				09E47CB72237F97D00B33249 /* STSuccess@2x.png in Resources */,
+				5B0AC3112254A1570001C48F /* DS-DIGIB.TTF in Resources */,
 				5B02F78D2242269400BE8269 /* WHC_CameraVC.xib in Resources */,
 				09E47CB52237F97D00B33249 /* STError@2x.png in Resources */,
 				5B02F7812241DC6A00BE8269 /* WSDatePickerView.xib in Resources */,
