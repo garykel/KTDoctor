@@ -19,4 +19,5 @@
 #define kMODIFY_PASSWORD_URL @"/doctor/modify_password"//医师修改密码
 #define kDOCTOR_REGISTER_URL @"/doctor/register"//医师注册
 #define kUPLOAD_IMAGE_URL @"/file/upload_image"//上传图片
+#define kUNBIND_HR_DEVICE @"/doctor/unbind_hr_device"//解绑心率设备
 #endif /* DEFIN_h */

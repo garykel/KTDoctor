@@ -8,6 +8,8 @@
 
 #import "PatientListView.h"
 #import "PatientCell.h"
+#import "SportDataModel.h"
+#import "UserModel.h"
 
 #define kAlertView_LeftMargin 200
 #define kAlertViewTopMargin 150
@@ -26,6 +28,8 @@
 #define kRemoveBtn_Width 20
 #define kRemoveBtn_RightMargin 15
 #define KListView_TopMargin 10
+
+extern NSMutableArray *patientsArr;
 
 @interface PatientListView()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *contentView;
@@ -47,7 +51,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.contentFrame = frame;
-        self.dataArr = [@[@{@"hrDeviceId":@"21cDb2c",@"deviceId":@"22:21:30:C0:AF",@"name":@"Andrew",@"id":@"5"},@{@"hrDeviceId":@"21BDb2c",@"deviceId":@"22:21:31:C0:AF",@"name":@"Jerry",@"id":@"6"},@{@"hrDeviceId":@"21cDA2c",@"deviceId":@"22:20:30:C0:AF",@"name":@"Tom",@"id":@"7"},@{@"hrDeviceId":@"2FcDb2c",@"deviceId":@"22:21:30:C5:AF",@"name":@"Tony",@"id":@"8"}] mutableCopy];
+//        self.dataArr = [@[@{@"hrDeviceId":@"21cDb2c",@"deviceId":@"22:21:30:C0:AF",@"name":@"Andrew",@"id":@"5"},@{@"hrDeviceId":@"21BDb2c",@"deviceId":@"22:21:31:C0:AF",@"name":@"Jerry",@"id":@"6"},@{@"hrDeviceId":@"21cDA2c",@"deviceId":@"22:20:30:C0:AF",@"name":@"Tom",@"id":@"7"},@{@"hrDeviceId":@"2FcDb2c",@"deviceId":@"22:21:30:C5:AF",@"name":@"Tony",@"id":@"8"}] mutableCopy];
         [self setupUI];
     }
     return self;
@@ -162,7 +166,7 @@
 #pragma mark - UITableviewDelegate && UITableviewDatasource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.dataArr.count;
+    return patientsArr.count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -180,11 +184,11 @@
         cell = [[PatientCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellId];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    NSDictionary *dict = [self.dataArr objectAtIndex:indexPath.row];
-    NSString *hrDeviceId = [dict valueForKey:@"hrDeviceId"];
-    NSString *deviceId = [dict valueForKey:@"deviceId"];
-    NSString *name = [dict valueForKey:@"name"];
-    NSString *idStr = [dict valueForKey:@"id"];
+    SportDataModel *sport = [patientsArr objectAtIndex:indexPath.row];
+    NSString *hrDeviceId = sport.xId;
+    NSString *deviceId = sport.dId;
+    NSString *name = sport.name;
+    NSString *idStr = [NSString stringWithFormat:@"%ld",(long)sport.userId];
     [cell.hrDeviceIdBtn setTitle:hrDeviceId forState:UIControlStateNormal];
     [cell.deviceIdBtn setTitle:deviceId forState:UIControlStateNormal];
     [cell.nameBtn setTitle:name forState:UIControlStateNormal];
@@ -215,10 +219,54 @@
 
 - (void)remove:(UIButton*)sender {
     NSInteger row = sender.tag - 20000;
-    if (self.dataArr.count > 0) {
-        [self.dataArr removeObjectAtIndex:row];
+    if (patientsArr.count > 0) {
+        SportDataModel *data = [patientsArr objectAtIndex:row];
+        [patientsArr removeObjectAtIndex:row];
         [self.listView reloadData];
+        __weak typeof (self)weakSelf = self;
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+            NSInteger userid = data.userId;
+            [parameter setValue:@(userid) forKey:@"userId"];
+            [parameter setValue:data.xId forKey:@"deviceCode"];
+            NSDictionary *dict = user.organ;
+            NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+            NSString *orgCode = orgCodeArr[0];
+            [parameter setValue:orgCode forKey:@"orgCode"];
+            [weakSelf unbindHRDevice:parameter];
+        });
     }
+}
+
+- (void)unbindHRDevice:(NSMutableDictionary*)parameter {
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUNBIND_HR_DEVICE] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        if (code == 0) {
+            [STTextHudTool showText:msg];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshPatientNotification" object:nil];
+        } else if (code == 10011) {
+            [self dismiss];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (UIViewController *)findSuperViewController:(UIView *)view
+{
+    UIResponder *responder = view;
+    // 循环获取下一个响应者,直到响应者是一个UIViewController类的一个对象为止,然后返回该对象.
+    while ((responder = [responder nextResponder])) {
+        if ([responder isKindOfClass:[UIViewController class]]) {
+            return (UIViewController *)responder;
+        }
+    }
+    return nil;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {

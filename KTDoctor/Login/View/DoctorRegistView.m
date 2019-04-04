@@ -496,7 +496,7 @@
             [para setValue:self.skillsView.text forKey:@"speciality"];
             [para setValue:@"" forKey:@"openid"];
             [self regist:para];
-        } else {
+        }  else {
             [STTextHudTool showText:msg];
         }
     } andFaild:^(NSError *error) {

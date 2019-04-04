@@ -63,6 +63,8 @@ NSMutableArray *patientsArr;
     self.navigationController.navigationBar.hidden = YES;
     patientsArr = [NSMutableArray array];
     self.dataArr = [NSMutableArray array];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePatient) name:@"RefreshPatientNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenExpire) name:@"TokenExpiredNotification" object:nil];
 //    SportDataModel *model = [[SportDataModel alloc] init];
 //    model.name = @"Andrew";
 //    model.userId = 7;
@@ -170,6 +172,7 @@ NSMutableArray *patientsArr;
 
 - (void)dealloc {
     [self.timer invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setNavBar {
@@ -312,7 +315,7 @@ NSMutableArray *patientsArr;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSInteger count = self.dataArr.count;
+    NSInteger count = patientsArr.count;
     if (count == 1) {
         NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell1Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
         [collectionView registerClass:[PatientCell1 class] forCellWithReuseIdentifier:reuseCellId];
@@ -320,7 +323,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell1 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -346,7 +349,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell2 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -372,7 +375,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell3 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -398,7 +401,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell4 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -424,7 +427,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell6 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -450,7 +453,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell9 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -476,7 +479,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell12 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -502,7 +505,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell16 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -541,6 +544,7 @@ NSMutableArray *patientsArr;
 - (void)addPerson:(UIButton*)sender {
     NSLog(@"患者管理");
     PatientListView *listView = [[PatientListView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kAlertView_LeftMargin, kHeight - 2 * kAlertViewTopMargin)];
+    listView.dataArr = [patientsArr mutableCopy];
     [listView show];
 }
 
@@ -587,7 +591,7 @@ NSMutableArray *patientsArr;
     NSString *fieldName = [condition valueForKey:@"sortField"];
     BOOL isAsc = [[condition valueForKey:@"sortType"] boolValue];
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:fieldName ascending:isAsc];
-    self.dataArr = [[patientsArr sortedArrayUsingDescriptors:@[sort]] mutableCopy];
+    patientsArr = [[patientsArr sortedArrayUsingDescriptors:@[sort]] mutableCopy];
     [self.patientListview reloadData];
 }
 
@@ -640,16 +644,12 @@ withFilterContext:(nullable id)filterContext {
     } else {
         [patientsArr addObject:data];
     }
-    if (self.dataArr.count > 0) {
-        [self.dataArr removeAllObjects];
-    }
-    self.dataArr = [NSMutableArray arrayWithArray:patientsArr];
     [self updatePatient];
     [self.patientListview reloadData];
 }
 
 - (void)updatePatient {
-    NSInteger count = self.dataArr.count;
+    NSInteger count = patientsArr.count;
     if (count == 1) {
         [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 100);
@@ -708,6 +708,9 @@ withFilterContext:(nullable id)filterContext {
             make.right.equalTo(self.view.mas_right).offset(-17);
         }];
     }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.patientListview reloadData];
+    });
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError * _Nullable)error {
@@ -732,6 +735,12 @@ withFilterContext:(nullable id)filterContext {
     }
     return dic;
 }
+
+- (void)tokenExpire {
+    [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+    [self.navigationController popToRootViewControllerAnimated:NO];
+}
+
 /*
 #pragma mark - Navigation
 
