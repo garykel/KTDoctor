@@ -16,7 +16,7 @@
 #define kMain_NavView_LogoutBtn_LeftMargin 15
 #define kMain_NavView_LogoutBtn_Height 30
 #define kMain_NavView_LogoutBtn_Width 150
-#define kMain_NavView_LogoutBtn_FontSize 15.0
+#define kMain_NavView_LogoutBtn_FontSize 18.0
 #define kMain_NavView_LogoutBtn_ImgLeftMargin 15
 #define kMain_Btn_TopMargin (kHeight - kNavView_TopMargin - kNavView_Height - 2 * kMain_Btn_Height * kYScal - kMain_Btn_VerticalSpace * kYScal)/2
 #define kMain_Btn_LeftMargin (kWidth - kMain_Btn_Width * kXScal * 3 - 2 * kMain_Btn_HorizontalSpace * kXScal)/2

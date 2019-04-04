@@ -209,19 +209,19 @@ extern NSMutableArray *patientsArr;
     self.currentSectionValLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.currentSectionValLbl];
 
-    self.circleImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 215 * 1.6,163 * 1.6)];
+    self.circleImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 215 * 1.65 * kXScal,163 * 1.75 * kYScal)];
     self.circleImg.image = [UIImage imageNamed:@"circle"];
     self.circleImg.center = self.view.center;
     [self.view addSubview:self.circleImg];
     
-    self.dashBgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 240 * 0.9, 138 * 0.9)];
+    self.dashBgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 240 * kXScal, 138 * kYScal)];
     self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_blue"];
-    self.dashBgView.center = CGPointMake(self.view.center.x, self.view.center.y - 15);
+    self.dashBgView.center = CGPointMake(self.view.center.x, self.view.center.y - 15 * kYScal);
     [self.view addSubview:self.dashBgView];
     
-    self.pointer = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 213 * 1.3, 41 * 1.3)];
+    self.pointer = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 213 * 1.3 * kXScal, 41 * 1.3 * kYScal)];
     self.pointer.image = [UIImage imageNamed:@"pointer"];
-    self.pointer.center = CGPointMake(self.view.center.x, self.view.center.y + 30);
+    self.pointer.center = CGPointMake(self.view.center.x, self.view.center.y + 30 * kXScal);
     [self.view addSubview:self.pointer];
     
     [self drawDashBoard];
@@ -347,10 +347,10 @@ extern NSMutableArray *patientsArr;
 
 - (void)drawDashBoard {
     CAShapeLayer *layer = [CAShapeLayer new];
-    layer.lineWidth = 4;
+    layer.lineWidth = 4 * kXScal;
     layer.strokeColor = [UIColor colorWithRed:0.62 green:0.84 blue:0.93 alpha:1.0].CGColor;
     layer.fillColor = [UIColor clearColor].CGColor;
-    CGFloat radius = self.pointer.frame.size.width / 2.0 + 2;
+    CGFloat radius = self.pointer.frame.size.width / 2.0 + 2 * kXScal;
     //是否为顺时针
     BOOL clockWise = true;
     UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:1 * M_PI endAngle:2 * M_PI clockwise:clockWise];
@@ -362,37 +362,52 @@ extern NSMutableArray *patientsArr;
         CGFloat startAngle = (-M_PI + perANgle *i);
         CGFloat endAngle = startAngle + perANgle/5;
         
-        UIBezierPath *outPath = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:150 startAngle:startAngle endAngle:endAngle clockwise:YES];
+        UIBezierPath *outPath = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:150 * kXScal startAngle:startAngle endAngle:endAngle clockwise:YES];
         CAShapeLayer *outLineLayer = [CAShapeLayer layer];
         outLineLayer.strokeColor = [UIColor colorWithHexString:@"#10a9cc"].CGColor;
-        outLineLayer.lineWidth = 10.0f;
+        outLineLayer.lineWidth = 10.0f * kXScal;
         outLineLayer.path = outPath.CGPath;
         [self.view.layer addSublayer:outLineLayer];
         
-        UIBezierPath *innerPath = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:138 startAngle:startAngle endAngle:endAngle clockwise:YES];
+        UIBezierPath *roundPath = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:158 * kXScal startAngle:startAngle endAngle:endAngle clockwise:YES];
+        CAShapeLayer *roundLayer = [CAShapeLayer layer];
+        roundLayer.strokeColor = [UIColor colorWithHexString:@"#10a9cc"].CGColor;
+        roundLayer.lineWidth = 2.0f * kXScal;
+        roundLayer.path = roundPath.CGPath;
+        [self.view.layer addSublayer:roundLayer];
+        
+        UIBezierPath *innerPath = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius - 5 * kXScal startAngle:startAngle endAngle:endAngle clockwise:YES];
         CAShapeLayer *innerLineLayer = [CAShapeLayer layer];
         if (i % 6 == 0) {
             innerLineLayer.strokeColor = [UIColor whiteColor].CGColor;
-            innerLineLayer.lineWidth = 5;
+            innerLineLayer.lineWidth = 5 * kXScal;
             CGPoint point = [self calculateTextPositionWithArcCenter:self.pointer.center Angle:startAngle];
             NSString *numStr = [NSString stringWithFormat:@"%d",(NSInteger)(i * (CGFloat)(240/60))];
-            UILabel *numLbl = [[UILabel alloc] initWithFrame:CGRectMake(point.x - 5, point.y - 1, 20, 14)];
+            UILabel *numLbl = [[UILabel alloc] initWithFrame:CGRectMake(point.x + 3, point.y - 4, 20 * kXScal, 14 * kYScal)];
+            numLbl.textAlignment = NSTextAlignmentLeft;
+            if (i == 18 || i == 24) {
+                numLbl.frame = CGRectMake(point.x, point.y, 20 * kXScal, 14 * kYScal);
+            }
+            if (i >= 30) {
+                numLbl.frame = CGRectMake(point.x - 14, point.y, 20 * kXScal, 14 * kYScal);
+                numLbl.textAlignment = NSTextAlignmentCenter;
+            }
             numLbl.text = numStr;
-            numLbl.font = [UIFont systemFontOfSize:10.0];
+            numLbl.font = [UIFont systemFontOfSize:10.0 * kYScal];
             numLbl.textColor = [UIColor whiteColor];
-            numLbl.textAlignment = NSTextAlignmentCenter;
             [self.view addSubview:numLbl];
         } else {
             innerLineLayer.strokeColor = [UIColor clearColor].CGColor;
-            innerLineLayer.lineWidth = 5;
+            innerLineLayer.lineWidth = 5 * kXScal;
         }
         innerLineLayer.path = innerPath.CGPath;
         [self.view.layer addSublayer:innerLineLayer];
     }
     
+    //心率区间
     CAShapeLayer *layer2 = [CAShapeLayer new];
-    layer2.lineWidth = 4;
-    layer2.strokeColor = [UIColor yellowColor].CGColor;
+    layer2.lineWidth = 4 * kXScal;
+    layer2.strokeColor = [UIColor whiteColor].CGColor;
     layer2.fillColor = [UIColor clearColor].CGColor;
     UIBezierPath *path2 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:1.5 * M_PI endAngle:1.65 * M_PI clockwise:clockWise];
     layer2.path = [path2 CGPath];
@@ -402,7 +417,7 @@ extern NSMutableArray *patientsArr;
 - (CGPoint)calculateTextPositionWithArcCenter:(CGPoint)center Angle:(CGFloat)angel {
     CGFloat x = 135 * cosf(angel);
     CGFloat y = -135 *sinf(angel);
-    return CGPointMake(center.x + x, center.y - y);
+    return CGPointMake(center.x + x * kXScal, center.y - y * kYScal);
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size

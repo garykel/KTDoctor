@@ -21,8 +21,8 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
-//    LoginViewController *login = [[LoginViewController alloc] init];
-    MonitorDetailViewController *login = [[MonitorDetailViewController alloc] init];
+    LoginViewController *login = [[LoginViewController alloc] init];
+//    MonitorDetailViewController *login = [[MonitorDetailViewController alloc] init];
 //    MonitorViewController *login = [[MonitorViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
     self.window.rootViewController = nav;

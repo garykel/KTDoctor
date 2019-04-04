@@ -73,7 +73,7 @@
         }
     } else {
         [self.ascBtn setBackgroundColor:[UIColor colorWithHexString:@"#10a9cc"]];
-        [self.descBtn setBackgroundColor:[UIColor colorWithHexString:@"#10a9cc"]];
+        [self.descBtn setBackgroundColor:[UIColor whiteColor]];
     }
     
     self.listBgView = [[UIView alloc] init];

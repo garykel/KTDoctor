@@ -53,6 +53,7 @@ NSMutableArray *patientsArr;
 @property (nonatomic,strong)NSTimer *timer;
 @property (nonatomic,strong)GCDAsyncUdpSocket *udpClient;
 @property (nonatomic,strong)UICollectionView *patientListview;
+@property (nonatomic,strong)NSMutableArray *dataArr;
 @end
 
 @implementation MonitorViewController
@@ -61,6 +62,7 @@ NSMutableArray *patientsArr;
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     patientsArr = [NSMutableArray array];
+    self.dataArr = [NSMutableArray array];
 //    SportDataModel *model = [[SportDataModel alloc] init];
 //    model.name = @"Andrew";
 //    model.userId = 7;
@@ -310,7 +312,7 @@ NSMutableArray *patientsArr;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSInteger count = patientsArr.count;
+    NSInteger count = self.dataArr.count;
     if (count == 1) {
         NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell1Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
         [collectionView registerClass:[PatientCell1 class] forCellWithReuseIdentifier:reuseCellId];
@@ -318,7 +320,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell1 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -344,7 +346,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell2 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -370,7 +372,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell3 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -396,7 +398,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell4 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -422,7 +424,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell6 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -448,7 +450,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell9 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -474,7 +476,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell12 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -500,7 +502,7 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell16 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+        SportDataModel *model = [self.dataArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -584,7 +586,9 @@ NSMutableArray *patientsArr;
 - (void)conditionChoose:(NSDictionary*)condition {
     NSString *fieldName = [condition valueForKey:@"sortField"];
     BOOL isAsc = [[condition valueForKey:@"sortType"] boolValue];
-    NSLog(@"fieldName :%@ isAsc :%hhd",fieldName,isAsc);
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:fieldName ascending:isAsc];
+    self.dataArr = [[patientsArr sortedArrayUsingDescriptors:@[sort]] mutableCopy];
+    [self.patientListview reloadData];
 }
 
 #pragma mark - GCDAsyncUdpSocketDelegate
@@ -636,12 +640,16 @@ withFilterContext:(nullable id)filterContext {
     } else {
         [patientsArr addObject:data];
     }
+    if (self.dataArr.count > 0) {
+        [self.dataArr removeAllObjects];
+    }
+    self.dataArr = [NSMutableArray arrayWithArray:patientsArr];
     [self updatePatient];
     [self.patientListview reloadData];
 }
 
 - (void)updatePatient {
-    NSInteger count = patientsArr.count;
+    NSInteger count = self.dataArr.count;
     if (count == 1) {
         [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view.mas_top).offset(CGRectGetMaxY(self.navView.frame) + 100);
