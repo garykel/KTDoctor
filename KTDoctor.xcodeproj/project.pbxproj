@@ -75,6 +75,8 @@
 		5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDC02223662F90025D6F2 /* NetworkService.m */; };
 		5BECDC082236639A0025D6F2 /* NSString+NetworkingState.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDC072236639A0025D6F2 /* NSString+NetworkingState.m */; };
 		5BECDC0E223665390025D6F2 /* UserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDC0D223665390025D6F2 /* UserModel.m */; };
+		5BF44CD62256096D006C3405 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF44CD52256096D006C3405 /* HistoryViewController.m */; };
+		5BF44CD92256097D006C3405 /* HistoryDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF44CD82256097D006C3405 /* HistoryDetailViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -225,6 +227,10 @@
 		5BECDC09223663C20025D6F2 /* DEFIN.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DEFIN.h; sourceTree = "<group>"; };
 		5BECDC0C223665390025D6F2 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		5BECDC0D223665390025D6F2 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
+		5BF44CD42256096D006C3405 /* HistoryViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HistoryViewController.h; sourceTree = "<group>"; };
+		5BF44CD52256096D006C3405 /* HistoryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
+		5BF44CD72256097D006C3405 /* HistoryDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HistoryDetailViewController.h; sourceTree = "<group>"; };
+		5BF44CD82256097D006C3405 /* HistoryDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HistoryDetailViewController.m; sourceTree = "<group>"; };
 		7253866FC6DCF0EB352C5605 /* Pods-KTDoctor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -329,6 +335,10 @@
 				5B02F7A62248810000BE8269 /* MonitorViewController.m */,
 				5BCEB8AE2251A8AB005185B5 /* MonitorDetailViewController.h */,
 				5BCEB8AF2251A8AB005185B5 /* MonitorDetailViewController.m */,
+				5BF44CD42256096D006C3405 /* HistoryViewController.h */,
+				5BF44CD52256096D006C3405 /* HistoryViewController.m */,
+				5BF44CD72256097D006C3405 /* HistoryDetailViewController.h */,
+				5BF44CD82256097D006C3405 /* HistoryDetailViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -800,6 +810,7 @@
 				09E47CB82237F97D00B33249 /* STTextHud.m in Sources */,
 				5B02F7822241DC6A00BE8269 /* WSDatePickerView.m in Sources */,
 				5B02F7AA2248B45100BE8269 /* SortViewController.m in Sources */,
+				5BF44CD62256096D006C3405 /* HistoryViewController.m in Sources */,
 				5B02F7B4224A262F00BE8269 /* PatientCell.m in Sources */,
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
 				5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */,
@@ -819,6 +830,7 @@
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
 				5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */,
+				5BF44CD92256097D006C3405 /* HistoryDetailViewController.m in Sources */,
 				09E47CBC223A8FD700B33249 /* RegistOrResetView.m in Sources */,
 				5B02F7A72248810000BE8269 /* MonitorViewController.m in Sources */,
 				5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */,

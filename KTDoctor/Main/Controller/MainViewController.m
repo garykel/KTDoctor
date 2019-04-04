@@ -9,6 +9,7 @@
 #import "MainViewController.h"
 #import "IndexPopoverViewController.h"
 #import "MonitorViewController.h"
+#import "HistoryViewController.h"
 #import "RegistOrResetView.h"
 #import "DoctorRegistView.h"
 #import "UserModel.h"
@@ -146,7 +147,8 @@
 }
 
 - (void)history:(UITapGestureRecognizer*)sender {
-    NSLog(@"历史记录");
+    HistoryViewController *history = [[HistoryViewController alloc] init];
+    [self.navigationController pushViewController:history animated:NO];
 }
 
 - (void)patientManage:(UITapGestureRecognizer*)sender {
