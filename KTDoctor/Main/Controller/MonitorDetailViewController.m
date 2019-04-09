@@ -90,6 +90,7 @@ extern NSMutableArray *patientsArr;
 @property (nonatomic,strong)UIImageView *circleImg;
 @property (nonatomic,strong)UIImageView *dashBgView;
 @property (nonatomic,strong)UIImageView *pointer;
+@property (nonatomic,strong)SportDataModel *data;
 @end
 
 @implementation MonitorDetailViewController
@@ -97,6 +98,7 @@ extern NSMutableArray *patientsArr;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.data = (SportDataModel*)[patientsArr objectAtIndex:self.selectedIndex];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showCurrentTime) userInfo:nil repeats:YES];
     [self setNavBar];
     [self setupUI];
@@ -227,11 +229,11 @@ extern NSMutableArray *patientsArr;
     [self drawDashBoard];
     
     CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    animation.toValue = [NSNumber numberWithFloat:M_PI * 1.0];
+    animation.toValue = [NSNumber numberWithFloat:M_PI * 2.3];
     animation.duration = 3.0;
     animation.cumulative = YES;
-    animation.repeatCount = HUGE_VALF;
-    [self.pointer.layer addAnimation:animation forKey:@"animation"];
+    animation.repeatCount = 0;
+//    [self.pointer.layer addAnimation:animation forKey:@"animation"];
     
     self.targetHRZongImg = [[UIImageView alloc] initWithFrame:CGRectMake((kWidth - kTargetHRZone_Width * kXScal) / 2, self.calorieValLbl.frame.origin.y + 5, kTargetHRZone_Width * kXScal, kTargetHRZone_Height * kYScal)];
     self.targetHRZongImg.image = [UIImage imageNamed:@"targetHRZone"];
@@ -403,15 +405,36 @@ extern NSMutableArray *patientsArr;
         innerLineLayer.path = innerPath.CGPath;
         [self.view.layer addSublayer:innerLineLayer];
     }
+    if (self.data.percentum.length > 0) {
+        NSArray *rangeArr;
+        NSInteger lowHR = 0;
+        NSInteger maxHR = 0;
+        if (self.data.percentum.length > 0) {
+            rangeArr  = [self.data.percentum componentsSeparatedByString:@"-"];
+            if (rangeArr.count > 0) {
+                NSString *minStr = rangeArr[0];
+                NSString *maxStr = rangeArr[1];
+                lowHR = [minStr integerValue];
+                maxHR = [maxStr integerValue];
+            }
+        }
+        //心率区间
+        CAShapeLayer *layer2 = [CAShapeLayer new];
+        layer2.lineWidth = 4 * kXScal;
+        layer2.strokeColor = [UIColor greenColor].CGColor;
+        layer2.fillColor = [UIColor clearColor].CGColor;
+        UIBezierPath *path2 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:(1 + (CGFloat)lowHR / 240) * M_PI endAngle:(1 + (CGFloat)maxHR / 240) * M_PI clockwise:clockWise];
+        layer2.path = [path2 CGPath];
+        [self.view.layer addSublayer:layer2];
+    }
     
-    //心率区间
-    CAShapeLayer *layer2 = [CAShapeLayer new];
-    layer2.lineWidth = 4 * kXScal;
-    layer2.strokeColor = [UIColor whiteColor].CGColor;
-    layer2.fillColor = [UIColor clearColor].CGColor;
-    UIBezierPath *path2 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:1.5 * M_PI endAngle:1.65 * M_PI clockwise:clockWise];
-    layer2.path = [path2 CGPath];
-    [self.view.layer addSublayer:layer2];
+    CAShapeLayer *layer3 = [CAShapeLayer new];
+    layer3.lineWidth = 4 * kXScal;
+    layer3.strokeColor = [UIColor redColor].CGColor;
+    layer3.fillColor = [UIColor clearColor].CGColor;
+    UIBezierPath *path3 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:(1 + (CGFloat)self.data.alHr / 240) * M_PI endAngle:(1 + (CGFloat)240 / 240) * M_PI clockwise:clockWise];
+    layer3.path = [path3 CGPath];
+    [self.view.layer addSublayer:layer3];
 }
 
 - (CGPoint)calculateTextPositionWithArcCenter:(CGPoint)center Angle:(CGFloat)angel {
@@ -440,8 +463,7 @@ extern NSMutableArray *patientsArr;
 }
 
 - (void)showCurrentTime {
-    SportDataModel *data = (SportDataModel*)[patientsArr objectAtIndex:self.selectedIndex];
-    CGFloat angle = (M_PI / 50) * data.currHr;
+    CGFloat angle = (M_PI / 50) * self.data.currHr;
     if (angle >= M_PI) {
         angle = M_PI;
     }
@@ -453,15 +475,19 @@ extern NSMutableArray *patientsArr;
 }
 
 - (void)updateSportData {
-    SportDataModel *data = (SportDataModel*)[patientsArr objectAtIndex:self.selectedIndex];
-    self.mileValLbl.text = [NSString stringWithFormat:@"%.1f",data.lc];
-    self.calorieValLbl.text = [NSString stringWithFormat:@"%.1f",data.kcal];
-    self.currentSectionValLbl.text = [NSString stringWithFormat:@"%d",data.dqxjzxj];
-    self.hrValLbl.text = [NSString stringWithFormat:@"%d",data.currHr];
-    self.intensionValLbl.text = [NSString stringWithFormat:@"%d",data.diff];
-    self.totalTimeValLbl.text = [NSString stringWithFormat:@"%@",[self getTimeString:data.time]];
-    self.leftTimeValLbl.text = [NSString stringWithFormat:@"%@",[self getTimeString:data.xiaojietime]];
-    self.speedValLbl.text = [NSString stringWithFormat:@"%.1f",data.speed];
+    if (patientsArr.count > 0) {
+        SportDataModel *data = (SportDataModel*)[patientsArr objectAtIndex:self.selectedIndex];
+        self.mileValLbl.text = [NSString stringWithFormat:@"%.1f",data.lc];
+        self.calorieValLbl.text = [NSString stringWithFormat:@"%.1f",data.kcal];
+        self.currentSectionValLbl.text = [NSString stringWithFormat:@"%d",data.dqxjzxj];
+        self.hrValLbl.text = [NSString stringWithFormat:@"%d",data.currHr];
+        self.intensionValLbl.text = [NSString stringWithFormat:@"%d",data.diff];
+        self.totalTimeValLbl.text = [NSString stringWithFormat:@"%@",[self getTimeString:data.time]];
+        self.leftTimeValLbl.text = [NSString stringWithFormat:@"%@",[self getTimeString:data.xiaojietime]];
+        self.speedValLbl.text = [NSString stringWithFormat:@"%.1f",data.speed];
+        CGFloat angle = M_PI / 60 * (CGFloat)data.currHr / (240/60);
+        self.pointer.transform = CGAffineTransformMakeRotation(angle);
+    }
 }
 
 - (NSString *)getTimeString:(NSInteger)seconds {

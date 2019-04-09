@@ -48,6 +48,7 @@
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,strong)NSMutableArray *dataArr;
+@property (nonatomic,copy)NSString *startTimeStr;
 @end
 
 @implementation HistoryViewController
@@ -154,7 +155,16 @@
 }
 
 - (void)chooseStartTime:(UIButton *)sender {
-    
+    __weak typeof (self)weakSelf = self;
+    WSDatePickerView *datepicker = [[WSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDay CompleteBlock:^(NSDate *selectDate) {        
+        NSString *date = [selectDate stringWithFormat:@"yyyy-MM-dd"];
+        [weakSelf.startTimeTF setTitle:date forState:UIControlStateNormal];
+        weakSelf.startTimeStr = date;
+    }];
+    datepicker.dateLabelColor = [UIColor orangeColor];//年-月-日-时-分 颜色
+    datepicker.datePickerColor = [UIColor blackColor];//滚轮日期颜色
+    datepicker.doneButtonColor = [UIColor grayColor];//确定按钮的颜色
+    [datepicker show];
 }
 
 - (NSString *)getCurrentTimeString{

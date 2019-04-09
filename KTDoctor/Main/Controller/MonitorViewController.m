@@ -316,6 +316,19 @@ NSMutableArray *patientsArr;
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     NSInteger count = patientsArr.count;
+    SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+    NSString *range = model.percentum;
+    NSLog(@"range is :%@",range);
+    NSArray *rangeArr;
+    NSInteger lowHR = 0;
+    NSInteger maxHR = 0;
+    if (range.length > 0) {
+        rangeArr  = [range componentsSeparatedByString:@"-"];
+        if (rangeArr.count > 0) {
+            lowHR = (NSInteger)rangeArr[0];
+            maxHR = (NSInteger)rangeArr[1];
+        }
+    }
     if (count == 1) {
         NSString *reuseCellId = [NSString stringWithFormat:@"patientsCell1Id:%ld%ld",(long)indexPath.section,(long)indexPath.row];
         [collectionView registerClass:[PatientCell1 class] forCellWithReuseIdentifier:reuseCellId];
@@ -323,7 +336,6 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell1 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -331,6 +343,27 @@ NSMutableArray *patientsArr;
             NSString *backwardStr = imgUrlArr[1];
             backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+        }
+
+        if (rangeArr.count > 0) {
+            if (model.currHr < lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr >= lowHR && model.currHr <=maxHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
+            } else {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
+            }
+        }
+        if (model.currHr >= model.alHr) {
+            [cell setAlpha:1];
+            [UIView beginAnimations:@"flash screen" context:nil];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [cell setAlpha:0.2];
+            [UIView commitAnimations];
         }
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
         cell.nameLbl.text = model.name;
@@ -349,7 +382,6 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell2 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -375,7 +407,6 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell3 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -401,7 +432,6 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell4 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -427,7 +457,6 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell6 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -453,7 +482,6 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell9 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -479,7 +507,6 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell12 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
@@ -505,7 +532,6 @@ NSMutableArray *patientsArr;
         if (cell == nil) {
             cell = [[PatientCell16 alloc] initWithFrame:CGRectZero];
         }
-        SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
         if (imgUrlArr.count > 0) {
