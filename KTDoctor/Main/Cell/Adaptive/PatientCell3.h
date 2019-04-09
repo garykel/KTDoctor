@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface PatientCell3 : UICollectionViewCell
+@property (nonatomic,strong)UIImageView *bgImg;
 @property (nonatomic,strong)UIImageView *headImg;
 @property (nonatomic,strong)UILabel *nameLbl;
 @property (nonatomic,strong)UILabel *idLbl;

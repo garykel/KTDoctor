@@ -344,7 +344,8 @@ NSMutableArray *patientsArr;
             backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
         }
-
+        
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
         if (rangeArr.count > 0) {
             if (model.currHr < lowHR) {
                 cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
@@ -365,7 +366,6 @@ NSMutableArray *patientsArr;
             [cell setAlpha:0.2];
             [UIView commitAnimations];
         }
-        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
         cell.nameLbl.text = model.name;
         cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
         cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
@@ -391,6 +391,26 @@ NSMutableArray *patientsArr;
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
         }
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        if (rangeArr.count > 0) {
+            if (model.currHr < lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr >= lowHR && model.currHr <=maxHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
+            } else {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
+            }
+        }
+        if (model.currHr >= model.alHr) {
+            [cell setAlpha:1];
+            [UIView beginAnimations:@"flash screen" context:nil];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [cell setAlpha:0.2];
+            [UIView commitAnimations];
+        }
         cell.nameLbl.text = model.name;
         cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
         cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
@@ -416,6 +436,26 @@ NSMutableArray *patientsArr;
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
         }
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        if (rangeArr.count > 0) {
+            if (model.currHr < lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr >= lowHR && model.currHr <=maxHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
+            } else {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
+            }
+        }
+        if (model.currHr >= model.alHr) {
+            [cell setAlpha:1];
+            [UIView beginAnimations:@"flash screen" context:nil];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [cell setAlpha:0.2];
+            [UIView commitAnimations];
+        }
         cell.nameLbl.text = model.name;
         cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
         cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
@@ -441,6 +481,26 @@ NSMutableArray *patientsArr;
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
         }
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        if (rangeArr.count > 0) {
+            if (model.currHr < lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr >= lowHR && model.currHr <=maxHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
+            } else {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
+            }
+        }
+        if (model.currHr >= model.alHr) {
+            [cell setAlpha:1];
+            [UIView beginAnimations:@"flash screen" context:nil];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [cell setAlpha:0.2];
+            [UIView commitAnimations];
+        }
         cell.nameLbl.text = model.name;
         cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
         cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
@@ -466,6 +526,26 @@ NSMutableArray *patientsArr;
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
         }
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        if (rangeArr.count > 0) {
+            if (model.currHr < lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr >= lowHR && model.currHr <=maxHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
+            } else {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
+            }
+        }
+        if (model.currHr >= model.alHr) {
+            [cell setAlpha:1];
+            [UIView beginAnimations:@"flash screen" context:nil];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [cell setAlpha:0.2];
+            [UIView commitAnimations];
+        }
         cell.nameLbl.text = model.name;
         cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
         cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
@@ -491,6 +571,26 @@ NSMutableArray *patientsArr;
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
         }
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        if (rangeArr.count > 0) {
+            if (model.currHr < lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr >= lowHR && model.currHr <=maxHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
+            } else {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
+            }
+        }
+        if (model.currHr >= model.alHr) {
+            [cell setAlpha:1];
+            [UIView beginAnimations:@"flash screen" context:nil];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [cell setAlpha:0.2];
+            [UIView commitAnimations];
+        }
         cell.nameLbl.text = model.name;
         cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
         cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
@@ -516,6 +616,26 @@ NSMutableArray *patientsArr;
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
         }
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        if (rangeArr.count > 0) {
+            if (model.currHr < lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr >= lowHR && model.currHr <=maxHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
+            } else {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
+            }
+        }
+        if (model.currHr >= model.alHr) {
+            [cell setAlpha:1];
+            [UIView beginAnimations:@"flash screen" context:nil];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [cell setAlpha:0.2];
+            [UIView commitAnimations];
+        }
         cell.nameLbl.text = model.name;
         cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
         cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
@@ -541,6 +661,26 @@ NSMutableArray *patientsArr;
             headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
         }
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        if (rangeArr.count > 0) {
+            if (model.currHr < lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr >= lowHR && model.currHr <=maxHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
+            } else {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
+            }
+        }
+        if (model.currHr >= model.alHr) {
+            [cell setAlpha:1];
+            [UIView beginAnimations:@"flash screen" context:nil];
+            [UIView setAnimationDuration:1.5];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [cell setAlpha:0.2];
+            [UIView commitAnimations];
+        }
         cell.nameLbl.text = model.name;
         cell.idLbl.text = [NSString stringWithFormat:@"ID:%ld",(long)model.userId];
         cell.currentHrLbl.text = [NSString stringWithFormat:@"%ld bpm",(long)model.currHr];
