@@ -9,6 +9,7 @@
 #import "PatientListView.h"
 #import "PatientCell.h"
 #import "SportDataModel.h"
+#import "BindHRBandView.h"
 #import "UserModel.h"
 
 #define kAlertView_LeftMargin 200
@@ -28,6 +29,10 @@
 #define kRemoveBtn_Width 20
 #define kRemoveBtn_RightMargin 15
 #define KListView_TopMargin 10
+
+#define kBindView_TopMargin 138
+#define kBindView_LeftMargin 263
+#define kBindView_BottomMargin 152
 
 extern NSMutableArray *patientsArr;
 
@@ -215,6 +220,8 @@ extern NSMutableArray *patientsArr;
 }
 - (void)addPatient:(UIButton*)sender {
     NSLog(@"添加患者");
+    BindHRBandView *bind = [[BindHRBandView alloc] initWithFrame:CGRectMake(kBindView_LeftMargin * kXScal, kBindView_TopMargin * kYScal, kWidth - 2 * kBindView_LeftMargin * kXScal, kHeight - kBindView_TopMargin * kYScal - kBindView_BottomMargin * kYScal)];
+    [bind show];
 }
 
 - (void)remove:(UIButton*)sender {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		09062671225CE621009A182D /* BindHRBandView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09062670225CE621009A182D /* BindHRBandView.m */; };
+		09062674225CE8B2009A182D /* SearchAndSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09062673225CE8B2009A182D /* SearchAndSelectView.m */; };
 		09E47CB22237F97D00B33249 /* STTextHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA72237F97C00B33249 /* STTextHud.xib */; };
 		09E47CB32237F97D00B33249 /* angle-mask@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA92237F97D00B33249 /* angle-mask@3x.png */; };
 		09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CAB2237F97D00B33249 /* NSString+Size.m */; };
@@ -98,6 +100,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0906266F225CE621009A182D /* BindHRBandView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BindHRBandView.h; sourceTree = "<group>"; };
+		09062670225CE621009A182D /* BindHRBandView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BindHRBandView.m; sourceTree = "<group>"; };
+		09062672225CE8B2009A182D /* SearchAndSelectView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchAndSelectView.h; sourceTree = "<group>"; };
+		09062673225CE8B2009A182D /* SearchAndSelectView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchAndSelectView.m; sourceTree = "<group>"; };
 		09E47CA62237F97C00B33249 /* STTextHud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTextHud.h; sourceTree = "<group>"; };
 		09E47CA72237F97C00B33249 /* STTextHud.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STTextHud.xib; sourceTree = "<group>"; };
 		09E47CA82237F97C00B33249 /* GCLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCLoadingView.h; sourceTree = "<group>"; };
@@ -353,6 +359,10 @@
 			children = (
 				5B02F7AF2249D91A00BE8269 /* PatientListView.h */,
 				5B02F7B02249D91A00BE8269 /* PatientListView.m */,
+				0906266F225CE621009A182D /* BindHRBandView.h */,
+				09062670225CE621009A182D /* BindHRBandView.m */,
+				09062672225CE8B2009A182D /* SearchAndSelectView.h */,
+				09062673225CE8B2009A182D /* SearchAndSelectView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -792,6 +802,7 @@
 				5B02F77F2241DC6A00BE8269 /* NSDate+Extension.m in Sources */,
 				5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */,
 				5B875B99224CAEC400736FC2 /* PatientCell9.m in Sources */,
+				09062674225CE8B2009A182D /* SearchAndSelectView.m in Sources */,
 				5B02F7BA224B75D700BE8269 /* GCDAsyncUdpSocket.m in Sources */,
 				5B875B8D224CAE7400736FC2 /* PatientCell2.m in Sources */,
 				5BECDBF322365EDC0025D6F2 /* NSArray+CheckUtil.m in Sources */,
@@ -828,6 +839,7 @@
 				5B875B93224CAE9D00736FC2 /* PatientCell4.m in Sources */,
 				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,
 				09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */,
+				09062671225CE621009A182D /* BindHRBandView.m in Sources */,
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
 				5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */,
 				5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */,
