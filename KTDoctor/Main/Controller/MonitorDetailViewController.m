@@ -174,6 +174,7 @@ extern NSMutableArray *patientsArr;
     self.tipsImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, size.height, size.height)];
     self.tipsImg.image = [UIImage imageNamed:@"tips"];
     [self.tipsView addSubview:self.tipsImg];
+    self.tipsView.hidden = YES;
     [self.bgImg addSubview:self.tipsView];
     
     CGFloat verticalSpace = (kHeight - CGRectGetMaxY(self.navView.frame) - 2 * kIcon_TopMargin * kYScal - 3 * kLbl_Height * kYScal - 3 * kValueLbl_Height - 2 * kValueLbl_BottomMargin * kYScal)/5;
@@ -541,7 +542,7 @@ extern NSMutableArray *patientsArr;
                 self.tipsView.center = CGPointMake(kWidth/2.0, kTipsLbl_TopMargin * kYScal + kTipsLbl_Height * kYScal / 2.0);
             }
         } else {
-            self.tipsView.hidden = NO;
+            self.tipsView.hidden = YES;
         }
         CGFloat angle = M_PI / 60 * (CGFloat)data.currHr / (240/60);
         self.pointer.transform = CGAffineTransformMakeRotation(angle);
