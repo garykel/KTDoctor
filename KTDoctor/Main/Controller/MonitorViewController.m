@@ -32,13 +32,13 @@
 #define kAlertViewTopMargin 150
 
 #define SizingOne CGSizeMake(kWidth - 2 * 145 * kXScal, kHeight - (CGRectGetMaxY(self.navView.frame) + 100 * kYScal) - 100 * kYScal)
-#define SizingTwo CGSizeMake((kWidth - 2 * 19 - 7)/2, kHeight - (CGRectGetMaxY(self.navView.frame) + 167) - 167 - 10)
-#define SizingThree CGSizeMake((kWidth - 2 * 17 - 2 * 7)/3, kHeight - (CGRectGetMaxY(self.navView.frame) + 181) - 181 - 10)
-#define SizingFour CGSizeMake((kWidth - 2 * 19 - 7)/2, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17) - 17 - 2 * 7)/2 + 2)
-#define SizingSix CGSizeMake((kWidth - 2 * 17 - 2 * 7)/3, (kHeight - (CGRectGetMaxY(self.navView.frame) + 46) - 46 - 7) / 2)
-#define SizingNine CGSizeMake((kWidth - 2 * 19 - 2 * 7)/3, (kHeight - (CGRectGetMaxY(self.navView.frame) + 20) - 20 - 2 * 7) / 3)
-#define SizingTwelve CGSizeMake((kWidth - 2 * 17 - 3 * 7)/4, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17) - 17 - 2 * 7) / 3)
-#define SizingSixteen CGSizeMake((kWidth - 2 * 17 - 3 * 7)/4, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17) - 17 - 3 * 7) / 4)
+#define SizingTwo CGSizeMake((kWidth - 2 * 19 * kXScal - 7 * kXScal)/2, kHeight - (CGRectGetMaxY(self.navView.frame) + 167 * kYScal) - 167 * kYScal - 10 * kYScal)
+#define SizingThree CGSizeMake((kWidth - 2 * 17 * kXScal - 2 * 7 * kXScal)/3, kHeight - (CGRectGetMaxY(self.navView.frame) + 181 * kYScal) - 181 * kXScal - 10 * kXScal)
+#define SizingFour CGSizeMake((kWidth - 2 * 19 * kXScal - 7 * kXScal)/2, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17 * kYScal) - 17 * kYScal - 2 * 7 * kYScal)/2 + 2 * kYScal)
+#define SizingSix CGSizeMake((kWidth - 2 * 17 * kXScal - 2 * 7 * kXScal)/3, (kHeight - (CGRectGetMaxY(self.navView.frame) + 46 * kYScal) - 46 * kYScal - 7 * kYScal) / 2)
+#define SizingNine CGSizeMake((kWidth - 2 * 19 * kXScal - 2 * 7 * kXScal)/3, (kHeight - (CGRectGetMaxY(self.navView.frame) + 20 * kYScal) - 20 * kYScal - 2 * 7 * kYScal) / 3)
+#define SizingTwelve CGSizeMake((kWidth - 2 * 17 * kXScal - 3 * 7 * kXScal)/4, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17 * kYScal) - 17 * kYScal - 2 * 7 * kYScal) / 3)
+#define SizingSixteen CGSizeMake((kWidth - 2 * 17 * kXScal - 3 * 7 * kXScal)/4, (kHeight - (CGRectGetMaxY(self.navView.frame) + 17 * kYScal) - 17 * kYScal - 3 * 7 * kYScal) / 4)
 
 NSMutableArray *patientsArr;
 @interface MonitorViewController ()<SortDelegate,GCDAsyncUdpSocketDelegate,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
@@ -137,52 +137,52 @@ NSMutableArray *patientsArr;
         }];
     } else if (count > 1 && count<=2) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(167);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-167);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(167 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-167 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 2 && count<=3) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(181);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-181);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(181 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-181 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 3 && count<=4) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(17);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 4 && count<=6) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(46);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-46);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(46 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-46 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 6 && count<=9) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(20);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-20);
-            make.left.equalTo(self.bgImg.mas_left).offset(20);
-            make.right.equalTo(self.bgImg.mas_right).offset(-20);
+            make.top.equalTo(self.bgImg.mas_top).offset(20 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-20 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(20 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-20 * kXScal);
         }];
     } else if (count > 9 && count <= 12) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(17);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 12 && count <= 16) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(17);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     }
 }
@@ -842,53 +842,53 @@ withFilterContext:(nullable id)filterContext {
         }];
     } else if (count > 1 && count<=2) {
         [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(167);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-167);
-            make.left.equalTo(self.bgImg.mas_left).offset(19);
-            make.right.equalTo(self.bgImg.mas_right).offset(-19);        }];
+            make.top.equalTo(self.bgImg.mas_top).offset(167 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-167 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(19 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-19 * kXScal);        }];
     } else if (count > 2 && count<=3) {
         [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self.bgImg.mas_top).offset(181);
-                make.bottom.equalTo(self.bgImg.mas_bottom).offset(-181);
-                make.left.equalTo(self.bgImg.mas_left).offset(17);
-                make.right.equalTo(self.bgImg.mas_right).offset(-17);
+                make.top.equalTo(self.bgImg.mas_top).offset(181 * kYScal);
+                make.bottom.equalTo(self.bgImg.mas_bottom).offset(-181 * kYScal);
+                make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+                make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
             }];
         }];
     } else if (count > 3 && count<=4) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(17);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 4 && count<=6) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(46);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-46);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(46 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-46 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 6 && count <= 9) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(20);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-20);
-            make.left.equalTo(self.bgImg.mas_left).offset(20);
-            make.right.equalTo(self.bgImg.mas_right).offset(-20);
+            make.top.equalTo(self.bgImg.mas_top).offset(20 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-20 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(20 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-20 * kXScal);
         }];
     } else if (count > 9 && count <= 12) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(17);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 12 && count <= 16) {
         [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.bgImg.mas_top).offset(17);
-            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17);
-            make.left.equalTo(self.bgImg.mas_left).offset(17);
-            make.right.equalTo(self.bgImg.mas_right).offset(-17);
+            make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     }
     dispatch_async(dispatch_get_main_queue(), ^{
