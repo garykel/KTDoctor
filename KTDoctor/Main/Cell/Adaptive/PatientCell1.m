@@ -19,23 +19,25 @@
 #define kIdLbl_FontSize 18
 #define kCurrentHRLbl_FontSize 18.0
 #define kHeadImage_TopMargin 40
-#define kHeadImage_LeftMargin 15
+#define kHeadImage_LeftMargin 30
 #define kHeadImage_Width 90
+#define kHeartImage_Width 150
 #define KCurrentHRLbl_Width 100
 #define kCurrentHRLbl_Height 20
 #define kTimeImage_TopMargin 50
 #define kTimeImage_RightMargin 10
-#define kTimeImage_Width 40
+#define kTimeImage_Width 30
 #define kTimeLbl_TopMargin 5
 #define kTimeLbl_Width 100
-#define kAvgHRLbl_TopMargin 150
+#define kTimeLbl_RightMargin 40
+#define kAvgHRLbl_TopMargin 240
 #define kAvgHRLbl_LeftMargin 100
 #define kLeftLbl_Width 150
-#define kLeftLbl_BottomMargin 50
-#define kLeftValueLbl_LeftMargin 40
-#define kValueLbl_Width 150
+#define kLeftLbl_BottomMargin 30
+#define kLeftValueLbl_LeftMargin 10
+#define kValueLbl_Width 100
 #define kUnitLbl_Width 80
-#define kHeartImage_BottomMargin 50
+#define kHeartImage_BottomMargin 80
 @interface PatientCell1 ()
 
 @end
@@ -66,12 +68,12 @@
     
     self.nameLbl = [[UILabel alloc] init];
     self.nameLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
-    self.nameLbl.textColor = [UIColor blackColor];
+    self.nameLbl.textColor = [UIColor whiteColor];
     [self.bgImg addSubview:self.nameLbl];
     
     self.idLbl = [[UILabel alloc] init];
-    self.idLbl.font = [UIFont systemFontOfSize:kIdLbl_FontSize * kYScal];
-    self.idLbl.textColor = [UIColor blackColor];
+    self.idLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
+    self.idLbl.textColor = [UIColor whiteColor];
     [self.bgImg addSubview:self.idLbl];
     
     self.heartImg = [[UIImageView alloc] init];
@@ -86,12 +88,12 @@
     
     self.avgHRLbl = [[UILabel alloc] init];
     self.avgHRLbl.text = @"平均心率";
-    self.avgHRLbl.textColor = [UIColor blackColor];
+    self.avgHRLbl.textColor = [UIColor whiteColor];
     self.avgHRLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.bgImg addSubview:self.avgHRLbl];
     
     self.avgHRValueLbl = [[UILabel alloc] init];
-    self.avgHRValueLbl.textColor = [UIColor blackColor];
+    self.avgHRValueLbl.textColor = [UIColor whiteColor];
     self.avgHRValueLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.avgHRValueLbl.textAlignment = NSTextAlignmentRight;
     [self.bgImg addSubview:self.avgHRValueLbl];
@@ -99,18 +101,18 @@
     self.avgHRUnitLbl = [[UILabel alloc] init];
     self.avgHRUnitLbl.textAlignment = NSTextAlignmentRight;
     self.avgHRUnitLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
-    self.avgHRUnitLbl.textColor = [UIColor blackColor];
+    self.avgHRUnitLbl.textColor = [UIColor whiteColor];
     self.avgHRUnitLbl.text = @"bpm";
     [self.bgImg addSubview:self.avgHRUnitLbl];
     
     self.maxHRLbl = [[UILabel alloc] init];
     self.maxHRLbl.text = @"最大心率";
-    self.maxHRLbl.textColor = [UIColor blackColor];
+    self.maxHRLbl.textColor = [UIColor whiteColor];
     self.maxHRLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.bgImg addSubview:self.maxHRLbl];
     
     self.maxHRValueLbl = [[UILabel alloc] init];
-    self.maxHRValueLbl.textColor = [UIColor blackColor];
+    self.maxHRValueLbl.textColor = [UIColor whiteColor];
     self.maxHRValueLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.maxHRValueLbl.textAlignment = NSTextAlignmentRight;
     [self.bgImg addSubview:self.maxHRValueLbl];
@@ -118,18 +120,18 @@
     self.maxHRUnitLbl = [[UILabel alloc] init];
     self.maxHRUnitLbl.textAlignment = NSTextAlignmentRight;
     self.maxHRUnitLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
-    self.maxHRUnitLbl.textColor = [UIColor blackColor];
+    self.maxHRUnitLbl.textColor = [UIColor whiteColor];
     self.maxHRUnitLbl.text = @"bpm";
     [self.bgImg addSubview:self.maxHRUnitLbl];
     
     self.speedLbl = [[UILabel alloc] init];
     self.speedLbl.text = @"速         度";
-    self.speedLbl.textColor = [UIColor blackColor];
+    self.speedLbl.textColor = [UIColor whiteColor];
     self.speedLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.bgImg addSubview:self.speedLbl];
     
     self.speedValueLbl = [[UILabel alloc] init];
-    self.speedValueLbl.textColor = [UIColor blackColor];
+    self.speedValueLbl.textColor = [UIColor whiteColor];
     self.speedValueLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.speedValueLbl.textAlignment = NSTextAlignmentRight;
     [self.bgImg addSubview:self.speedValueLbl];
@@ -137,18 +139,18 @@
     self.speedUnitLbl = [[UILabel alloc] init];
     self.speedUnitLbl.textAlignment = NSTextAlignmentRight;
     self.speedUnitLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
-    self.speedUnitLbl.textColor = [UIColor blackColor];
+    self.speedUnitLbl.textColor = [UIColor whiteColor];
     self.speedUnitLbl.text = @"km/h";
     [self.bgImg addSubview:self.speedUnitLbl];
     
     self.intensionLbl = [[UILabel alloc] init];
-    self.intensionLbl.text = @"强          度";
-    self.intensionLbl.textColor = [UIColor blackColor];
+    self.intensionLbl.text = @"强         度";
+    self.intensionLbl.textColor = [UIColor whiteColor];
     self.intensionLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.bgImg addSubview:self.intensionLbl];
     
     self.intensionValueLbl = [[UILabel alloc] init];
-    self.intensionValueLbl.textColor = [UIColor blackColor];
+    self.intensionValueLbl.textColor = [UIColor whiteColor];
     self.intensionValueLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.intensionValueLbl.textAlignment = NSTextAlignmentRight;
     [self.bgImg addSubview:self.intensionValueLbl];
@@ -158,7 +160,7 @@
     [self.bgImg addSubview:self.timeImg];
     
     self.timeLbl = [[UILabel alloc] init];
-    self.timeLbl.textColor = [UIColor blackColor];
+    self.timeLbl.textColor = [UIColor whiteColor];
     self.timeLbl.text = @"00:00";
     self.timeLbl.textAlignment = NSTextAlignmentRight;
     self.timeLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
@@ -191,13 +193,13 @@
         make.bottom.equalTo(self.headImg.mas_bottom).offset(0);
         make.left.equalTo(self.nameLbl.mas_left);
         make.width.equalTo(@(KNameLbl_Width * kXScal));
-        make.height.equalTo(@(kIdLbl_FontSize * kYScal));
+        make.height.equalTo(@(kBigLbl_Height * kYScal));
     }];
     
     [self.heartImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(self.bgImg.mas_bottom).offset(-kHeartImage_BottomMargin * kYScal);
         make.left.equalTo(self.headImg.mas_left);
-        make.width.height.equalTo(@(kHeadImage_Width * kXScal));
+        make.width.height.equalTo(@(kHeartImage_Width * kXScal));
     }];
     
     [self.currentHrLbl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -207,17 +209,18 @@
         make.height.equalTo(@(kCurrentHRLbl_Height * kYScal));
     }];
     
-    [self.timeImg mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.bgImg.mas_top).offset(kTimeImage_TopMargin * kYScal);
-        make.right.equalTo(self.bgImg.mas_right).offset(-kTimeImage_RightMargin * kXScal);
-        make.width.height.equalTo(@(kTimeImage_Width * kXScal));
-    }];
-    
     [self.timeLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.timeImg.mas_bottom).offset(kTimeLbl_TopMargin * kYScal);
-        make.right.equalTo(self.bgImg.mas_right).offset(0);
+        make.centerY.equalTo(self.idLbl.mas_centerY);
+        make.right.equalTo(self.bgImg.mas_right).offset(- kTimeLbl_RightMargin * kXScal);
         make.width.equalTo(@(kTimeLbl_Width * kXScal));
         make.height.equalTo(@(kBigLbl_Height * kYScal));
+    }];
+    
+    [self.timeImg mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.nameLbl.mas_centerY);
+//        make.right.equalTo(self.bgImg.mas_right).offset(-kTimeImage_RightMargin * kXScal);
+        make.centerX.equalTo(self.timeLbl.mas_centerX).offset(kTimeImage_Width * kXScal / 2.0);
+        make.width.height.equalTo(@(kTimeImage_Width * kXScal));
     }];
     
     [self.avgHRLbl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -236,7 +239,7 @@
     
     [self.avgHRUnitLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.avgHRLbl.mas_top);
-        make.right.equalTo(self.bgImg.mas_right).offset(0);
+        make.right.equalTo(self.timeLbl.mas_right);
         make.width.equalTo(@(kUnitLbl_Width * kXScal));
         make.height.equalTo(@(kBigLbl_Height * kYScal));
     }];
@@ -257,7 +260,7 @@
     
     [self.maxHRUnitLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.maxHRLbl.mas_top);
-        make.right.equalTo(self.bgImg.mas_right).offset(0);
+        make.right.equalTo(self.timeLbl.mas_right);
         make.width.equalTo(@(kUnitLbl_Width * kXScal));
         make.height.equalTo(@(kBigLbl_Height * kYScal));
     }];
@@ -278,7 +281,7 @@
     
     [self.speedUnitLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.speedLbl.mas_top);
-        make.right.equalTo(self.bgImg.mas_right).offset(0);
+        make.right.equalTo(self.timeLbl.mas_right);
         make.width.equalTo(@(kUnitLbl_Width * kXScal));
         make.height.equalTo(@(kBigLbl_Height * kYScal));
     }];

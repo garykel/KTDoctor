@@ -31,7 +31,7 @@
 #define KListView_TopMargin 10
 
 #define kBindView_TopMargin 138
-#define kBindView_LeftMargin 263
+#define kBindView_LeftMargin 150
 #define kBindView_BottomMargin 152
 
 extern NSMutableArray *patientsArr;

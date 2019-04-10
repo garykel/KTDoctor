@@ -17,14 +17,17 @@
 #define kIcon_TopMargin 60
 #define kIcon_Width 28
 #define KIcon_Height 25
-#define kIcon_LeftMagin 20
+#define kTimeIcon_Width 15
+#define kTimeIcon_Height 18
+#define kIcon_LeftMagin 30
 #define kValueLbl_BottomMargin 30
 #define kUnitLbl_LeftMargin 10
 #define kUnitLbl_FontSize 10
 #define kUnitLbl_Width 50
 #define kLbl_Width 240
 #define kRightLbl_Width 170
-#define kLbl_FontSize 25
+#define kLbl_FontSize 24
+#define kTargetHRZone_FontSize 30
 #define kUnitLbl_Height 15
 #define kValueLbl_FontSize 28
 #define kLbl_Height 30
@@ -38,9 +41,16 @@
 #define kHRLbl_Width 80
 #define kHRValLbl_Width 120
 #define kHRLbl_BottomMargin 50
-#define kTargetHRZone_Width 250
+#define kTargetHRZone_Width 300
+#define kTargetZoneLbl_Width 150
+#define kTargetHRZoneLbl_Width 100
 #define kTargetHRZone_Height 40
 #define kTargetHRZone_Lbl_LeftMargin 15
+#define kTipsLbl_TopMargin 30
+#define kTipsLbl_Height 20
+#define kTipsLbl_Width 560
+#define kTipsImg_RightMargin 8
+#define kTipsImg_Width 20
 
 extern NSMutableArray *patientsArr;
 
@@ -90,6 +100,10 @@ extern NSMutableArray *patientsArr;
 @property (nonatomic,strong)UIImageView *circleImg;
 @property (nonatomic,strong)UIImageView *dashBgView;
 @property (nonatomic,strong)UIImageView *pointer;
+@property (nonatomic,strong)UIView *tipsView;
+@property (nonatomic,strong)UIImageView *tipsImg;
+@property (nonatomic,strong)UILabel *tipsLbl;
+@property (nonatomic,strong)UILabel *hrTargetZoneLbl;
 @property (nonatomic,strong)SportDataModel *data;
 @end
 
@@ -130,22 +144,41 @@ extern NSMutableArray *patientsArr;
 
 - (void)setupUI {
     //获取字体名称
-    for (NSString *fontFamilyName in [UIFont familyNames]) {
-        NSLog(@"familyNames:%@",fontFamilyName);
-        for (NSString *fontName in [UIFont fontNamesForFamilyName:fontFamilyName]) {
-            NSLog(@"  %@",fontName);
-        }
-        NSLog(@"***********************");
-    }
+//    for (NSString *fontFamilyName in [UIFont familyNames]) {
+//        NSLog(@"familyNames:%@",fontFamilyName);
+//        for (NSString *fontName in [UIFont fontNamesForFamilyName:fontFamilyName]) {
+//            NSLog(@"  %@",fontName);
+//        }
+//        NSLog(@"***********************");
+//    }
     UIImage *image = [UIImage imageNamed:@"monitor_detailBg"];
     image = [self imageCompressWithSimple:image scaledToSize:CGSizeMake(kWidth, kHeight - CGRectGetMaxY(self.navView.frame))];
     self.bgImg = [[UIImageView alloc] initWithImage:image];
     self.bgImg.frame = CGRectMake(0, CGRectGetMaxY(self.navView.frame), kWidth, kHeight - CGRectGetMaxY(self.navView.frame));
     [self.view addSubview:self.bgImg];
     
+    self.tipsView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+    self.tipsLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 30, kTipsLbl_Width * kXScal, kTipsLbl_Height * kYScal)];
+    self.tipsLbl.textColor = [UIColor whiteColor];
+    self.tipsLbl.text = @"您当前低于目标心率区间，请在没有不适感的前提下提升您的运动强度。";
+    self.tipsLbl.numberOfLines = 1;
+    
+    CGSize size = [self.tipsLbl sizeThatFits:CGSizeMake(MAXFLOAT, kTipsLbl_Height * kYScal)];
+    self.tipsLbl.frame = CGRectMake((kTipsImg_Width + kTipsImg_RightMargin)* kXScal, 0, size.width, size.height);
+    CGFloat totalWidth = kTipsImg_Width * kXScal + kTipsImg_RightMargin * kXScal + size.width;
+    self.tipsView.frame = CGRectMake(0, 0, totalWidth, kTipsLbl_Height * kYScal);
+    [self.tipsView addSubview:self.tipsImg];
+    [self.tipsView addSubview:self.tipsLbl];
+    self.tipsView.center = CGPointMake(kWidth/2.0, kTipsLbl_TopMargin * kYScal + kTipsLbl_Height * kYScal / 2.0);
+    
+    self.tipsImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, size.height, size.height)];
+    self.tipsImg.image = [UIImage imageNamed:@"tips"];
+    [self.tipsView addSubview:self.tipsImg];
+    [self.bgImg addSubview:self.tipsView];
+    
     CGFloat verticalSpace = (kHeight - CGRectGetMaxY(self.navView.frame) - 2 * kIcon_TopMargin * kYScal - 3 * kLbl_Height * kYScal - 3 * kValueLbl_Height - 2 * kValueLbl_BottomMargin * kYScal)/5;
     self.mileImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mile"]];
-    self.mileImg.frame = CGRectMake(kIcon_LeftMagin, CGRectGetMaxY(self.navView.frame) + kIcon_TopMargin * kYScal, kIcon_Width * kXScal, KIcon_Height * kYScal);
+    self.mileImg.frame = CGRectMake(kIcon_LeftMagin * kXScal, CGRectGetMaxY(self.navView.frame) + kIcon_TopMargin * kYScal, kIcon_Width * kXScal, KIcon_Height * kYScal);
     [self.view addSubview:self.mileImg];
     
     self.mileLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.mileImg.frame) + kLbl_LeftMargin, CGRectGetMidY(self.mileImg.frame) - kLbl_Height * kYScal / 2, kLbl_Width * kXScal, kLbl_Height * kYScal)];
@@ -154,9 +187,8 @@ extern NSMutableArray *patientsArr;
     self.mileLbl.textColor = [UIColor colorWithHexString:@"#10a9cc"];
     [self.view addSubview:self.mileLbl];
     
-    self.mileValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.mileImg.frame.origin.x, CGRectGetMaxY(self.mileLbl.frame) + verticalSpace, kValueLbl_Width * kXScal, kValueLbl_Height * kYScal)];
+    self.mileValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.mileLbl.frame.origin.x, CGRectGetMaxY(self.mileLbl.frame) + verticalSpace, kValueLbl_Width * kXScal, kValueLbl_Height * kYScal)];
     self.mileValLbl.textColor = [UIColor whiteColor];
-    self.mileValLbl.textAlignment = NSTextAlignmentCenter;
     self.mileValLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.mileValLbl];
     
@@ -181,7 +213,6 @@ extern NSMutableArray *patientsArr;
     
     self.calorieValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.mileValLbl.frame.origin.x, CGRectGetMaxY(self.calorieLbl.frame) + verticalSpace, kValueLbl_Width * kXScal, kValueLbl_Height * kYScal)];
     self.calorieValLbl.textColor = [UIColor whiteColor];
-    self.calorieValLbl.textAlignment = NSTextAlignmentCenter;
     self.calorieValLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.calorieValLbl];
     
@@ -201,13 +232,11 @@ extern NSMutableArray *patientsArr;
     self.currentSectionLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.mileLbl.frame.origin.x, CGRectGetMidY(self.currentSectionImg.frame) - kLbl_Height * kYScal / 2, kLbl_Width * kXScal, kLbl_Height * kYScal)];
     self.currentSectionLbl.textColor = [UIColor colorWithHexString:@"#10a9cc"];
     self.currentSectionLbl.text = @"当前小节/总小节数";
-    self.currentSectionLbl.textAlignment = NSTextAlignmentCenter;
     self.currentSectionLbl.font = [UIFont systemFontOfSize:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.currentSectionLbl];
     
-    self.currentSectionValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.mileValLbl.frame.origin.x, CGRectGetMaxY(self.currentSectionLbl.frame) + verticalSpace, kValueLbl_Width * kXScal, kValueLbl_Height * kYScal)];
+    self.currentSectionValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.currentSectionLbl.frame.origin.x, CGRectGetMaxY(self.currentSectionLbl.frame) + verticalSpace, kValueLbl_Width * kXScal, kValueLbl_Height * kYScal)];
     self.currentSectionValLbl.textColor = [UIColor whiteColor];
-    self.currentSectionValLbl.textAlignment = NSTextAlignmentCenter;
     self.currentSectionValLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.currentSectionValLbl];
 
@@ -218,7 +247,7 @@ extern NSMutableArray *patientsArr;
     
     self.dashBgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 240 * kXScal, 138 * kYScal)];
     self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_blue"];
-    self.dashBgView.center = CGPointMake(self.view.center.x, self.view.center.y - 15 * kYScal);
+    self.dashBgView.center = CGPointMake(self.view.center.x, self.view.center.y - 35 * kYScal);
     [self.view addSubview:self.dashBgView];
     
     self.pointer = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 213 * 1.3 * kXScal, 41 * 1.3 * kYScal)];
@@ -228,23 +257,23 @@ extern NSMutableArray *patientsArr;
     
     [self drawDashBoard];
     
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-    animation.toValue = [NSNumber numberWithFloat:M_PI * 2.3];
-    animation.duration = 3.0;
-    animation.cumulative = YES;
-    animation.repeatCount = 0;
-//    [self.pointer.layer addAnimation:animation forKey:@"animation"];
-    
     self.targetHRZongImg = [[UIImageView alloc] initWithFrame:CGRectMake((kWidth - kTargetHRZone_Width * kXScal) / 2, self.calorieValLbl.frame.origin.y + 5, kTargetHRZone_Width * kXScal, kTargetHRZone_Height * kYScal)];
+    self.targetHRZongImg.frame = CGRectMake(self.pointer.frame.origin.x, self.calorieValLbl.frame.origin.y + 5, self.pointer.frame.size.width, kTargetHRZone_Height * kYScal);
     self.targetHRZongImg.image = [UIImage imageNamed:@"targetHRZone"];
     [self.view addSubview:self.targetHRZongImg];
     
-    self.targetHRZongLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.targetHRZongImg.frame.origin.x + kTargetHRZone_Lbl_LeftMargin * kXScal, self.targetHRZongImg.frame.origin.y + (kTargetHRZone_Height - kValueLbl_Height * kYScal)/2, kTargetHRZone_Width - kTargetHRZone_Lbl_LeftMargin * kXScal, kValueLbl_Height * kYScal)];
+    self.targetHRZongLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.targetHRZongImg.frame.origin.x + kTargetHRZone_Lbl_LeftMargin * kXScal, self.targetHRZongImg.frame.origin.y + (kTargetHRZone_Height - kValueLbl_Height * kYScal)/2, kTargetZoneLbl_Width * kXScal, kValueLbl_Height * kYScal)];
     self.targetHRZongLbl.textColor = [UIColor whiteColor];;
     self.targetHRZongLbl.text = @"目标心率区间";
     self.targetHRZongLbl.font = [UIFont systemFontOfSize:kLbl_FontSize * kYScal];
     [self.view addSubview:self.targetHRZongLbl];
     [self.view bringSubviewToFront:self.targetHRZongLbl];
+
+    self.hrTargetZoneLbl = [[UILabel alloc] initWithFrame:CGRectMake( self.targetHRZongImg.frame.origin.x + 2 * kTargetHRZone_Lbl_LeftMargin * kXScal + self.targetHRZongLbl.frame.size.width, self.targetHRZongImg.frame.origin.y + (kTargetHRZone_Height - kValueLbl_Height * kYScal)/2, kTargetHRZoneLbl_Width * kXScal, kValueLbl_Height * kYScal)];
+    self.hrTargetZoneLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kTargetHRZone_FontSize * kYScal];
+    self.hrTargetZoneLbl.textColor = [UIColor whiteColor];
+    [self.view addSubview:self.hrTargetZoneLbl];
+    [self.view bringSubviewToFront:self.hrTargetZoneLbl];
     
     CGFloat hrImg_LeftMargin = (kWidth - (kIcon_LeftMagin + kIcon_Width + kLbl_LeftMargin + kLbl_Width) * 2 * kXScal - (kIcon_Width + kLbl_LeftMargin + kHRLbl_Width + kHRValLbl_Width + kUnitLbl_LeftMargin + kUnitLbl_Width) * kXScal) / 2;
     self.heartImg = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.currentSectionLbl.frame) + hrImg_LeftMargin, self.currentSectionImg.frame.origin.y, kIcon_Width * kXScal, KIcon_Height * kYScal)];
@@ -284,8 +313,8 @@ extern NSMutableArray *patientsArr;
     self.intensionValLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.intensionValLbl];
     
-    CGFloat rightIcon_LeftMargin = kWidth - (kIcon_Width + kLbl_LeftMargin + kRightLbl_Width) * kXScal - kRightLbl_RightMargin;
-    self.totalTimeImg = [[UIImageView alloc] initWithFrame:CGRectMake(rightIcon_LeftMargin, self.mileImg.frame.origin.y, kIcon_Width * kXScal, KIcon_Height * kYScal)];
+    CGFloat rightIcon_LeftMargin = kWidth - (kIcon_Width + kLbl_LeftMargin + kRightLbl_Width) * kXScal - kRightLbl_RightMargin * kXScal;
+    self.totalTimeImg = [[UIImageView alloc] initWithFrame:CGRectMake(rightIcon_LeftMargin, self.mileImg.frame.origin.y, kTimeIcon_Width * kXScal, kTimeIcon_Height * kYScal)];
     self.totalTimeImg.image = [UIImage imageNamed:@"sportTime"];
     [self.view addSubview:self.totalTimeImg];
     
@@ -297,7 +326,6 @@ extern NSMutableArray *patientsArr;
     
     self.totalTimeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.totalTimeLbl.frame.origin.x, self.mileValLbl.frame.origin.y, kValueLbl_Width * kXScal, kValueLbl_Height * kYScal)];
     self.totalTimeValLbl.textColor = [UIColor whiteColor];
-    self.totalTimeValLbl.textAlignment = NSTextAlignmentCenter;
     self.totalTimeValLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.totalTimeValLbl];
     
@@ -305,7 +333,7 @@ extern NSMutableArray *patientsArr;
     self.totalTimeSeperateview.backgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:self.totalTimeSeperateview];
     
-    self.leftTimeImg = [[UIImageView alloc] initWithFrame:CGRectMake(rightIcon_LeftMargin, self.calorieImg.frame.origin.y, kIcon_Width * kXScal, KIcon_Height * kYScal)];
+    self.leftTimeImg = [[UIImageView alloc] initWithFrame:CGRectMake(rightIcon_LeftMargin, self.calorieImg.frame.origin.y, kTimeIcon_Width * kXScal, kTimeIcon_Height * kYScal)];
     self.leftTimeImg.image = [UIImage imageNamed:@"sportTime"];
     [self.view addSubview:self.leftTimeImg];
     
@@ -317,7 +345,6 @@ extern NSMutableArray *patientsArr;
     
     self.leftTimeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.totalTimeValLbl.frame.origin.x, self.calorieValLbl.frame.origin.y, kValueLbl_Width * kXScal, kValueLbl_Height * kYScal)];
     self.leftTimeValLbl.textColor = [UIColor whiteColor];
-    self.leftTimeValLbl.textAlignment = NSTextAlignmentCenter;
     self.leftTimeValLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.leftTimeValLbl];
     
@@ -337,7 +364,6 @@ extern NSMutableArray *patientsArr;
     
     self.speedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.totalTimeValLbl.frame.origin.x, self.currentSectionValLbl.frame.origin.y, kValueLbl_Width * kXScal, kValueLbl_Height * kYScal)];
     self.speedValLbl.textColor = [UIColor whiteColor];
-    self.speedValLbl.textAlignment = NSTextAlignmentCenter;
     self.speedValLbl.font = [UIFont fontWithName:@"DS-Digital-Bold" size:kValueLbl_FontSize * kYScal];
     [self.view addSubview:self.speedValLbl];
     
@@ -350,7 +376,8 @@ extern NSMutableArray *patientsArr;
 - (void)drawDashBoard {
     CAShapeLayer *layer = [CAShapeLayer new];
     layer.lineWidth = 4 * kXScal;
-    layer.strokeColor = [UIColor colorWithRed:0.62 green:0.84 blue:0.93 alpha:1.0].CGColor;
+//    layer.strokeColor = [UIColor colorWithRed:0.62 green:0.84 blue:0.93 alpha:1.0].CGColor;
+    layer.strokeColor = [UIColor whiteColor].CGColor;
     layer.fillColor = [UIColor clearColor].CGColor;
     CGFloat radius = self.pointer.frame.size.width / 2.0 + 2 * kXScal;
     //是否为顺时针
@@ -479,14 +506,47 @@ extern NSMutableArray *patientsArr;
         SportDataModel *data = (SportDataModel*)[patientsArr objectAtIndex:self.selectedIndex];
         self.mileValLbl.text = [NSString stringWithFormat:@"%.1f",data.lc];
         self.calorieValLbl.text = [NSString stringWithFormat:@"%.1f",data.kcal];
-        self.currentSectionValLbl.text = [NSString stringWithFormat:@"%d",data.dqxjzxj];
+        self.currentSectionValLbl.text = [NSString stringWithFormat:@"%@",data.dqxjzxj];
         self.hrValLbl.text = [NSString stringWithFormat:@"%d",data.currHr];
         self.intensionValLbl.text = [NSString stringWithFormat:@"%d",data.diff];
         self.totalTimeValLbl.text = [NSString stringWithFormat:@"%@",[self getTimeString:data.time]];
         self.leftTimeValLbl.text = [NSString stringWithFormat:@"%@",[self getTimeString:data.xiaojietime]];
         self.speedValLbl.text = [NSString stringWithFormat:@"%.1f",data.speed];
+        if (data.percentum.length > 0) {
+            NSArray *rangeArr  = [data.percentum componentsSeparatedByString:@"-"];
+            NSInteger lowHR = 0;
+            NSInteger maxHR = 0;
+            if (rangeArr.count > 0) {
+                lowHR = [rangeArr[0] integerValue];
+                maxHR = [rangeArr[1] integerValue];
+                self.hrTargetZoneLbl.text = self.data.percentum;
+                if (data.currHr < lowHR) {
+                    self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_blue"];
+                    self.tipsView.hidden = NO;
+                    self.tipsLbl.text = @"您当前低于目标心率区间，请在没有不适感的前提下提升您的运动强度。";
+                } else if (data.currHr > maxHR) {
+                    self.tipsLbl.text = @"当前心率过高，请适当降低运动强度。";
+                    self.tipsView.hidden = NO;
+                    self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_red"];
+                } else {
+                    self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_blue"];
+                    self.tipsView.hidden = NO;
+                    self.tipsLbl.text = @"您已进入目标心率区间，请保持当前运动强度。";
+                }
+                CGSize size = [self.tipsLbl sizeThatFits:CGSizeMake(MAXFLOAT, kTipsLbl_Height * kYScal)];
+                self.tipsLbl.frame = CGRectMake((kTipsImg_Width + kTipsImg_RightMargin)* kXScal, 0, size.width, size.height);
+                CGFloat totalWidth = kTipsImg_Width * kXScal + kTipsImg_RightMargin * kXScal + size.width;
+                self.tipsImg = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, size.height, size.height)];
+                self.tipsView.frame = CGRectMake(0, 0, totalWidth, kTipsLbl_Height * kYScal);
+                self.tipsView.center = CGPointMake(kWidth/2.0, kTipsLbl_TopMargin * kYScal + kTipsLbl_Height * kYScal / 2.0);
+            }
+        } else {
+            self.tipsView.hidden = NO;
+        }
         CGFloat angle = M_PI / 60 * (CGFloat)data.currHr / (240/60);
         self.pointer.transform = CGAffineTransformMakeRotation(angle);
+    } else {
+        [self.navigationController popViewControllerAnimated:NO];
     }
 }
 
