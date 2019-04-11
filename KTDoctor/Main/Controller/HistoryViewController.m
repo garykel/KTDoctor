@@ -58,6 +58,7 @@
     self.navigationController.navigationBar.hidden = YES;
     self.dataArr = [NSMutableArray array];
     self.dataArr = [NSMutableArray arrayWithObjects:@"section1",@"section2",@"section3",@"section4", nil];
+//    self.sportlists = [NSMutableArray array];
     [self setNavBar];
     [self setupUI];
 }
@@ -152,6 +153,26 @@
     self.listView.delegate = self;
     self.listView.dataSource = self;
     [self.bottomView addSubview:self.listView];
+    
+    //添加头部的下拉刷新
+    MJRefreshNormalHeader *header = [[MJRefreshNormalHeader alloc] init];
+    [header setRefreshingTarget:self refreshingAction:@selector(headerClick)];
+    self.listView.mj_header = header;
+    
+    //添加底部的上拉加载
+    MJRefreshBackNormalFooter *footer = [[MJRefreshBackNormalFooter alloc] init];
+    [footer setRefreshingTarget:self refreshingAction:@selector(footerClick)];
+    self.listView.mj_footer = footer;
+}
+
+- (void)headerClick {
+    [NSThread sleepForTimeInterval:3];
+    [self.listView.mj_header endRefreshing];
+}
+
+- (void)footerClick {
+    [NSThread sleepForTimeInterval:3];
+    [self.listView.mj_footer endRefreshing];
 }
 
 - (void)chooseStartTime:(UIButton *)sender {
@@ -195,7 +216,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.dataArr.count;
+    return self.sportlists.count;
 }
 
 - (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -205,7 +226,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == self.dataArr.count - 1) {
+    if (section == self.sportlists.count - 1) {
         return 0;
     } else {
         return kListView_FooterView_Height * kYScal;
@@ -220,10 +241,71 @@
         cell.selectionStyle          = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     }
-    cell.nameLbl.text = [NSString stringWithFormat:@"Andrew:%d",indexPath.section + 1];
-    cell.startTimeLbl.text = @"开始时间:2019-04-08 18:03:55";
-    [cell.patientTypeBtn setTitle:@"高风险用户初次体验" forState:UIControlStateNormal];
-    cell.idLbl.text = [NSString stringWithFormat:@"%d",indexPath.section + 1];
+    if (self.sportlists.count > 0) {
+        NSDictionary *sportDict = [self.sportlists objectAtIndex:indexPath.section];
+        cell.idLbl.text = [NSString stringWithFormat:@"ID:%@",[sportDict valueForKey:@"userId"]];
+        cell.nameLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"doctorName"]];
+        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:[sportDict valueForKey:@"headUrl"]] placeholderImage:[UIImage imageNamed:@"default_head"]];
+        [cell.patientTypeBtn setTitle:[sportDict valueForKey:@"title"] forState:UIControlStateNormal];
+        cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[sportDict valueForKey:@"startTime"]];
+        NSInteger completePercent = [[sportDict valueForKey:@"completePercent"] integerValue];
+        cell.accomplishValLbl.text = [NSString stringWithFormat:@"%ld %%",completePercent];
+        cell.maxHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"maxHr"]];
+        cell.avgHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"avgHr"]];
+        CGFloat calorie = [[sportDict valueForKey:@"calorie"] floatValue];
+        cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f kcal",calorie];
+        CGFloat totalMileage = [[sportDict valueForKey:@"totalMileage"] floatValue];
+        cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
+        CGFloat speed = [[sportDict valueForKey:@"speed"] floatValue];
+        cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
+        cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"avgDifficulty"]];
+        NSInteger totalTime = [[sportDict valueForKey:@"totalTime"] integerValue];
+        NSString *totalTimeStr = [self getTimeString:totalTime];
+        cell.totalTimeValLbl.text = totalTimeStr;
+        NSString *rpeSample = [sportDict valueForKey:@"rpeSample"];
+        NSMutableArray *results = [NSMutableArray array];
+        if (rpeSample.length > 0) {
+            NSArray *arr = [rpeSample componentsSeparatedByString:@","];
+            if (arr.count > 0) {
+                for (NSString *str in arr) {
+                    NSArray *rpeArr = [str componentsSeparatedByString:@"|"];
+                    if (rpeArr.count > 0) {
+                        [results addObject:rpeArr[0]];
+                    }
+                }
+                if (arr.count < 12) {
+                    for (NSInteger i = 0; i< 12 - arr.count; i++) {
+                        [results addObject:@""];
+                    }
+                }
+            } else {
+                for (NSInteger j = 0; j< 12; j++) {
+                    [results addObject:@""];
+                }
+            }
+            NSLog(@"results is :%@",results);
+            
+        } else {
+            for (NSInteger j = 0; j< 12; j++) {
+                [results addObject:@""];
+            }
+        }
+        if (results.count > 0) {
+            cell.preValLbl1.text = results[0];
+            cell.preValLbl2.text = results[1];
+            cell.preValLbl3.text = results[2];
+            cell.preValLbl4.text = results[3];
+            cell.preValLbl5.text = results[4];
+            cell.preValLbl6.text = results[5];
+            cell.preValLbl7.text = results[6];
+            cell.preValLbl8.text = results[7];
+            cell.preValLbl9.text = results[8];
+            cell.preValLbl10.text = results[9];
+            cell.preValLbl11.text = results[10];
+            cell.preValLbl12.text = results[11];
+        }
+    }
+    
     return cell;
 }
 
@@ -231,6 +313,14 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     HistoryDetailViewController *detail = [[HistoryDetailViewController alloc] init];
     [self.navigationController pushViewController:detail animated:NO];
+}
+
+- (NSString *)getTimeString:(NSInteger)seconds {
+    NSString *timeStr = @"";
+    NSInteger minute = seconds / 60;
+    NSInteger second = seconds % 60;
+    timeStr = [NSString stringWithFormat:@"%02ld:%02ld",(long)minute,(long)second];
+    return timeStr;
 }
 
 #pragma mark - button click events

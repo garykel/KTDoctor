@@ -340,7 +340,7 @@
     self.preLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kHistory_PreView_PreLbl_Width * kXScal, kHistory_PreView_Height * kYScal)];
     self.preLbl.textColor = [UIColor blackColor];
     self.preLbl.font = [UIFont systemFontOfSize:kHistory_Lbl_FontSize * kYScal];
-    self.preLbl.text = @"PRE";
+    self.preLbl.text = @"RPE";
     self.preLbl.textAlignment = NSTextAlignmentCenter;
     [self.preView addSubview:self.preLbl];
     

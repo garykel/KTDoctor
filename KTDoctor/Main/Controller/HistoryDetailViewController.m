@@ -51,7 +51,7 @@
     self.titleLbl.font = [UIFont systemFontOfSize:kTitle_FontSize];
     self.titleLbl.textColor = [UIColor whiteColor];
     self.titleLbl.textAlignment = NSTextAlignmentCenter;
-    self.titleLbl.text = @"历史记录";
+    self.titleLbl.text = @"运动结果";
     [self.navView addSubview:self.titleLbl];
 }
 

@@ -147,8 +147,15 @@
 }
 
 - (void)history:(UITapGestureRecognizer*)sender {
-    HistoryViewController *history = [[HistoryViewController alloc] init];
-    [self.navigationController pushViewController:history animated:NO];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [self getUserSportList:parameter];
 }
 
 - (void)patientManage:(UITapGestureRecognizer*)sender {
@@ -174,6 +181,30 @@
     UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
+}
+
+#pragma mark - netFunctions
+
+- (void)getUserSportList:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_SPORTLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"sport lists :%@ :%@",responseObject,error);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            HistoryViewController *history = [[HistoryViewController alloc] init];
+            history.sportlists = [NSMutableArray arrayWithArray:rows];
+            [weakSelf.navigationController pushViewController:history animated:NO];
+        } else if (code == 10011) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 
 #pragma mark - IndexPopoverDelegate
