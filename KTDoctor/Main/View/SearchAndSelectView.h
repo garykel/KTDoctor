@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface SearchAndSelectView : UIView
+@property (nonatomic,strong)UIView *searchBgView;
 @property (nonatomic,strong)UITextField *contentTF;
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)UIButton *selectBtn;

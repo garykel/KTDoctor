@@ -22,4 +22,5 @@
 #define kUNBIND_HR_DEVICE @"/doctor/unbind_hr_device"//解绑心率设备
 #define kDOCTOR_USERLIST_URL @"/doctor/user_list" //医师管理的用户列表
 #define kDOCTOR_AVAILABLE_DEVICE_URL @"/doctor/available_device" //搜索可用的设备
+#define kDOCTOR_BIND_HRDEVICE_URL @"/doctor/bind_hr_device" //绑定心率带设备
 #endif /* DEFIN_h */

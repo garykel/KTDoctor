@@ -17,8 +17,8 @@
 #define kIcon_TopMargin 60
 #define kIcon_Width 28
 #define KIcon_Height 25
-#define kTimeIcon_Width 15
-#define kTimeIcon_Height 18
+#define kTimeIcon_Width 23
+#define kTimeIcon_Height 27
 #define kIcon_LeftMagin 30
 #define kValueLbl_BottomMargin 30
 #define kUnitLbl_LeftMargin 10

@@ -8,6 +8,7 @@
 
 #import "BindHRBandView.h"
 #import "SearchAndSelectView.h"
+#import "UserModel.h"
 
 #define kTitleLbl_TopMargin 34
 #define kTitleLbl_FontSize 25
@@ -37,17 +38,25 @@
 #define kBindView_LeftMargin 150
 #define kBindView_BottomMargin 152
 
-@interface BindHRBandView()
+@interface BindHRBandView()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,assign)CGRect contentFrame;
 @property (nonatomic,strong)UIView *contentView;
 @property (nonatomic,strong)UILabel *titleLbl;
 @property (nonatomic,strong)UIImageView *doctorImg;
 @property (nonatomic,strong)UILabel *nameTitleLbl;
 @property (nonatomic,strong)SearchAndSelectView *nameView;
+@property (nonatomic,strong)UITableView *nameTableview;
+@property (nonatomic,strong)NSMutableArray *namesArr;
 @property (nonatomic,strong)UILabel *hrDeviceTitleLbl;
 @property (nonatomic,strong)SearchAndSelectView *hrDeviceView;
+@property (nonatomic,strong)UITableView *deviceTableview;
+@property (nonatomic,strong)NSMutableArray *devicesArr;
 @property (nonatomic,strong)UIButton *bindBtn;
 @property (nonatomic,strong)UIButton *cancelBtn;
+@property (nonatomic,assign)NSInteger selectedUserIndex;
+@property (nonatomic,assign)NSInteger selectedDeviceIndex;
+@property (nonatomic,assign)NSInteger offset;
+@property (nonatomic,assign)BOOL currentIsBottom;
 @end
 
 @implementation BindHRBandView
@@ -55,6 +64,9 @@
 - (instancetype)initWithFrame:(CGRect) frame {
     if (self = [super initWithFrame:frame]) {
         self.contentFrame = frame;
+        self.namesArr = [NSMutableArray array];
+        self.currentIsBottom = NO;
+        self.offset = 0;
         [self setUpView];
     }
     return self;
@@ -71,7 +83,7 @@
     self.contentView = [[UIView alloc] init];
     self.contentView.frame = CGRectMake(0, 0, kWidth - 2 * kBindView_LeftMargin * kXScal, kHeight -  kBindView_TopMargin * kYScal - kBindView_BottomMargin * kYScal);
     self.contentView.frame = self.contentFrame;
-    self.contentView.layer.cornerRadius = 2;
+    self.contentView.layer.cornerRadius = 8;
     self.contentView.layer.masksToBounds = YES;
     CGPoint center = self.center;
     CGFloat x = center.x;
@@ -102,10 +114,20 @@
     
     CGFloat right_Width = self.contentFrame.size.width - CGRectGetMaxX(self.nameTitleLbl.frame) - kLeftLbl_RightMargin * kXScal - kRight_CustomView_RightMargin * kXScal;
     self.nameView = [[SearchAndSelectView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.nameTitleLbl.frame) + kLeftLbl_RightMargin * kXScal, KRight_CustomView_TopMargin * kYScal, right_Width, kRight_CustomView_Height * kYScal)];
-    self.nameView.backgroundColor = [UIColor colorWithHexString:@"#88dbed"];
-    self.nameView.layer.cornerRadius = kRight_CustomView_Height * kYScal / 2.0;
-    self.nameView.layer.masksToBounds = YES;
+    self.nameView.searchBgView.backgroundColor = [UIColor colorWithHexString:@"#88dbed"];
+    [self.nameView.searchBtn addTarget:self action:@selector(searchUser:) forControlEvents:UIControlEventTouchUpInside];
+    [self.nameView.selectBtn addTarget:self action:@selector(showUsers:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.nameView];
+    
+    self.nameTableview = [[UITableView alloc] initWithFrame:CGRectMake(self.nameView.frame.origin.x, CGRectGetMaxY(self.nameView.frame), self.nameView.contentTF.frame.size.width, 160) style:UITableViewStylePlain];
+    self.nameTableview.dataSource = self;
+    self.nameTableview.delegate = self;
+    self.nameTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.nameTableview.tableFooterView = [[UIView alloc] init];
+    self.nameTableview.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
+    [self.contentView addSubview:self.nameTableview];
+    self.nameTableview.hidden = YES;
+    [self.contentView bringSubviewToFront:self.nameView];
     
     self.hrDeviceTitleLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.nameTitleLbl.frame.origin.x, CGRectGetMaxY(self.nameView.frame) + kRight_CustomView_BottomMargin * kYScal, kLeftLbl_Width * kXScal, kRight_CustomView_Height * kYScal)];
     self.hrDeviceTitleLbl.textColor = [UIColor blackColor];
@@ -113,12 +135,21 @@
     self.hrDeviceTitleLbl.font =  [UIFont systemFontOfSize:kLeftLbl_FontSize * kYScal];
     [self.contentView addSubview:self.hrDeviceTitleLbl];
     
-    self.hrDeviceView = [[SearchAndSelectView alloc] initWithFrame:CGRectMake(self.nameView.frame.origin.x, CGRectGetMaxY(self.nameView.frame) + kRight_CustomView_BottomMargin * kYScal, right_Width, kRight_CustomView_Height * kYScal)];
-    self.hrDeviceView.backgroundColor = [UIColor colorWithHexString:@"#88dbed"];
-    self.hrDeviceView.contentTF.placeholder = @"心率带ID";
-    self.hrDeviceView.layer.cornerRadius = kRight_CustomView_Height * kYScal / 2.0;
-    self.hrDeviceView.layer.masksToBounds = YES;
+    self.hrDeviceView = [[SearchAndSelectView alloc] initWithFrame:CGRectMake(self.nameView.frame.origin.x, self.hrDeviceTitleLbl.frame.origin.y, right_Width, kRight_CustomView_Height * kYScal)];
+    self.hrDeviceView.searchBgView.backgroundColor = [UIColor colorWithHexString:@"#88dbed"];
+    [self.hrDeviceView.searchBtn addTarget:self action:@selector(searchDevices:) forControlEvents:UIControlEventTouchUpInside];
+    [self.hrDeviceView.selectBtn addTarget:self action:@selector(showDevices:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.hrDeviceView];
+    
+    self.deviceTableview = [[UITableView alloc] initWithFrame:CGRectMake(self.hrDeviceView.frame.origin.x, CGRectGetMaxY(self.hrDeviceView.frame), self.hrDeviceView.contentTF.frame.size.width, 160) style:UITableViewStylePlain];
+    self.deviceTableview.dataSource = self;
+    self.deviceTableview.delegate = self;
+    self.deviceTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.deviceTableview.tableFooterView = [[UIView alloc] init];
+    self.deviceTableview.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
+    [self.contentView addSubview:self.deviceTableview];
+    self.deviceTableview.hidden = YES;
+    [self.contentView bringSubviewToFront:self.deviceTableview];
     
     self.bindBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.bindBtn setTitle:@"绑定" forState:UIControlStateNormal];
@@ -145,11 +176,64 @@
 
 #pragma mark - button click events
 
+- (void)showUsers:(UIButton*)sender {
+    NSLog(@"显示用户");
+    self.nameView.layer.zPosition = 10;
+    self.hrDeviceView.layer.zPosition = 3;
+    self.nameTableview.hidden = NO;
+    self.deviceTableview.hidden = YES;
+    [self showUserListWithKeyword:@""];
+}
+
+- (void)searchUser:(UIButton*)sender {
+    NSLog(@"搜索用户");
+    self.nameView.layer.zPosition = 10;
+    self.hrDeviceView.layer.zPosition = 3;
+    self.nameTableview.hidden = NO;
+    self.deviceTableview.hidden = YES;
+    [self showUserListWithKeyword:self.nameView.contentTF.text];
+}
+
+- (void)showDevices:(UIButton*)sender {
+    NSLog(@"显示设备");
+    self.nameView.layer.zPosition = 3;
+    self.hrDeviceView.layer.zPosition = 10;
+    self.nameTableview.hidden = YES;
+    self.deviceTableview.hidden = NO;
+    [self showAvailableDevicesWithKeyword:@""];
+    [self.deviceTableview reloadData];
+}
+
+- (void)searchDevices:(UIButton*)sender {
+    NSLog(@"搜索设备");
+    self.nameView.layer.zPosition = 3;
+    self.hrDeviceView.layer.zPosition = 10;
+    self.nameTableview.hidden = YES;
+    self.deviceTableview.hidden = NO;
+    [self showAvailableDevicesWithKeyword:self.hrDeviceView.contentTF.text];
+    [self.deviceTableview reloadData];
+}
+
 - (void)bind:(UIButton*)sender {
-    [self dismiss];
+    if (self.nameView.contentTF.text.length > 0 || self.hrDeviceView.contentTF.text.length > 0) {
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSDictionary *userDict = [self.namesArr objectAtIndex:self.selectedUserIndex];
+        NSDictionary *deviceDict = [self.devicesArr objectAtIndex:self.selectedDeviceIndex];
+        NSInteger userId = [[userDict valueForKey:@"id"] integerValue];
+        NSString *deviceCode = [deviceDict valueForKey:@"deviceCode"];
+        [parameter setValue:@(userId) forKey:@"userId"];
+        [parameter setValue:deviceCode forKey:@"deviceCode"];
+        UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+        NSDictionary *dict = user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [self bindHRDevice:parameter];
+    }
 }
 
 - (void)cancel:(UIButton*)sender {
+    self.offset = 0;
     [self dismiss];
 }
 
@@ -162,4 +246,201 @@
     [self removeFromSuperview];
 }
 
+#pragma mark - UITableviewDataSource && UITableviewDelegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (tableView == self.nameTableview) {
+        return self.namesArr.count;
+    } else {
+        return self.devicesArr.count;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 160/6.0;
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView == self.nameTableview) {
+        NSString *reuseCellId = @"nameReuseCellId";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellId];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellId];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.backgroundColor = [UIColor clearColor];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
+            cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+            cell.textLabel.textColor = [UIColor blackColor];
+        }
+        NSDictionary *dict = [self.namesArr objectAtIndex:indexPath.row];
+        cell.textLabel.text = [dict valueForKey:@"name"];
+        return cell;
+    } else {
+        NSString *reuseCellId = @"deviceReuseCellId";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellId];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellId];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.backgroundColor = [UIColor clearColor];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
+            cell.textLabel.textColor = [UIColor blackColor];
+            cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+        }
+        NSDictionary *dict = [self.devicesArr objectAtIndex:indexPath.row];
+        cell.textLabel.text = [dict valueForKey:@"deviceCode"];
+        return cell;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    if (tableView == self.nameTableview) {
+        NSDictionary *dict = [self.namesArr objectAtIndex:indexPath.row];
+        NSString *name = [dict valueForKey:@"name"];
+        self.selectedUserIndex = indexPath.row;
+        self.nameView.contentTF.text = name;
+        self.nameTableview.hidden = YES;
+    } else {
+        NSDictionary *dict = [self.devicesArr objectAtIndex:indexPath.row];
+        NSString *deviceId = [dict valueForKey:@"deviceCode"];
+        self.selectedDeviceIndex = indexPath.row;
+        self.hrDeviceView.contentTF.text = deviceId;
+        self.deviceTableview.hidden = YES;
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGFloat height = scrollView.frame.size.height;
+    CGFloat contentOffsetY = scrollView.contentOffset.y;
+    CGFloat bottomOffset = scrollView.contentSize.height - contentOffsetY;
+    if (bottomOffset <= height) {
+//        self.currentIsBottom = YES;
+//        [self showUserListWithKeyword:@""];
+    } else {
+        self.currentIsBottom = NO;
+    }
+}
+#pragma mark - netFunctions
+
+- (void)showUserListWithKeyword:(NSString *)keyword{
+    __weak typeof (self)weakSelf = self;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+//    if (self.currentIsBottom) {
+//        [parameter setValue:@(self.offset) forKey:@"offset"];
+//    } else {
+//        [parameter setValue:@(0) forKey:@"offset"];
+//    }
+    [parameter setValue:@(0) forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:keyword forKey:@"keyword"];
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"************** 1:%@**************",responseObject);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+//            if (rows.count > 0) {
+//                weakSelf.offset += 10;
+//                [weakSelf handPatientData:rows];
+//            } else {
+//                [weakSelf.nameTableview reloadData];
+//            }
+            weakSelf.namesArr = [NSMutableArray arrayWithArray:rows];
+            [weakSelf.nameTableview reloadData];
+        } else if (code == 10011) {
+            [weakSelf dismiss];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)handPatientData:(NSArray *)data {
+    if (self.namesArr.count > 0) {
+        NSMutableArray *tempArr = [NSMutableArray array];
+        for (NSDictionary *originDict in self.namesArr) {
+            NSInteger originId = [[originDict valueForKey:@"id"] integerValue];
+            for (NSDictionary *dict in data) {
+                NSInteger userid = [[dict valueForKey:@"id"] integerValue];
+                if (originId != userid) {
+                    [tempArr addObject:dict];
+                }
+            }
+        }
+        self.namesArr = [tempArr mutableCopy];
+        [self.nameTableview reloadData];
+    } else {
+        [self.namesArr addObjectsFromArray:data];
+    }
+    [self.nameTableview reloadData];
+}
+
+- (void)showAvailableDevicesWithKeyword:(NSString*)keyword {
+    __weak typeof (self)weakSelf = self;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@14 forKey:@"deviceType"];
+    [parameter setValue:keyword forKey:@"keyword"];
+
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_AVAILABLE_DEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"************** 2:%@**************",responseObject);
+        if (code == 0) {
+            NSArray *datas = [responseObject valueForKey:@"data"];
+            if (datas.count > 0) {
+                weakSelf.devicesArr = [NSMutableArray arrayWithArray:datas];
+            } else {
+                [STTextHudTool showText:@"无闲置心率带"];
+            }
+            [weakSelf.deviceTableview reloadData];
+        } else if (code == 10011) {
+            [weakSelf dismiss];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)bindHRDevice:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_BIND_HRDEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"bind device :%@ :%@",responseObject,error);
+        if (code == 0) {
+            [weakSelf dismiss];
+        } else if (code == 10011) {
+            [weakSelf dismiss];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 @end

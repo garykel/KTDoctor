@@ -56,10 +56,14 @@ extern NSMutableArray *patientsArr;
     self = [super initWithFrame:frame];
     if (self) {
         self.contentFrame = frame;
-//        self.dataArr = [@[@{@"hrDeviceId":@"21cDb2c",@"deviceId":@"22:21:30:C0:AF",@"name":@"Andrew",@"id":@"5"},@{@"hrDeviceId":@"21BDb2c",@"deviceId":@"22:21:31:C0:AF",@"name":@"Jerry",@"id":@"6"},@{@"hrDeviceId":@"21cDA2c",@"deviceId":@"22:20:30:C0:AF",@"name":@"Tom",@"id":@"7"},@{@"hrDeviceId":@"2FcDb2c",@"deviceId":@"22:21:30:C5:AF",@"name":@"Tony",@"id":@"8"}] mutableCopy];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hide:) name:@"HidePatientListViewNotification" object:nil];
         [self setupUI];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupUI {
@@ -205,6 +209,12 @@ extern NSMutableArray *patientsArr;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+#pragma mark - HidePatientListViewNotification
+
+- (void)hide:(NSNotification*)noti {
+    [self dismiss];
 }
 
 #pragma mark - button click events
