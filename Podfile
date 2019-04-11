@@ -5,4 +5,5 @@ target 'KTDoctor' do
    pod 'Masonry'
    pod 'IQKeyboardManager'
    pod 'SDWebImage'
+   pod 'MJRefresh'
 end
