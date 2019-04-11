@@ -354,7 +354,7 @@
             NSArray *rows = [responseObject valueForKey:@"rows"];
             if (weakSelf.isFooterClick) {
                 [weakSelf.sportlists addObjectsFromArray:rows];
-                [weakSelf.listView.mj_header endRefreshing];
+                [weakSelf.listView.mj_footer endRefreshing];
             } else {
                 if (rows.count > 0) {
                     if (weakSelf.sportlists.count > 0) {//之前有数据

@@ -56,7 +56,8 @@
 @property (nonatomic,assign)NSInteger selectedUserIndex;
 @property (nonatomic,assign)NSInteger selectedDeviceIndex;
 @property (nonatomic,assign)NSInteger offset;
-@property (nonatomic,assign)BOOL currentIsBottom;
+@property (nonatomic,assign)BOOL isFooterClick;
+
 @end
 
 @implementation BindHRBandView
@@ -65,8 +66,8 @@
     if (self = [super initWithFrame:frame]) {
         self.contentFrame = frame;
         self.namesArr = [NSMutableArray array];
-        self.currentIsBottom = NO;
         self.offset = 0;
+        self.isFooterClick = NO;
         [self setUpView];
     }
     return self;
@@ -182,15 +183,24 @@
     self.hrDeviceView.layer.zPosition = 3;
     self.nameTableview.hidden = NO;
     self.deviceTableview.hidden = YES;
+    MJRefreshBackNormalFooter *footer = [[MJRefreshBackNormalFooter alloc] init];
+    [footer setRefreshingTarget:self refreshingAction:@selector(footerClick)];
+    self.nameTableview.mj_footer = footer;
     [self showUserListWithKeyword:@""];
 }
 
+- (void)footerClick {
+    self.isFooterClick = YES;
+    self.offset += 10;
+    [self showUserListWithKeyword:@""];
+}
 - (void)searchUser:(UIButton*)sender {
     NSLog(@"搜索用户");
     self.nameView.layer.zPosition = 10;
     self.hrDeviceView.layer.zPosition = 3;
     self.nameTableview.hidden = NO;
     self.deviceTableview.hidden = YES;
+    self.nameTableview.mj_footer = nil;
     [self showUserListWithKeyword:self.nameView.contentTF.text];
 }
 
@@ -313,17 +323,6 @@
     }
 }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat height = scrollView.frame.size.height;
-    CGFloat contentOffsetY = scrollView.contentOffset.y;
-    CGFloat bottomOffset = scrollView.contentSize.height - contentOffsetY;
-    if (bottomOffset <= height) {
-//        self.currentIsBottom = YES;
-//        [self showUserListWithKeyword:@""];
-    } else {
-        self.currentIsBottom = NO;
-    }
-}
 #pragma mark - netFunctions
 
 - (void)showUserListWithKeyword:(NSString *)keyword{
@@ -334,12 +333,7 @@
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
-//    if (self.currentIsBottom) {
-//        [parameter setValue:@(self.offset) forKey:@"offset"];
-//    } else {
-//        [parameter setValue:@(0) forKey:@"offset"];
-//    }
-    [parameter setValue:@(0) forKey:@"offset"];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
     [parameter setValue:@10 forKey:@"rows"];
     [parameter setValue:keyword forKey:@"keyword"];
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
@@ -348,13 +342,12 @@
         NSLog(@"************** 1:%@**************",responseObject);
         if (code == 0) {
             NSArray *rows = [responseObject valueForKey:@"rows"];
-//            if (rows.count > 0) {
-//                weakSelf.offset += 10;
-//                [weakSelf handPatientData:rows];
-//            } else {
-//                [weakSelf.nameTableview reloadData];
-//            }
-            weakSelf.namesArr = [NSMutableArray arrayWithArray:rows];
+            if (weakSelf.isFooterClick) {
+                [weakSelf.namesArr addObjectsFromArray:rows];
+                [weakSelf.nameTableview.mj_footer endRefreshing];
+            } else {
+                weakSelf.namesArr = [NSMutableArray arrayWithArray:rows];
+            }
             [weakSelf.nameTableview reloadData];
         } else if (code == 10011) {
             [weakSelf dismiss];
