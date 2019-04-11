@@ -9,6 +9,7 @@
 #import "HistoryViewController.h"
 #import "HistoryDetailViewController.h"
 #import "HistoryCell.h"
+#import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -47,8 +48,9 @@
 @property (nonatomic,strong)UITextField *prescriptionTF;
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)UITableView *listView;
-@property (nonatomic,strong)NSMutableArray *dataArr;
 @property (nonatomic,copy)NSString *startTimeStr;
+@property (nonatomic,assign)NSInteger offset;
+@property (nonatomic,assign)BOOL isFooterClick;
 @end
 
 @implementation HistoryViewController
@@ -56,9 +58,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
-    self.dataArr = [NSMutableArray array];
-    self.dataArr = [NSMutableArray arrayWithObjects:@"section1",@"section2",@"section3",@"section4", nil];
-//    self.sportlists = [NSMutableArray array];
+    self.isFooterClick = NO;
     [self setNavBar];
     [self setupUI];
 }
@@ -166,12 +166,30 @@
 }
 
 - (void)headerClick {
-    [NSThread sleepForTimeInterval:3];
-    [self.listView.mj_header endRefreshing];
+    self.isFooterClick = NO;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [self getUsersSportList:parameter];
 }
 
 - (void)footerClick {
-    [NSThread sleepForTimeInterval:3];
+    self.isFooterClick = YES;
+    self.offset += 10;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [self getUsersSportList:parameter];
     [self.listView.mj_footer endRefreshing];
 }
 
@@ -321,6 +339,49 @@
     NSInteger second = seconds % 60;
     timeStr = [NSString stringWithFormat:@"%02ld:%02ld",(long)minute,(long)second];
     return timeStr;
+}
+
+#pragma mark - net functions
+
+- (void)getUsersSportList:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_SPORTLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"sport lists :%@ :%@",responseObject,error);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            if (weakSelf.isFooterClick) {
+                [weakSelf.sportlists addObjectsFromArray:rows];
+                [weakSelf.listView.mj_header endRefreshing];
+            } else {
+                if (rows.count > 0) {
+                    if (weakSelf.sportlists.count > 0) {//之前有数据
+                        //替换前n个数据
+                        NSMutableArray *tempArr = [NSMutableArray array];
+                        [tempArr addObjectsFromArray:rows];
+                        if (weakSelf.sportlists.count > rows.count) {//除去n个数据还有数据剩下
+                            NSArray *afterArr = [weakSelf.sportlists subarrayWithRange:NSMakeRange(rows.count, weakSelf.sportlists.count - rows.count)];
+                            [tempArr addObjectsFromArray:afterArr];
+                        }
+                        weakSelf.sportlists = [tempArr mutableCopy];
+                    } else {
+                        [weakSelf.sportlists addObjectsFromArray:rows];
+                    }
+                }
+                [weakSelf.listView.mj_header endRefreshing];
+            }
+            
+            [weakSelf.listView reloadData];
+        } else if (code == 10011) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 
 #pragma mark - button click events
