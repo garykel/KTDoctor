@@ -15,8 +15,8 @@
 #define kTimeLbl_FontSize 16.0
 #define kTimeLbl_Width 150
 #define kIcon_TopMargin 60
-#define kIcon_Width 28
-#define KIcon_Height 25
+#define kIcon_Width 23
+#define KIcon_Height 27
 #define kTimeIcon_Width 23
 #define kTimeIcon_Height 27
 #define kIcon_LeftMagin 30
@@ -46,11 +46,13 @@
 #define kTargetHRZoneLbl_Width 100
 #define kTargetHRZone_Height 40
 #define kTargetHRZone_Lbl_LeftMargin 15
-#define kTipsLbl_TopMargin 30
+#define kTipsLbl_TopMargin 60
 #define kTipsLbl_Height 20
 #define kTipsLbl_Width 560
 #define kTipsImg_RightMargin 8
 #define kTipsImg_Width 20
+#define kAlertImg_TopMargin 30
+#define kAlertImg_LeftMargin 20
 
 extern NSMutableArray *patientsArr;
 
@@ -105,6 +107,7 @@ extern NSMutableArray *patientsArr;
 @property (nonatomic,strong)UILabel *tipsLbl;
 @property (nonatomic,strong)UILabel *hrTargetZoneLbl;
 @property (nonatomic,strong)SportDataModel *data;
+@property (nonatomic,strong)UIImageView *alertImg;
 @end
 
 @implementation MonitorDetailViewController
@@ -179,7 +182,7 @@ extern NSMutableArray *patientsArr;
     
     CGFloat verticalSpace = (kHeight - CGRectGetMaxY(self.navView.frame) - 2 * kIcon_TopMargin * kYScal - 3 * kLbl_Height * kYScal - 3 * kValueLbl_Height - 2 * kValueLbl_BottomMargin * kYScal)/5;
     self.mileImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mile"]];
-    self.mileImg.frame = CGRectMake(kIcon_LeftMagin * kXScal, CGRectGetMaxY(self.navView.frame) + kIcon_TopMargin * kYScal, kIcon_Width * kXScal, KIcon_Height * kYScal);
+    self.mileImg.frame = CGRectMake(kIcon_LeftMagin * kXScal, CGRectGetMaxY(self.navView.frame) + kIcon_TopMargin * kYScal, 26 * kXScal, 28 * kYScal);
     [self.view addSubview:self.mileImg];
     
     self.mileLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.mileImg.frame) + kLbl_LeftMargin, CGRectGetMidY(self.mileImg.frame) - kLbl_Height * kYScal / 2, kLbl_Width * kXScal, kLbl_Height * kYScal)];
@@ -203,7 +206,7 @@ extern NSMutableArray *patientsArr;
     [self.view addSubview:self.mileSeperateview];
     
     self.calorieImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"totalCalorie"]];
-    self.calorieImg.frame = CGRectMake(self.mileImg.frame.origin.x, CGRectGetMaxY(self.mileSeperateview.frame) + verticalSpace, kIcon_Width * kXScal, KIcon_Height * kYScal);
+    self.calorieImg.frame = CGRectMake(self.mileImg.frame.origin.x, CGRectGetMaxY(self.mileSeperateview.frame) + verticalSpace, 20 * kXScal, 27 * kYScal);
     [self.view addSubview:self.calorieImg];
     
     self.calorieLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.mileLbl.frame.origin.x, CGRectGetMidY(self.calorieImg.frame) - kLbl_Height * kYScal / 2, kLbl_Width * kXScal, kValueLbl_Height * kYScal)];
@@ -227,7 +230,7 @@ extern NSMutableArray *patientsArr;
     [self.view addSubview:self.calorieSeperateView];
     
     self.currentSectionImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"currentSection"]];
-    self.currentSectionImg.frame = CGRectMake(self.mileImg.frame.origin.x, CGRectGetMaxY(self.calorieSeperateView.frame) + verticalSpace, kIcon_Width * kXScal, KIcon_Height * kYScal);
+    self.currentSectionImg.frame = CGRectMake(self.mileImg.frame.origin.x, CGRectGetMaxY(self.calorieSeperateView.frame) + verticalSpace, 23 * kXScal, 27 * kYScal);
     [self.view addSubview:self.currentSectionImg];
     
     self.currentSectionLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.mileLbl.frame.origin.x, CGRectGetMidY(self.currentSectionImg.frame) - kLbl_Height * kYScal / 2, kLbl_Width * kXScal, kLbl_Height * kYScal)];
@@ -353,7 +356,7 @@ extern NSMutableArray *patientsArr;
     self.leftTimeSeperateView.backgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:self.leftTimeSeperateView];
     
-    self.speedImg = [[UIImageView alloc] initWithFrame:CGRectMake(rightIcon_LeftMargin, self.currentSectionImg.frame.origin.y, kIcon_Width * kXScal, KIcon_Height * kYScal)];
+    self.speedImg = [[UIImageView alloc] initWithFrame:CGRectMake(rightIcon_LeftMargin, self.currentSectionImg.frame.origin.y, 23 * kXScal, 27 * kYScal)];
     self.speedImg.image = [UIImage imageNamed:@"speed"];
     [self.view addSubview:self.speedImg];
     
@@ -372,6 +375,13 @@ extern NSMutableArray *patientsArr;
     self.speedUnitLbl.textColor = [UIColor whiteColor];
     self.speedUnitLbl.text = @"km/h";
     [self.view addSubview:self.speedUnitLbl];
+    
+    UIImage *bgImg = [UIImage imageNamed:@"alertBg"];
+    bgImg = [self imageCompressWithSimple:bgImg scaledToSize:CGSizeMake(kWidth, kHeight - CGRectGetMaxY(self.navView.frame))];
+    self.alertImg = [[UIImageView alloc] initWithImage:bgImg];
+    self.alertImg.frame = CGRectMake(0,0, kWidth, kHeight - (CGRectGetMaxY(self.navView.frame)));
+    self.alertImg.hidden = YES;
+    [self.bgImg addSubview:self.alertImg];
 }
 
 - (void)drawDashBoard {
@@ -524,15 +534,29 @@ extern NSMutableArray *patientsArr;
                 if (data.currHr < lowHR) {
                     self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_blue"];
                     self.tipsView.hidden = NO;
+                    self.alertImg.hidden = YES;
                     self.tipsLbl.text = @"您当前低于目标心率区间，请在没有不适感的前提下提升您的运动强度。";
-                } else if (data.currHr > maxHR) {
-                    self.tipsLbl.text = @"当前心率过高，请适当降低运动强度。";
-                    self.tipsView.hidden = NO;
-                    self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_red"];
-                } else {
+                } else if (data.currHr <= maxHR && data.currHr >= lowHR) {
                     self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_blue"];
                     self.tipsView.hidden = NO;
                     self.tipsLbl.text = @"您已进入目标心率区间，请保持当前运动强度。";
+                    self.alertImg.hidden = YES;
+                } else if(data.currHr > maxHR){
+                    self.tipsLbl.text = @"您已超过目标心率区间，请调整运动节奏，控制您的运动强度。";
+                    self.tipsView.hidden = NO;
+                    self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_blue"];
+                    self.hrValLbl.textColor = [UIColor redColor];
+                    self.alertImg.hidden = NO;
+                }
+                if (data.currHr >= data.alHr) {
+                    self.tipsLbl.text = @"当前心率过高，请适当降低运动强度。";
+                    self.tipsView.hidden = NO;
+                    self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_red"];
+                    self.hrValLbl.textColor = [UIColor redColor];
+                    self.alertImg.hidden = NO;
+                } else {
+                    self.hrValLbl.textColor = [UIColor whiteColor];
+                    self.alertImg.hidden = YES;
                 }
                 CGSize size = [self.tipsLbl sizeThatFits:CGSizeMake(MAXFLOAT, kTipsLbl_Height * kYScal)];
                 self.tipsLbl.frame = CGRectMake((kTipsImg_Width + kTipsImg_RightMargin)* kXScal, 0, size.width, size.height);
@@ -543,6 +567,7 @@ extern NSMutableArray *patientsArr;
             }
         } else {
             self.tipsView.hidden = YES;
+            self.alertImg.hidden = YES;
         }
         CGFloat angle = M_PI / 60 * (CGFloat)data.currHr / (240/60);
         self.pointer.transform = CGAffineTransformMakeRotation(angle);

@@ -14,11 +14,53 @@
 #define kTimeLbl_FontSize 16.0
 #define kTimeLbl_Width 200
 #define kTitle_FontSize 22
+#define kBackgroundImg_TopMargin 10
+#define kBackgroundImg_LeftMargin 15
+#define kBackgroundImg_BottomMargin 15
+#define kLeftView_TopMargin 50
+#define kLeftView_LeftMargin 10
+#define kLeftView_RightMargin 10
+#define kLeftUnitLbl_RightMargin 10
+#define kRightUnitLbl_LeftMargin 10
 
 @interface HistoryDetailViewController ()
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
+@property (nonatomic,strong)UIImageView *bgImg; 
+@property (nonatomic,strong)UIView *leftView;
+@property (nonatomic,strong)UIImageView *finishBgImg;
+@property (nonatomic,strong)UILabel *finishLbl;
+@property (nonatomic,strong)UILabel *finishValLbl;
+@property (nonatomic,strong)UIImageView *headImg;
+@property (nonatomic,strong)UILabel *nameLbl;
+@property (nonatomic,strong)UILabel *idLbl;
+@property (nonatomic,strong)UIView *sportView;
+@property (nonatomic,strong)UILabel *avgHRLbl;
+@property (nonatomic,strong)UILabel *avgHRValLbl;
+@property (nonatomic,strong)UILabel *avgUnitLbl;
+@property (nonatomic,strong)UILabel *maxHRLbl;
+@property (nonatomic,strong)UILabel *maxHRValLbl;
+@property (nonatomic,strong)UILabel *maxUnitLbl;
+@property (nonatomic,strong)UILabel *avgSpeedLbl;
+@property (nonatomic,strong)UILabel *avgSpeedValLbl;
+@property (nonatomic,strong)UILabel *avgSpeedUnitLbl;
+@property (nonatomic,strong)UILabel *avgDifficultyLbl;
+@property (nonatomic,strong)UILabel *avgDifficultyValLbl;
+@property (nonatomic,strong)UILabel *calorieLbl;
+@property (nonatomic,strong)UILabel *calorieValLbl;
+@property (nonatomic,strong)UILabel *calorieUnitLbl;
+@property (nonatomic,strong)UILabel *mileLbl;
+@property (nonatomic,strong)UILabel *mileValLbl;
+@property (nonatomic,strong)UILabel *mileUnitLbl;
+@property (nonatomic,strong)UILabel *timeLbl;
+@property (nonatomic,strong)UILabel *timeValLbl;
+@property (nonatomic,strong)UIImageView *seperateLine1;
+@property (nonatomic,strong)UIImageView *seperateLine2;
+@property (nonatomic,strong)UIImageView *seperateLine3;
+@property (nonatomic,strong)UIImageView *seperateLine4;
+@property (nonatomic,strong)UIImageView *seperateLine5;
+@property (nonatomic,strong)UIImageView *seperateLine6;
 @end
 
 @implementation HistoryDetailViewController
@@ -56,22 +98,26 @@
 }
 
 - (void)setupUI {
-    
+    UIImage *bgImg = [UIImage imageNamed:@"whiteBg"];
+    bgImg = [self imageCompressWithSimple:bgImg scaledToSize:CGSizeMake(kWidth - 2 * kBackgroundImg_LeftMargin * kXScal, kHeight - (CGRectGetMaxY(self.navView.frame) + kBackgroundImg_TopMargin * kYScal + kBackgroundImg_BottomMargin * kYScal))];
+    self.bgImg = [[UIImageView alloc] initWithImage:bgImg];
+    self.bgImg = [[UIImageView alloc] initWithFrame:CGRectMake(kBackgroundImg_LeftMargin * kXScal, CGRectGetMaxY(self.navView.frame) + kBackgroundImg_TopMargin * kYScal, kWidth - 2 * kBackgroundImg_LeftMargin * kXScal, kHeight - (CGRectGetMaxY(self.navView.frame) + kBackgroundImg_TopMargin * kYScal + kBackgroundImg_BottomMargin * kYScal))];
+    [self.view addSubview:self.bgImg];
+    self.bgImg.userInteractionEnabled = YES;
+}
+
+- (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
+{
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0,0,size.width,size.height)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark - button click events
 - (void)back:(UIButton*)sender {
     [self.navigationController popViewControllerAnimated:YES];
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

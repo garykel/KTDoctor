@@ -57,6 +57,7 @@ extern NSMutableArray *patientsArr;
     if (self) {
         self.contentFrame = frame;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hide:) name:@"HidePatientListViewNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePatientList:) name:@"UpdatePatientDataNotification" object:nil];
         [self setupUI];
     }
     return self;
@@ -217,6 +218,13 @@ extern NSMutableArray *patientsArr;
     [self dismiss];
 }
 
+#pragma mark - UpdatePatientDataNotification
+
+- (void)updatePatientList:(NSNotification*)noti {
+    self.titleLbl.text = [NSString stringWithFormat:@"患者管理(%d)",patientsArr.count];
+    [self.listView reloadData];
+}
+
 #pragma mark - button click events
 
 - (void)handleTapGesture:(UITapGestureRecognizer*)gesture {
@@ -257,11 +265,14 @@ extern NSMutableArray *patientsArr;
 }
 
 - (void)unbindHRDevice:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUNBIND_HR_DEVICE] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         if (code == 0) {
             [STTextHudTool showText:msg];
+            [weakSelf.listView reloadData];
+            weakSelf.titleLbl.text = [NSString stringWithFormat:@"患者管理(%d)",patientsArr.count];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshPatientNotification" object:nil];
         } else if (code == 10011) {
             [self dismiss];

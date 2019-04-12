@@ -9,6 +9,7 @@
 #import "BindHRBandView.h"
 #import "SearchAndSelectView.h"
 #import "UserModel.h"
+#import "SportDataModel.h"
 
 #define kTitleLbl_TopMargin 34
 #define kTitleLbl_FontSize 25
@@ -38,6 +39,8 @@
 #define kBindView_LeftMargin 150
 #define kBindView_BottomMargin 152
 
+extern NSMutableArray *patientsArr;
+
 @interface BindHRBandView()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,assign)CGRect contentFrame;
 @property (nonatomic,strong)UIView *contentView;
@@ -57,7 +60,6 @@
 @property (nonatomic,assign)NSInteger selectedDeviceIndex;
 @property (nonatomic,assign)NSInteger offset;
 @property (nonatomic,assign)BOOL isFooterClick;
-
 @end
 
 @implementation BindHRBandView
@@ -120,16 +122,6 @@
     [self.nameView.selectBtn addTarget:self action:@selector(showUsers:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.nameView];
     
-    self.nameTableview = [[UITableView alloc] initWithFrame:CGRectMake(self.nameView.frame.origin.x, CGRectGetMaxY(self.nameView.frame), self.nameView.contentTF.frame.size.width, 160) style:UITableViewStylePlain];
-    self.nameTableview.dataSource = self;
-    self.nameTableview.delegate = self;
-    self.nameTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.nameTableview.tableFooterView = [[UIView alloc] init];
-    self.nameTableview.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
-    [self.contentView addSubview:self.nameTableview];
-    self.nameTableview.hidden = YES;
-    [self.contentView bringSubviewToFront:self.nameView];
-    
     self.hrDeviceTitleLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.nameTitleLbl.frame.origin.x, CGRectGetMaxY(self.nameView.frame) + kRight_CustomView_BottomMargin * kYScal, kLeftLbl_Width * kXScal, kRight_CustomView_Height * kYScal)];
     self.hrDeviceTitleLbl.textColor = [UIColor blackColor];
     self.hrDeviceTitleLbl.text = @"心率带ID";
@@ -141,16 +133,6 @@
     [self.hrDeviceView.searchBtn addTarget:self action:@selector(searchDevices:) forControlEvents:UIControlEventTouchUpInside];
     [self.hrDeviceView.selectBtn addTarget:self action:@selector(showDevices:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.hrDeviceView];
-    
-    self.deviceTableview = [[UITableView alloc] initWithFrame:CGRectMake(self.hrDeviceView.frame.origin.x, CGRectGetMaxY(self.hrDeviceView.frame), self.hrDeviceView.contentTF.frame.size.width, 160) style:UITableViewStylePlain];
-    self.deviceTableview.dataSource = self;
-    self.deviceTableview.delegate = self;
-    self.deviceTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.deviceTableview.tableFooterView = [[UIView alloc] init];
-    self.deviceTableview.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
-    [self.contentView addSubview:self.deviceTableview];
-    self.deviceTableview.hidden = YES;
-    [self.contentView bringSubviewToFront:self.deviceTableview];
     
     self.bindBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.bindBtn setTitle:@"绑定" forState:UIControlStateNormal];
@@ -179,10 +161,17 @@
 
 - (void)showUsers:(UIButton*)sender {
     NSLog(@"显示用户");
-    self.nameView.layer.zPosition = 10;
-    self.hrDeviceView.layer.zPosition = 3;
-    self.nameTableview.hidden = NO;
-    self.deviceTableview.hidden = YES;
+    [self.deviceTableview removeFromSuperview];
+    [self.nameTableview removeFromSuperview];
+    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    self.nameTableview = [[UITableView alloc] initWithFrame:CGRectMake(kBindView_LeftMargin * kXScal + self.nameView.frame.origin.x, CGRectGetMaxY(self.nameView.frame) + kBindBtn_TopMargin * kYScal + kRight_CustomView_Height * kYScal, self.nameView.contentTF.frame.size.width, 160) style:UITableViewStylePlain];
+    self.nameTableview.dataSource = self;
+    self.nameTableview.delegate = self;
+    self.nameTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.nameTableview.tableFooterView = [[UIView alloc] init];
+    self.nameTableview.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
+    [keyWindow addSubview:self.nameTableview];
+    
     MJRefreshBackNormalFooter *footer = [[MJRefreshBackNormalFooter alloc] init];
     [footer setRefreshingTarget:self refreshingAction:@selector(footerClick)];
     self.nameTableview.mj_footer = footer;
@@ -196,35 +185,53 @@
 }
 - (void)searchUser:(UIButton*)sender {
     NSLog(@"搜索用户");
-    self.nameView.layer.zPosition = 10;
-    self.hrDeviceView.layer.zPosition = 3;
-    self.nameTableview.hidden = NO;
-    self.deviceTableview.hidden = YES;
+    [self.deviceTableview removeFromSuperview];
+    [self.nameTableview removeFromSuperview];
+    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    self.nameTableview = [[UITableView alloc] initWithFrame:CGRectMake(kBindView_LeftMargin * kXScal + self.nameView.frame.origin.x, CGRectGetMaxY(self.nameView.frame) + kBindBtn_TopMargin * kYScal + kRight_CustomView_Height * kYScal, self.nameView.contentTF.frame.size.width, 160) style:UITableViewStylePlain];
+    self.nameTableview.dataSource = self;
+    self.nameTableview.delegate = self;
+    self.nameTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.nameTableview.tableFooterView = [[UIView alloc] init];
+    self.nameTableview.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
+    [keyWindow addSubview:self.nameTableview];
     self.nameTableview.mj_footer = nil;
     [self showUserListWithKeyword:self.nameView.contentTF.text];
 }
 
 - (void)showDevices:(UIButton*)sender {
     NSLog(@"显示设备");
-    self.nameView.layer.zPosition = 3;
-    self.hrDeviceView.layer.zPosition = 10;
-    self.nameTableview.hidden = YES;
-    self.deviceTableview.hidden = NO;
+    [self.deviceTableview removeFromSuperview];
+    [self.nameTableview removeFromSuperview];
+    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    self.deviceTableview = [[UITableView alloc] initWithFrame:CGRectMake(kBindView_LeftMargin * kXScal + self.hrDeviceView.frame.origin.x, CGRectGetMaxY(self.hrDeviceView.frame) + kBindBtn_TopMargin * kYScal + kRight_CustomView_Height * kYScal, self.hrDeviceView.contentTF.frame.size.width, 160) style:UITableViewStylePlain];
+    self.deviceTableview.dataSource = self;
+    self.deviceTableview.delegate = self;
+    self.deviceTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.deviceTableview.tableFooterView = [[UIView alloc] init];
+    self.deviceTableview.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
+    [keyWindow addSubview:self.deviceTableview];
     [self showAvailableDevicesWithKeyword:@""];
-    [self.deviceTableview reloadData];
 }
 
 - (void)searchDevices:(UIButton*)sender {
     NSLog(@"搜索设备");
-    self.nameView.layer.zPosition = 3;
-    self.hrDeviceView.layer.zPosition = 10;
-    self.nameTableview.hidden = YES;
-    self.deviceTableview.hidden = NO;
+    [self.deviceTableview removeFromSuperview];
+    [self.nameTableview removeFromSuperview];
+    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    self.deviceTableview = [[UITableView alloc] initWithFrame:CGRectMake(kBindView_LeftMargin * kXScal + self.hrDeviceView.frame.origin.x, CGRectGetMaxY(self.hrDeviceView.frame) + kBindBtn_TopMargin * kYScal + kRight_CustomView_Height * kYScal, self.hrDeviceView.contentTF.frame.size.width, 160) style:UITableViewStylePlain];
+    self.deviceTableview.dataSource = self;
+    self.deviceTableview.delegate = self;
+    self.deviceTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.deviceTableview.tableFooterView = [[UIView alloc] init];
+    self.deviceTableview.backgroundColor = [UIColor colorWithHexString:@"#eeeeee"];
+    [keyWindow addSubview:self.deviceTableview];
     [self showAvailableDevicesWithKeyword:self.hrDeviceView.contentTF.text];
-    [self.deviceTableview reloadData];
 }
 
 - (void)bind:(UIButton*)sender {
+    [self.nameTableview removeFromSuperview];
+    [self.deviceTableview removeFromSuperview];
     if (self.nameView.contentTF.text.length > 0 || self.hrDeviceView.contentTF.text.length > 0) {
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
         NSDictionary *userDict = [self.namesArr objectAtIndex:self.selectedUserIndex];
@@ -232,6 +239,7 @@
         NSInteger userId = [[userDict valueForKey:@"id"] integerValue];
         NSString *deviceCode = [deviceDict valueForKey:@"deviceCode"];
         [parameter setValue:@(userId) forKey:@"userId"];
+        [parameter setValue:[userDict valueForKey:@"name"] forKey:@"name"];
         [parameter setValue:deviceCode forKey:@"deviceCode"];
         UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
         NSDictionary *dict = user.organ;
@@ -244,6 +252,8 @@
 
 - (void)cancel:(UIButton*)sender {
     self.offset = 0;
+    [self.nameTableview removeFromSuperview];
+    [self.deviceTableview removeFromSuperview];
     [self dismiss];
 }
 
@@ -253,7 +263,25 @@
 }
 
 - (void)dismiss {
+    [self.deviceTableview removeFromSuperview];
+    [self.nameTableview removeFromSuperview];
     [self removeFromSuperview];
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    CGPoint point = [[touches anyObject] locationInView:self];
+    if (self.nameTableview) {
+        point = [self.nameTableview.layer convertPoint:point fromLayer:self.layer];
+        if (![self.nameTableview.layer containsPoint:point]) {
+            [self.nameTableview removeFromSuperview];
+        }
+    }
+    if (self.deviceTableview) {
+        point = [self.deviceTableview.layer convertPoint:point fromLayer:self.layer];
+        if (![self.deviceTableview.layer containsPoint:point]) {
+            [self.deviceTableview removeFromSuperview];
+        }
+    }
 }
 
 #pragma mark - UITableviewDataSource && UITableviewDelegate
@@ -313,13 +341,13 @@
         NSString *name = [dict valueForKey:@"name"];
         self.selectedUserIndex = indexPath.row;
         self.nameView.contentTF.text = name;
-        self.nameTableview.hidden = YES;
+        [self.nameTableview removeFromSuperview];
     } else {
         NSDictionary *dict = [self.devicesArr objectAtIndex:indexPath.row];
         NSString *deviceId = [dict valueForKey:@"deviceCode"];
         self.selectedDeviceIndex = indexPath.row;
         self.hrDeviceView.contentTF.text = deviceId;
-        self.deviceTableview.hidden = YES;
+        [self.deviceTableview removeFromSuperview];
     }
 }
 
@@ -400,6 +428,8 @@
             NSArray *datas = [responseObject valueForKey:@"data"];
             if (datas.count > 0) {
                 weakSelf.devicesArr = [NSMutableArray arrayWithArray:datas];
+                NSLog(@"devicesArr :%@ ^^^^^^^^^^^^^^^^^^",weakSelf.devicesArr);
+                [weakSelf.deviceTableview reloadData];
             } else {
                 [STTextHudTool showText:@"无闲置心率带"];
             }
@@ -424,6 +454,17 @@
         NSString *error = [responseObject valueForKey:@"error"];
         NSLog(@"bind device :%@ :%@",responseObject,error);
         if (code == 0) {
+            SportDataModel *model = [[SportDataModel alloc] init];
+            model.name = [parameter valueForKey:@"name"];
+            model.userId = [[parameter valueForKey:@"userId"] integerValue];
+            model.xId = [parameter valueForKey:@"deviceCode"];
+            model.dId = @"0";
+            model.dqxjzxj = @"0";
+            model.alHr = 100;
+            [patientsArr addObject:model];
+            NSLog(@"now patientArr is :%@",patientsArr);
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdatePatientDataNotification" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshPatientNotification" object:nil];
             [weakSelf dismiss];
         } else if (code == 10011) {
             [weakSelf dismiss];

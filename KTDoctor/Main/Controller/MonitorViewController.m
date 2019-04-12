@@ -66,9 +66,9 @@ NSMutableArray *patientsArr;
     self.dataArr = [NSMutableArray array];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePatient) name:@"RefreshPatientNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenExpire) name:@"TokenExpiredNotification" object:nil];
-//    SportDataModel *model = [[SportDataModel alloc] init];
-//    model.name = @"Andrew";
-//    model.userId = 7;
+    SportDataModel *model = [[SportDataModel alloc] init];
+    model.name = @"Andrew";
+    model.userId = 7;
 //    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
 //    [patientsArr addObject:model];
@@ -367,15 +367,17 @@ NSMutableArray *patientsArr;
             if (model.currHr < lowHR) {
                 cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
+            } else if (model.currHr <= maxHR && model.currHr >= lowHR) {
+                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
+                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
             } else if (model.currHr > maxHR) {
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
-            } else {
-                cell.bgImg.image = [UIImage imageNamed:@"bg_green"];
-                cell.heartImg.image = [UIImage imageNamed:@"heart_green"];
             }
         }
         if (model.currHr >= model.alHr) {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             [cell setAlpha:1];
             [UIView beginAnimations:@"flash screen" context:nil];
             [UIView setAnimationDuration:1.5];
@@ -816,10 +818,11 @@ withFilterContext:(nullable id)filterContext {
 
 - (void)handlerPatient:(SportDataModel*)data {
     if (patientsArr.count > 0) {
+        NSLog(@"patientsArr is :%@",patientsArr);
         NSMutableArray *tempArr = [NSMutableArray array];
         for (NSInteger i = 0; i < patientsArr.count; i++) {
             SportDataModel *model = patientsArr[i];
-            if (model.isEnd == 0) {
+            if (model.isEnd == 0 && ![model.xId isEqualToString:@"0"] && model.xId.length > 0) {
                 [tempArr addObject:data];
             }
         }
@@ -844,56 +847,53 @@ withFilterContext:(nullable id)filterContext {
         [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.bgImg.mas_top).offset(167 * kYScal);
             make.bottom.equalTo(self.bgImg.mas_bottom).offset(-167 * kYScal);
-            make.left.equalTo(self.bgImg.mas_left).offset(19 * kXScal);
-            make.right.equalTo(self.bgImg.mas_right).offset(-19 * kXScal);        }];
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
+        }];
     } else if (count > 2 && count<=3) {
         [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
-            [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(self.bgImg.mas_top).offset(181 * kYScal);
-                make.bottom.equalTo(self.bgImg.mas_bottom).offset(-181 * kYScal);
-                make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
-                make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
-            }];
+            make.top.equalTo(self.bgImg.mas_top).offset(181 * kYScal);
+            make.bottom.equalTo(self.bgImg.mas_bottom).offset(-181 * kYScal);
+            make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
+            make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 3 && count<=4) {
-        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
             make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
             make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
             make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 4 && count<=6) {
-        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.bgImg.mas_top).offset(46 * kYScal);
             make.bottom.equalTo(self.bgImg.mas_bottom).offset(-46 * kYScal);
             make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
             make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
-    } else if (count > 6 && count <= 9) {
-        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+    } else if (count > 6 && count<=9) {
+        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.bgImg.mas_top).offset(20 * kYScal);
             make.bottom.equalTo(self.bgImg.mas_bottom).offset(-20 * kYScal);
             make.left.equalTo(self.bgImg.mas_left).offset(20 * kXScal);
             make.right.equalTo(self.bgImg.mas_right).offset(-20 * kXScal);
         }];
     } else if (count > 9 && count <= 12) {
-        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
             make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
             make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
             make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     } else if (count > 12 && count <= 16) {
-        [self.patientListview mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.patientListview mas_updateConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.bgImg.mas_top).offset(17 * kYScal);
             make.bottom.equalTo(self.bgImg.mas_bottom).offset(-17 * kYScal);
             make.left.equalTo(self.bgImg.mas_left).offset(17 * kXScal);
             make.right.equalTo(self.bgImg.mas_right).offset(-17 * kXScal);
         }];
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.patientListview reloadData];
-    });
+    [self.patientListview reloadData];
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError * _Nullable)error {
