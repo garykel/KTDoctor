@@ -106,7 +106,6 @@ extern NSMutableArray *patientsArr;
 @property (nonatomic,strong)UIImageView *tipsImg;
 @property (nonatomic,strong)UILabel *tipsLbl;
 @property (nonatomic,strong)UILabel *hrTargetZoneLbl;
-@property (nonatomic,strong)SportDataModel *data;
 @property (nonatomic,strong)UIImageView *alertImg;
 @property (nonatomic,strong)CAShapeLayer *zoneLayer;
 @end
@@ -116,7 +115,6 @@ extern NSMutableArray *patientsArr;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
-    self.data = (SportDataModel*)[patientsArr objectAtIndex:self.selectedIndex];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(showCurrentTime) userInfo:nil repeats:YES];
     [self setNavBar];
     [self setupUI];
@@ -516,7 +514,12 @@ extern NSMutableArray *patientsArr;
 - (void)updateSportData {
     if (patientsArr.count > 0) {
         [self.zoneLayer removeFromSuperlayer];
-        SportDataModel *data = (SportDataModel*)[patientsArr objectAtIndex:self.selectedIndex];
+        SportDataModel *data;
+        for (SportDataModel *sport in patientsArr) {
+            if (sport.userId == self.data.userId) {
+                data = sport;
+            }
+        }
         self.mileValLbl.text = [NSString stringWithFormat:@"%.1f",data.lc];
         self.calorieValLbl.text = [NSString stringWithFormat:@"%.1f",data.kcal];
         self.currentSectionValLbl.text = [NSString stringWithFormat:@"%@",data.dqxjzxj];

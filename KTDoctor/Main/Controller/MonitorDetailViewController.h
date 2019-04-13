@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "SportDataModel.h"
 @interface MonitorDetailViewController : UIViewController
 @property (nonatomic,assign)NSUInteger *selectedIndex;
+@property (nonatomic,strong)SportDataModel *data;
 @end
 

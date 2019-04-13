@@ -312,7 +312,8 @@ NSMutableArray *patientsArr;
 {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     MonitorDetailViewController *detail = [[MonitorDetailViewController alloc] init];
-    detail.selectedIndex = indexPath.row;
+    SportDataModel *model = [patientsArr objectAtIndex:indexPath.row];
+    detail.data = model;
     [self.navigationController pushViewController:detail animated:NO];
 }
 
