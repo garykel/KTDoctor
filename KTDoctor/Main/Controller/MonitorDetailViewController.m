@@ -108,6 +108,7 @@ extern NSMutableArray *patientsArr;
 @property (nonatomic,strong)UILabel *hrTargetZoneLbl;
 @property (nonatomic,strong)SportDataModel *data;
 @property (nonatomic,strong)UIImageView *alertImg;
+@property (nonatomic,strong)CAShapeLayer *zoneLayer;
 @end
 
 @implementation MonitorDetailViewController
@@ -443,28 +444,28 @@ extern NSMutableArray *patientsArr;
         innerLineLayer.path = innerPath.CGPath;
         [self.view.layer addSublayer:innerLineLayer];
     }
-    if (self.data.percentum.length > 0) {
-        NSArray *rangeArr;
-        NSInteger lowHR = 0;
-        NSInteger maxHR = 0;
-        if (self.data.percentum.length > 0) {
-            rangeArr  = [self.data.percentum componentsSeparatedByString:@"-"];
-            if (rangeArr.count > 0) {
-                NSString *minStr = rangeArr[0];
-                NSString *maxStr = rangeArr[1];
-                lowHR = [minStr integerValue];
-                maxHR = [maxStr integerValue];
-            }
-        }
-        //心率区间
-        CAShapeLayer *layer2 = [CAShapeLayer new];
-        layer2.lineWidth = 4 * kXScal;
-        layer2.strokeColor = [UIColor greenColor].CGColor;
-        layer2.fillColor = [UIColor clearColor].CGColor;
-        UIBezierPath *path2 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:(1 + (CGFloat)lowHR / 240) * M_PI endAngle:(1 + (CGFloat)maxHR / 240) * M_PI clockwise:clockWise];
-        layer2.path = [path2 CGPath];
-        [self.view.layer addSublayer:layer2];
-    }
+//    if (self.data.percentum.length > 0) {
+//        NSArray *rangeArr;
+//        NSInteger lowHR = 0;
+//        NSInteger maxHR = 0;
+//        if (self.data.percentum.length > 0) {
+//            rangeArr  = [self.data.percentum componentsSeparatedByString:@"-"];
+//            if (rangeArr.count > 0) {
+//                NSString *minStr = rangeArr[0];
+//                NSString *maxStr = rangeArr[1];
+//                lowHR = [minStr integerValue];
+//                maxHR = [maxStr integerValue];
+//            }
+//        }
+//        //心率区间
+//        self.zoneLayer = [CAShapeLayer new];
+//        self.zoneLayer.lineWidth = 4 * kXScal;
+//        self.zoneLayer.strokeColor = [UIColor greenColor].CGColor;
+//        self.zoneLayer.fillColor = [UIColor clearColor].CGColor;
+//        UIBezierPath *path2 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:(1 + (CGFloat)lowHR / 240) * M_PI endAngle:(1 + (CGFloat)maxHR / 240) * M_PI clockwise:clockWise];
+//        self.zoneLayer.path = [path2 CGPath];
+//        [self.view.layer addSublayer:self.zoneLayer];
+//    }
     
     CAShapeLayer *layer3 = [CAShapeLayer new];
     layer3.lineWidth = 4 * kXScal;
@@ -514,6 +515,7 @@ extern NSMutableArray *patientsArr;
 
 - (void)updateSportData {
     if (patientsArr.count > 0) {
+        [self.zoneLayer removeFromSuperlayer];
         SportDataModel *data = (SportDataModel*)[patientsArr objectAtIndex:self.selectedIndex];
         self.mileValLbl.text = [NSString stringWithFormat:@"%.1f",data.lc];
         self.calorieValLbl.text = [NSString stringWithFormat:@"%.1f",data.kcal];
@@ -530,6 +532,16 @@ extern NSMutableArray *patientsArr;
             if (rangeArr.count > 0) {
                 lowHR = [rangeArr[0] integerValue];
                 maxHR = [rangeArr[1] integerValue];
+                CGFloat radius = self.pointer.frame.size.width / 2.0 + 2 * kXScal;
+                //是否为顺时针
+                BOOL clockWise = true;
+                self.zoneLayer = [CAShapeLayer new];
+                self.zoneLayer.lineWidth = 4 * kXScal;
+                self.zoneLayer.strokeColor = [UIColor greenColor].CGColor;
+                self.zoneLayer.fillColor = [UIColor clearColor].CGColor;
+                UIBezierPath *path2 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:(1 + (CGFloat)lowHR / 240) * M_PI endAngle:(1 + (CGFloat)maxHR / 240) * M_PI clockwise:clockWise];
+                self.zoneLayer.path = [path2 CGPath];
+                [self.view.layer addSublayer:self.zoneLayer];
                 self.hrTargetZoneLbl.text = self.data.percentum;
                 if (data.currHr < lowHR) {
                     self.dashBgView.image = [UIImage imageNamed:@"dashBoard_bg_blue"];
