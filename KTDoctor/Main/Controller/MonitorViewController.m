@@ -935,6 +935,7 @@ withFilterContext:(nullable id)filterContext {
 
 - (void)tokenExpire {
     [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
     [self.navigationController popToRootViewControllerAnimated:NO];
 }
 

@@ -98,6 +98,7 @@
     self.view.backgroundColor = [UIColor greenColor];
     self.navigationController.navigationBar.hidden = YES;
     self.isPasswordLogin = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearLoginInfo:) name:@"ClearLonginInfoNotification" object:nil];
     [self configUI];
 }
 
@@ -546,6 +547,13 @@
         NSLog(@"error :%@",error);
         [STTextHudTool showText:@"error"];
     }];
+}
+
+#pragma mark - ClearLonginInfoNotification
+
+- (void)clearLoginInfo:(NSNotification*)noti {
+    self.phoneTF.text = @"";
+    self.passwordTF.text = @"";
 }
 
 /*
