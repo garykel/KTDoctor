@@ -461,7 +461,24 @@ extern NSMutableArray *patientsArr;
             model.dId = @"0";
             model.dqxjzxj = @"0";
             model.alHr = 100;
-            [patientsArr addObject:model];
+            NSMutableArray *tempArr = [NSMutableArray arrayWithArray:patientsArr];
+            if (patientsArr.count > 0) {
+                NSInteger index = -1;
+                for (NSInteger m = 0; m < patientsArr.count; m++) {
+                    SportDataModel *data = (SportDataModel*)[patientsArr objectAtIndex:m];
+                    if (data.userId == model.userId) {
+                        index = m;
+                    }
+                }
+                if (index > -1) {
+                    [tempArr replaceObjectAtIndex:index withObject:model];
+                } else {
+                    [tempArr addObject:model];
+                }
+            } else {
+                [tempArr addObject:model];
+            }
+            patientsArr = [tempArr mutableCopy];
             NSLog(@"now patientArr is :%@",patientsArr);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdatePatientDataNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshPatientNotification" object:nil];
@@ -476,5 +493,17 @@ extern NSMutableArray *patientsArr;
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);
     }];
+}
+
+- (BOOL)checkHasExistPatient:(SportDataModel*)patient {
+    BOOL hasExist = NO;
+    if (patientsArr.count > 0) {
+        for (SportDataModel *model in patientsArr) {
+            if (model.userId == patient.userId) {
+                hasExist = YES;
+            }
+        }
+    }
+    return hasExist;
 }
 @end

@@ -822,8 +822,10 @@ withFilterContext:(nullable id)filterContext {
         NSMutableArray *tempArr = [NSMutableArray array];
         for (NSInteger i = 0; i < patientsArr.count; i++) {
             SportDataModel *model = patientsArr[i];
-            if (model.isEnd == 0 && ![model.xId isEqualToString:@"0"] && model.xId.length > 0) {
+            if (model.userId == data.userId && data.isEnd == 0 && ![data.xId isEqualToString:@"0"] && data.xId.length > 0) {
                 [tempArr addObject:data];
+            } else {
+                [tempArr addObject:model];
             }
         }
         patientsArr = [tempArr mutableCopy];
@@ -832,6 +834,18 @@ withFilterContext:(nullable id)filterContext {
     }
     [self updatePatient];
     [self.patientListview reloadData];
+}
+
+- (BOOL)checkHasExistPatient:(SportDataModel*)patient {
+    BOOL hasExist = NO;
+    if (patientsArr.count > 0) {
+        for (SportDataModel *model in patientsArr) {
+            if (model.userId == patient.userId) {
+                hasExist = YES;
+            }
+        }
+    }
+    return hasExist;
 }
 
 - (void)updatePatient {
