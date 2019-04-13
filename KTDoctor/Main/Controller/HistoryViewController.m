@@ -345,8 +345,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    HistoryDetailViewController *detail = [[HistoryDetailViewController alloc] init];
-    [self.navigationController pushViewController:detail animated:NO];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *sportDict = [self.sportlists objectAtIndex:indexPath.section];
+    NSInteger sid = [[sportDict valueForKey:@"id"] integerValue];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@(sid) forKey:@"id"];
+    [self getUserSportDetail:parameter];
 }
 
 - (NSString *)getTimeString:(NSInteger)seconds {
@@ -399,6 +407,30 @@
             [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)getUserSportDetail:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUSER_SPORT_DETAIL_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"sport detail :%@",responseObject);
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSLog(@"data is :%@",data);
+            HistoryDetailViewController *detail = [[HistoryDetailViewController alloc] init];
+            detail.sportDict = data;
+            [weakSelf.navigationController pushViewController:detail animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }

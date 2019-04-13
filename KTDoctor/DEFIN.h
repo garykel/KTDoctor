@@ -24,4 +24,5 @@
 #define kDOCTOR_AVAILABLE_DEVICE_URL @"/doctor/available_device" //搜索可用的设备
 #define kDOCTOR_BIND_HRDEVICE_URL @"/doctor/bind_hr_device" //绑定心率带设备
 #define kDOCTOR_USER_SPORTLIST_URL @"/doctor/user_sport_list" //医师查看用户历史运动列表
+#define kUSER_SPORT_DETAIL_URL @"/doctor/user_sport_detail" //医师查看用户运动结果详情
 #endif /* DEFIN_h */
