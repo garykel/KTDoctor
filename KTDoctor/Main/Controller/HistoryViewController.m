@@ -34,6 +34,9 @@
 #define kListView_LeftMargin 15
 #define kListView_RowHeight 156
 #define kListView_FooterView_Height 10
+#define kNoDatLbl_Width 100
+#define kNoDataLbl_FontSize 20
+#define kNoDataLbl_Height 18
 
 @interface HistoryViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *navView;
@@ -48,6 +51,7 @@
 @property (nonatomic,strong)UITextField *prescriptionTF;
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)UITableView *listView;
+@property (nonatomic,strong)UILabel *noDataLbl;
 @property (nonatomic,copy)NSString *startTimeStr;
 @property (nonatomic,assign)NSInteger offset;
 @property (nonatomic,assign)BOOL isFooterClick;
@@ -150,9 +154,21 @@
     CGFloat listView_Height = self.bottomView.frame.size.height - 2 * kListView_TopMargin * kYScal;
     self.listView = [[UITableView alloc] initWithFrame:CGRectMake(kListView_LeftMargin * kXScal, kListView_TopMargin * kYScal, listView_Width, listView_Height) style:UITableViewStylePlain];
     self.listView.tableFooterView = [[UIView alloc] init];
+    self.listView.backgroundColor = [UIColor colorWithHexString:@"#e6f5f8"];
     self.listView.delegate = self;
     self.listView.dataSource = self;
     [self.bottomView addSubview:self.listView];
+    
+    CGFloat noDataLbl_LeftMargin = (self.bottomView.frame.size.width - kNoDatLbl_Width * kXScal)/2.0;
+    CGFloat noDataLbl_TopMargin = (self.bottomView.frame.size.height - kNoDataLbl_Height * kYScal)/2.0;
+    self.noDataLbl = [[UILabel alloc] initWithFrame:CGRectMake(noDataLbl_LeftMargin, noDataLbl_TopMargin, kNoDatLbl_Width * kXScal, kNoDataLbl_Height * kYScal)];
+    self.noDataLbl.textColor = [UIColor grayColor];
+    self.noDataLbl.textAlignment = NSTextAlignmentCenter;
+    self.noDataLbl.text = @"数据为空";
+    self.noDataLbl.font = [UIFont systemFontOfSize:kNoDataLbl_FontSize * kYScal];
+    self.noDataLbl.center = self.listView.center;
+    self.noDataLbl.hidden = YES;
+    [self.listView addSubview:self.noDataLbl];
     
     //添加头部的下拉刷新
     MJRefreshNormalHeader *header = [[MJRefreshNormalHeader alloc] init];
@@ -374,8 +390,15 @@
             }
             
             [weakSelf.listView reloadData];
+            if (weakSelf.sportlists.count == 0) {
+                weakSelf.noDataLbl.hidden = NO;
+            } else {
+                weakSelf.noDataLbl.hidden = YES;
+            }
         } else if (code == 10011) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+            [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }
@@ -391,7 +414,24 @@
 }
 
 - (void)search:(UIButton*)sender {
-    NSLog(@"搜索");
+    [self.nameTF resignFirstResponder];
+    [self.prescriptionTF resignFirstResponder];
+    if (self.sportlists.count > 0) {
+        [self.sportlists removeAllObjects];
+    }
+    self.isFooterClick = NO;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:self.startTimeStr forKey:@"startTime"];
+    [parameter setValue:self.nameTF.text forKey:@"userKeyword"];
+    [parameter setValue:self.prescriptionTF.text forKey:@"title"];
+    [self getUsersSportList:parameter];
 }
 
 /*
