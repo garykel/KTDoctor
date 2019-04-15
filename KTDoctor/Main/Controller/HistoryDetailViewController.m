@@ -191,10 +191,17 @@
     
     self.avgHRValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgHRLbl.frame) + kCellLbl_Space * kXScal, 0, lblWidth, cellHeight)];
     self.avgHRValLbl.textColor = [UIColor blackColor];
-    self.avgHRValLbl.text = [self.sportDict valueForKey:@"avgHr"];
+    NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+    NSInteger avgHr = [[sportData valueForKey:@"avgHr"] integerValue];
+    self.avgHRValLbl.text = [NSString stringWithFormat:@"%d",avgHr];
     self.avgHRValLbl.textAlignment = NSTextAlignmentCenter;
     [self.sportView addSubview:self.avgHRValLbl];
     
+    self.avgUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgHRValLbl.frame) + kCellLbl_Space * kXScal, self.avgHRValLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.avgUnitLbl.textColor = [UIColor blackColor];
+    self.avgUnitLbl.text = @"bpm";
+    [self.sportView addSubview:self.avgUnitLbl];
+        
     CGFloat leftUnitImg_TopMargin = (self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kLeftUnitImg_Height * kYScal)/2;
     self.leftUnitImg = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.leftView.frame) + kLeftView_RightMargin * kXScal, leftUnitImg_TopMargin, kLeftUnitImg_Width * kXScal, kLeftUnitImg_Height * kYScal)];
     self.leftUnitImg.image = [UIImage imageNamed:@"leftUnit"];

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface SportDataModel : NSObject
+@property (nonatomic,copy)NSString *doctorId;
 @property (nonatomic,assign)NSInteger alHr;//报警心率
 @property (nonatomic,assign)NSInteger avgHr;
 @property (nonatomic,assign)NSInteger currHr;

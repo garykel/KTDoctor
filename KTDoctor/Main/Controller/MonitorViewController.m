@@ -20,6 +20,7 @@
 #import "PatientCell9.h"
 #import "PatientCell12.h"
 #import "PatientCell16.h"
+#import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -54,7 +55,6 @@ NSMutableArray *patientsArr;
 @property (nonatomic,strong)NSTimer *timer;
 @property (nonatomic,strong)GCDAsyncUdpSocket *udpClient;
 @property (nonatomic,strong)UICollectionView *patientListview;
-@property (nonatomic,strong)NSMutableArray *dataArr;
 @end
 
 @implementation MonitorViewController
@@ -63,7 +63,9 @@ NSMutableArray *patientsArr;
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     patientsArr = [NSMutableArray array];
-    self.dataArr = [NSMutableArray array];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSArray *cachedDatas = [self getCachedSportDataWithDoctorUserid:user.userId];
+    [patientsArr addObjectsFromArray:cachedDatas];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePatient) name:@"RefreshPatientNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenExpire) name:@"TokenExpiredNotification" object:nil];
     SportDataModel *model = [[SportDataModel alloc] init];
@@ -103,6 +105,12 @@ NSMutableArray *patientsArr;
     [self.view addSubview:self.bgImg];
     self.bgImg.userInteractionEnabled = YES;
     [self setupPatientListview];
+}
+
+- (NSArray*)getCachedSportDataWithDoctorUserid:(NSString *)doctorId {
+    NSString *conditionStr = [NSString stringWithFormat:@"where %@ = %@",bg_sqlKey(@"doctorId"),bg_sqlValue(doctorId)];
+    NSArray *results = [SportDataModel bg_find:@"tb_monitor_patient" where:conditionStr];
+    return results;
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
@@ -790,6 +798,7 @@ NSMutableArray *patientsArr;
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data
       fromAddress:(NSData *)address
 withFilterContext:(nullable id)filterContext {
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
     NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSDictionary *dict = [self dictionaryWithJsonString:str];
     SportDataModel *model = [[SportDataModel alloc] init];
@@ -814,39 +823,60 @@ withFilterContext:(nullable id)filterContext {
     model.userId = [[dict valueForKey:@"userId"] integerValue];
     model.xId = [dict valueForKey:@"xId"];
     model.xiaojietime = [[dict valueForKey:@"xiaojietime"] integerValue];
+    model.doctorId = user.userId;
     [self handlerPatient:model];
 }
 
 - (void)handlerPatient:(SportDataModel*)data {
     if (patientsArr.count > 0) {
-        NSLog(@"patientsArr is :%@",patientsArr);
-        NSMutableArray *tempArr = [NSMutableArray array];
-        for (NSInteger i = 0; i < patientsArr.count; i++) {
-            SportDataModel *model = patientsArr[i];
-            if (model.userId == data.userId && data.isEnd == 0 && ![data.xId isEqualToString:@"0"] && data.xId.length > 0) {
-                [tempArr addObject:data];
+        NSDictionary *dict = [self checkHasExistPatient:data];
+        BOOL hasExist = [[dict valueForKey:@"hasExist"] boolValue];
+        NSInteger index = [[dict valueForKey:@"index"] integerValue];
+        if (hasExist) {
+            SportDataModel *cacheData = [patientsArr objectAtIndex:index];
+            if (data.isEnd == 0) {
+                if (![cacheData.xId isEqualToString:@"0"] && cacheData.xId.length > 0) {
+                    data.xId = cacheData.xId;
+                    [patientsArr replaceObjectAtIndex:index withObject:data];
+                } else {
+                    [patientsArr removeObjectAtIndex:index];
+                }
             } else {
-                [tempArr addObject:model];
+                [patientsArr removeObjectAtIndex:index];
+            }
+        } else {
+            if (data.isEnd == 0 && ![data.xId isEqualToString:@"0"] && data.xId.length > 0) {
+                [patientsArr addObject:data];
             }
         }
-        patientsArr = [tempArr mutableCopy];
     } else {
-        [patientsArr addObject:data];
+        if (data.isEnd == 0 && ![data.xId isEqualToString:@"0"] && data.xId.length > 0) {
+            [patientsArr addObject:data];
+        }
+    }
+    if (patientsArr.count > 0) {
+        for (SportDataModel *model in patientsArr) {
+            model.bg_tableName = @"tb_monitor_patient";
+            [model bg_saveOrUpdate];
+        }
     }
     [self updatePatient];
     [self.patientListview reloadData];
 }
 
-- (BOOL)checkHasExistPatient:(SportDataModel*)patient {
+- (NSDictionary*)checkHasExistPatient:(SportDataModel*)patient {
     BOOL hasExist = NO;
+    NSInteger index = -1;
     if (patientsArr.count > 0) {
-        for (SportDataModel *model in patientsArr) {
+        for (NSInteger i = 0; i < patientsArr.count; i++) {
+            SportDataModel *model = (SportDataModel*)patientsArr[i];
             if (model.userId == patient.userId) {
                 hasExist = YES;
+                index = i;
             }
         }
     }
-    return hasExist;
+    return @{@"index":[NSNumber numberWithInteger:index],@"hasExist":[NSNumber numberWithBool:hasExist]};
 }
 
 - (void)updatePatient {

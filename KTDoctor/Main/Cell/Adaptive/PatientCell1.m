@@ -14,7 +14,7 @@
 #define kInnerContentView_BottomMargin 10
 #define kBigLbl_Height 30
 #define kNameLbl_FontSize 26.0
-#define KNameLbl_Width 100
+#define KNameLbl_Width 150
 #define kIdLbl_LeftMargin 15
 #define kIdLbl_FontSize 18
 #define kCurrentHRLbl_FontSize 18.0

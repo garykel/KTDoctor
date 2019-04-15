@@ -245,7 +245,10 @@ extern NSMutableArray *patientsArr;
 - (void)remove:(UIButton*)sender {
     NSInteger row = sender.tag - 20000;
     if (patientsArr.count > 0) {
+        UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
         SportDataModel *data = [patientsArr objectAtIndex:row];
+        NSString *where = [NSString stringWithFormat:@"where %@ = %@ and %@ = %@",bg_sqlKey(@"userId"),bg_sqlValue([NSNumber numberWithInteger:data.userId]),bg_sqlKey(@"doctorId"),bg_sqlValue(user.userId)];
+        [SportDataModel bg_delete:@"tb_monitor_patient" where:where];
         [patientsArr removeObjectAtIndex:row];
         [self.listView reloadData];
         __weak typeof (self)weakSelf = self;

@@ -364,6 +364,7 @@ extern NSMutableArray *patientsArr;
     [parameter setValue:@(self.offset) forKey:@"offset"];
     [parameter setValue:@10 forKey:@"rows"];
     [parameter setValue:keyword forKey:@"keyword"];
+    [parameter setValue:@1 forKey:@"allUser"];
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
@@ -454,6 +455,7 @@ extern NSMutableArray *patientsArr;
         NSString *error = [responseObject valueForKey:@"error"];
         NSLog(@"bind device :%@ :%@",responseObject,error);
         if (code == 0) {
+            UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
             SportDataModel *model = [[SportDataModel alloc] init];
             model.name = [parameter valueForKey:@"name"];
             model.userId = [[parameter valueForKey:@"userId"] integerValue];
@@ -472,11 +474,20 @@ extern NSMutableArray *patientsArr;
                 }
                 if (index > -1) {
                     [tempArr replaceObjectAtIndex:index withObject:model];
+                    model.doctorId = user.userId;
+                    model.bg_tableName = @"tb_monitor_patient";
+                    [model bg_saveOrUpdate];
                 } else {
                     [tempArr addObject:model];
+                    model.doctorId = user.userId;
+                    model.bg_tableName = @"tb_monitor_patient";
+                    [model bg_saveOrUpdate];
                 }
             } else {
                 [tempArr addObject:model];
+                model.doctorId = user.userId;
+                model.bg_tableName = @"tb_monitor_patient";
+                [model bg_saveOrUpdate];
             }
             patientsArr = [tempArr mutableCopy];
             NSLog(@"now patientArr is :%@",patientsArr);

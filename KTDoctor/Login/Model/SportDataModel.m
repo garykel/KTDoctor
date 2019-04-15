@@ -9,5 +9,7 @@
 #import "SportDataModel.h"
 
 @implementation SportDataModel
-
++(NSArray *)bg_uniqueKeys{
+    return @[@"userId"];
+}
 @end
