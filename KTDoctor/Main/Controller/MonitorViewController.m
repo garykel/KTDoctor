@@ -383,6 +383,9 @@ NSMutableArray *patientsArr;
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             }
+        } else {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
             cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
@@ -430,6 +433,9 @@ NSMutableArray *patientsArr;
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             }
+        } else {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
             [cell setAlpha:1];
@@ -475,6 +481,9 @@ NSMutableArray *patientsArr;
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             }
+        } else {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
             [cell setAlpha:1];
@@ -520,6 +529,9 @@ NSMutableArray *patientsArr;
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             }
+        } else {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
             [cell setAlpha:1];
@@ -565,6 +577,9 @@ NSMutableArray *patientsArr;
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             }
+        } else {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
             [cell setAlpha:1];
@@ -610,6 +625,9 @@ NSMutableArray *patientsArr;
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             }
+        } else {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
             [cell setAlpha:1];
@@ -655,6 +673,9 @@ NSMutableArray *patientsArr;
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             }
+        } else {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
             [cell setAlpha:1];
@@ -700,6 +721,9 @@ NSMutableArray *patientsArr;
                 cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
                 cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             }
+        } else {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_gray"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
             [cell setAlpha:1];
