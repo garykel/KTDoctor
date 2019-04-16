@@ -21,7 +21,7 @@
 #define kLeftView_BottomMargin 30
 #define kLeftView_LeftMargin 10
 #define kLeftView_RightMargin 10
-#define kLeftView_Width 250
+#define kLeftView_Width 280
 #define kHeadImg_TopMargin 15
 #define kHeadImg_LeftMargin 40
 #define kHeadImg_Width 47
@@ -39,6 +39,7 @@
 #define kSportView_TopMargin 12
 #define kSportView_LeftMargin 6
 #define kSportView_BottomMargin 15
+#define kSportView_Lbl_FontSize 14
 #define kLeftUnitLbl_RightMargin 10
 #define kRightUnitLbl_LeftMargin 10
 #define kLineCharView_TopMargin 10
@@ -83,12 +84,12 @@
 @property (nonatomic,strong)UILabel *mileUnitLbl;
 @property (nonatomic,strong)UILabel *timeLbl;
 @property (nonatomic,strong)UILabel *timeValLbl;
-@property (nonatomic,strong)UIImageView *seperateLine1;
-@property (nonatomic,strong)UIImageView *seperateLine2;
-@property (nonatomic,strong)UIImageView *seperateLine3;
-@property (nonatomic,strong)UIImageView *seperateLine4;
-@property (nonatomic,strong)UIImageView *seperateLine5;
-@property (nonatomic,strong)UIImageView *seperateLine6;
+@property (nonatomic,strong)UIView *seperateLine1;
+@property (nonatomic,strong)UIView *seperateLine2;
+@property (nonatomic,strong)UIView *seperateLine3;
+@property (nonatomic,strong)UIView *seperateLine4;
+@property (nonatomic,strong)UIView *seperateLine5;
+@property (nonatomic,strong)UIView *seperateLine6;
 @property (nonatomic,strong)UIImageView *leftUnitImg;
 @property (nonatomic,strong)UIImageView *rightUnitImg;
 @property (nonatomic,strong)UIView *lineChartView;
@@ -170,10 +171,12 @@
     self.nameLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImg.frame) + kNameLbl_LeftMargin * kXScal,self.headImg.frame.origin.y + nameLbl_TopMargin, kNameLbl_Width * kXScal, kNameLbl_Height *kYScal)];
     self.nameLbl.textColor = [UIColor blackColor];
     self.nameLbl.text = [self.sportDict valueForKey:@"name"];
+    self.nameLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.leftView addSubview:self.nameLbl];
     
     self.idLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLbl.frame.origin.x, CGRectGetMaxY(self.nameLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.idLbl.text = [NSString stringWithFormat:@"ID : %@",[self.sportDict valueForKey:@"userId"]];
+    self.idLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     [self.leftView addSubview:self.idLbl];
     
     self.sportView = [[UIView alloc] initWithFrame:CGRectMake(kSportView_LeftMargin * kXScal,CGRectGetMaxY(self.idLbl.frame) + kSportView_TopMargin * kYScal, self.leftView.frame.size.width - 2 * kSportView_LeftMargin * kXScal, self.leftView.frame.size.height - CGRectGetMaxY(self.headImg.frame) - kSportView_TopMargin * kYScal - kSportView_BottomMargin * kYScal)];
@@ -187,6 +190,7 @@
     self.avgHRLbl = [[UILabel alloc] initWithFrame:CGRectMake(kCellLbl_LeftMargin * kXScal, 0,lblWidth, cellHeight)];
     self.avgHRLbl.text = @"平均心率";
     self.avgHRLbl.textColor = [UIColor blackColor];
+    self.avgHRLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
     [self.sportView addSubview:self.avgHRLbl];
     
     self.avgHRValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgHRLbl.frame) + kCellLbl_Space * kXScal, 0, lblWidth, cellHeight)];
@@ -195,12 +199,151 @@
     NSInteger avgHr = [[sportData valueForKey:@"avgHr"] integerValue];
     self.avgHRValLbl.text = [NSString stringWithFormat:@"%d",avgHr];
     self.avgHRValLbl.textAlignment = NSTextAlignmentCenter;
+    self.avgHRValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
     [self.sportView addSubview:self.avgHRValLbl];
     
     self.avgUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgHRValLbl.frame) + kCellLbl_Space * kXScal, self.avgHRValLbl.frame.origin.y, lblWidth, cellHeight)];
     self.avgUnitLbl.textColor = [UIColor blackColor];
     self.avgUnitLbl.text = @"bpm";
+    self.avgUnitLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
     [self.sportView addSubview:self.avgUnitLbl];
+    
+    self.seperateLine1 = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.avgHRLbl.frame), self.sportView.frame.size.width, kSeperateLine_Height * kYScal)];
+    self.seperateLine1.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    [self.sportView addSubview:self.seperateLine1];
+    
+    self.maxHRLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.avgHRLbl.frame.origin.x, CGRectGetMaxY(self.seperateLine1.frame), lblWidth, cellHeight)];
+    self.maxHRLbl.text = @"最大心率";
+    self.maxHRLbl.textColor = [UIColor blackColor];
+    self.maxHRLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.maxHRLbl];
+    
+    self.maxHRValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.maxHRLbl.frame) + kCellLbl_Space * kXScal, self.maxHRLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.maxHRValLbl.textColor = [UIColor blackColor];
+    NSInteger maxHr = [[sportData valueForKey:@"maxHr"] integerValue];
+    self.maxHRValLbl.text = [NSString stringWithFormat:@"%d",maxHr];
+    self.maxHRValLbl.textAlignment = NSTextAlignmentCenter;
+    self.maxHRValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.maxHRValLbl];
+    
+    self.maxUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.maxHRValLbl.frame) + kCellLbl_Space * kXScal, self.maxHRValLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.maxUnitLbl.textColor = [UIColor blackColor];
+    self.maxUnitLbl.text = @"bpm";
+    self.maxUnitLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.maxUnitLbl];
+    
+    self.seperateLine2 = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.maxHRLbl.frame), self.sportView.frame.size.width, kSeperateLine_Height * kYScal)];
+    self.seperateLine2.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    [self.sportView addSubview:self.seperateLine2];
+    
+    self.avgSpeedLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.avgHRLbl.frame.origin.x, CGRectGetMaxY(self.seperateLine2.frame), lblWidth, cellHeight)];
+    self.avgSpeedLbl.text = @"平均速度";
+    self.avgSpeedLbl.textColor = [UIColor blackColor];
+    self.avgSpeedLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.avgSpeedLbl];
+    
+    self.avgSpeedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame) + kCellLbl_Space * kXScal, self.avgSpeedLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.avgSpeedValLbl.textColor = [UIColor blackColor];
+    self.avgSpeedValLbl.textAlignment = NSTextAlignmentCenter;
+    CGFloat speed = [[sportData valueForKey:@"speed"] floatValue];
+    self.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f",speed];
+    self.avgSpeedValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.avgSpeedValLbl];
+    
+    self.avgSpeedUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedValLbl.frame) + kCellLbl_Space * kXScal, self.avgSpeedValLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.avgSpeedUnitLbl.textColor = [UIColor blackColor];
+    self.avgSpeedUnitLbl.text = @"km/h";
+    self.avgSpeedUnitLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.avgSpeedUnitLbl];
+    
+    self.seperateLine3 = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.avgSpeedUnitLbl.frame), self.sportView.frame.size.width, kSeperateLine_Height * kYScal)];
+    self.seperateLine3.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    [self.sportView addSubview:self.seperateLine3];
+    
+    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.avgHRLbl.frame.origin.x, CGRectGetMaxY(self.seperateLine3.frame), lblWidth, cellHeight)];
+    self.avgDifficultyLbl.text = @"平均强度";
+    self.avgDifficultyLbl.textColor = [UIColor blackColor];
+    self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.avgDifficultyLbl];
+    
+    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kCellLbl_Space * kXScal, self.avgDifficultyLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.avgDifficultyValLbl.textColor = [UIColor blackColor];
+    self.avgDifficultyValLbl.textAlignment = NSTextAlignmentCenter;
+    NSString *avgDifficulty = [sportData valueForKey:@"avgDifficulty"];
+    if ([avgDifficulty class] == [NSNull class]) {
+        avgDifficulty = @"0";
+    }
+    self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%@",avgDifficulty];
+    self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.avgDifficultyValLbl];
+    
+    self.seperateLine4 = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.avgDifficultyLbl.frame), self.sportView.frame.size.width, kSeperateLine_Height * kYScal)];
+    self.seperateLine4.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    [self.sportView addSubview:self.seperateLine4];
+    
+    self.calorieLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.avgHRLbl.frame.origin.x, CGRectGetMaxY(self.seperateLine4.frame), lblWidth, cellHeight)];
+    self.calorieLbl.text = @"消    耗";
+    self.calorieLbl.textColor = [UIColor blackColor];
+    self.calorieLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.calorieLbl];
+    
+    self.calorieValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.calorieLbl.frame) + kCellLbl_Space * kXScal, self.calorieLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.calorieValLbl.textColor = [UIColor blackColor];
+    self.calorieValLbl.textAlignment = NSTextAlignmentCenter;
+    CGFloat calorie = [[sportData valueForKey:@"calorie"] floatValue];
+    self.calorieValLbl.text = [NSString stringWithFormat:@"%.1f",calorie];
+    self.calorieValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.calorieValLbl];
+    
+    self.calorieUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.calorieValLbl.frame) + kCellLbl_Space * kXScal, self.calorieValLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.calorieUnitLbl.textColor = [UIColor blackColor];
+    self.calorieUnitLbl.text = @"kcal";
+    self.calorieUnitLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.calorieUnitLbl];
+    
+    self.seperateLine5 = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.calorieLbl.frame), self.sportView.frame.size.width, kSeperateLine_Height * kYScal)];
+    self.seperateLine5.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    [self.sportView addSubview:self.seperateLine5];
+    
+    self.mileLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.avgHRLbl.frame.origin.x, CGRectGetMaxY(self.seperateLine5.frame), lblWidth, cellHeight)];
+    self.mileLbl.text = @"里      程";
+    self.mileLbl.textColor = [UIColor blackColor];
+    self.mileLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.mileLbl];
+    
+    self.mileValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame) + kCellLbl_Space * kXScal, self.mileLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.mileValLbl.textColor = [UIColor blackColor];
+    self.mileValLbl.textAlignment = NSTextAlignmentCenter;
+    CGFloat totalMileage = [[sportData valueForKey:@"totalMileage"] floatValue];
+    self.mileValLbl.text = [NSString stringWithFormat:@"%.1f",totalMileage];
+    self.mileValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.mileValLbl];
+    
+    self.mileUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.mileValLbl.frame) + kCellLbl_Space * kXScal, self.mileValLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.mileUnitLbl.textColor = [UIColor blackColor];
+    self.mileUnitLbl.text = @"km";
+    self.mileUnitLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.mileUnitLbl];
+    
+    self.seperateLine6 = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.mileLbl.frame), self.sportView.frame.size.width, kSeperateLine_Height * kYScal)];
+    self.seperateLine6.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    [self.sportView addSubview:self.seperateLine6];
+    
+    self.timeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.avgHRLbl.frame.origin.x, CGRectGetMaxY(self.seperateLine6.frame), lblWidth, cellHeight)];
+    self.timeLbl.text = @"时      长";
+    self.timeLbl.textColor = [UIColor blackColor];
+    self.timeLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.timeLbl];
+    
+    
+    self.timeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame) + kCellLbl_Space * kXScal, self.timeLbl.frame.origin.y, 2 * lblWidth, cellHeight)];
+    self.timeValLbl.textColor = [UIColor blackColor];
+    self.timeValLbl.textAlignment = NSTextAlignmentCenter;
+    NSInteger totalTime = [[sportData valueForKey:@"totalTime"] integerValue];
+    NSString *timeStr = [self getLongtimeString:totalTime];
+    self.timeValLbl.text = [NSString stringWithFormat:@"%@",timeStr];
+    self.timeValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.timeValLbl];
         
     CGFloat leftUnitImg_TopMargin = (self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kLeftUnitImg_Height * kYScal)/2;
     self.leftUnitImg = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.leftView.frame) + kLeftView_RightMargin * kXScal, leftUnitImg_TopMargin, kLeftUnitImg_Width * kXScal, kLeftUnitImg_Height * kYScal)];
@@ -217,6 +360,15 @@
     self.rightUnitImg = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.lineChartView.frame) + kLeftUnitImg_RightMargin * kXScal, righUnitImg_TopMargin, kRightUnitImg_Width * kXScal, kRightUnitImg_Height * kYScal)];
     self.rightUnitImg.image = [UIImage imageNamed:@"rightUnit"];
     [self.bgImg addSubview:self.rightUnitImg];
+}
+
+- (NSString *)getLongtimeString:(NSInteger)seconds {
+    NSString *timeStr = @"";
+    NSInteger hour = seconds / 3600;
+    NSInteger minute = seconds / 60;
+    NSInteger second = seconds % 60;
+    timeStr = [NSString stringWithFormat:@"%02ld:%02ld:%02ld",(long)hour,(long)minute,(long)second];
+    return timeStr;
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
