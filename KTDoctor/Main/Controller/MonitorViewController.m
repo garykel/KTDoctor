@@ -438,6 +438,8 @@ NSMutableArray *patientsArr;
             cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             [cell setAlpha:1];
             [UIView beginAnimations:@"flash screen" context:nil];
             [UIView setAnimationDuration:1.5];
@@ -486,6 +488,8 @@ NSMutableArray *patientsArr;
             cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             [cell setAlpha:1];
             [UIView beginAnimations:@"flash screen" context:nil];
             [UIView setAnimationDuration:1.5];
@@ -534,6 +538,8 @@ NSMutableArray *patientsArr;
             cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             [cell setAlpha:1];
             [UIView beginAnimations:@"flash screen" context:nil];
             [UIView setAnimationDuration:1.5];
@@ -582,6 +588,8 @@ NSMutableArray *patientsArr;
             cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             [cell setAlpha:1];
             [UIView beginAnimations:@"flash screen" context:nil];
             [UIView setAnimationDuration:1.5];
@@ -630,6 +638,8 @@ NSMutableArray *patientsArr;
             cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             [cell setAlpha:1];
             [UIView beginAnimations:@"flash screen" context:nil];
             [UIView setAnimationDuration:1.5];
@@ -678,6 +688,8 @@ NSMutableArray *patientsArr;
             cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             [cell setAlpha:1];
             [UIView beginAnimations:@"flash screen" context:nil];
             [UIView setAnimationDuration:1.5];
@@ -726,6 +738,8 @@ NSMutableArray *patientsArr;
             cell.heartImg.image = [UIImage imageNamed:@"heart_blue"];
         }
         if (model.currHr >= model.alHr) {
+            cell.bgImg.image = [UIImage imageNamed:@"bg_red"];
+            cell.heartImg.image = [UIImage imageNamed:@"heart_red"];
             [cell setAlpha:1];
             [UIView beginAnimations:@"flash screen" context:nil];
             [UIView setAnimationDuration:1.5];

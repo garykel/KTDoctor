@@ -442,28 +442,28 @@ extern NSMutableArray *patientsArr;
         innerLineLayer.path = innerPath.CGPath;
         [self.view.layer addSublayer:innerLineLayer];
     }
-//    if (self.data.percentum.length > 0) {
-//        NSArray *rangeArr;
-//        NSInteger lowHR = 0;
-//        NSInteger maxHR = 0;
-//        if (self.data.percentum.length > 0) {
-//            rangeArr  = [self.data.percentum componentsSeparatedByString:@"-"];
-//            if (rangeArr.count > 0) {
-//                NSString *minStr = rangeArr[0];
-//                NSString *maxStr = rangeArr[1];
-//                lowHR = [minStr integerValue];
-//                maxHR = [maxStr integerValue];
-//            }
-//        }
-//        //心率区间
-//        self.zoneLayer = [CAShapeLayer new];
-//        self.zoneLayer.lineWidth = 4 * kXScal;
-//        self.zoneLayer.strokeColor = [UIColor greenColor].CGColor;
-//        self.zoneLayer.fillColor = [UIColor clearColor].CGColor;
-//        UIBezierPath *path2 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:(1 + (CGFloat)lowHR / 240) * M_PI endAngle:(1 + (CGFloat)maxHR / 240) * M_PI clockwise:clockWise];
-//        self.zoneLayer.path = [path2 CGPath];
-//        [self.view.layer addSublayer:self.zoneLayer];
-//    }
+    if (self.data.percentum.length > 0) {
+        NSArray *rangeArr;
+        NSInteger lowHR = 0;
+        NSInteger maxHR = 0;
+        if (self.data.percentum.length > 0) {
+            rangeArr  = [self.data.percentum componentsSeparatedByString:@"-"];
+            if (rangeArr.count > 0) {
+                NSString *minStr = rangeArr[0];
+                NSString *maxStr = rangeArr[1];
+                lowHR = [minStr integerValue];
+                maxHR = [maxStr integerValue];
+            }
+        }
+        //心率区间
+        self.zoneLayer = [CAShapeLayer new];
+        self.zoneLayer.lineWidth = 4 * kXScal;
+        self.zoneLayer.strokeColor = [UIColor greenColor].CGColor;
+        self.zoneLayer.fillColor = [UIColor clearColor].CGColor;
+        UIBezierPath *path2 = [UIBezierPath bezierPathWithArcCenter:self.pointer.center radius:radius startAngle:(1 + (CGFloat)lowHR / 240) * M_PI endAngle:(1 + (CGFloat)maxHR / 240) * M_PI clockwise:clockWise];
+        self.zoneLayer.path = [path2 CGPath];
+        [self.view.layer addSublayer:self.zoneLayer];
+    }
     
     CAShapeLayer *layer3 = [CAShapeLayer new];
     layer3.lineWidth = 4 * kXScal;
