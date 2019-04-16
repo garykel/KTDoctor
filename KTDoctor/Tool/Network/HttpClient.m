@@ -11,7 +11,7 @@
 #import "NSString+CPSignature.h"
 #import "NSString+TimeConvert.h"
 #import "DEFIN.h"
-#import <AFHTTPSessionManager.h>
+#import "AFHTTPSessionManager.h"
 #import "UserModel.h"
 
 static const NSString * POST_METHOD = @"POST";

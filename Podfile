@@ -6,4 +6,6 @@ target 'KTDoctor' do
    pod 'IQKeyboardManager'
    pod 'SDWebImage'
    pod 'MJRefresh'
+   pod 'Charts'
+   use_frameworks!
 end

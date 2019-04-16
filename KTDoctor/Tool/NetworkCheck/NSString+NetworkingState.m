@@ -7,7 +7,7 @@
 //
 
 #import "NSString+NetworkingState.h"
-#import <Reachability.h>
+#import "Reachability.h"
 @implementation NSString (NetworkingState)
 + (NSString *)networkingStatesFromStatebar {
     Reachability *reachability   = [Reachability reachabilityWithHostName:@"www.apple.com"];

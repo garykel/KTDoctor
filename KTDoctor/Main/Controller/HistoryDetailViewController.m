@@ -7,6 +7,7 @@
 //
 
 #import "HistoryDetailViewController.h"
+#import "DateValueFormatter.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -52,7 +53,7 @@
 #define kSeperateLine_Height 2
 #define kCellLbl_LeftMargin 6
 #define kCellLbl_Space 10
-@interface HistoryDetailViewController ()
+@interface HistoryDetailViewController ()<ChartViewDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -92,7 +93,9 @@
 @property (nonatomic,strong)UIView *seperateLine6;
 @property (nonatomic,strong)UIImageView *leftUnitImg;
 @property (nonatomic,strong)UIImageView *rightUnitImg;
-@property (nonatomic,strong)UIView *lineChartView;
+@property (nonatomic,strong)LineChartView *lineChartView;
+@property (nonatomic,strong)LineChartDataSet *set1;
+@property (nonatomic,strong)LineChartDataSet *set2;
 @end
 
 @implementation HistoryDetailViewController
@@ -352,8 +355,8 @@
     
     CGFloat lineChartView_Width = self.bgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
     CGFloat lineChartView_Height = self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
-    self.lineChartView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height)];
-    self.lineChartView.backgroundColor = [UIColor greenColor];
+    self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
+    [self setLineChartDataWithSportData:sportData];
     [self.bgImg addSubview:self.lineChartView];
     
     CGFloat righUnitImg_TopMargin = (self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kRightUnitImg_Height * kYScal)/2;
@@ -362,12 +365,130 @@
     [self.bgImg addSubview:self.rightUnitImg];
 }
 
+- (void)setLineChartDataWithSportData:(NSDictionary*)sportData {
+    NSString *hrSample = [sportData valueForKey:@"hrSample"];
+    NSString *speedSample = [sportData valueForKey:@"speedSample"];
+    NSInteger totalTime = [[sportData valueForKey:@"totalTime"] integerValue];
+    NSMutableArray *xVals = [NSMutableArray array];
+    if (totalTime > 0) {
+        for (NSInteger i = 1; i <= totalTime; i++) {
+            NSString *timeStr = [self getShortTimeString:i];
+            [xVals addObject:timeStr];
+        }
+    }
+    NSMutableArray *dataSets = [[NSMutableArray alloc] init];
+    if (xVals.count > 0) {
+        _lineChartView.xAxis.valueFormatter = [[DateValueFormatter alloc] initWithArr:xVals];
+        if (hrSample.length > 0) {
+            NSArray *hrArr = [hrSample componentsSeparatedByString:@","];
+            NSMutableArray *leftVals = [NSMutableArray array];
+            for (NSInteger j = 0; j < xVals.count; j++) {
+                NSInteger hr = 0;
+                hr = [[hrArr objectAtIndex:j] integerValue];
+                ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:j y:hr];
+                [leftVals addObject:entry];
+            }
+            _set1 = [[LineChartDataSet alloc] initWithValues:leftVals label:@"心率"];
+            _set1.axisDependency = AxisDependencyLeft;
+            _set1.lineWidth = 2.0;
+            _set1.drawValuesEnabled = YES;
+            [_set1 setColor:[UIColor redColor]];
+            _set1.drawCirclesEnabled = NO;
+            _set1.drawFilledEnabled = NO;
+            _set1.highlightEnabled = NO;
+            [dataSets addObject:_set1];
+        }
+        if (speedSample.length > 0) {
+            NSArray *speedArr = [speedSample componentsSeparatedByString:@","];
+            NSMutableArray *rightVals = [NSMutableArray array];
+            for (NSInteger k = 0; k < xVals.count; k++) {
+                NSInteger speed = 0;
+                speed = [[speedArr objectAtIndex:k] integerValue];
+                ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:k y:speed];
+                [rightVals addObject:entry];
+            }
+            _set2 = [[LineChartDataSet alloc] initWithValues:rightVals label:@"速度"];
+            _set2.axisDependency = AxisDependencyRight;
+            _set2.lineWidth = 2.0;
+            _set2.drawValuesEnabled = YES;
+            [_set2 setColor:[UIColor greenColor]];
+            _set2.drawCirclesEnabled = NO;
+            _set2.drawFilledEnabled = NO;
+            _set2.highlightEnabled = NO;
+            [dataSets addObject:_set2];
+        }
+    }
+    LineChartData *data = [[LineChartData alloc] initWithDataSets:dataSets];
+    [data setValueFont:[UIFont systemFontOfSize:11.0]];
+    [data setValueTextColor:[UIColor clearColor]];
+    _lineChartView.data = data;
+}
+
+- (LineChartView*)lineChartView {
+    if (_lineChartView == nil) {
+        _lineChartView = [[LineChartView alloc] init];
+        _lineChartView.noDataText = @"暂无数据";
+        _lineChartView.chartDescription.enabled = NO;
+        _lineChartView.scaleYEnabled = NO;
+        _lineChartView.doubleTapToZoomEnabled = NO;
+        _lineChartView.rightAxis.enabled = YES;
+        
+        ChartXAxis *xAxis = _lineChartView.xAxis;
+        xAxis.granularityEnabled = YES;
+        xAxis.labelPosition = XAxisLabelPositionBottom;
+        xAxis.gridColor = [UIColor clearColor];
+        xAxis.labelTextColor = [UIColor blackColor];
+        xAxis.axisLineColor = [UIColor grayColor];
+        _lineChartView.maxVisibleCount = 999;
+        
+        ChartYAxis *leftAxis = _lineChartView.leftAxis;//获取左边Y轴
+        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
+        leftAxis.axisMinimum = 0;//设置Y轴的最小值
+        leftAxis.axisMaximum = 240;//设置Y轴的最大值
+        leftAxis.inverted = NO;//是否将Y轴进行上下翻转
+        leftAxis.axisLineColor = [UIColor grayColor];//Y轴颜色
+        leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
+        leftAxis.labelTextColor = [UIColor redColor];//文字颜色
+        leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
+        leftAxis.drawAxisLineEnabled = YES;//画Y轴线
+        leftAxis.axisLineColor = [UIColor grayColor];
+        leftAxis.drawGridLinesEnabled = YES;
+        leftAxis.gridAntialiasEnabled = NO;//开启抗锯齿
+        
+        ChartYAxis *rightAxis = _lineChartView.rightAxis;//获取右边Y轴
+        rightAxis.labelCount = 9;
+        rightAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
+        rightAxis.axisMinimum = 0;//设置Y轴的最小值
+        rightAxis.axisMaximum = 50;//设置Y轴的最大值
+        rightAxis.inverted = NO;//是否将Y轴进行上下翻转
+        rightAxis.axisLineColor = [UIColor grayColor];//Y轴颜色
+        rightAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
+        rightAxis.labelTextColor = [UIColor greenColor];//文字颜色
+        rightAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
+        rightAxis.drawAxisLineEnabled = YES;//画Y轴线
+        rightAxis.axisLineColor = [UIColor grayColor];
+        rightAxis.drawGridLinesEnabled = NO;
+        rightAxis.gridAntialiasEnabled = NO;//开启抗锯齿
+        _lineChartView.delegate = self;
+    }
+    return _lineChartView;
+}
+
 - (NSString *)getLongtimeString:(NSInteger)seconds {
     NSString *timeStr = @"";
     NSInteger hour = seconds / 3600;
     NSInteger minute = seconds / 60;
     NSInteger second = seconds % 60;
     timeStr = [NSString stringWithFormat:@"%02ld:%02ld:%02ld",(long)hour,(long)minute,(long)second];
+    return timeStr;
+}
+
+- (NSString *)getShortTimeString:(NSInteger)seconds {
+    NSString *timeStr = @"";
+    NSInteger minute = seconds / 60;
+    NSInteger second = seconds % 60;
+    timeStr = [NSString stringWithFormat:@"%02ld:%02ld",(long)minute,(long)second];
     return timeStr;
 }
 

@@ -155,6 +155,7 @@
     [parameter setValue:orgCode forKey:@"orgCode"];
     [parameter setValue:@0 forKey:@"offset"];
     [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@"-create_time" forKey:@"sort"];
     [self getUserSportList:parameter];
 }
 
