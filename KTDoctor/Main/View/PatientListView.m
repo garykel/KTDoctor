@@ -92,7 +92,7 @@ extern NSMutableArray *patientsArr;
     [self.contentView addSubview:self.topView];
     
     self.titleLbl = [[UILabel alloc] init];
-    self.titleLbl.text = @"患者管理(0)";
+    self.titleLbl.text = [NSString stringWithFormat:@"患者管理(%ld)",patientsArr.count];
     self.titleLbl.textColor = [UIColor blackColor];
     self.titleLbl.textAlignment = NSTextAlignmentCenter;
     CGFloat titleLbl_LeftMargin = (self.topView.frame.size.width - KTitleLbl_Width)/2;
@@ -245,13 +245,8 @@ extern NSMutableArray *patientsArr;
 - (void)remove:(UIButton*)sender {
     NSInteger row = sender.tag - 20000;
     if (patientsArr.count > 0) {
-        UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
-        SportDataModel *data = [patientsArr objectAtIndex:row];
-        NSString *where = [NSString stringWithFormat:@"where %@ = %@ and %@ = %@",bg_sqlKey(@"userId"),bg_sqlValue([NSNumber numberWithInteger:data.userId]),bg_sqlKey(@"doctorId"),bg_sqlValue(user.userId)];
-        [SportDataModel bg_delete:@"tb_monitor_patient" where:where];
-        [patientsArr removeObjectAtIndex:row];
-        [self.listView reloadData];
         __weak typeof (self)weakSelf = self;
+        SportDataModel *data = [patientsArr objectAtIndex:row];
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
             UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
@@ -262,21 +257,28 @@ extern NSMutableArray *patientsArr;
             NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
             NSString *orgCode = orgCodeArr[0];
             [parameter setValue:orgCode forKey:@"orgCode"];
-            [weakSelf unbindHRDevice:parameter];
+            [weakSelf unbindHRDevice:parameter row:row];
         });
     }
 }
 
-- (void)unbindHRDevice:(NSMutableDictionary*)parameter {
+- (void)unbindHRDevice:(NSMutableDictionary*)parameter row:(NSInteger)row{
     __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUNBIND_HR_DEVICE] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         if (code == 0) {
             [STTextHudTool showText:msg];
-            [weakSelf.listView reloadData];
-            weakSelf.titleLbl.text = [NSString stringWithFormat:@"患者管理(%d)",patientsArr.count];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshPatientNotification" object:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+                SportDataModel *data = [patientsArr objectAtIndex:row];
+                NSString *where = [NSString stringWithFormat:@"where %@ = %@ and %@ = %@",bg_sqlKey(@"userId"),bg_sqlValue([NSNumber numberWithInteger:data.userId]),bg_sqlKey(@"doctorId"),bg_sqlValue(user.userId)];
+                [SportDataModel bg_delete:@"tb_monitor_patient" where:where];
+                [patientsArr removeObjectAtIndex:row];
+                [weakSelf.listView reloadData];
+                weakSelf.titleLbl.text = [NSString stringWithFormat:@"患者管理(%d)",patientsArr.count];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"RefreshPatientNotification" object:nil];
+            });
         } else if (code == 10011) {
             [self dismiss];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
