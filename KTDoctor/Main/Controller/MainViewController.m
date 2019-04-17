@@ -10,6 +10,7 @@
 #import "IndexPopoverViewController.h"
 #import "MonitorViewController.h"
 #import "HistoryViewController.h"
+#import "PatientManageViewController.h"
 #import "RegistOrResetView.h"
 #import "DoctorRegistView.h"
 #import "UserModel.h"
@@ -160,7 +161,8 @@
 }
 
 - (void)patientManage:(UITapGestureRecognizer*)sender {
-    NSLog(@"患者管理");
+    PatientManageViewController *manage = [[PatientManageViewController alloc] init];
+    [self.navigationController pushViewController:manage animated:NO];
 }
 
 - (void)addPatient:(UITapGestureRecognizer*)sender {
@@ -199,7 +201,9 @@
             history.sportlists = [NSMutableArray arrayWithArray:rows];
             [weakSelf.navigationController pushViewController:history animated:NO];
         } else if (code == 10011) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+            [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }

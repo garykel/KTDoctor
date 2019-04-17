@@ -42,6 +42,10 @@
 		5B0AC3112254A1570001C48F /* DS-DIGIB.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */; };
 		5B126726225B3EFD00894CCF /* HistoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B126725225B3EFD00894CCF /* HistoryCell.m */; };
 		5B22E0582265C55A00C65B50 /* DateValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E0562265C55A00C65B50 /* DateValueFormatter.m */; };
+		5B22E05D2266CE9D00C65B50 /* PatientManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E05C2266CE9D00C65B50 /* PatientManageViewController.m */; };
+		5B22E0602266CED500C65B50 /* AddPatientViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E05F2266CED500C65B50 /* AddPatientViewController.m */; };
+		5B22E0662266CF2500C65B50 /* AddTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E0652266CF2500C65B50 /* AddTemplateViewController.m */; };
+		5B22E0692266CF5F00C65B50 /* IntensionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E0682266CF5F00C65B50 /* IntensionViewController.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
 		5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */; };
@@ -166,6 +170,14 @@
 		5B22E0532265B9F000C65B50 /* KTDoctor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KTDoctor-Bridging-Header.h"; sourceTree = "<group>"; };
 		5B22E0562265C55A00C65B50 /* DateValueFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateValueFormatter.m; sourceTree = "<group>"; };
 		5B22E0572265C55A00C65B50 /* DateValueFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateValueFormatter.h; sourceTree = "<group>"; };
+		5B22E05B2266CE9D00C65B50 /* PatientManageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientManageViewController.h; sourceTree = "<group>"; };
+		5B22E05C2266CE9D00C65B50 /* PatientManageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientManageViewController.m; sourceTree = "<group>"; };
+		5B22E05E2266CED500C65B50 /* AddPatientViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddPatientViewController.h; sourceTree = "<group>"; };
+		5B22E05F2266CED500C65B50 /* AddPatientViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddPatientViewController.m; sourceTree = "<group>"; };
+		5B22E0642266CF2500C65B50 /* AddTemplateViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddTemplateViewController.h; sourceTree = "<group>"; };
+		5B22E0652266CF2500C65B50 /* AddTemplateViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddTemplateViewController.m; sourceTree = "<group>"; };
+		5B22E0672266CF5F00C65B50 /* IntensionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntensionViewController.h; sourceTree = "<group>"; };
+		5B22E0682266CF5F00C65B50 /* IntensionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IntensionViewController.m; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
@@ -354,6 +366,14 @@
 				5BF44CD52256096D006C3405 /* HistoryViewController.m */,
 				5BF44CD72256097D006C3405 /* HistoryDetailViewController.h */,
 				5BF44CD82256097D006C3405 /* HistoryDetailViewController.m */,
+				5B22E05B2266CE9D00C65B50 /* PatientManageViewController.h */,
+				5B22E05C2266CE9D00C65B50 /* PatientManageViewController.m */,
+				5B22E05E2266CED500C65B50 /* AddPatientViewController.h */,
+				5B22E05F2266CED500C65B50 /* AddPatientViewController.m */,
+				5B22E0642266CF2500C65B50 /* AddTemplateViewController.h */,
+				5B22E0652266CF2500C65B50 /* AddTemplateViewController.m */,
+				5B22E0672266CF5F00C65B50 /* IntensionViewController.h */,
+				5B22E0682266CF5F00C65B50 /* IntensionViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -819,6 +839,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B02F7BD224B7F4F00BE8269 /* SportDataModel.m in Sources */,
+				5B22E05D2266CE9D00C65B50 /* PatientManageViewController.m in Sources */,
 				5B02F7B12249D91A00BE8269 /* PatientListView.m in Sources */,
 				5B02F78F2242269400BE8269 /* WHC_PictureListVC.m in Sources */,
 				5B02F77F2241DC6A00BE8269 /* NSDate+Extension.m in Sources */,
@@ -843,6 +864,7 @@
 				5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */,
 				5B875B9C224CAEDB00736FC2 /* PatientCell12.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
+				5B22E0692266CF5F00C65B50 /* IntensionViewController.m in Sources */,
 				09E47CB62237F97D00B33249 /* GCLoadingView.m in Sources */,
 				5B02F7962242275300BE8269 /* WHC_Asset.m in Sources */,
 				09E47CB82237F97D00B33249 /* STTextHud.m in Sources */,
@@ -864,6 +886,7 @@
 				09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */,
 				09062671225CE621009A182D /* BindHRBandView.m in Sources */,
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
+				5B22E0602266CED500C65B50 /* AddPatientViewController.m in Sources */,
 				5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */,
 				5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */,
 				5B02F7902242269400BE8269 /* WHC_ChoicePictureVC.m in Sources */,
@@ -872,6 +895,7 @@
 				5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */,
 				5BF44CD92256097D006C3405 /* HistoryDetailViewController.m in Sources */,
 				5B126726225B3EFD00894CCF /* HistoryCell.m in Sources */,
+				5B22E0662266CF2500C65B50 /* AddTemplateViewController.m in Sources */,
 				09E47CBC223A8FD700B33249 /* RegistOrResetView.m in Sources */,
 				5B02F7A72248810000BE8269 /* MonitorViewController.m in Sources */,
 				5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */,
