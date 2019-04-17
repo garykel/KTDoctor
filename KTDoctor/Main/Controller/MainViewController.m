@@ -11,6 +11,9 @@
 #import "MonitorViewController.h"
 #import "HistoryViewController.h"
 #import "PatientManageViewController.h"
+#import "AddPatientViewController.h"
+#import "AddTemplateViewController.h"
+#import "IntensionViewController.h"
 #import "RegistOrResetView.h"
 #import "DoctorRegistView.h"
 #import "UserModel.h"
@@ -161,20 +164,35 @@
 }
 
 - (void)patientManage:(UITapGestureRecognizer*)sender {
-    PatientManageViewController *manage = [[PatientManageViewController alloc] init];
-    [self.navigationController pushViewController:manage animated:NO];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@"" forKey:@"keyword"];
+    [parameter setValue:@"" forKey:@"disease"];
+    [parameter setValue:@0 forKey:@"risk"];
+    [parameter setValue:@0 forKey:@"age"];
+    [parameter setValue:@2 forKey:@"type"];
+    [self getDoctorPatientList:parameter];
 }
 
 - (void)addPatient:(UITapGestureRecognizer*)sender {
-    NSLog(@"增加患者");
+    AddPatientViewController *add = [[AddPatientViewController alloc] init];
+    [self.navigationController pushViewController:add animated:NO];
 }
 
 - (void)customTemplateTap:(UITapGestureRecognizer*)sender {
-    NSLog(@"自定义模板管理");
+    AddTemplateViewController *template = [[AddTemplateViewController alloc] init];
+    [self.navigationController pushViewController:template animated:NO];
 }
 
 - (void)intensionTest:(UITapGestureRecognizer*)sender {
-    NSLog(@"强度测试授权");
+    IntensionViewController *intension = [[IntensionViewController alloc] init];
+    [self.navigationController pushViewController:intension animated:NO];
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
@@ -200,6 +218,30 @@
             HistoryViewController *history = [[HistoryViewController alloc] init];
             history.sportlists = [NSMutableArray arrayWithArray:rows];
             [weakSelf.navigationController pushViewController:history animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)getDoctorPatientList:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"lists :%@ :%@",responseObject,error);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            PatientManageViewController *manage = [[PatientManageViewController alloc] init];
+            manage.datas = [rows mutableCopy];
+            [weakSelf.navigationController pushViewController:manage animated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
