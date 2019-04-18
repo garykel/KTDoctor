@@ -50,6 +50,7 @@
 		5B22E06F2267192A00C65B50 /* CustomTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E06E2267192A00C65B50 /* CustomTextField.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
+		5B6067572268672B003E8DF4 /* PatientInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B6067562268672B003E8DF4 /* PatientInfoViewController.m */; };
 		5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */; };
 		5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B89224CAE3E00736FC2 /* PatientCell1.m */; };
 		5B875B8D224CAE7400736FC2 /* PatientCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B8C224CAE7400736FC2 /* PatientCell2.m */; };
@@ -189,6 +190,8 @@
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
 		5B518ECC223795050071AF80 /* DashView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashView.m; sourceTree = "<group>"; };
+		5B6067552268672B003E8DF4 /* PatientInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientInfoViewController.h; sourceTree = "<group>"; };
+		5B6067562268672B003E8DF4 /* PatientInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientInfoViewController.m; sourceTree = "<group>"; };
 		5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EqualCellSqpceFlowLayout.m; sourceTree = "<group>"; };
 		5B875B85224CA9F000736FC2 /* EqualCellSqpceFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EqualCellSqpceFlowLayout.h; sourceTree = "<group>"; };
 		5B875B88224CAE3E00736FC2 /* PatientCell1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell1.h; sourceTree = "<group>"; };
@@ -379,6 +382,8 @@
 				5BF44CD82256097D006C3405 /* HistoryDetailViewController.m */,
 				5B22E05B2266CE9D00C65B50 /* PatientManageViewController.h */,
 				5B22E05C2266CE9D00C65B50 /* PatientManageViewController.m */,
+				5B6067552268672B003E8DF4 /* PatientInfoViewController.h */,
+				5B6067562268672B003E8DF4 /* PatientInfoViewController.m */,
 				5B22E05E2266CED500C65B50 /* AddPatientViewController.h */,
 				5B22E05F2266CED500C65B50 /* AddPatientViewController.m */,
 				5B22E0642266CF2500C65B50 /* AddTemplateViewController.h */,
@@ -901,6 +906,7 @@
 				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,
 				09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */,
 				09062671225CE621009A182D /* BindHRBandView.m in Sources */,
+				5B6067572268672B003E8DF4 /* PatientInfoViewController.m in Sources */,
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
 				5B22E06F2267192A00C65B50 /* CustomTextField.m in Sources */,
 				5B22E0602266CED500C65B50 /* AddPatientViewController.m in Sources */,

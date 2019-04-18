@@ -127,7 +127,6 @@
     _listView.layer.masksToBounds = NO;
     _listView.layer.borderColor   = [UIColor lightTextColor].CGColor;
     _listView.layer.borderWidth   = 0.5f;
-
     NSString *title = [attr valueForKey:@"title"];
     if (title.length > 0) {
         [_mainBtn setTitle:title forState:UIControlStateNormal];
@@ -155,6 +154,7 @@
     _tableView.dataSource      = self;
     _tableView.separatorStyle  = UITableViewCellSeparatorStyleNone;
     _tableView.bounces         = NO;
+    _tableView.showsVerticalScrollIndicator = NO;
     [_listView addSubview:_tableView];
 }
 

@@ -31,12 +31,12 @@
 #define kNameLbl_Height 15
 #define kNameLbl_Width 100
 #define kNameLbl_FontSize 15
-#define kFinishImg_Width 55
+#define kFinishImg_Width 58
 #define kFinishImg_RightMargin 6
 #define kFinishImg_TopMargin 22
-#define kFinishLbl_Height 12
-#define kFinishLbl_BottomMargin 6
-#define kFinishLbl_FontSize 12
+#define kFinishLbl_Height 11
+#define kFinishLbl_BottomMargin 4
+#define kFinishLbl_FontSize 11
 #define kSportView_TopMargin 12
 #define kSportView_LeftMargin 6
 #define kSportView_BottomMargin 15
@@ -160,7 +160,10 @@
     self.finishValLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.finishLbl.frame) + kFinishLbl_BottomMargin * kYScal, self.finishBgImg.frame.size.width, kFinishLbl_Height * kYScal)];
     self.finishValLbl.textAlignment = NSTextAlignmentCenter;
     self.finishValLbl.textColor = [UIColor blackColor];
-    self.finishValLbl.text = @"0%";
+    self.finishValLbl.text = @"100%";
+    NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+    NSInteger completePercent = [[sportData valueForKey:@"completePercent"] integerValue];
+    self.finishValLbl.text = [NSString stringWithFormat:@"%ld%%",(long)completePercent];
     self.finishValLbl.font = [UIFont systemFontOfSize:kFinishLbl_FontSize * kYScal];
     [self.finishBgImg addSubview:self.finishValLbl];
     
@@ -197,8 +200,7 @@
     [self.sportView addSubview:self.avgHRLbl];
     
     self.avgHRValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgHRLbl.frame) + kCellLbl_Space * kXScal, 0, lblWidth, cellHeight)];
-    self.avgHRValLbl.textColor = [UIColor blackColor];
-    NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+    self.avgHRValLbl.textColor = [UIColor blackColor];    
     NSInteger avgHr = [[sportData valueForKey:@"avgHr"] integerValue];
     self.avgHRValLbl.text = [NSString stringWithFormat:@"%d",avgHr];
     self.avgHRValLbl.textAlignment = NSTextAlignmentCenter;

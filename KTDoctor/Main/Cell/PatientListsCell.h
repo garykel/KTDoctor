@@ -8,16 +8,20 @@
 
 #import <UIKit/UIKit.h>
 @interface PatientListsCell : UITableViewCell
-@property (nonatomic,strong)UILabel *idBtn;
+@property (nonatomic,strong)UILabel *idLbl;
 @property (nonatomic,strong)UIView *seperateLine1;
-@property (nonatomic,strong)UIButton *nameBtn;
+@property (nonatomic,strong)UILabel *nameLbl;
 @property (nonatomic,strong)UIView *seperateLine2;
-@property (nonatomic,strong)UIButton *ageBtn;
+@property (nonatomic,strong)UILabel *ageLbl;
 @property (nonatomic,strong)UIView *seperateLine3;
-@property (nonatomic,strong)UIButton *sexBtn;
+@property (nonatomic,strong)UILabel *sexLbl;
 @property (nonatomic,strong)UIView *seperateLine4;
-@property (nonatomic,strong)UIButton *riskLevelBtn;
+@property (nonatomic,strong)UILabel *riskLevelLbl;
 @property (nonatomic,strong)UIView *seperateLine5;
-@property (nonatomic,strong)UIButton *dieaseBtn;
+@property (nonatomic,strong)UILabel *dieaseLbl;
+@property (nonatomic,strong)UIButton *checkBtn;
+@property (nonatomic,assign)NSInteger itemWidth;
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier itemWidth:(NSInteger)itemWidth;
 @end
 

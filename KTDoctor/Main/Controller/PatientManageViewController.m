@@ -7,9 +7,11 @@
 //
 
 #import "PatientManageViewController.h"
+#import "PatientInfoViewController.h"
 #import "LMJDropdownMenu.h"
 #import "CustomTextField.h"
 #import "UserModel.h"
+#import "PatientListsCell.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -49,6 +51,7 @@
 #define kSortView_Height 30
 #define kSortView_SeperateLine_Width 1
 #define kSortView_Btn_Font 13.0
+#define kCell_Height 30
 
 @interface PatientManageViewController ()<UITableViewDelegate,UITableViewDataSource,LMJDropdownMenuDelegate,CustomTextFieldDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -67,20 +70,27 @@
 @property (nonatomic,strong)UILabel *patientTitleLbl;
 @property (nonatomic,strong)UIView *sortView;
 @property (nonatomic,strong)UIButton *idBtn;
+@property (nonatomic,assign)BOOL idBtnAsc;
 @property (nonatomic,strong)UIView *seperateLine1;
 @property (nonatomic,strong)UIButton *nameBtn;
+@property (nonatomic,assign)BOOL nameBtnAsc;
 @property (nonatomic,strong)UIView *seperateLine2;
 @property (nonatomic,strong)UIButton *ageBtn;
+@property (nonatomic,assign)BOOL ageBtnAsc;
 @property (nonatomic,strong)UIView *seperateLine3;
 @property (nonatomic,strong)UIButton *sexBtn;
+@property (nonatomic,assign)BOOL sexBtnAsc;
 @property (nonatomic,strong)UIView *seperateLine4;
 @property (nonatomic,strong)UIButton *riskLevelBtn;
+@property (nonatomic,assign)BOOL riskLevelBtnAsc;
 @property (nonatomic,strong)UIView *seperateLine5;
 @property (nonatomic,strong)UIButton *dieaseBtn;
+@property (nonatomic,assign)BOOL dieaseBtnAsc;
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,assign)NSInteger offset;
 @property (nonatomic,assign)BOOL isFooterClick;
 @property (nonatomic,assign)NSInteger type;
+@property (nonatomic,assign)NSInteger itemWidth;
 @end
 
 @implementation PatientManageViewController
@@ -90,7 +100,13 @@
     self.navigationController.navigationBar.hidden = YES;
     self.isFooterClick = NO;
     self.offset = 0;
-    self.type = 0;
+    self.type = 1;
+    self.idBtnAsc = NO;
+    self.nameBtnAsc = NO;
+    self.ageBtnAsc = NO;
+    self.sexBtnAsc = NO;
+    self.riskLevelBtnAsc = NO;
+    self.dieaseBtnAsc = NO;
     [self setNavBar];
     [self setupUI];
 }
@@ -147,13 +163,13 @@
     [self.searchBgView addSubview:self.nameTF];
     
     self.diseaseDropMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal + CGRectGetMaxX(self.nameTF.frame) + KSearchContent_Space * kXScal, self.searchBgView.frame.origin.y + TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
-    [self.diseaseDropMenu setMenuTitles:@[@"糖尿病"] rowHeight:kDropMenu_Item_Height * kYScal attr:@{@"title":@"病症",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+    [self.diseaseDropMenu setMenuTitles:@[@"II型糖尿病"] rowHeight:kDropMenu_Item_Height attr:@{@"title":@"病症",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
     self.diseaseDropMenu.delegate = self;
     self.diseaseDropMenu.tag = 10;
     [self.bgImg addSubview:self.diseaseDropMenu];
     
     self.riskLevelDropMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.diseaseDropMenu.frame) + KSearchContent_Space * kXScal, self.diseaseDropMenu.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
-    [self.riskLevelDropMenu setMenuTitles:@[@"高",@"中",@"低"] rowHeight:kDropMenu_Item_Height * kYScal attr:@{@"title":@"风险等级",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+    [self.riskLevelDropMenu setMenuTitles:@[@"高",@"中",@"低"] rowHeight:kDropMenu_Item_Height attr:@{@"title":@"风险等级",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
     self.riskLevelDropMenu.delegate = self;
     self.riskLevelDropMenu.tag = 20;
     [self.bgImg addSubview:self.riskLevelDropMenu];
@@ -188,7 +204,7 @@
     [self.bgImg addSubview:self.bottomView];
     
     self.prescriptionMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(self.bottomView.frame.origin.x + kPrescription_DropList_LeftMargin * kXScal, self.bottomView.frame.origin.y + kPrescription_DropList_TopMargin * kYScal, tfWidth, kPrescription_DropList_Height * kYScal)];
-    [self.prescriptionMenu setMenuTitles:@[@"待开具处方",@"已开具处方"] rowHeight:kDropMenu_Item_Height * kYScal attr:@{@"title":@"待开具处方",@"titleFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal],@"titleColor":[UIColor blackColor],@"itemColor":[UIColor blackColor],@"itemFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal]}];
+    [self.prescriptionMenu setMenuTitles:@[@"待开具处方",@"已开具处方"] rowHeight:kDropMenu_Item_Height attr:@{@"title":@"待开具处方",@"titleFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal],@"titleColor":[UIColor blackColor],@"itemColor":[UIColor blackColor],@"itemFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal]}];
     self.prescriptionMenu.delegate = self;
     self.prescriptionMenu.tag = 30;
     [self.bgImg addSubview:self.prescriptionMenu];
@@ -215,18 +231,21 @@
     self.sortView.layer.masksToBounds = YES;
     [self.listBgView addSubview:self.sortView];
     
-    CGFloat btnWidht = (self.sortView.frame.size.width - 5 * kSortView_SeperateLine_Width * kXScal)/6;
+    CGFloat btnWidht = (self.sortView.frame.size.width - 5 * kSortView_SeperateLine_Width)/6;
+    self.itemWidth = btnWidht;
     self.idBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.idBtn.frame = CGRectMake(0, 0, btnWidht, self.sortView.frame.size.height);
     [self.idBtn setTitle:@"ID" forState:UIControlStateNormal];
     [self.idBtn setImage:[UIImage imageNamed:@"manage_sort"] forState:UIControlStateNormal];
+    [self.idBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.idBtn.imageView.frame.size.width, 0, self.idBtn.imageView.frame.size.width)];
+    [self.idBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.idBtn.titleLabel.bounds.size.width, 0, -self.idBtn.titleLabel.bounds.size.width)];
     [self.idBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.idBtn.tag = 10001;
     [self.idBtn.titleLabel setFont:[UIFont systemFontOfSize:kSortView_Btn_Font * kYScal]];
     [self.idBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
     [self.sortView addSubview:self.idBtn];
     
-    self.seperateLine1 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.idBtn.frame), 0, kSortView_SeperateLine_Width * kXScal, self.sortView.frame.size.height)];
+    self.seperateLine1 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.idBtn.frame), 0, kSortView_SeperateLine_Width , self.sortView.frame.size.height)];
     self.seperateLine1.backgroundColor = [UIColor colorWithHexString:@"#a6dfeb"];
     [self.sortView addSubview:self.seperateLine1];
     
@@ -235,12 +254,14 @@
     [self.nameBtn setTitle:@"姓名" forState:UIControlStateNormal];
     [self.nameBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.nameBtn setImage:[UIImage imageNamed:@"manage_sort"] forState:UIControlStateNormal];
+    [self.nameBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.nameBtn.imageView.frame.size.width, 0, self.nameBtn.imageView.frame.size.width)];
+    [self.nameBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.nameBtn.titleLabel.bounds.size.width, 0, -self.nameBtn.titleLabel.bounds.size.width)];
     self.nameBtn.tag = 10002;
     [self.nameBtn.titleLabel setFont:[UIFont systemFontOfSize:kSortView_Btn_Font * kYScal]];
     [self.nameBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
     [self.sortView addSubview:self.nameBtn];
     
-    self.seperateLine2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.nameBtn.frame), 0, kSortView_SeperateLine_Width * kXScal, self.sortView.frame.size.height)];
+    self.seperateLine2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.nameBtn.frame), 0, kSortView_SeperateLine_Width , self.sortView.frame.size.height)];
     self.seperateLine2.backgroundColor = [UIColor colorWithHexString:@"#a6dfeb"];
     [self.sortView addSubview:self.seperateLine2];
     
@@ -249,26 +270,30 @@
     [self.ageBtn setTitle:@"年龄" forState:UIControlStateNormal];
     [self.ageBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.ageBtn setImage:[UIImage imageNamed:@"manage_sort"] forState:UIControlStateNormal];
+    [self.ageBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.ageBtn.imageView.frame.size.width, 0, self.ageBtn.imageView.frame.size.width)];
+    [self.ageBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.ageBtn.titleLabel.bounds.size.width, 0, -self.ageBtn.titleLabel.bounds.size.width)];
     self.ageBtn.tag = 10003;
     [self.ageBtn.titleLabel setFont:[UIFont systemFontOfSize:kSortView_Btn_Font * kYScal]];
     [self.ageBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
     [self.sortView addSubview:self.ageBtn];
     
-    self.seperateLine3 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.ageBtn.frame), 0, kSortView_SeperateLine_Width * kXScal, self.sortView.frame.size.height)];
+    self.seperateLine3 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.ageBtn.frame), 0, kSortView_SeperateLine_Width , self.sortView.frame.size.height)];
     self.seperateLine3.backgroundColor = [UIColor colorWithHexString:@"#a6dfeb"];
     [self.sortView addSubview:self.seperateLine3];
     
     self.sexBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.sexBtn.frame = CGRectMake(CGRectGetMaxX(self.seperateLine3.frame), 0, btnWidht, self.sortView.frame.size.height);
-    [self.sexBtn setTitle:@"年龄" forState:UIControlStateNormal];
+    [self.sexBtn setTitle:@"性别" forState:UIControlStateNormal];
     [self.sexBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.sexBtn setImage:[UIImage imageNamed:@"manage_sort"] forState:UIControlStateNormal];
+    [self.sexBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.sexBtn.imageView.frame.size.width, 0, self.sexBtn.imageView.frame.size.width)];
+    [self.sexBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.sexBtn.titleLabel.bounds.size.width, 0, -self.sexBtn.titleLabel.bounds.size.width)];
     self.sexBtn.tag = 10004;
     [self.sexBtn.titleLabel setFont:[UIFont systemFontOfSize:kSortView_Btn_Font * kYScal]];
     [self.sexBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
     [self.sortView addSubview:self.sexBtn];
     
-    self.seperateLine4 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexBtn.frame), 0, kSortView_SeperateLine_Width * kXScal, self.sortView.frame.size.height)];
+    self.seperateLine4 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexBtn.frame), 0, kSortView_SeperateLine_Width , self.sortView.frame.size.height)];
     self.seperateLine4.backgroundColor = [UIColor colorWithHexString:@"#a6dfeb"];
     [self.sortView addSubview:self.seperateLine4];
     
@@ -277,12 +302,14 @@
     [self.riskLevelBtn setTitle:@"风险等级" forState:UIControlStateNormal];
     [self.riskLevelBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.riskLevelBtn setImage:[UIImage imageNamed:@"manage_sort"] forState:UIControlStateNormal];
+    [self.riskLevelBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.riskLevelBtn.imageView.frame.size.width, 0, self.riskLevelBtn.imageView.frame.size.width)];
+    [self.riskLevelBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.riskLevelBtn.titleLabel.bounds.size.width, 0, -self.riskLevelBtn.titleLabel.bounds.size.width)];
     self.riskLevelBtn.tag = 10005;
     [self.riskLevelBtn.titleLabel setFont:[UIFont systemFontOfSize:kSortView_Btn_Font * kYScal]];
     [self.riskLevelBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
     [self.sortView addSubview:self.riskLevelBtn];
     
-    self.seperateLine5 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelBtn.frame), 0, kSortView_SeperateLine_Width * kXScal, self.sortView.frame.size.height)];
+    self.seperateLine5 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelBtn.frame), 0, kSortView_SeperateLine_Width , self.sortView.frame.size.height)];
     self.seperateLine5.backgroundColor = [UIColor colorWithHexString:@"#a6dfeb"];
     [self.sortView addSubview:self.seperateLine5];
     
@@ -291,6 +318,8 @@
     [self.dieaseBtn setTitle:@"病症" forState:UIControlStateNormal];
     [self.dieaseBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.dieaseBtn setImage:[UIImage imageNamed:@"manage_sort"] forState:UIControlStateNormal];
+    [self.dieaseBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.dieaseBtn.imageView.frame.size.width, 0, self.dieaseBtn.imageView.frame.size.width)];
+    [self.dieaseBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.dieaseBtn.titleLabel.bounds.size.width, 0, -self.dieaseBtn.titleLabel.bounds.size.width)];
     self.dieaseBtn.tag = 10006;
     [self.dieaseBtn.titleLabel setFont:[UIFont systemFontOfSize:kSortView_Btn_Font * kYScal]];
     [self.dieaseBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
@@ -346,6 +375,10 @@
     return footerView;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return kCell_Height * kYScal;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.datas.count;
 }
@@ -356,20 +389,47 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *reuseCellIdStr = [NSString stringWithFormat:@"PatientListsCellId%ld%ld",(long)indexPath.section,(long)indexPath.row];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
+    PatientListsCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
+        cell = [[PatientListsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr itemWidth:self.itemWidth];
         cell.selectionStyle          = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     }
-    cell.textLabel.text = [NSString stringWithFormat:@"row %d",indexPath.section + 1];
+    NSDictionary *dict = [self.datas objectAtIndex:indexPath.section];
+    cell.idLbl.text = [NSString stringWithFormat:@"%@",[dict valueForKey:@"id"]];
+    cell.nameLbl.text = [NSString stringWithFormat:@"%@",[dict valueForKey:@"name"]];
+    cell.ageLbl.text = [NSString stringWithFormat:@"%@",[dict valueForKey:@"age"]];
+    NSString *sexStr = @"男";
+    NSInteger sex = [[dict valueForKey:@"sex"] integerValue];
+    if (sex == 1) {
+        sexStr = @"男";
+    } else {
+        sexStr = @"女";
+    }
+    cell.sexLbl.text = sexStr;
+    NSString *ristStr = @"低";
+    NSInteger risk = [[dict valueForKey:@"risk"] integerValue];
+    if (risk == 1) {
+        ristStr = @"低";
+    } else if (risk == 2) {
+        ristStr = @"中";
+    } else if (risk == 3) {
+        ristStr = @"高";
+    }
+    cell.riskLevelLbl.text = ristStr;
+    cell.dieaseLbl.text = @"II型糖尿病";
+    [cell.checkBtn addTarget:self action:@selector(checkInfo:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 #pragma mark - LMJDropdownMenu Delegate
 
 - (void)dropdownMenu:(LMJDropdownMenu *)menu selectedCellNumber:(NSInteger)number{
-    NSLog(@"你选择了：%ld",number);
+    NSLog(@"你选择了：%ld",(long)number);
+    self.offset = 0;
     if (menu == self.prescriptionMenu) {
+        if (self.datas.count > 0) {
+            [self.datas removeAllObjects];
+        }
         if (number == 0) {
             self.type = 1;
         } else if (number == 1) {
@@ -379,7 +439,6 @@
             [self.datas removeAllObjects];
         }
         [self showUserListWithKeyword:@""];
-        [self.listView reloadData];
     }
 }
 
@@ -425,7 +484,40 @@
 }
 
 - (void)sort:(UIButton*)sender {
-    
+    NSInteger tag = sender.tag;
+    if (tag == 10001) {
+        self.idBtnAsc = !self.idBtnAsc;
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"id" ascending:self.idBtnAsc];
+        self.datas = [[self.datas sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] mutableCopy];
+        [self.listView reloadData];
+    } else if (tag == 10002) {
+        self.nameBtnAsc = !self.nameBtnAsc;
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:self.nameBtnAsc];
+        self.datas = [[self.datas sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] mutableCopy];
+        [self.listView reloadData];
+    } else if (tag == 10003) {
+        self.ageBtnAsc = !self.ageBtnAsc;
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"age" ascending:self.ageBtnAsc];
+        self.datas = [[self.datas sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] mutableCopy];
+        [self.listView reloadData];
+    } else if (tag == 10004) {
+        self.sexBtnAsc = !self.sexBtnAsc;
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"sex" ascending:self.sexBtnAsc];
+        self.datas = [[self.datas sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] mutableCopy];
+        [self.listView reloadData];
+    } else if (tag == 10005) {
+        self.riskLevelBtnAsc = !self.riskLevelBtnAsc;
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"risk" ascending:self.riskLevelBtnAsc];
+        self.datas = [[self.datas sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] mutableCopy];
+        [self.listView reloadData];
+    } else if (tag == 10006) {
+        
+    }
+}
+
+- (void)checkInfo:(UIButton*)sender {
+    PatientInfoViewController *info = [[PatientInfoViewController alloc] init];
+    [self.navigationController pushViewController:info animated:NO];
 }
 
 #pragma mark - netFunctions
@@ -455,11 +547,25 @@
                 [weakSelf.datas addObjectsFromArray:rows];
                 [weakSelf.listView.mj_footer endRefreshing];
             } else {
-                weakSelf.datas = [NSMutableArray arrayWithArray:rows];
+                if (rows.count > 0) {
+                    if (weakSelf.datas.count > 0) {
+                        //替换前n个数据
+                        NSMutableArray *tempArr = [NSMutableArray array];
+                        [tempArr addObjectsFromArray:rows];
+                        if (weakSelf.datas.count > rows.count) {
+                            NSArray *afterArr = [weakSelf.datas subarrayWithRange:NSMakeRange(rows.count, weakSelf.datas.count - rows.count)];
+                            [tempArr addObjectsFromArray:afterArr];
+                        }
+                        weakSelf.datas = [tempArr mutableCopy];
+                    } else {
+                        [weakSelf.datas addObjectsFromArray:rows];
+                    }
+                }
                 [weakSelf.listView.mj_header endRefreshing];
             }
             [weakSelf.listView reloadData];
         } else if (code == 10011) {
+            [weakSelf.navigationController popViewControllerAnimated:NO];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
         }  else {

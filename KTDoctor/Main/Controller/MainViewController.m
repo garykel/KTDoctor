@@ -176,7 +176,7 @@
     [parameter setValue:@"" forKey:@"disease"];
     [parameter setValue:@0 forKey:@"risk"];
     [parameter setValue:@0 forKey:@"age"];
-    [parameter setValue:@2 forKey:@"type"];
+    [parameter setValue:@1 forKey:@"type"];
     [self getDoctorPatientList:parameter];
 }
 
