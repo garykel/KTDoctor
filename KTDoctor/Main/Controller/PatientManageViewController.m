@@ -419,6 +419,7 @@
     cell.riskLevelLbl.text = ristStr;
     cell.dieaseLbl.text = @"II型糖尿病";
     [cell.checkBtn addTarget:self action:@selector(checkInfo:) forControlEvents:UIControlEventTouchUpInside];
+    cell.checkBtn.tag = 1000 + indexPath.section;
     return cell;
 }
 #pragma mark - LMJDropdownMenu Delegate
@@ -516,11 +517,45 @@
 }
 
 - (void)checkInfo:(UIButton*)sender {
-    PatientInfoViewController *info = [[PatientInfoViewController alloc] init];
-    [self.navigationController pushViewController:info animated:NO];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@2 forKey:@"rows"];
+    NSInteger index = sender.tag - 1000;
+    NSDictionary *info = [self.datas objectAtIndex:index];
+    NSInteger userId = [[info valueForKey:@"id"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    [self checkPatientInfo:parameter];
 }
 
 #pragma mark - netFunctions
+
+- (void)checkPatientInfo:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERINFO_MORE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"************** 1:%@**************",responseObject);
+        if (code == 0) {
+            NSArray *data = [responseObject valueForKey:@"data"];
+            PatientInfoViewController *info = [[PatientInfoViewController alloc] init];
+            info.infoArr = [data mutableCopy];
+            [self.navigationController pushViewController:info animated:NO];
+        } else if (code == 10011) {
+            [weakSelf.navigationController popViewControllerAnimated:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 
 - (void)showUserListWithKeyword:(NSString *)keyword{
     __weak typeof (self)weakSelf = self;

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface PatientInfoViewController : UIViewController
-
+@property (nonatomic,strong)NSMutableArray *infoArr;
 @end
