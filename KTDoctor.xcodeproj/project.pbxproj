@@ -64,6 +64,7 @@
 		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
 		5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD9640A22390AC2006FD9CD /* MainViewController.m */; };
 		5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BE8130B2237609C005C0648 /* LoginViewController.m */; };
+		5BEC2E442269BD8800CDDF09 /* UnitTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BEC2E432269BD8800CDDF09 /* UnitTextField.m */; };
 		5BECDBAF22365CA10025D6F2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBAE22365CA10025D6F2 /* AppDelegate.m */; };
 		5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BECDBB122365CA10025D6F2 /* ViewController.m */; };
 		5BECDBB522365CA10025D6F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5BECDBB322365CA10025D6F2 /* Main.storyboard */; };
@@ -218,6 +219,8 @@
 		5BD9640A22390AC2006FD9CD /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		5BE8130A2237609C005C0648 /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		5BE8130B2237609C005C0648 /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		5BEC2E422269BD8800CDDF09 /* UnitTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnitTextField.h; sourceTree = "<group>"; };
+		5BEC2E432269BD8800CDDF09 /* UnitTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnitTextField.m; sourceTree = "<group>"; };
 		5BECDBAA22365CA10025D6F2 /* KTDoctor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KTDoctor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BECDBAD22365CA10025D6F2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5BECDBAE22365CA10025D6F2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -409,6 +412,8 @@
 				5B22E0562265C55A00C65B50 /* DateValueFormatter.m */,
 				5B22E06D2267192A00C65B50 /* CustomTextField.h */,
 				5B22E06E2267192A00C65B50 /* CustomTextField.m */,
+				5BEC2E422269BD8800CDDF09 /* UnitTextField.h */,
+				5BEC2E432269BD8800CDDF09 /* UnitTextField.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -905,6 +910,7 @@
 				5B875B93224CAE9D00736FC2 /* PatientCell4.m in Sources */,
 				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,
 				09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */,
+				5BEC2E442269BD8800CDDF09 /* UnitTextField.m in Sources */,
 				09062671225CE621009A182D /* BindHRBandView.m in Sources */,
 				5B6067572268672B003E8DF4 /* PatientInfoViewController.m in Sources */,
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
