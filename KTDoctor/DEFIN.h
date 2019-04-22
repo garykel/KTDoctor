@@ -30,4 +30,6 @@
 #define kDOCTOR_USER_REPORTLIST_URL @"/doctor/user_report_list" //医师获取用户处方报告及列表
 #define kDOCTOR_PRESCRIPTION_DETAIL_URL @"/doctor/prescription/detail" //医师查看处方详情
 #define kDOCTOR_PRESCRIPTION_CREATE_URL @"/doctor/prescription/create" //开具新处方
+#define kDOCTOR_USER_PRIVATE_DEVICE_URL @"/doctor/user_private_device" //医师获取用户私有心率带
+#define kDOCTOR_CHANGE_HR_DEVICE_URL @"/doctor/change_hr_device"//医师更换用户私有心率带
 #endif /* DEFIN_h */
