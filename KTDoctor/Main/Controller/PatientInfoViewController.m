@@ -1057,7 +1057,12 @@
     self.latestQuestionLbl1.center = CGPointMake(question1_CenterX, self.latestQuestionImg1.center.y);
     self.latestQuestionLbl1.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.leftContentView addSubview:self.latestQuestionLbl1];
-    
+    NSInteger sportFrequency = [[self.latestInfoDict valueForKey:@"sportFrequency"] integerValue];
+    if (sportFrequency == 2) {
+        self.latestAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestAnswer1NoImg.frame = CGRectMake(self.latestQuestionLbl1.frame.origin.x + kRadioBtn_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestionLbl1.frame) + kRadioBtn_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestAnswer1NoImg];
     
@@ -1072,17 +1077,13 @@
     CGFloat latestAnsweriNoImg_centerX = self.latestQuestionLbl1.frame.origin.x + kRadioBtn_LeftMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.latestAnswer1NoImg.center = CGPointMake(latestAnsweriNoImg_centerX, self.latestAnswer1NoLbl.center.y);
     
-    self.latestAnswer1YesImg.frame = CGRectMake(self.latestAnswer1NoImg.frame.origin.x, CGRectGetMaxY(self.latestAnswer1NoLbl.frame) + kRadioBtn_Yes_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
-    [self.leftContentView addSubview:self.latestAnswer1YesImg];
-    
-    NSInteger sportFrequency = [[self.latestInfoDict valueForKey:@"sportFrequency"] integerValue];
     if (sportFrequency == 1) {
-        self.latestAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
         self.latestAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-    } else if (sportFrequency == 2) {
-        self.latestAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
         self.latestAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     }
+    self.latestAnswer1YesImg.frame = CGRectMake(self.latestAnswer1NoImg.frame.origin.x, CGRectGetMaxY(self.latestAnswer1NoLbl.frame) + kRadioBtn_Yes_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
+    [self.leftContentView addSubview:self.latestAnswer1YesImg];
     
     self.latestAnswer1YesLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestAnswer1YesImg.frame) + kRadioBtn_RightMargin * kXScal, CGRectGetMaxY(self.latestAnswer1NoLbl.frame) + kAnswerLbl_Yes_TopMargin * kYScal, kAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestAnswer1YesLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1113,6 +1114,12 @@
     self.latestHbpLbl.text = @"高血压";
     [self.leftContentView addSubview:self.latestHbpLbl];
     
+    NSInteger hasHbp = [[self.latestInfoDict valueForKey:@"hasHbp"] integerValue];
+    if (hasHbp == 1) {
+        self.latestHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestHbpYesImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbpLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat latestHbpYesImg_centerX = CGRectGetMaxX(self.latestHbpLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal / 2.0;
     self.latestHbpYesImg.center = CGPointMake(latestHbpYesImg_centerX, self.latestHbpLbl.center.y);
@@ -1124,17 +1131,13 @@
     self.latestHbpYesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestHbpYesLbl];
     
+    if (hasHbp == 2) {
+        self.latestHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestHbpNoImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbpYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestHbpYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestHbpNoImg];
-    
-    NSInteger hasHbp = [[self.latestInfoDict valueForKey:@"hasHbp"] integerValue];
-    if (hasHbp == 1) {
-        self.latestHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-        self.latestHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-    } else {
-        self.latestHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-        self.latestHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-    }
     
     self.latestHbpNoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestHbpNoImg.frame) + kRadioBtn_RightMargin * kXScal, self.latestHbpLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestHbpNoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1148,7 +1151,12 @@
     self.latestHbsLbl.textColor = [UIColor colorWithHexString:@"#444444"];
     self.latestHbsLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestHbsLbl];
-    
+    NSInteger hasHbs = [[self.latestInfoDict valueForKey:@"hasHbs"] integerValue];
+    if (hasHbs == 1) {
+        self.latestHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestHbsYesImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbsLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat latestHbsYesImg_CenterX = CGRectGetMaxX(self.latestHbsLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.latestHbsYesImg.center = CGPointMake(latestHbsYesImg_CenterX, self.latestHbsLbl.center.y);
@@ -1159,17 +1167,14 @@
     self.latestHbsYesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     self.latestHbsYesLbl.text = @"有";
     [self.leftContentView addSubview:self.latestHbsYesLbl];
-    
+    if (hasHbs == 2) {
+        self.latestHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestHbsNoImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbsYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestHbsYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestHbsNoImg];
-    NSInteger hasHbs = [[self.latestInfoDict valueForKey:@"hasHbs"] integerValue];
-    if (hasHbs == 1) {
-        self.latestHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-        self.latestHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-    } else {
-        self.latestHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-        self.latestHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-    }
+    
     self.latestHbsNoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestHbsNoImg.frame) + kRadioBtn_RightMargin * kXScal, self.latestHbsYesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestHbsNoLbl.text = @"无";
     self.latestHbsNoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1182,7 +1187,12 @@
     self.latestHbfLbl.textColor = [UIColor colorWithHexString:@"#444444"];
     self.latestHbfLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestHbfLbl];
-    
+    NSInteger hasHbf = [[self.latestInfoDict valueForKey:@"hasHbf"] integerValue];
+    if (hasHbf == 1) {
+        self.latestHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestHbfYesImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbfLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat latestHbfYesImg_CenterX = CGRectGetMaxX(self.latestHbfLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.latestHbfYesImg.center = CGPointMake(latestHbfYesImg_CenterX, self.latestHbfLbl.center.y);
@@ -1193,18 +1203,14 @@
     self.latestHbfYesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     self.latestHbfYesLbl.text = @"有";
     [self.leftContentView addSubview:self.latestHbfYesLbl];
-    
+    if (hasHbf == 2) {
+        self.latestHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestHbfNoImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbfYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestHbfYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestHbfNoImg];
     
-    NSInteger hasHbf = [[self.latestInfoDict valueForKey:@"hasHbf"] integerValue];
-    if (hasHbf == 1) {
-        self.latestHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-        self.latestHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-    } else {
-        self.latestHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-        self.latestHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-    }
     self.latestHbfNoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestHbfNoImg.frame) + kRadioBtn_RightMargin * kXScal, self.latestHbfYesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestHbfNoLbl.text = @"无";
     self.latestHbfNoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1218,6 +1224,12 @@
     self.latestHighSmokeLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestHighSmokeLbl];
     
+    NSInteger hasSmoking = [[self.latestInfoDict valueForKey:@"hasSmoking"] integerValue];
+    if (hasSmoking == 1) {
+        self.latestSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestSmokeYesImg.frame = CGRectMake(CGRectGetMaxX(self.latestHighSmokeLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat latestSmokefYesImg_CenterX = CGRectGetMaxX(self.latestHighSmokeLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.latestSmokeYesImg.center = CGPointMake(latestSmokefYesImg_CenterX, self.latestHighSmokeLbl.center.y);
@@ -1228,17 +1240,14 @@
     self.latestSmokeYesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     self.latestSmokeYesLbl.text = @"有";
     [self.leftContentView addSubview:self.latestSmokeYesLbl];
-    
+    if (hasSmoking == 2) {
+        self.latestSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestSmokeNoImg.frame = CGRectMake(CGRectGetMaxX(self.latestSmokeYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestSmokeYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestSmokeNoImg];
-    NSInteger hasSmoking = [[self.latestInfoDict valueForKey:@"hasSmoking"] integerValue];
-    if (hasSmoking == 1) {
-        self.latestSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-        self.latestSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-    } else {
-        self.latestSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-        self.latestSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-    }
+    
     self.latestSmokeNoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestSmokeNoImg.frame) + kRadioBtn_RightMargin * kXScal, self.latestSmokeYesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestSmokeNoLbl.text = @"无";
     self.latestSmokeNoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1257,7 +1266,12 @@
     self.latestQuestionLbl3.center = CGPointMake(question3_CenterX, self.latestQuestionImg3.center.y);
     self.latestQuestionLbl3.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.leftContentView addSubview:self.latestQuestionLbl3];
-    
+    NSInteger familyDiabetes = [[self.latestInfoDict valueForKey:@"familyDiabetes"] integerValue];
+    if (familyDiabetes == 1) {
+        self.latestQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestQuestion3YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestionLbl3.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion3YesImg];
     
@@ -1268,18 +1282,14 @@
     self.latestQuestion3YesLbl.text = @"有";
     self.latestQuestion3YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestQuestion3YesLbl];
-    
+    if (familyDiabetes == 2) {
+        self.latestQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestQuestion3NoImg.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion3YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestQuestion3YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion3NoImg];
     
-    NSInteger familyDiabetes = [[self.latestInfoDict valueForKey:@"familyDiabetes"] integerValue];
-    if (familyDiabetes == 1) {
-        self.latestQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-        self.latestQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-    } else {
-        self.latestQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-        self.latestQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-    }
     self.latestQuestion3NoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestQuestion3NoImg.frame) + kRadioBtn_LeftMargin, self.latestQuestion3YesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestQuestion3NoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
     self.latestQuestion3NoLbl.text = @"无";
@@ -1298,7 +1308,12 @@
     self.latestQuestionLbl4.center = CGPointMake(question4_CenterX, self.latestQuestionImg4.center.y);
     self.latestQuestionLbl4.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.leftContentView addSubview:self.latestQuestionLbl4];
-    
+    NSInteger familySuddenDeath = [[self.latestInfoDict valueForKey:@"familySuddenDeath"] integerValue];
+    if (familySuddenDeath == 1) {
+        self.latestQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestQuestion4YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestionLbl4.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion4YesImg];
     
@@ -1310,16 +1325,14 @@
     self.latestQuestion4YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestQuestion4YesLbl];
     
+    if (familySuddenDeath == 2) {
+        self.latestQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestQuestion4NoImg.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion4YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestQuestion4YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion4NoImg];
-    NSInteger familySuddenDeath = [[self.latestInfoDict valueForKey:@"familySuddenDeath"] integerValue];
-    if (familySuddenDeath == 1) {
-        self.latestQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-        self.latestQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-    } else {
-        self.latestQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-        self.latestQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-    }
+    
     self.latestQuestion4NoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestQuestion4NoImg.frame) + kRadioBtn_LeftMargin, self.latestQuestion4YesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestQuestion4NoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
     self.latestQuestion4NoLbl.text = @"无";
@@ -1338,9 +1351,15 @@
     self.latestQuestionLbl5.center = CGPointMake(question5_CenterX, self.latestQuestionImg5.center.y);
     self.latestQuestionLbl5.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.leftContentView addSubview:self.latestQuestionLbl5];
-    
+    NSInteger threeMonthStatus = [[self.latestInfoDict valueForKey:@"threeMonthStatus"] integerValue];
+    if (threeMonthStatus == 1) {
+        self.latestQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestQuestion5YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestionLbl5.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion5YesImg];
+    
     self.latestQuestion5YesLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestQuestion5YesImg.frame) + kRadioBtn_LeftMargin * kXScal, 0, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     CGFloat latestQuestion5YesLbl_CenterX = CGRectGetMaxX(self.latestQuestion5YesImg.frame) + kRadioBtn_LeftMargin * kXScal + kSecondAnswerLbl_Yes_Width /2.0;
     self.latestQuestion5YesLbl.center = CGPointMake(latestQuestion5YesLbl_CenterX, self.latestQuestion5YesImg.center.y);
@@ -1348,18 +1367,13 @@
     self.latestQuestion5YesLbl.text = @"有";
     self.latestQuestion5YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestQuestion5YesLbl];
-    
+    if (threeMonthStatus == 2) {
+        self.latestQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.latestQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.latestQuestion5NoImg.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestQuestion5YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion5NoImg];
-    
-    NSInteger threeMonthStatus = [[self.latestInfoDict valueForKey:@"threeMonthStatus"] integerValue];
-    if (threeMonthStatus == 1) {
-        self.latestQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-        self.latestQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-    } else {
-        self.latestQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
-        self.latestQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
-    }
     
     self.latestQuestion5NoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestQuestion5NoImg.frame) + kRadioBtn_LeftMargin, self.latestQuestion5YesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestQuestion5NoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1949,8 +1963,12 @@
     self.olderQuestionLbl1.center = CGPointMake(question1_CenterX, self.olderQuestionImg1.center.y);
     self.olderQuestionLbl1.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.rightContentView addSubview:self.olderQuestionLbl1];
-    
-    self.olderAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    NSInteger sportFrequency = [[self.olderInfoDict valueForKey:@"sportFrequency"] integerValue];
+    if (sportFrequency == 2) {
+        self.olderAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderAnswer1NoImg.frame = CGRectMake(self.olderQuestionLbl1.frame.origin.x + kRadioBtn_LeftMargin * kXScal, CGRectGetMaxY(self.olderQuestionLbl1.frame) + kRadioBtn_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderAnswer1NoImg];
     
@@ -1965,7 +1983,11 @@
     CGFloat olderAnsweriNoImg_centerX = self.latestQuestionLbl1.frame.origin.x + kRadioBtn_LeftMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.olderAnswer1NoImg.center = CGPointMake(olderAnsweriNoImg_centerX, self.olderAnswer1NoLbl.center.y);
     
-    self.olderAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    if (sportFrequency == 1) {
+        self.olderAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderAnswer1YesImg.frame = CGRectMake(self.olderAnswer1NoImg.frame.origin.x, CGRectGetMaxY(self.olderAnswer1NoLbl.frame) + kRadioBtn_Yes_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderAnswer1YesImg];
     
@@ -1997,8 +2019,12 @@
     self.olderHbpLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     self.olderHbpLbl.text = @"高血压";
     [self.rightContentView addSubview:self.olderHbpLbl];
-    
-    self.olderHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    NSInteger hasHbp = [[self.olderInfoDict valueForKey:@"hasHbp"] integerValue];
+    if (hasHbp == 1) {
+        self.olderHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderHbpYesImg.frame = CGRectMake(CGRectGetMaxX(self.olderHbpLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat olderHbpYesImg_centerX = CGRectGetMaxX(self.olderHbpLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal / 2.0;
     self.olderHbpYesImg.center = CGPointMake(olderHbpYesImg_centerX, self.olderHbpLbl.center.y);
@@ -2010,7 +2036,11 @@
     self.olderHbpYesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.rightContentView addSubview:self.olderHbpYesLbl];
     
-    self.olderHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    if (hasHbp == 2) {
+        self.olderHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderHbpNoImg.frame = CGRectMake(CGRectGetMaxX(self.olderHbpYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.olderHbpYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderHbpNoImg];
     
@@ -2027,7 +2057,12 @@
     self.olderHbsLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.rightContentView addSubview:self.olderHbsLbl];
     
-    self.olderHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    NSInteger hasHbs = [[self.olderInfoDict valueForKey:@"hasHbs"] integerValue];
+    if (hasHbs == 1) {
+        self.olderHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderHbsYesImg.frame = CGRectMake(CGRectGetMaxX(self.olderHbsLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat olderHbsYesImg_CenterX = CGRectGetMaxX(self.olderHbsLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.olderHbsYesImg.center = CGPointMake(olderHbsYesImg_CenterX, self.olderHbsLbl.center.y);
@@ -2039,7 +2074,11 @@
     self.olderHbsYesLbl.text = @"有";
     [self.rightContentView addSubview:self.olderHbsYesLbl];
     
-    self.olderHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    if (hasHbs == 2) {
+        self.olderHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderHbsNoImg.frame = CGRectMake(CGRectGetMaxX(self.olderHbsYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.olderHbsYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderHbsNoImg];
     
@@ -2056,7 +2095,12 @@
     self.olderHbfLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.rightContentView addSubview:self.olderHbfLbl];
     
-    self.olderHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    NSInteger hasHbf = [[self.olderInfoDict valueForKey:@"hasHbf"] integerValue];
+    if (hasHbf == 1) {
+        self.olderHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderHbfYesImg.frame = CGRectMake(CGRectGetMaxX(self.olderHbfLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat olderHbfYesImg_CenterX = CGRectGetMaxX(self.olderHbfLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.olderHbfYesImg.center = CGPointMake(olderHbfYesImg_CenterX, self.olderHbfLbl.center.y);
@@ -2068,7 +2112,11 @@
     self.olderHbfYesLbl.text = @"有";
     [self.rightContentView addSubview:self.olderHbfYesLbl];
     
-    self.olderHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    if (hasHbf == 2) {
+        self.olderHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderHbfNoImg.frame = CGRectMake(CGRectGetMaxX(self.olderHbfYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.olderHbfYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderHbfNoImg];
     
@@ -2085,7 +2133,12 @@
     self.olderHighSmokeLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.rightContentView addSubview:self.olderHighSmokeLbl];
     
-    self.olderSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    NSInteger hasSmoking = [[self.olderInfoDict valueForKey:@"hasSmoking"] integerValue];
+    if (hasSmoking == 1) {
+        self.olderSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderSmokeYesImg.frame = CGRectMake(CGRectGetMaxX(self.olderHighSmokeLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat olderSmokefYesImg_CenterX = CGRectGetMaxX(self.olderHighSmokeLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.olderSmokeYesImg.center = CGPointMake(olderSmokefYesImg_CenterX, self.olderHighSmokeLbl.center.y);
@@ -2097,7 +2150,11 @@
     self.olderSmokeYesLbl.text = @"有";
     [self.rightContentView addSubview:self.olderSmokeYesLbl];
     
-    self.olderSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    if (hasSmoking == 2) {
+        self.olderSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderSmokeNoImg.frame = CGRectMake(CGRectGetMaxX(self.olderSmokeYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.olderSmokeYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderSmokeNoImg];
     
@@ -2119,8 +2176,12 @@
     self.olderQuestionLbl3.center = CGPointMake(question3_CenterX, self.olderQuestionImg3.center.y);
     self.olderQuestionLbl3.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.rightContentView addSubview:self.olderQuestionLbl3];
-    
-    self.olderQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    NSInteger familyDiabetes = [[self.olderInfoDict valueForKey:@"familyDiabetes"] integerValue];
+    if (familyDiabetes == 1) {
+        self.olderQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderQuestion3YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.olderQuestionLbl3.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderQuestion3YesImg];
     
@@ -2132,7 +2193,11 @@
     self.olderQuestion3YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.rightContentView addSubview:self.olderQuestion3YesLbl];
     
-    self.olderQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    if (familyDiabetes == 2) {
+        self.olderQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderQuestion3NoImg.frame = CGRectMake(CGRectGetMaxX(self.olderQuestion3YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.olderQuestion3YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderQuestion3NoImg];
     
@@ -2154,8 +2219,12 @@
     self.olderQuestionLbl4.center = CGPointMake(question4_CenterX, self.olderQuestionImg4.center.y);
     self.olderQuestionLbl4.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.rightContentView addSubview:self.olderQuestionLbl4];
-    
-    self.olderQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    NSInteger familySuddenDeath = [[self.olderInfoDict valueForKey:@"familySuddenDeath"] integerValue];
+    if (familySuddenDeath == 1) {
+        self.olderQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderQuestion4YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.olderQuestionLbl4.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderQuestion4YesImg];
     
@@ -2167,7 +2236,11 @@
     self.olderQuestion4YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.rightContentView addSubview:self.olderQuestion4YesLbl];
     
-    self.olderQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    if (familySuddenDeath == 2) {
+        self.olderQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderQuestion4NoImg.frame = CGRectMake(CGRectGetMaxX(self.olderQuestion4YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.olderQuestion4YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderQuestion4NoImg];
     
@@ -2190,7 +2263,12 @@
     self.olderQuestionLbl5.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.rightContentView addSubview:self.olderQuestionLbl5];
     
-    self.olderQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    NSInteger threeMonthStatus = [[self.olderInfoDict valueForKey:@"threeMonthStatus"] integerValue];
+    if (threeMonthStatus == 1) {
+        self.olderQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderQuestion5YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.olderQuestionLbl5.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderQuestion5YesImg];
     
@@ -2202,7 +2280,11 @@
     self.olderQuestion5YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.rightContentView addSubview:self.olderQuestion5YesLbl];
     
-    self.olderQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    if (threeMonthStatus == 2) {
+        self.olderQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     self.olderQuestion5NoImg.frame = CGRectMake(CGRectGetMaxX(self.olderQuestion5YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.olderQuestion5YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.rightContentView addSubview:self.olderQuestion5NoImg];
     
@@ -2365,23 +2447,25 @@
     self.olderRiskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(kSummaryView_LeftMargin * kXScal, kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
     self.olderRiskLevelLbl.text = @"风险等级：中";
     NSInteger riskLevel = [[self.olderInfoDict valueForKey:@"riskLevel"] integerValue];
-    NSDictionary *riskDict = [self getHrRangeAndRPERange:riskLevel];
-    self.olderRiskLevelLbl.text = [NSString stringWithFormat:@"风险等级：%@",[riskDict valueForKey:@"riskLevel"]];
-    self.olderRiskLevelLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
-    self.olderRiskLevelLbl.textColor = [UIColor colorWithHexString:@"#333333"];
-    [self.olderSummaryView addSubview:self.olderRiskLevelLbl];
-    
-    self.olderHRZoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderSummaryView.frame.size.width - kSummaryView_Lbl_Width * kXScal - kSummaryView_HRZoneLbl_RightMargin * kXScal, self.olderRiskLevelLbl.frame.origin.y, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
-    self.olderHRZoneLbl.text = [NSString stringWithFormat:@"心率区间：%@",[riskDict valueForKey:@"hrRange"]];
-    self.olderHRZoneLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
-    self.olderHRZoneLbl.textColor = [UIColor colorWithHexString:@"#333333"];
-    [self.olderSummaryView addSubview:self.olderHRZoneLbl];
-    
-    self.olderRPERangeLbll = [[UILabel alloc] initWithFrame:CGRectMake(self.olderRiskLevelLbl.frame.origin.x, self.olderSummaryView.frame.size.height - kSummaryView_Lbl_Height * kYScal - kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
-    self.olderRPERangeLbll.textColor = [UIColor colorWithHexString:@"#333333"];
-    self.olderRPERangeLbll.text = [NSString stringWithFormat:@"RPE范围：%@",[riskDict valueForKey:@"rpeRange"]];
-    self.olderRPERangeLbll.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
-    [self.olderSummaryView addSubview:self.olderRPERangeLbll];
+    if (riskLevel > 0) {
+        NSDictionary *riskDict = [self getHrRangeAndRPERange:riskLevel];
+        self.olderRiskLevelLbl.text = [NSString stringWithFormat:@"风险等级：%@",[riskDict valueForKey:@"riskLevel"]];
+        self.olderRiskLevelLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
+        self.olderRiskLevelLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+        [self.olderSummaryView addSubview:self.olderRiskLevelLbl];
+        
+        self.olderHRZoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderSummaryView.frame.size.width - kSummaryView_Lbl_Width * kXScal - kSummaryView_HRZoneLbl_RightMargin * kXScal, self.olderRiskLevelLbl.frame.origin.y, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
+        self.olderHRZoneLbl.text = [NSString stringWithFormat:@"心率区间：%@",[riskDict valueForKey:@"hrRange"]];
+        self.olderHRZoneLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
+        self.olderHRZoneLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+        [self.olderSummaryView addSubview:self.olderHRZoneLbl];
+        
+        self.olderRPERangeLbll = [[UILabel alloc] initWithFrame:CGRectMake(self.olderRiskLevelLbl.frame.origin.x, self.olderSummaryView.frame.size.height - kSummaryView_Lbl_Height * kYScal - kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
+        self.olderRPERangeLbll.textColor = [UIColor colorWithHexString:@"#333333"];
+        self.olderRPERangeLbll.text = [NSString stringWithFormat:@"RPE范围：%@",[riskDict valueForKey:@"rpeRange"]];
+        self.olderRPERangeLbll.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
+        [self.olderSummaryView addSubview:self.olderRPERangeLbll];
+    }    
 }
 
 #pragma mark - button click events
