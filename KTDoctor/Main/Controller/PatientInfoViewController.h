@@ -10,4 +10,5 @@
 
 @interface PatientInfoViewController : UIViewController
 @property (nonatomic,strong)NSMutableArray *infoArr;
+@property (nonatomic,copy)NSString *statusStr;
 @end

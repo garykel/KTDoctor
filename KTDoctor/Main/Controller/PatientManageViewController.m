@@ -544,7 +544,14 @@
             NSArray *data = [responseObject valueForKey:@"data"];
             PatientInfoViewController *info = [[PatientInfoViewController alloc] init];
             info.infoArr = [data mutableCopy];
-            [self.navigationController pushViewController:info animated:NO];
+            NSString *statusStr = @"已开具处方";
+            if (weakSelf.type == 1) {
+                statusStr = @"待开具处方";
+            } else if (weakSelf.type == 2) {
+                statusStr = @"已开具处方";
+            }
+            info.statusStr = statusStr;
+            [weakSelf.navigationController pushViewController:info animated:NO];
         } else if (code == 10011) {
             [weakSelf.navigationController popViewControllerAnimated:NO];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];

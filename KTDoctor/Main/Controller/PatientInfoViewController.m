@@ -25,7 +25,7 @@
 #define kStatusLbl_LeftMargin 20
 #define kStatusLbl_FontSize 13.0
 #define kStatusLbl_Height 12
-#define kStatusLbl_Width 103
+#define kStatusLbl_Width 120
 #define kICCardBtn_FontSize 13.0
 #define kICCardBtn_TopMargin 17
 #define kICCardBtn_Height 20
@@ -63,8 +63,8 @@
 #define kNameLbl_TopMargin 20
 #define kNameLbl_BottomMargin 18
 #define kRedStar_Width 6
-#define kRedStar_LeftMargin 6
-#define kNameTF_LeftMargin 5
+#define kRedStar_LeftMargin 3
+#define kNameTF_LeftMargin 6
 #define kNameTF_Width 144
 #define kNameTF_Height 21
 #define kNameTF_BottomMargin 10
@@ -464,7 +464,7 @@
     [self.view addSubview:self.scrollview];
     
     self.statusLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, kStatusLbl_TopMargin * kYScal, kStatusLbl_Width * kXScal, kStatusLbl_Height * kYScal)];
-    self.statusLbl.text = @"状态: 待开具处方";
+    self.statusLbl.text = [NSString stringWithFormat:@"状态：%@",self.statusStr];
     self.statusLbl.font = [UIFont systemFontOfSize:kStatusLbl_FontSize * kYScal];
     self.statusLbl.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.scrollview addSubview:self.statusLbl];
@@ -615,7 +615,7 @@
     [self.leftView addSubview:self.latestLbl];
     
     self.latestDoctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.latestLbl.frame) + kDoctorLbl_TopMargin *kYScal, kUpdateTimeLbl_Width * kXScal, self.latestLbl.frame.size.height)];
-    self.latestDoctorLbl.text = [NSString stringWithFormat:@"医      师：%@",self.user.name];
+    self.latestDoctorLbl.text = [NSString stringWithFormat:@"医       师：%@",self.user.name];
     self.latestDoctorLbl.textColor = [UIColor colorWithHexString:@"#000033"];
     self.latestDoctorLbl.font = [UIFont systemFontOfSize:kUpdateTimeLbl_FontSize * kYScal];
     [self.leftView addSubview:self.latestDoctorLbl];
@@ -757,7 +757,7 @@
     [self.leftContentView addSubview:self.latestHeightLbl];
     
     self.latestHeightStar = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"star"]];
-    self.latestHeightStar.frame = CGRectMake(CGRectGetMaxX(self.latestHeightLbl.frame) + kRedStar_LeftMargin * kXScal, self.latestBirthLbl.frame.origin.y + 2, kRedStar_Width * kYScal, kRedStar_Width * kYScal);
+    self.latestHeightStar.frame = CGRectMake(CGRectGetMaxX(self.latestHeightLbl.frame) + kRedStar_LeftMargin * kXScal, self.latestHeightLbl.frame.origin.y + 2, kRedStar_Width * kYScal, kRedStar_Width * kYScal);
     [self.leftContentView addSubview:self.latestHeightStar];
     
     self.latestHeightTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestNameStar.frame) + kNameTF_LeftMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
@@ -799,7 +799,7 @@
     CGFloat latestWidht = [[self.latestInfoDict valueForKey:@"weight"] floatValue];
     CGFloat olderWidht = [[self.olderInfoDict valueForKey:@"weight"] floatValue];
     if (latestWidht != olderWidht) {
-        self.latestWeightTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestWeightTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
     self.latestWeightTF.text = [NSString stringWithFormat:@"%.1f",latestWidht];
     [self.leftContentView addSubview:self.latestWeightTF];
@@ -825,7 +825,7 @@
     CGFloat latestWaistline = [[self.latestInfoDict valueForKey:@"waistline"] floatValue];
     CGFloat olderWaistline = [[self.olderInfoDict valueForKey:@"waistline"] floatValue];
     if (latestWaistline != olderWaistline) {
-        self.latestWaistTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestWaistTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
     self.latestWaistTF.text = [NSString stringWithFormat:@"%.1f",latestWaistline];
     [self.leftContentView addSubview:self.latestWaistTF];
@@ -847,9 +847,9 @@
     self.latestKFXTHRTF.layer.borderWidth = 1;
     self.latestKFXTHRTF.layer.cornerRadius = 2;
     CGFloat latestFbg = [[self.latestInfoDict valueForKey:@"fbg"] floatValue];
-    CGFloat olderFbg = [[self.latestInfoDict valueForKey:@"fbg"] floatValue];
+    CGFloat olderFbg = [[self.olderInfoDict valueForKey:@"fbg"] floatValue];
     if (latestFbg !=olderFbg) {
-        self.latestKFXTHRTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestKFXTHRTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
     self.latestKFXTHRTF.text = [NSString stringWithFormat:@"%.1f",latestFbg];
     self.latestKFXTHRTF.unitLbl.text = @"mmlo/L";
@@ -874,11 +874,11 @@
     self.latestQuietHRTF.layer.borderWidth = 1;
     self.latestQuietHRTF.layer.cornerRadius = 2;
     NSInteger latestRestHr = [[self.latestInfoDict valueForKey:@"restHr"] integerValue];
-    NSInteger olderRestHr = [[self.latestInfoDict valueForKey:@"restHr"] integerValue];
+    NSInteger olderRestHr = [[self.olderInfoDict valueForKey:@"restHr"] integerValue];
     if (latestRestHr !=olderRestHr) {
-        self.latestQuietHRTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestQuietHRTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
-    self.latestQuietHRTF.text = [NSString stringWithFormat:@"%ld",(long)latestRestHr];
+    self.latestQuietHRTF.text = [NSString stringWithFormat:@"%d",latestRestHr];
     self.latestQuietHRTF.unitLbl.text = @"bpm";
     self.latestQuietHRTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.latestQuietHRTF.enabled = NO;
@@ -901,11 +901,11 @@
     self.latestXLBYTF.layer.borderWidth = 1;
     self.latestXLBYTF.layer.cornerRadius = 2;
     CGFloat latestHrv = [[self.latestInfoDict valueForKey:@"hrv"] floatValue];
-    CGFloat olderHrv = [[self.latestInfoDict valueForKey:@"hrv"] floatValue];
+    CGFloat olderHrv = [[self.olderInfoDict valueForKey:@"hrv"] floatValue];
     if (latestHrv !=olderHrv) {
-        self.latestQuietHRTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestXLBYTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
-    self.latestQuietHRTF.text = [NSString stringWithFormat:@"%.1f",latestHrv];
+    self.latestXLBYTF.text = [NSString stringWithFormat:@"%.1f",latestHrv];
     self.latestXLBYTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.latestXLBYTF.enabled = NO;
     [self.leftContentView addSubview:self.latestXLBYTF];
@@ -928,11 +928,11 @@
     self.latestSSYTF.layer.cornerRadius = 2;
     self.latestSSYTF.unitLbl.text = @"mmHg";
     NSInteger latestSbp = [[self.latestInfoDict valueForKey:@"sbp"] integerValue];
-    NSInteger olderSbp = [[self.latestInfoDict valueForKey:@"sbp"] integerValue];
+    NSInteger olderSbp = [[self.olderInfoDict valueForKey:@"sbp"] integerValue];
     if (latestSbp !=olderSbp) {
-        self.latestQuietHRTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestSSYTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
-    self.latestQuietHRTF.text = [NSString stringWithFormat:@"%ld",(long)latestSbp];
+    self.latestSSYTF.text = [NSString stringWithFormat:@"%ld",(long)latestSbp];
     self.latestSSYTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.latestSSYTF.enabled = NO;
 
@@ -956,11 +956,11 @@
     self.latestSZYTF.layer.cornerRadius = 2;
     self.latestSZYTF.unitLbl.text = @"mmHg";
     NSInteger latestdbp = [[self.latestInfoDict valueForKey:@"dbp"] integerValue];
-    NSInteger olderdbp = [[self.latestInfoDict valueForKey:@"dbp"] integerValue];
+    NSInteger olderdbp = [[self.olderInfoDict valueForKey:@"dbp"] integerValue];
     if (latestdbp !=olderdbp) {
-        self.latestQuietHRTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestSZYTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
-    self.latestQuietHRTF.text = [NSString stringWithFormat:@"%ld",(long)latestdbp];
+    self.latestSZYTF.text = [NSString stringWithFormat:@"%ld",(long)latestdbp];
     self.latestSZYTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.latestSZYTF.enabled = NO;
 
@@ -983,12 +983,12 @@
     self.latestGMDZDBTF.layer.borderWidth = 1;
     self.latestGMDZDBTF.layer.cornerRadius = 2;
     self.latestGMDZDBTF.unitLbl.text = @"mmlo/L";
-    CGFloat latestHdl = [[self.latestInfoDict valueForKey:@"restHr"] floatValue];
-    CGFloat olderHdl = [[self.latestInfoDict valueForKey:@"restHr"] floatValue];
+    CGFloat latestHdl = [[self.latestInfoDict valueForKey:@"hdl"] floatValue];
+    CGFloat olderHdl = [[self.olderInfoDict valueForKey:@"hdl"] floatValue];
     if (latestHdl !=olderHdl) {
-        self.latestQuietHRTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestGMDZDBTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
-    self.latestQuietHRTF.text = [NSString stringWithFormat:@"%.1f",latestHdl];
+    self.latestGMDZDBTF.text = [NSString stringWithFormat:@"%.1f",latestHdl];
     self.latestGMDZDBTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.latestGMDZDBTF.enabled = NO;
     [self.leftContentView addSubview:self.latestGMDZDBTF];
@@ -1009,12 +1009,12 @@
     self.latestSTZLZSTF.layer.borderColor = [UIColor lightTextColor].CGColor;
     self.latestSTZLZSTF.layer.borderWidth = 1;
     self.latestSTZLZSTF.layer.cornerRadius = 2;
-    NSInteger latestBmi = [[self.latestInfoDict valueForKey:@"bmi"] integerValue];
-    NSInteger olderBmi = [[self.latestInfoDict valueForKey:@"bmi"] integerValue];
+    CGFloat latestBmi = [[self.latestInfoDict valueForKey:@"bmi"] floatValue];
+    CGFloat olderBmi = [[self.olderInfoDict valueForKey:@"bmi"] floatValue];
     if (latestBmi !=olderBmi) {
-        self.latestSTZLZSTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestSTZLZSTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
-    self.latestSTZLZSTF.text = [NSString stringWithFormat:@"%ld",(long)latestBmi];
+    self.latestSTZLZSTF.text = [NSString stringWithFormat:@"%.1f",latestBmi];
     self.latestSTZLZSTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.latestSTZLZSTF.enabled = NO;
     [self.leftContentView addSubview:self.latestSTZLZSTF];
@@ -1039,7 +1039,7 @@
     NSInteger latestMaxAlarmHr = [[self.latestInfoDict valueForKey:@"maxAlarmHr"] integerValue];
     NSInteger olderMaxAlarmHr = [[self.olderInfoDict valueForKey:@"maxAlarmHr"] integerValue];
     if (latestMaxAlarmHr != olderMaxAlarmHr) {
-        self.latestMaxAlertTF.textColor = [UIColor colorWithHexString:@"#DAF1F5"];
+        self.latestMaxAlertTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     }
     self.latestMaxAlertTF.text = [NSString stringWithFormat:@"%ld",(long)latestMaxAlarmHr];
     self.latestMaxAlertTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
@@ -1058,7 +1058,6 @@
     self.latestQuestionLbl1.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.leftContentView addSubview:self.latestQuestionLbl1];
     
-    self.latestAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     self.latestAnswer1NoImg.frame = CGRectMake(self.latestQuestionLbl1.frame.origin.x + kRadioBtn_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestionLbl1.frame) + kRadioBtn_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestAnswer1NoImg];
     
@@ -1073,9 +1072,17 @@
     CGFloat latestAnsweriNoImg_centerX = self.latestQuestionLbl1.frame.origin.x + kRadioBtn_LeftMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.latestAnswer1NoImg.center = CGPointMake(latestAnsweriNoImg_centerX, self.latestAnswer1NoLbl.center.y);
     
-    self.latestAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
     self.latestAnswer1YesImg.frame = CGRectMake(self.latestAnswer1NoImg.frame.origin.x, CGRectGetMaxY(self.latestAnswer1NoLbl.frame) + kRadioBtn_Yes_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestAnswer1YesImg];
+    
+    NSInteger sportFrequency = [[self.latestInfoDict valueForKey:@"sportFrequency"] integerValue];
+    if (sportFrequency == 1) {
+        self.latestAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+        self.latestAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else if (sportFrequency == 2) {
+        self.latestAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+        self.latestAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
     
     self.latestAnswer1YesLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestAnswer1YesImg.frame) + kRadioBtn_RightMargin * kXScal, CGRectGetMaxY(self.latestAnswer1NoLbl.frame) + kAnswerLbl_Yes_TopMargin * kYScal, kAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestAnswer1YesLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1106,7 +1113,6 @@
     self.latestHbpLbl.text = @"高血压";
     [self.leftContentView addSubview:self.latestHbpLbl];
     
-    self.latestHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
     self.latestHbpYesImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbpLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat latestHbpYesImg_centerX = CGRectGetMaxX(self.latestHbpLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal / 2.0;
     self.latestHbpYesImg.center = CGPointMake(latestHbpYesImg_centerX, self.latestHbpLbl.center.y);
@@ -1118,9 +1124,17 @@
     self.latestHbpYesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestHbpYesLbl];
     
-    self.latestHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     self.latestHbpNoImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbpYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestHbpYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestHbpNoImg];
+    
+    NSInteger hasHbp = [[self.latestInfoDict valueForKey:@"hasHbp"] integerValue];
+    if (hasHbp == 1) {
+        self.latestHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+        self.latestHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    } else {
+        self.latestHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+        self.latestHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    }
     
     self.latestHbpNoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestHbpNoImg.frame) + kRadioBtn_RightMargin * kXScal, self.latestHbpLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestHbpNoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1135,7 +1149,6 @@
     self.latestHbsLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestHbsLbl];
     
-    self.latestHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
     self.latestHbsYesImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbsLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat latestHbsYesImg_CenterX = CGRectGetMaxX(self.latestHbsLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.latestHbsYesImg.center = CGPointMake(latestHbsYesImg_CenterX, self.latestHbsLbl.center.y);
@@ -1147,10 +1160,16 @@
     self.latestHbsYesLbl.text = @"有";
     [self.leftContentView addSubview:self.latestHbsYesLbl];
     
-    self.latestHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     self.latestHbsNoImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbsYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestHbsYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestHbsNoImg];
-    
+    NSInteger hasHbs = [[self.latestInfoDict valueForKey:@"hasHbs"] integerValue];
+    if (hasHbs == 1) {
+        self.latestHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+        self.latestHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    } else {
+        self.latestHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+        self.latestHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    }
     self.latestHbsNoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestHbsNoImg.frame) + kRadioBtn_RightMargin * kXScal, self.latestHbsYesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestHbsNoLbl.text = @"无";
     self.latestHbsNoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1164,7 +1183,6 @@
     self.latestHbfLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestHbfLbl];
     
-    self.latestHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
     self.latestHbfYesImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbfLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat latestHbfYesImg_CenterX = CGRectGetMaxX(self.latestHbfLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.latestHbfYesImg.center = CGPointMake(latestHbfYesImg_CenterX, self.latestHbfLbl.center.y);
@@ -1176,10 +1194,17 @@
     self.latestHbfYesLbl.text = @"有";
     [self.leftContentView addSubview:self.latestHbfYesLbl];
     
-    self.latestHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     self.latestHbfNoImg.frame = CGRectMake(CGRectGetMaxX(self.latestHbfYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestHbfYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestHbfNoImg];
     
+    NSInteger hasHbf = [[self.latestInfoDict valueForKey:@"hasHbf"] integerValue];
+    if (hasHbf == 1) {
+        self.latestHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+        self.latestHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    } else {
+        self.latestHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+        self.latestHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    }
     self.latestHbfNoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestHbfNoImg.frame) + kRadioBtn_RightMargin * kXScal, self.latestHbfYesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestHbfNoLbl.text = @"无";
     self.latestHbfNoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1193,7 +1218,6 @@
     self.latestHighSmokeLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestHighSmokeLbl];
     
-    self.latestSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
     self.latestSmokeYesImg.frame = CGRectMake(CGRectGetMaxX(self.latestHighSmokeLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal, 0, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     CGFloat latestSmokefYesImg_CenterX = CGRectGetMaxX(self.latestHighSmokeLbl.frame) + kSecondAnswerLbl_RightMargin * kXScal + kRadioBtn_Width * kXScal/2.0;
     self.latestSmokeYesImg.center = CGPointMake(latestSmokefYesImg_CenterX, self.latestHighSmokeLbl.center.y);
@@ -1205,10 +1229,16 @@
     self.latestSmokeYesLbl.text = @"有";
     [self.leftContentView addSubview:self.latestSmokeYesLbl];
     
-    self.latestSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     self.latestSmokeNoImg.frame = CGRectMake(CGRectGetMaxX(self.latestSmokeYesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestSmokeYesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestSmokeNoImg];
-    
+    NSInteger hasSmoking = [[self.latestInfoDict valueForKey:@"hasSmoking"] integerValue];
+    if (hasSmoking == 1) {
+        self.latestSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+        self.latestSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    } else {
+        self.latestSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+        self.latestSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    }
     self.latestSmokeNoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestSmokeNoImg.frame) + kRadioBtn_RightMargin * kXScal, self.latestSmokeYesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestSmokeNoLbl.text = @"无";
     self.latestSmokeNoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1228,7 +1258,6 @@
     self.latestQuestionLbl3.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.leftContentView addSubview:self.latestQuestionLbl3];
     
-    self.latestQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
     self.latestQuestion3YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestionLbl3.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion3YesImg];
     
@@ -1240,10 +1269,17 @@
     self.latestQuestion3YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestQuestion3YesLbl];
     
-    self.latestQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     self.latestQuestion3NoImg.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion3YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestQuestion3YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion3NoImg];
     
+    NSInteger familyDiabetes = [[self.latestInfoDict valueForKey:@"familyDiabetes"] integerValue];
+    if (familyDiabetes == 1) {
+        self.latestQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+        self.latestQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    } else {
+        self.latestQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+        self.latestQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    }
     self.latestQuestion3NoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestQuestion3NoImg.frame) + kRadioBtn_LeftMargin, self.latestQuestion3YesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestQuestion3NoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
     self.latestQuestion3NoLbl.text = @"无";
@@ -1263,7 +1299,6 @@
     self.latestQuestionLbl4.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.leftContentView addSubview:self.latestQuestionLbl4];
     
-    self.latestQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
     self.latestQuestion4YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestionLbl4.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion4YesImg];
     
@@ -1275,10 +1310,16 @@
     self.latestQuestion4YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestQuestion4YesLbl];
     
-    self.latestQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     self.latestQuestion4NoImg.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion4YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestQuestion4YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion4NoImg];
-    
+    NSInteger familySuddenDeath = [[self.latestInfoDict valueForKey:@"familySuddenDeath"] integerValue];
+    if (familySuddenDeath == 1) {
+        self.latestQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+        self.latestQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    } else {
+        self.latestQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+        self.latestQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    }
     self.latestQuestion4NoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestQuestion4NoImg.frame) + kRadioBtn_LeftMargin, self.latestQuestion4YesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestQuestion4NoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
     self.latestQuestion4NoLbl.text = @"无";
@@ -1298,10 +1339,8 @@
     self.latestQuestionLbl5.textColor = [UIColor colorWithHexString:@"#000033"];
     [self.leftContentView addSubview:self.latestQuestionLbl5];
     
-    self.latestQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
     self.latestQuestion5YesImg.frame = CGRectMake(kThirdAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestionLbl5.frame) + kSecondQustionImg_TopMargin * kYScal, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion5YesImg];
-    
     self.latestQuestion5YesLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestQuestion5YesImg.frame) + kRadioBtn_LeftMargin * kXScal, 0, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     CGFloat latestQuestion5YesLbl_CenterX = CGRectGetMaxX(self.latestQuestion5YesImg.frame) + kRadioBtn_LeftMargin * kXScal + kSecondAnswerLbl_Yes_Width /2.0;
     self.latestQuestion5YesLbl.center = CGPointMake(latestQuestion5YesLbl_CenterX, self.latestQuestion5YesImg.center.y);
@@ -1310,9 +1349,17 @@
     self.latestQuestion5YesLbl.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
     [self.leftContentView addSubview:self.latestQuestion5YesLbl];
     
-    self.latestQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
     self.latestQuestion5NoImg.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5YesLbl.frame) + kSecondAnswerLbl_Yes_RightMargin * kXScal, self.latestQuestion5YesImg.frame.origin.y, kRadioBtn_Width * kYScal, kRadioBtn_Width * kYScal);
     [self.leftContentView addSubview:self.latestQuestion5NoImg];
+    
+    NSInteger threeMonthStatus = [[self.latestInfoDict valueForKey:@"threeMonthStatus"] integerValue];
+    if (threeMonthStatus == 1) {
+        self.latestQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+        self.latestQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    } else {
+        self.latestQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+        self.latestQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    }
     
     self.latestQuestion5NoLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.latestQuestion5NoImg.frame) + kRadioBtn_LeftMargin, self.latestQuestion5YesLbl.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
     self.latestQuestion5NoLbl.textColor = [UIColor colorWithHexString:@"#444444"];
@@ -1473,7 +1520,7 @@
     self.latestRiskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(kSummaryView_LeftMargin * kXScal, kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
     NSInteger riskLevel = [[self.latestInfoDict valueForKey:@"riskLevel"] integerValue];
     NSDictionary *riskDict = [self getHrRangeAndRPERange:riskLevel];
-    self.latestRiskLevelLbl.text = [NSString stringWithFormat:@"风险等级：%@",[riskDict valueForKey:@"rpeRange"]];
+    self.latestRiskLevelLbl.text = [NSString stringWithFormat:@"风险等级：%@",[riskDict valueForKey:@"riskLevel"]];
     self.latestRiskLevelLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
     self.latestRiskLevelLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     [self.latestSummaryView addSubview:self.latestRiskLevelLbl];
@@ -1486,7 +1533,7 @@
     
     self.latestRPERangeLbll = [[UILabel alloc] initWithFrame:CGRectMake(self.latestRiskLevelLbl.frame.origin.x, self.latestSummaryView.frame.size.height - kSummaryView_Lbl_Height * kYScal - kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
     self.latestRPERangeLbll.textColor = [UIColor colorWithHexString:@"#333333"];
-    self.latestRPERangeLbll.text = [NSString stringWithFormat:@"RPE范围：%@",[self.latestInfoDict valueForKey:@"rpeRange"]];
+    self.latestRPERangeLbll.text = [NSString stringWithFormat:@"RPE范围：%@",[riskDict valueForKey:@"rpeRange"]];
     self.latestRPERangeLbll.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
     [self.latestSummaryView addSubview:self.latestRPERangeLbll];
 }
@@ -1518,13 +1565,13 @@
     [self.scrollview addSubview:self.rightView];
     
     self.oldTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kUpdateTimeLbl_Width * kXScal, kUpdateTimeLbl_Height * kYScal)];
-    self.oldTimeLbl.text = @"更新日期：2019-04-19 11:39:50";
+    self.oldTimeLbl.text = [NSString stringWithFormat:@"更新日期：%@",[self.olderInfoDict valueForKey:@"createTime"]];
     self.oldTimeLbl.textColor = [UIColor colorWithHexString:@"#000033"];
     self.oldTimeLbl.font = [UIFont systemFontOfSize:kUpdateTimeLbl_FontSize * kYScal];
     [self.rightView addSubview:self.oldTimeLbl];
     
     self.oldDoctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, self.latestDoctorLbl.frame.origin.y, kUpdateTimeLbl_Width * kXScal, self.latestLbl.frame.size.height)];
-    self.oldDoctorLbl.text = @"医      师：王医师";
+    self.oldDoctorLbl.text = [NSString stringWithFormat:@"医       师：%@",self.user.name];
     self.oldDoctorLbl.textColor = [UIColor colorWithHexString:@"#000033"];
     self.oldDoctorLbl.font = [UIFont systemFontOfSize:kUpdateTimeLbl_FontSize * kYScal];
     [self.rightView addSubview:self.oldDoctorLbl];
@@ -1542,7 +1589,8 @@
     [self.rightContentView addSubview:self.olderLbl];
     
     self.olderPatientImg = [[UIImageView alloc] initWithFrame:CGRectMake(kHeadPhoto_LeftMargin * kXScal, kHeadPhoto_TopMargin * kYScal, kHeadPhoto_Width * kYScal, kHeadPhoto_Width * kYScal)];
-    [self.olderPatientImg sd_setImageWithURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"default_head"]];
+    NSString *headUrl = [self.olderInfoDict valueForKey:@"headUrl"];
+    [self.olderPatientImg sd_setImageWithURL:[NSURL URLWithString:headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
     self.olderPatientImg.layer.cornerRadius = kHeadPhoto_Width * kXScal / 2.0;
     self.olderPatientImg.layer.masksToBounds = YES;
     [self.rightContentView addSubview:self.olderPatientImg];
@@ -1563,6 +1611,7 @@
     self.olderNameTF.layer.borderColor = [UIColor lightTextColor].CGColor;
     self.olderNameTF.layer.borderWidth = 1;
     self.olderNameTF.layer.cornerRadius = 2;
+    self.olderNameTF.text = [self.olderInfoDict valueForKey:@"name"];
     self.olderNameTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderNameTF.enabled = NO;
     [self.rightContentView addSubview:self.olderNameTF];
@@ -1586,6 +1635,14 @@
     self.olderSexTF.layer.cornerRadius = 2;
     self.olderSexTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderSexTF.enabled = NO;
+    NSInteger olderSex = [[self.olderInfoDict valueForKey:@"sex"] integerValue];
+    NSString *sex = @"男";
+    if (olderSex == 1) {
+        sex = @"男";
+    } else if (olderSex == 2) {
+        sex = @"女";
+    }
+    self.olderSexTF.text = sex;
     [self.rightContentView addSubview:self.olderSexTF];
     
     self.olderPhoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderPatientImg.frame.origin.x, CGRectGetMaxY(self.olderNameLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -1606,6 +1663,7 @@
     self.olderPhoneTF.layer.cornerRadius = 2;
     self.olderPhoneTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderPhoneTF.enabled = NO;
+    self.olderPhoneTF.text = [self.olderInfoDict valueForKey:@"mobile"];
     [self.rightContentView addSubview:self.olderPhoneTF];
     
     self.olderBirthLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.olderPhoneTF.frame) + hSpace, self.olderPhoneLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -1626,6 +1684,7 @@
     self.olderBirthTF.layer.cornerRadius = 2;
     self.olderBirthTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderBirthTF.enabled = NO;
+    self.olderBirthTF.text = [self.olderInfoDict valueForKey:@"birthdate"];
     [self.rightContentView addSubview:self.olderBirthTF];
     
     self.olderHeightLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderPatientImg.frame.origin.x, CGRectGetMaxY(self.olderBirthLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -1635,7 +1694,7 @@
     [self.rightContentView addSubview:self.olderHeightLbl];
     
     self.olderHeightStar = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"star"]];
-    self.olderHeightStar.frame = CGRectMake(CGRectGetMaxX(self.olderHeightLbl.frame) + kRedStar_LeftMargin * kXScal, self.olderBirthLbl.frame.origin.y + 2, kRedStar_Width * kYScal, kRedStar_Width * kYScal);
+    self.olderHeightStar.frame = CGRectMake(CGRectGetMaxX(self.olderHeightLbl.frame) + kRedStar_LeftMargin * kXScal, self.olderHeightLbl.frame.origin.y + 2, kRedStar_Width * kYScal, kRedStar_Width * kYScal);
     [self.rightContentView addSubview:self.olderHeightStar];
     
     self.olderHeightTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.olderNameStar.frame) + kNameTF_LeftMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
@@ -1647,6 +1706,8 @@
     self.olderHeightTF.unitLbl.text = @"cm";
     self.olderHeightTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderHeightTF.enabled = NO;
+    CGFloat height = [[self.olderInfoDict valueForKey:@"height"] floatValue];
+    self.olderHeightTF.text = [NSString stringWithFormat:@"%.1f",height];
     [self.rightContentView addSubview:self.olderHeightTF];
     
     self.olderWeightLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.olderHeightTF.frame) + hSpace, self.olderHeightLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -1666,6 +1727,8 @@
     self.olderWeightTF.layer.borderWidth = 1;
     self.olderWeightTF.layer.cornerRadius = 2;
     self.olderWeightTF.unitLbl.text = @"kg";
+    CGFloat weight = [[self.olderInfoDict valueForKey:@"weight"] floatValue];
+    self.olderWeightTF.text = [NSString stringWithFormat:@"%.1f",weight];
     self.olderWeightTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderWeightTF.enabled = NO;
     [self.rightContentView addSubview:self.olderWeightTF];
@@ -1689,6 +1752,8 @@
     self.olderWaistTF.unitLbl.text = @"cm";
     self.olderWaistTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderWaistTF.enabled = NO;
+    CGFloat waistline = [[self.olderInfoDict valueForKey:@"waistline"] floatValue];
+    self.olderWaistTF.text = [NSString stringWithFormat:@"%.1f",waistline];
     [self.rightContentView addSubview:self.olderWaistTF];
     
     self.olderKFXTLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.olderWaistTF.frame) + hSpace, self.olderWaistLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -1710,6 +1775,8 @@
     self.olderKFXTHRTF.unitLbl.text = @"mmlo/L";
     self.olderKFXTHRTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderKFXTHRTF.enabled = NO;
+    CGFloat fbg = [[self.olderInfoDict valueForKey:@"fbg"] floatValue];
+    self.olderKFXTHRTF.text = [NSString stringWithFormat:@"%.1f",fbg];
     [self.rightContentView addSubview:self.olderKFXTHRTF];
     
     self.olderQuietHRLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderPatientImg.frame.origin.x, CGRectGetMaxY(self.olderKFXTLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -1730,6 +1797,7 @@
     self.olderQuietHRTF.layer.cornerRadius = 2;
     self.olderQuietHRTF.unitLbl.text = @"bpm";
     self.olderQuietHRTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
+    self.olderQuietHRTF.text = [NSString stringWithFormat:@"%d",[[self.olderInfoDict valueForKey:@"restHr"] integerValue]];
     self.olderQuietHRTF.enabled = NO;
     [self.rightContentView addSubview:self.olderQuietHRTF];
     
@@ -1751,6 +1819,8 @@
     self.olderXLBYTF.layer.cornerRadius = 2;
     self.olderXLBYTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderXLBYTF.enabled = NO;
+    CGFloat hrv = [[self.olderInfoDict valueForKey:@"hrv"] floatValue];
+    self.olderXLBYTF.text = [NSString stringWithFormat:@"%.1f",hrv];
     [self.rightContentView addSubview:self.olderXLBYTF];
     
     self.olderSSYLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderPatientImg.frame.origin.x, CGRectGetMaxY(self.olderXLBYLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -1772,6 +1842,8 @@
     self.olderSSYTF.unitLbl.text = @"mmHg";
     self.olderSSYTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderSSYTF.enabled = NO;
+    NSInteger sbp = [[self.olderInfoDict valueForKey:@"sbp"] integerValue];
+    self.olderSSYTF.text = [NSString stringWithFormat:@"%d",sbp];
     [self.rightContentView addSubview:self.olderSSYTF];
     
     self.olderSZYLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.olderSSYTF.frame) + hSpace, self.olderSSYLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -1793,6 +1865,8 @@
     self.olderSZYTF.unitLbl.text = @"mmHg";
     self.olderSZYTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderSZYTF.enabled = NO;
+    NSInteger dbp = [[self.olderInfoDict valueForKey:@"dbp"] integerValue];
+    self.olderSZYTF.text = [NSString stringWithFormat:@"%d",dbp];
     [self.rightContentView addSubview:self.olderSZYTF];
     
     self.olderGMDZDBLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderPatientImg.frame.origin.x, CGRectGetMaxY(self.olderSSYLbl.frame) + kNameLbl_BottomMargin * kYScal, kLongLbl_Width * kXScal, kLongLbl_Height * kYScal)];
@@ -1814,6 +1888,8 @@
     self.olderGMDZDBTF.unitLbl.text = @"mmlo/L";
     self.olderGMDZDBTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderGMDZDBTF.enabled = NO;
+    CGFloat hdl = [[self.olderInfoDict valueForKey:@"hdl"] floatValue];
+    self.olderGMDZDBTF.text = [NSString stringWithFormat:@"%.1f",hdl];
     [self.rightContentView addSubview:self.olderGMDZDBTF];
     
     self.olderSTZLZSLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderPatientImg.frame.origin.x, CGRectGetMaxY(self.olderGMDZDBLbl.frame) + kNameLbl_BottomMargin * kYScal, kLongLbl_Width * kXScal, kLongLbl_Height * kYScal)];
@@ -1834,6 +1910,8 @@
     self.olderSTZLZSTF.layer.cornerRadius = 2;
     self.olderSTZLZSTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderSTZLZSTF.enabled = NO;
+    CGFloat bmi = [[self.olderInfoDict valueForKey:@"bmi"] floatValue];
+    self.olderSTZLZSTF.text = [NSString stringWithFormat:@"%.1f",bmi];
     self.olderSTZLZSTF.unitLbl.text = @"mmlo/L";
     [self.rightContentView addSubview:self.olderSTZLZSTF];
     
@@ -1855,7 +1933,7 @@
     self.olderMaxAlertTF.layer.cornerRadius = 2;
     self.olderMaxAlertTF.unitLbl.text = @"bpm";
     NSInteger olderMaxAlarmHr = [[self.olderInfoDict valueForKey:@"maxAlarmHr"] integerValue];
-    self.latestMaxAlertTF.text = [NSString stringWithFormat:@"%ld",(long)olderMaxAlarmHr];
+    self.olderMaxAlertTF.text = [NSString stringWithFormat:@"%d",olderMaxAlarmHr];
     self.olderMaxAlertTF.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
     self.olderMaxAlertTF.enabled = NO;
     [self.rightContentView addSubview:self.olderMaxAlertTF];
@@ -2286,19 +2364,22 @@
     
     self.olderRiskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(kSummaryView_LeftMargin * kXScal, kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
     self.olderRiskLevelLbl.text = @"风险等级：中";
+    NSInteger riskLevel = [[self.olderInfoDict valueForKey:@"riskLevel"] integerValue];
+    NSDictionary *riskDict = [self getHrRangeAndRPERange:riskLevel];
+    self.olderRiskLevelLbl.text = [NSString stringWithFormat:@"风险等级：%@",[riskDict valueForKey:@"riskLevel"]];
     self.olderRiskLevelLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
     self.olderRiskLevelLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     [self.olderSummaryView addSubview:self.olderRiskLevelLbl];
     
     self.olderHRZoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderSummaryView.frame.size.width - kSummaryView_Lbl_Width * kXScal - kSummaryView_HRZoneLbl_RightMargin * kXScal, self.olderRiskLevelLbl.frame.origin.y, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
-    self.olderHRZoneLbl.text = @"心率区间：60%-80%";
+    self.olderHRZoneLbl.text = [NSString stringWithFormat:@"心率区间：%@",[riskDict valueForKey:@"hrRange"]];
     self.olderHRZoneLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
     self.olderHRZoneLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     [self.olderSummaryView addSubview:self.olderHRZoneLbl];
     
     self.olderRPERangeLbll = [[UILabel alloc] initWithFrame:CGRectMake(self.olderRiskLevelLbl.frame.origin.x, self.olderSummaryView.frame.size.height - kSummaryView_Lbl_Height * kYScal - kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
     self.olderRPERangeLbll.textColor = [UIColor colorWithHexString:@"#333333"];
-    self.olderRPERangeLbll.text = @"RPE范围：5-6";
+    self.olderRPERangeLbll.text = [NSString stringWithFormat:@"RPE范围：%@",[riskDict valueForKey:@"rpeRange"]];
     self.olderRPERangeLbll.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
     [self.olderSummaryView addSubview:self.olderRPERangeLbll];
 }
