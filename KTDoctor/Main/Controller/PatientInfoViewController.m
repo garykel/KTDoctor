@@ -7,6 +7,8 @@
 //
 
 #import "PatientInfoViewController.h"
+#import "CreateAerobicPrescriptionViewController.h"
+#import "AerobicPrescriptionAndReportViewController.h"
 #import "LMJDropdownMenu.h"
 #import "UnitTextField.h"
 #import "UserModel.h"
@@ -567,6 +569,7 @@
     [self.aerobicReportBtn setTitle:@"查看有氧历史处方及报告" forState:UIControlStateNormal];
     self.aerobicReportBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.aerobicReportBtn.layer.masksToBounds = YES;
+    [self.aerobicReportBtn addTarget:self action:@selector(checkAerobicReport:) forControlEvents:UIControlEventTouchUpInside];
     [self.aerobicReportBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
     [self.aerobicReportBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.aerobicReportBtn];
@@ -587,6 +590,7 @@
     [self.createAerobicPrescriptionBtn setTitle:@"开具有氧处方" forState:UIControlStateNormal];
     self.createAerobicPrescriptionBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.createAerobicPrescriptionBtn.layer.masksToBounds = YES;
+    [self.createAerobicPrescriptionBtn addTarget:self action:@selector(createAerobicPrescription:) forControlEvents:UIControlEventTouchUpInside];
     [self.createAerobicPrescriptionBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
     [self.createAerobicPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.createAerobicPrescriptionBtn];
@@ -2465,7 +2469,7 @@
         self.olderRPERangeLbll.text = [NSString stringWithFormat:@"RPE范围：%@",[riskDict valueForKey:@"rpeRange"]];
         self.olderRPERangeLbll.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
         [self.olderSummaryView addSubview:self.olderRPERangeLbll];
-    }    
+    }
 }
 
 #pragma mark - button click events
@@ -2480,6 +2484,16 @@
 
 - (void)rightBtnClick:(UIButton*)sender {
     NSLog(@"向右滑动");
+}
+
+- (void)createAerobicPrescription:(UIButton*)sender {
+    CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
+    [self.navigationController pushViewController:create animated:NO];
+}
+
+- (void)checkAerobicReport:(UIButton*)sender {
+    AerobicPrescriptionAndReportViewController *report = [[AerobicPrescriptionAndReportViewController alloc] init];
+    [self.navigationController pushViewController:report animated:NO];
 }
 
 #pragma mark - LMJDropdownMenuDelegate

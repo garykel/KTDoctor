@@ -41,6 +41,7 @@
 		5B02F7BD224B7F4F00BE8269 /* SportDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */; };
 		5B0AC3112254A1570001C48F /* DS-DIGIB.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */; };
 		5B126726225B3EFD00894CCF /* HistoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B126725225B3EFD00894CCF /* HistoryCell.m */; };
+		5B132536226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B132535226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m */; };
 		5B22E0582265C55A00C65B50 /* DateValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E0562265C55A00C65B50 /* DateValueFormatter.m */; };
 		5B22E05D2266CE9D00C65B50 /* PatientManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E05C2266CE9D00C65B50 /* PatientManageViewController.m */; };
 		5B22E0602266CED500C65B50 /* AddPatientViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E05F2266CED500C65B50 /* AddPatientViewController.m */; };
@@ -89,6 +90,7 @@
 		5BEDDA42226740B800E15D2B /* PatientListsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BEDDA41226740B800E15D2B /* PatientListsCell.m */; };
 		5BF44CD62256096D006C3405 /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF44CD52256096D006C3405 /* HistoryViewController.m */; };
 		5BF44CD92256097D006C3405 /* HistoryDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF44CD82256097D006C3405 /* HistoryDetailViewController.m */; };
+		5BF95288226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF95287226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m */; };
 		B1C96259FE76E5A7BE1B4D71 /* Pods_KTDoctor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 146BC1222E04A671B1AB1A38 /* Pods_KTDoctor.framework */; };
 /* End PBXBuildFile section */
 
@@ -172,6 +174,8 @@
 		5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DS-DIGIB.TTF"; sourceTree = "<group>"; };
 		5B126724225B3EFD00894CCF /* HistoryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HistoryCell.h; sourceTree = "<group>"; };
 		5B126725225B3EFD00894CCF /* HistoryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HistoryCell.m; sourceTree = "<group>"; };
+		5B132534226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreateAerobicPrescriptionViewController.h; sourceTree = "<group>"; };
+		5B132535226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreateAerobicPrescriptionViewController.m; sourceTree = "<group>"; };
 		5B22E0532265B9F000C65B50 /* KTDoctor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KTDoctor-Bridging-Header.h"; sourceTree = "<group>"; };
 		5B22E0562265C55A00C65B50 /* DateValueFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateValueFormatter.m; sourceTree = "<group>"; };
 		5B22E0572265C55A00C65B50 /* DateValueFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateValueFormatter.h; sourceTree = "<group>"; };
@@ -271,6 +275,8 @@
 		5BF44CD52256096D006C3405 /* HistoryViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HistoryViewController.m; sourceTree = "<group>"; };
 		5BF44CD72256097D006C3405 /* HistoryDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HistoryDetailViewController.h; sourceTree = "<group>"; };
 		5BF44CD82256097D006C3405 /* HistoryDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HistoryDetailViewController.m; sourceTree = "<group>"; };
+		5BF95286226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AerobicPrescriptionAndReportViewController.h; sourceTree = "<group>"; };
+		5BF95287226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicPrescriptionAndReportViewController.m; sourceTree = "<group>"; };
 		7253866FC6DCF0EB352C5605 /* Pods-KTDoctor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -387,6 +393,10 @@
 				5B22E05C2266CE9D00C65B50 /* PatientManageViewController.m */,
 				5B6067552268672B003E8DF4 /* PatientInfoViewController.h */,
 				5B6067562268672B003E8DF4 /* PatientInfoViewController.m */,
+				5BF95286226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.h */,
+				5BF95287226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m */,
+				5B132534226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.h */,
+				5B132535226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m */,
 				5B22E05E2266CED500C65B50 /* AddPatientViewController.h */,
 				5B22E05F2266CED500C65B50 /* AddPatientViewController.m */,
 				5B22E0642266CF2500C65B50 /* AddTemplateViewController.h */,
@@ -921,6 +931,7 @@
 				5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */,
 				5B02F7902242269400BE8269 /* WHC_ChoicePictureVC.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
+				5BF95288226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
 				5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */,
 				5BF44CD92256097D006C3405 /* HistoryDetailViewController.m in Sources */,
@@ -928,6 +939,7 @@
 				5B22E0662266CF2500C65B50 /* AddTemplateViewController.m in Sources */,
 				09E47CBC223A8FD700B33249 /* RegistOrResetView.m in Sources */,
 				5B02F7A72248810000BE8269 /* MonitorViewController.m in Sources */,
+				5B132536226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m in Sources */,
 				5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */,
 				5B875B9F224CAEFB00736FC2 /* PatientCell16.m in Sources */,
 				5BECDBAF22365CA10025D6F2 /* AppDelegate.m in Sources */,
