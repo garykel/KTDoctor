@@ -9,6 +9,7 @@
 #import "AerobicPrescriptionAndReportViewController.h"
 #import "LMJDropdownMenu.h"
 #import "CustomTextField.h"
+#import "AerobicReportCell.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -34,6 +35,16 @@
 #define kSearch_TF_Height 22
 #define kSearch_TF_Font 12.0
 #define kSearch_DropView_Font 12.0
+#define kSummaryLbl_FontSize 13.0
+#define kSummaryLbl_Height 13
+#define kSummaryLbl_BottomMargin 16
+#define kBottomView_BottomMargin 20
+#define kListView_TopMargin 15
+#define kListView_LeftMargin 15
+#define kListView_BottomMargin 15
+#define kNoDatLbl_Width 100
+#define kNoDataLbl_FontSize 20
+#define kNoDataLbl_Height 18
 
 @interface AerobicPrescriptionAndReportViewController ()<UITableViewDelegate,UITableViewDataSource,LMJDropdownMenuDelegate,CustomTextFieldDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -51,6 +62,7 @@
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)UILabel *summaryLbl;
 @property (nonatomic,strong)UITableView *listView;
+@property (nonatomic,strong)UILabel *noDataLbl;
 @end
 
 @implementation AerobicPrescriptionAndReportViewController
@@ -108,11 +120,11 @@
     self.searchBgView.layer.masksToBounds = YES;
     [self.view addSubview:self.searchBgView];
     
-    CGFloat tfWidth = (self.searchBgView.frame.size.width - 2 * kNameTF_LeftMargin * kXScal - 4 * KSearchContent_Space * kXScal - kSearch_Button_Width * kXScal)/5;
+    CGFloat tfWidth = (self.searchBgView.frame.size.width - 2 * kNameTF_LeftMargin * kXScal - 5 * KSearchContent_Space * kXScal - kSearch_Button_Width * kXScal)/5;
     CGFloat TF_TopMargin = (self.searchBgView.frame.size.height - kSearch_TF_Height * kYScal)/2;
     self.prescriptionTF = [[CustomTextField alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal, TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
-    self.prescriptionTF.layer.borderWidth = 1;
-    self.prescriptionTF.layer.borderColor = [UIColor lightGrayColor].CGColor;
+//    self.prescriptionTF.layer.borderWidth = 1;
+//    self.prescriptionTF.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.prescriptionTF.backgroundColor = [UIColor whiteColor];
     self.prescriptionTF.placeholderLbl.text = @"处方名称";
     self.prescriptionTF.placeholderLbl.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
@@ -124,6 +136,8 @@
     self.startTimeTF.backgroundColor = [UIColor whiteColor];
     [self.startTimeTF setImage:[UIImage imageNamed:@"calendar"] forState:UIControlStateNormal];
     [self.startTimeTF setTitle:@"开始时间" forState:UIControlStateNormal];
+    self.startTimeTF.titleLabel.textAlignment = NSTextAlignmentLeft;
+    [self.startTimeTF.titleLabel setFont:[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]];
     [self.startTimeTF setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     [self.startTimeTF setImageEdgeInsets:UIEdgeInsetsMake(0, self.startTimeTF.frame.size.width - 20, 0, 0)];
     [self.startTimeTF setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 35)];
@@ -131,24 +145,27 @@
     [self.searchBgView addSubview:self.startTimeTF];
     
     self.deviceTF = [[CustomTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.startTimeTF.frame) + KSearchContent_Space * kXScal, self.prescriptionTF.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
-    self.deviceTF.text = @"有氧设备";
+    self.deviceTF.placeholderLbl.text = @"有氧设备";
+    self.deviceTF.enabled = NO;
     self.deviceTF.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
+    self.deviceTF.backgroundColor = [UIColor whiteColor];
+    self.deviceTF.placeholderLbl.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
     [self.searchBgView addSubview:self.deviceTF];
     
-    self.trainingPositionMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTF.frame) + KSearchContent_Space * kXScal, self.prescriptionTF.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
-    [self.trainingPositionMenu setMenuTitles:@[@"心肺"] rowHeight:kSearch_TF_Height attr:@{@"title":@"训练部位",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+    self.trainingPositionMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTF.frame) + KSearchContent_Space * kXScal + kView_LeftMargin  * kXScal, self.prescriptionTF.frame.origin.y  + self.searchBgView.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
+    [self.trainingPositionMenu setMenuTitles:@[@"心肺"] rowHeight:kSearch_TF_Height attr:@{@"title":@"训练部位",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 10;
-    [self.searchBgView addSubview:self.trainingPositionMenu];
+    [self.view addSubview:self.trainingPositionMenu];
     
-    self.trainingEquipmentMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingPositionMenu.frame) + KSearchContent_Space * kXScal, self.prescriptionTF.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
-    [self.trainingEquipmentMenu setMenuTitles:@[@"功率车",@"椭圆机"] rowHeight:kSearch_TF_Font attr:@{@"title":@"训练设备",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+    self.trainingEquipmentMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingPositionMenu.frame) + KSearchContent_Space * kXScal, self.trainingPositionMenu.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
+    [self.trainingEquipmentMenu setMenuTitles:@[@"功率车",@"椭圆机"] rowHeight:kSearch_TF_Height attr:@{@"title":@"训练设备",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
     self.trainingEquipmentMenu.delegate = self;
-    [self.searchBgView addSubview:self.trainingEquipmentMenu];
+    [self.view addSubview:self.trainingEquipmentMenu];
     
     self.searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     CGFloat button_TopMargin = (self.searchBgView.frame.size.height - kSearch_Button_Height * kYScal)/2;
-    self.searchBtn.frame = CGRectMake(CGRectGetMaxX(self.trainingEquipmentMenu.frame) + KSearchContent_Space * kXScal, button_TopMargin, kSearch_Button_Width * kXScal, kSearch_Button_Height * kYScal);
+    self.searchBtn.frame = CGRectMake(CGRectGetMaxX(self.trainingEquipmentMenu.frame) + KSearchContent_Space * kXScal - kView_LeftMargin  * kXScal, button_TopMargin, kSearch_Button_Width * kXScal, kSearch_Button_Height * kYScal);
     [self.searchBtn setBackgroundColor:[UIColor colorWithHexString:@"#10a9cc"]];
     [self.searchBtn setTitle:@"搜索" forState:UIControlStateNormal];
     [self.searchBtn.titleLabel setFont:[UIFont systemFontOfSize:kSearch_Button_Font * kYScal]];
@@ -157,6 +174,120 @@
     self.searchBtn.layer.masksToBounds = YES;
     [self.searchBtn addTarget:self action:@selector(search:) forControlEvents:UIControlEventTouchUpInside];
     [self.searchBgView addSubview:self.searchBtn];
+    
+    self.summaryLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.searchBgView.frame.origin.x, CGRectGetMaxY(self.searchBgView.frame) + kView_BottomMargin * kYScal, self.searchBgView.frame.size.width, kSummaryLbl_Height * kYScal)];
+    self.summaryLbl.font = [UIFont systemFontOfSize:kSummaryLbl_FontSize * kYScal];
+    self.summaryLbl.textColor = [UIColor colorWithHexString:@"#2e2e2e"];
+    NSDictionary *summarydict = [self getReportSummary];
+    self.summaryLbl.text = [NSString stringWithFormat:@"累积处方数：%d  累积运动天数：%d  累积报告数：%d",[[summarydict valueForKey:@"sumPrescriptionCount"] integerValue],[[summarydict valueForKey:@"sumSportDays"] integerValue],[[summarydict valueForKey:@"sumReportCount"] integerValue]];
+    [self.view addSubview:self.summaryLbl];
+    
+    self.bottomView = [[UIView alloc] initWithFrame:CGRectMake(self.searchBgView.frame.origin.x, CGRectGetMaxY(self.summaryLbl.frame) + kSummaryLbl_BottomMargin * kYScal, self.searchBgView.frame.size.width, kHeight - CGRectGetMaxY(self.summaryLbl.frame) - kSummaryLbl_BottomMargin * kYScal - kBottomView_BottomMargin * kYScal)];
+    self.bottomView.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
+    self.bottomView.layer.cornerRadius = 4;
+    self.bottomView.layer.masksToBounds = YES;
+    [self.view addSubview:self.bottomView];
+    
+    self.listView = [[UITableView alloc] initWithFrame:CGRectMake(kListView_LeftMargin * kXScal, kListView_TopMargin * kYScal, self.bottomView.frame.size.width - 2 * kListView_LeftMargin * kXScal, self.bottomView.frame.size.height - kListView_TopMargin * kYScal - kListView_BottomMargin * kYScal) style:UITableViewStylePlain];
+    self.listView.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
+    self.listView.tableFooterView = [[UIView alloc] init];
+    self.listView.dataSource = self;
+    self.listView.delegate = self;
+    [self.bottomView addSubview:self.listView];
+    
+    CGFloat noDataLbl_LeftMargin = (self.bottomView.frame.size.width - kNoDatLbl_Width * kXScal)/2.0;
+    CGFloat noDataLbl_TopMargin = (self.bottomView.frame.size.height - kNoDataLbl_Height * kYScal)/2.0;
+    self.noDataLbl = [[UILabel alloc] initWithFrame:CGRectMake(noDataLbl_LeftMargin, noDataLbl_TopMargin, kNoDatLbl_Width * kXScal, kNoDataLbl_Height * kYScal)];
+    self.noDataLbl.textColor = [UIColor grayColor];
+    self.noDataLbl.textAlignment = NSTextAlignmentCenter;
+    self.noDataLbl.text = @"数据为空";
+    self.noDataLbl.font = [UIFont systemFontOfSize:kNoDataLbl_FontSize * kYScal];
+    self.noDataLbl.center = self.listView.center;
+    self.noDataLbl.hidden = YES;
+    [self.listView addSubview:self.noDataLbl];
+    if (self.precriptionsArr.count == 0) {
+        self.noDataLbl.hidden = NO;
+    } else {
+        self.noDataLbl.hidden = YES;
+    }
+}
+
+- (NSDictionary *)getReportSummary {
+    NSLog(@"prescription:%@",self.precriptionsArr);
+    NSInteger sumPrescriptionCount = 0;
+    NSInteger sumSportDays = 0;
+    NSInteger sumReportCount = 0;
+    if (self.precriptionsArr.count > 0) {
+        for (NSDictionary *prescription in self.precriptionsArr) {
+            sumPrescriptionCount += 1;
+            sumSportDays += [[prescription valueForKey:@"sportDays"] integerValue];
+            sumReportCount += [[prescription valueForKey:@"reportNum"] integerValue];
+        }
+    }
+    return @{@"sumPrescriptionCount":@(sumPrescriptionCount),@"sumSportDays":@(sumSportDays),@"sumReportCount":@(sumReportCount)};
+}
+
+#pragma mark - UITableViewDelegate && UITableViewDatasource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.precriptionsArr.count;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    return 67 * kYScal;
+    return (67 + 400)* kYScal;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 10;
+}
+
+- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    UIView *footer = [[UIView alloc] init];
+    footer.backgroundColor = [UIColor clearColor];
+    return footer;
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *reuseCellStr = [NSString stringWithFormat:@"prescriptionCellId%d%d",indexPath.section,indexPath.row];
+    AerobicReportCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellStr];
+    if (cell == nil) {
+        cell = [[AerobicReportCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellStr];
+        cell.backgroundColor = [UIColor clearColor];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    if (self.precriptionsArr.count > 0) {
+        NSDictionary *dict = [self.precriptionsArr objectAtIndex:indexPath.section];
+        NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
+        NSString *riskLevelStr = @"低";
+        if (riskLevel == 1) {
+            riskLevelStr = @"低";
+        } else if (riskLevel == 2) {
+            riskLevelStr = @"中";
+        } else if (riskLevel == 3) {
+            riskLevelStr = @"高";
+        }
+        cell.riskLevelValLbl.text = riskLevelStr;
+        NSArray *typeList = [dict valueForKey:@"typeList"];
+        if (typeList.count > 0) {
+            NSDictionary *equipmentDict = [typeList objectAtIndex:2];
+            cell.trainingEquipmentNameLbl.text = [equipmentDict valueForKey:@"name"];
+        }
+        cell.prescriptionNameLbl.text = [NSString stringWithFormat:@"测试%d",indexPath.section + 1];
+        cell.createTimeValLbl.text = [dict valueForKey:@"createTime"];
+        cell.doctorNameLbl.text = [dict valueForKey:@"doctorName"];
+        NSInteger sportDays = [[dict valueForKey:@"sportDays"] integerValue];
+        cell.sportDaysValLbl.text = [NSString stringWithFormat:@"%d",sportDays];
+        NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
+        cell.reportsValLbl.text = [NSString stringWithFormat:@"%d",reportNum];
+        cell.reportsBtn.tag = 1000 + indexPath.section;
+        [cell.reportsBtn addTarget:self action:@selector(showReport:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return cell;
 }
 
 #pragma mark - button click events
@@ -180,5 +311,20 @@
     datepicker.datePickerColor = [UIColor blackColor];//滚轮日期颜色
     datepicker.doneButtonColor = [UIColor grayColor];//确定按钮的颜色
     [datepicker show];
+}
+
+- (void)showReport:(UIButton*)sender {
+    NSInteger index = sender.tag - 1000;
+    if (sender.selected) {
+        sender.selected = NO;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:index];
+        AerobicReportCell *cell = [self.listView cellForRowAtIndexPath:indexPath];
+        cell.reportListview.hidden = YES;
+    } else {
+        sender.selected = YES;
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:index];
+        AerobicReportCell *cell = [self.listView cellForRowAtIndexPath:indexPath];
+        cell.reportListview.hidden = NO;
+    }
 }
 @end

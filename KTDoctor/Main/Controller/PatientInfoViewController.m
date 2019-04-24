@@ -416,7 +416,9 @@
     self.navigationController.navigationBar.hidden = YES;
     if (self.infoArr.count > 0) {
         self.latestInfoDict = [self.infoArr objectAtIndex:0];
-        self.olderInfoDict = [self.infoArr objectAtIndex:1];
+        if (self.infoArr.count > 1) {
+            self.olderInfoDict = [self.infoArr objectAtIndex:1];
+        }
     }
     self.allHrDevices = [NSMutableArray array];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -2492,8 +2494,18 @@
 }
 
 - (void)checkAerobicReport:(UIButton*)sender {
-    AerobicPrescriptionAndReportViewController *report = [[AerobicPrescriptionAndReportViewController alloc] init];
-    [self.navigationController pushViewController:report animated:NO];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@1 forKey:@"type"];
+    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@"-create_time" forKey:@"sort"];
+    [self getUserPrescriptionList:parameter];
 }
 
 #pragma mark - LMJDropdownMenuDelegate
@@ -2530,8 +2542,9 @@
                 weakSelf.hrMenuTitle = @"无";
             }
         } else if (code == 10011) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }
@@ -2545,7 +2558,7 @@
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_AVAILABLE_DEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"************** 2:%@**************",responseObject);
+        NSLog(@"**************%@**************",responseObject);
         if (code == 0) {
             NSArray *datas = [responseObject valueForKey:@"data"];
             if (datas.count > 0) {
@@ -2557,8 +2570,9 @@
                 [STTextHudTool showText:@"无闲置心率带"];
             }
         } else if (code == 10011) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }
@@ -2567,6 +2581,28 @@
     }];
 }
 
+- (void)getUserPrescriptionList:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRESCRIPTION_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            AerobicPrescriptionAndReportViewController *report = [[AerobicPrescriptionAndReportViewController alloc] init];
+            report.precriptionsArr = [rows mutableCopy];
+            [weakSelf.navigationController pushViewController:report animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 - (void)changePrivateHrDevice:(NSMutableDictionary*)parameter {
     
 }

@@ -50,7 +50,9 @@
 		5B22E06C2267027600C65B50 /* LMJDropdownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E06B2267027600C65B50 /* LMJDropdownMenu.m */; };
 		5B22E06F2267192A00C65B50 /* CustomTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E06E2267192A00C65B50 /* CustomTextField.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
+		5B3FD009227013CF007DC605 /* AerobicReportCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3FD008227013CF007DC605 /* AerobicReportCell.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
+		5B5E2E122270552000DB7534 /* ReportListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E2E112270551F00DB7534 /* ReportListCell.m */; };
 		5B6067572268672B003E8DF4 /* PatientInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B6067562268672B003E8DF4 /* PatientInfoViewController.m */; };
 		5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */; };
 		5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B89224CAE3E00736FC2 /* PatientCell1.m */; };
@@ -193,8 +195,12 @@
 		5B22E06E2267192A00C65B50 /* CustomTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomTextField.m; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
+		5B3FD007227013CF007DC605 /* AerobicReportCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AerobicReportCell.h; sourceTree = "<group>"; };
+		5B3FD008227013CF007DC605 /* AerobicReportCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicReportCell.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
 		5B518ECC223795050071AF80 /* DashView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashView.m; sourceTree = "<group>"; };
+		5B5E2E102270551F00DB7534 /* ReportListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReportListCell.h; sourceTree = "<group>"; };
+		5B5E2E112270551F00DB7534 /* ReportListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReportListCell.m; sourceTree = "<group>"; };
 		5B6067552268672B003E8DF4 /* PatientInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientInfoViewController.h; sourceTree = "<group>"; };
 		5B6067562268672B003E8DF4 /* PatientInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientInfoViewController.m; sourceTree = "<group>"; };
 		5B875B84224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EqualCellSqpceFlowLayout.m; sourceTree = "<group>"; };
@@ -372,6 +378,10 @@
 				5B126725225B3EFD00894CCF /* HistoryCell.m */,
 				5BEDDA40226740B800E15D2B /* PatientListsCell.h */,
 				5BEDDA41226740B800E15D2B /* PatientListsCell.m */,
+				5B3FD007227013CF007DC605 /* AerobicReportCell.h */,
+				5B3FD008227013CF007DC605 /* AerobicReportCell.m */,
+				5B5E2E102270551F00DB7534 /* ReportListCell.h */,
+				5B5E2E112270551F00DB7534 /* ReportListCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -893,12 +903,14 @@
 				5B02F7A32244D02200BE8269 /* IndexPopCell.m in Sources */,
 				5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */,
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
+				5B3FD009227013CF007DC605 /* AerobicReportCell.m in Sources */,
 				5B02F7802241DC6A00BE8269 /* UIView+Extension.m in Sources */,
 				5B875B96224CAEAF00736FC2 /* PatientCell6.m in Sources */,
 				5B02F79F2244C79600BE8269 /* IndexPopoverViewController.m in Sources */,
 				5BE8130C2237609C005C0648 /* LoginViewController.m in Sources */,
 				5B875B9C224CAEDB00736FC2 /* PatientCell12.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
+				5B5E2E122270552000DB7534 /* ReportListCell.m in Sources */,
 				5B22E0692266CF5F00C65B50 /* IntensionViewController.m in Sources */,
 				09E47CB62237F97D00B33249 /* GCLoadingView.m in Sources */,
 				5B02F7962242275300BE8269 /* WHC_Asset.m in Sources */,

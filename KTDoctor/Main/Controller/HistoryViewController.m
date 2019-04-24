@@ -406,7 +406,7 @@
                 weakSelf.noDataLbl.hidden = YES;
             }
         } else if (code == 10011) {
-            [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
@@ -430,9 +430,9 @@
             detail.sportDict = data;
             [weakSelf.navigationController pushViewController:detail animated:NO];
         } else if (code == 10011) {
-            [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
-            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }

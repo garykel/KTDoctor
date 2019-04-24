@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface AerobicPrescriptionAndReportViewController : UIViewController
-
+@property (nonatomic,strong)NSMutableArray *precriptionsArr;
 @end

@@ -553,9 +553,9 @@
             info.statusStr = statusStr;
             [weakSelf.navigationController pushViewController:info animated:NO];
         } else if (code == 10011) {
-            [weakSelf.navigationController popViewControllerAnimated:NO];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         }  else {
             [STTextHudTool showText:msg];
         }
@@ -607,9 +607,9 @@
             }
             [weakSelf.listView reloadData];
         } else if (code == 10011) {
-            [weakSelf.navigationController popViewControllerAnimated:NO];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"HidePatientListViewNotification" object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TokenExpiredNotification" object:nil];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         }  else {
             [STTextHudTool showText:msg];
         }

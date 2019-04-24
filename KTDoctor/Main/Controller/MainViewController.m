@@ -219,7 +219,7 @@
             history.sportlists = [NSMutableArray arrayWithArray:rows];
             [weakSelf.navigationController pushViewController:history animated:NO];
         } else if (code == 10011) {
-            [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
@@ -243,7 +243,7 @@
             manage.datas = [rows mutableCopy];
             [weakSelf.navigationController pushViewController:manage animated:NO];
         } else if (code == 10011) {
-            [STTextHudTool showText:@"改账号已在其他设备登录或已过期"];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
