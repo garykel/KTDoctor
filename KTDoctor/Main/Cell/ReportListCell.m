@@ -60,6 +60,7 @@
     self.sequenceLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.sequenceImg.frame.size.width, kSequenceLbl_Height * kYScal)];
     self.sequenceLbl.textColor = [UIColor whiteColor];
     self.sequenceLbl.textAlignment = NSTextAlignmentCenter;
+    self.sequenceLbl.center = CGPointMake(self.sequenceImg.frame.size.width/2.0, self.sequenceImg.frame.size.height/2.0);
     self.sequenceLbl.font = [UIFont systemFontOfSize:kSequenceLbl_FontSize * kYScal];
     [self.contentView addSubview:self.sequenceLbl];
     
@@ -233,7 +234,7 @@
     self.titleSeperateView6.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.titleView addSubview:self.titleSeperateView6];
     
-    self.avgSpeedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.valueSeperateView6.frame), 0, itemWidth, kTitleView_Height * kYScal)];
+    self.avgSpeedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.valueSeperateView5.frame), 0, itemWidth, kTitleView_Height * kYScal)];
     self.avgSpeedValLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.avgSpeedValLbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize];
     self.avgSpeedValLbl.textAlignment = NSTextAlignmentCenter;
@@ -286,8 +287,10 @@
     [self.rpeView addSubview:self.rpeMiddleLine];
     
     self.rpe1Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre1"]];
-    self.rpe1Img.frame = CGRectMake(CGRectGetMaxX(self.rpeSeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe1Img.center = self.rpe1ImgBgView.center;
+    self.rpe1Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    CGFloat imgCenterX = itemWidth/2.0;
+    CGFloat imgCenterY = kTitleView_Height * kYScal/2.0;
+    self.rpe1Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe1ImgBgView addSubview:self.rpe1Img];
     
     self.rpe1Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe1ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
@@ -296,7 +299,7 @@
     self.rpe1Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe1Lbl];
     
-    self.rpe1SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe1ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe1SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe1ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe1SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe1SeperateLine];
     
@@ -305,17 +308,17 @@
     [self.rpeView addSubview:self.rpe2ImgBgView];
     
     self.rpe2Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre2"]];
-    self.rpe2Img.frame = CGRectMake(CGRectGetMaxX(self.rpe1SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe2Img.center = self.rpe2ImgBgView.center;
+    self.rpe2Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe2Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe2ImgBgView addSubview:self.rpe2Img];
     
-    self.rpe2Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe1ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe1SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe2Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe2ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe2Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe2Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe2Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe2Lbl];
     
-    self.rpe2SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe2ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe2SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe2ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe2SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe2SeperateLine];
     
@@ -324,17 +327,17 @@
     [self.rpeView addSubview:self.rpe3ImgBgView];
     
     self.rpe3Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre3"]];
-    self.rpe3Img.frame = CGRectMake(CGRectGetMaxX(self.rpe2SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe3Img.center = self.rpe3ImgBgView.center;
+    self.rpe3Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe3Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe3ImgBgView addSubview:self.rpe3Img];
     
-    self.rpe3Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe3ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe2SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe3Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe3ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe3Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe3Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe3Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe3Lbl];
     
-    self.rpe3SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe3ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe3SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe3ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe3SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe3SeperateLine];
     
@@ -343,17 +346,17 @@
     [self.rpeView addSubview:self.rpe4ImgBgView];
     
     self.rpe4Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre4"]];
-    self.rpe4Img.frame = CGRectMake(CGRectGetMaxX(self.rpe3SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe4Img.center = self.rpe4ImgBgView.center;
+    self.rpe4Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe4Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe4ImgBgView addSubview:self.rpe4Img];
     
-    self.rpe4Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe4ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe3SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe4Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe4ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe4Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe4Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe4Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe4Lbl];
     
-    self.rpe4SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe4ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe4SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe4ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe4SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe4SeperateLine];
     
@@ -362,17 +365,17 @@
     [self.rpeView addSubview:self.rpe5ImgBgView];
     
     self.rpe5Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre5"]];
-    self.rpe5Img.frame = CGRectMake(CGRectGetMaxX(self.rpe4SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe5Img.center = self.rpe5ImgBgView.center;
+    self.rpe5Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe5Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe5ImgBgView addSubview:self.rpe5Img];
     
-    self.rpe5Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe5ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe4SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe5Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe5ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe5Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe5Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe5Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe5Lbl];
     
-    self.rpe5SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe5ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe5SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe5ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe5SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe5SeperateLine];
     
@@ -381,17 +384,17 @@
     [self.rpeView addSubview:self.rpe6ImgBgView];
     
     self.rpe6Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre6"]];
-    self.rpe6Img.frame = CGRectMake(CGRectGetMaxX(self.rpe1SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe6Img.center = self.rpe6ImgBgView.center;
+    self.rpe6Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe6Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe6ImgBgView addSubview:self.rpe6Img];
     
-    self.rpe6Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe6ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe5SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe6Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe6ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe6Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe6Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe6Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe6Lbl];
     
-    self.rpe6SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe6ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe6SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe6ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe6SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe6SeperateLine];
     
@@ -400,17 +403,17 @@
     [self.rpeView addSubview:self.rpe7ImgBgView];
     
     self.rpe7Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre7"]];
-    self.rpe7Img.frame = CGRectMake(CGRectGetMaxX(self.rpe6SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe7Img.center = self.rpe7ImgBgView.center;
+    self.rpe7Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe7Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe7ImgBgView addSubview:self.rpe7Img];
     
-    self.rpe7Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe7ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe6SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe7Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe7ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe7Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe7Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe7Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe7Lbl];
     
-    self.rpe7SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe7ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe7SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe7ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe7SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe7SeperateLine];
     
@@ -419,17 +422,17 @@
     [self.rpeView addSubview:self.rpe8ImgBgView];
     
     self.rpe8Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre8"]];
-    self.rpe8Img.frame = CGRectMake(CGRectGetMaxX(self.rpe7SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe8Img.center = self.rpe8ImgBgView.center;
+    self.rpe8Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe8Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe8ImgBgView addSubview:self.rpe8Img];
     
-    self.rpe8Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe8ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe7SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe8Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe8ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe8Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe8Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe8Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe8Lbl];
     
-    self.rpe8SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe8ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe8SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe8ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe8SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe8SeperateLine];
     
@@ -438,17 +441,17 @@
     [self.rpeView addSubview:self.rpe9ImgBgView];
     
     self.rpe9Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre9"]];
-    self.rpe9Img.frame = CGRectMake(CGRectGetMaxX(self.rpe8SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe9Img.center = self.rpe9ImgBgView.center;
+    self.rpe9Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe9Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe9ImgBgView addSubview:self.rpe9Img];
     
-    self.rpe9Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe9ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe8SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe9Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe9ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe9Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe9Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe9Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe9Lbl];
     
-    self.rpe9SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe9ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe9SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe9ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe9SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe9SeperateLine];
     
@@ -457,17 +460,17 @@
     [self.rpeView addSubview:self.rpe10ImgBgView];
     
     self.rpe10Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre10"]];
-    self.rpe10Img.frame = CGRectMake(CGRectGetMaxX(self.rpe9SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe10Img.center = self.rpe10ImgBgView.center;
+    self.rpe10Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe10Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe10ImgBgView addSubview:self.rpe10Img];
     
-    self.rpe10Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe10ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe9SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe10Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe10ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe10Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe10Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe10Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe10Lbl];
     
-    self.rpe10SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe10ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe10SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe10ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe10SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe10SeperateLine];
     
@@ -476,17 +479,17 @@
     [self.rpeView addSubview:self.rpe11ImgBgView];
     
     self.rpe11Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre11"]];
-    self.rpe11Img.frame = CGRectMake(CGRectGetMaxX(self.rpe10SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe11Img.center = self.rpe11ImgBgView.center;
+    self.rpe11Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe11Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe11ImgBgView addSubview:self.rpe11Img];
     
-    self.rpe11Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe11ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe10SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe11Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe11ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe11Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe11Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe11Lbl.textAlignment = NSTextAlignmentCenter;
     [self.rpeView addSubview:self.rpe11Lbl];
     
-    self.rpe11SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe11ImgBgView.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.rpe11SeperateLine = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpe11ImgBgView.frame), 0, 1, kPreView_Height * kYScal)];
     self.rpe11SeperateLine.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.rpeView addSubview:self.rpe11SeperateLine];
     
@@ -495,11 +498,11 @@
     [self.rpeView addSubview:self.rpe12ImgBgView];
     
     self.rpe12Img = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"pre12"]];
-    self.rpe12Img.frame = CGRectMake(CGRectGetMaxX(self.rpe11SeperateLine.frame), 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
-    self.rpe12Img.center = self.rpe12ImgBgView.center;
+    self.rpe12Img.frame = CGRectMake(0, 0, kRpeImg_Width * kYScal, kRpeImg_Width * kYScal);
+    self.rpe12Img.center = CGPointMake(imgCenterX, imgCenterY);
     [self.rpe12ImgBgView addSubview:self.rpe12Img];
     
-    self.rpe12Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe12ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpe11SeperateLine.frame), itemWidth, kTitleView_Height * kYScal)];
+    self.rpe12Lbl = [[UILabel alloc] initWithFrame:CGRectMake(self.rpe12ImgBgView.frame.origin.x, CGRectGetMaxY(self.rpeMiddleLine.frame), itemWidth, kTitleView_Height * kYScal)];
     self.rpe12Lbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.rpe12Lbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize * kYScal];
     self.rpe12Lbl.textAlignment = NSTextAlignmentCenter;

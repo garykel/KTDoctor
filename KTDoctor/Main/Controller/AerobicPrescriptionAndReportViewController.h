@@ -10,4 +10,5 @@
 
 @interface AerobicPrescriptionAndReportViewController : UIViewController
 @property (nonatomic,strong)NSMutableArray *precriptionsArr;
+@property (nonatomic,strong)NSDictionary *patientInfo;
 @end

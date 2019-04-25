@@ -2591,6 +2591,7 @@
             NSArray *rows = [responseObject valueForKey:@"rows"];
             AerobicPrescriptionAndReportViewController *report = [[AerobicPrescriptionAndReportViewController alloc] init];
             report.precriptionsArr = [rows mutableCopy];
+            report.patientInfo = self.latestInfoDict;
             [weakSelf.navigationController pushViewController:report animated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];

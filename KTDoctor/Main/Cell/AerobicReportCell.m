@@ -206,8 +206,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    return self.reportsArr.count;
-    return 3;
+    return self.reportsArr.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -226,9 +225,79 @@
         cell.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    cell.sequenceLbl.text = [NSString stringWithFormat:@"%d",self.reportsArr.count - indexPath.section];
+    NSDictionary *reportDict = [self.reportsArr objectAtIndex:indexPath.section];
+    NSInteger completePercent = [[reportDict valueForKey:@"completePercent"] integerValue];
+    cell.percentLbl.text = [NSString stringWithFormat:@"%d%%",completePercent];
+    cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[reportDict valueForKey:@"startTime"]];
+    NSInteger totalTime = [[reportDict valueForKey:@"totalTime"] integerValue];
+    NSString *totalTimeStr = [self getTimeString:totalTime];
+    cell.totalTimeValLbl.text = totalTimeStr;
+    NSInteger avgHr = [[reportDict valueForKey:@"avgHr"] integerValue];
+    cell.avgHrValLbl.text = [NSString stringWithFormat:@"%d bpm",avgHr];
+    NSInteger maxHr = [[reportDict valueForKey:@"maxHr"] integerValue];
+    cell.maxHrValLbl.text = [NSString stringWithFormat:@"%d bpm",maxHr];
+    CGFloat totalMileage = [[reportDict valueForKey:@"totalMileage"] floatValue];
+    cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
+    CGFloat calorie = [[reportDict valueForKey:@"calorie"] floatValue];
+    cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f kcal",calorie];
+    CGFloat speed = [[reportDict valueForKey:@"speed"] floatValue];
+    cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
+    NSInteger avgDifficulty = [[reportDict valueForKey:@"avgDifficulty"] integerValue];
+    cell.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",avgDifficulty];
+    NSString *rpeSample = [reportDict valueForKey:@"rpeSample"];
+    NSLog(@"rpeSample is :%@",rpeSample);
+    NSMutableArray *results = [NSMutableArray array];
+    if (rpeSample.length > 0) {
+        NSArray *arr = [rpeSample componentsSeparatedByString:@","];
+        if (arr.count > 0) {
+            for (NSString *str in arr) {
+                NSArray *rpeArr = [str componentsSeparatedByString:@"|"];
+                if (rpeArr.count > 0) {
+                    [results addObject:rpeArr[0]];
+                }
+            }
+            if (arr.count < 12) {
+                for (NSInteger i = 0; i< 12 - arr.count; i++) {
+                    [results addObject:@""];
+                }
+            }
+        } else {
+            for (NSInteger j = 0; j< 12; j++) {
+                [results addObject:@""];
+            }
+        }
+        NSLog(@"results is :%@",results);
+        
+    } else {
+        for (NSInteger j = 0; j< 12; j++) {
+            [results addObject:@""];
+        }
+    }
+    if (results.count > 0) {
+        cell.rpe1Lbl.text = results[0];
+        cell.rpe2Lbl.text = results[1];
+        cell.rpe3Lbl.text = results[2];
+        cell.rpe4Lbl.text = results[3];
+        cell.rpe5Lbl.text = results[4];
+        cell.rpe6Lbl.text = results[5];
+        cell.rpe7Lbl.text = results[6];
+        cell.rpe8Lbl.text = results[7];
+        cell.rpe9Lbl.text = results[8];
+        cell.rpe10Lbl.text = results[9];
+        cell.rpe11Lbl.text = results[10];
+        cell.rpe12Lbl.text = results[11];
+    }
     return cell;
 }
 
+- (NSString *)getTimeString:(NSInteger)seconds {
+    NSString *timeStr = @"";
+    NSInteger minute = seconds / 60;
+    NSInteger second = seconds % 60;
+    timeStr = [NSString stringWithFormat:@"%02ld:%02ld",(long)minute,(long)second];
+    return timeStr;
+}
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 10;
 }

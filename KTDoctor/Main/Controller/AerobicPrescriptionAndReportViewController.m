@@ -10,6 +10,7 @@
 #import "LMJDropdownMenu.h"
 #import "CustomTextField.h"
 #import "AerobicReportCell.h"
+#import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -63,6 +64,8 @@
 @property (nonatomic,strong)UILabel *summaryLbl;
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,strong)UILabel *noDataLbl;
+@property (nonatomic,strong)NSMutableArray *closeArr;
+@property (nonatomic,strong)UserModel *user;
 @end
 
 @implementation AerobicPrescriptionAndReportViewController
@@ -70,6 +73,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.closeArr = [NSMutableArray array];
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
+    for (NSInteger i = 0; i < self.precriptionsArr.count; i++) {
+        [self.closeArr addObject:[NSNumber numberWithBool:YES]];
+    }
     [self setNavBar];
     [self setupUI];
 }
@@ -239,7 +247,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 //    return 67 * kYScal;
-    return (67 + 400)* kYScal;
+    BOOL close = [[self.closeArr objectAtIndex:indexPath.section] boolValue];
+    if (close) {
+        return 67 * kYScal;
+    } else {
+        return (67 + 400)* kYScal;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -315,16 +328,56 @@
 
 - (void)showReport:(UIButton*)sender {
     NSInteger index = sender.tag - 1000;
-    if (sender.selected) {
-        sender.selected = NO;
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:index];
-        AerobicReportCell *cell = [self.listView cellForRowAtIndexPath:indexPath];
-        cell.reportListview.hidden = YES;
-    } else {
-        sender.selected = YES;
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:index];
-        AerobicReportCell *cell = [self.listView cellForRowAtIndexPath:indexPath];
-        cell.reportListview.hidden = NO;
+    NSDictionary *dict = [self.precriptionsArr objectAtIndex:index];
+    NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
+    if (reportNum > 0) {
+        BOOL close = [[self.closeArr objectAtIndex:index] boolValue];
+        [self.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        [parameter setValue:@0 forKey:@"offset"];
+        [parameter setValue:@10 forKey:@"rows"];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        NSInteger userId = [[self.patientInfo valueForKey:@"userId"] integerValue];
+        [parameter setValue:@(userId) forKey:@"userId"];
+        NSDictionary *prescriptionDict = [self.precriptionsArr objectAtIndex:index];
+        NSInteger prescriptionId = [[prescriptionDict valueForKey:@"id"] integerValue];
+        [parameter setValue:@(prescriptionId) forKey:@"prescriptionId"];
+        [parameter setValue:@"-create_time" forKey:@"sort"];
+        [self showReportList:parameter index:index];
     }
+}
+
+- (void)showReportList:(NSMutableDictionary*)parameter index:(NSInteger)index{
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_REPORTLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *datas = [responseObject valueForKey:@"rows"];
+            AerobicReportCell *cell = (AerobicReportCell*)[self.listView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:index]];
+            if (datas.count > 0) {
+                NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:NO];
+                datas = [[datas sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] mutableCopy];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                cell.reportsArr = [datas mutableCopy];
+                [cell.reportListview reloadData];
+                NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:index];
+                [weakSelf.listView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            });
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 @end
