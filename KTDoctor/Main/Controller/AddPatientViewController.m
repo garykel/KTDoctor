@@ -136,7 +136,7 @@
     [self.loginBgImg addSubview:self.doctorImg];
     
     self.dashView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"dashView"]];
-    self.dashView.frame = CGRectMake(kDoctorImg_RightMargin * kXScal, KDashView_TopMargin * kYScal, KDashView_Width * kXScal, self.loginBgImg.frame.size.height - KDashView_TopMargin * kYScal - kDashView_BottomMargin * kYScal);
+    self.dashView.frame = CGRectMake(CGRectGetMaxX(self.doctorImg.frame) + kDoctorImg_RightMargin * kXScal, KDashView_TopMargin * kYScal, KDashView_Width * kXScal, self.loginBgImg.frame.size.height - KDashView_TopMargin * kYScal - kDashView_BottomMargin * kYScal);
     [self.loginBgImg addSubview:self.dashView];
 }
 
