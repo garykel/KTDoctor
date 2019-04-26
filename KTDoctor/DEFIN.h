@@ -14,6 +14,10 @@
 //#define kSERVER_URL @"http://srv.coolplay.tv:8090" //服务器地址
 #define kSERVER_URL @"https://health-api.coolplay.tv/" //服务器地址
 #define kDOCTOR_LOGIN_URL @"/doctor/password_login"//医师登陆
+#define kUSER_LOGIN_URL @"/user/password_login"//病人登录
+#define kQR_DOCTOR_AUTH_URL @"/qr/doctor_auth"//医师扫码授权
+#define kWX_GET_QR_URL @"/wx/get_qr_url"//获取扫码地址
+#define kWX_USER_INFO_URL @"/wx/user_info"//获取扫码地址
 #define kSEND_SMS_URL @"/send_sms"//发送短信验证码
 #define kSMS_LOGIN_URL @"/doctor/sms_login"//短信验证码登录
 #define kMODIFY_PASSWORD_URL @"/doctor/modify_password"//医师修改密码
