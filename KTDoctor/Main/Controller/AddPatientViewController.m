@@ -119,6 +119,7 @@
 @property (nonatomic,copy)NSString *smsCode;
 @property (nonatomic,assign)BOOL isPasswordLogin;//是否是密码登录
 @property (nonatomic,strong)UserModel *user;
+@property (nonatomic,strong)NSTimer *timer;
 @end
 
 @implementation AddPatientViewController
@@ -127,6 +128,7 @@
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     self.isPasswordLogin = YES;
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refreshQRCode) userInfo:nil repeats:YES];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
@@ -191,7 +193,8 @@
     self.dashView.userInteractionEnabled = YES;
     [self configLoginview];
     [self configScanview];
-    self.scanBgView.hidden = YES;
+    self.scanBgView.hidden = NO;
+    self.loginBgView.hidden = YES;
 }
 
 - (void)configLoginview {
@@ -312,6 +315,8 @@
     
     self.scanImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@""]];
     self.scanImg.frame = CGRectMake((self.scanBgView.frame.size.width - kScanImg_Width)/2.0, CGRectGetMaxY(self.scanLbl.frame) + kScanImg_TopMargin * kYScal, kScanImg_Width * kXScal, kScanImg_Height * kYScal);
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(refreshQRCode)];
+    [self.scanBgView addGestureRecognizer:tap];
     [self.scanBgView addSubview:self.scanImg];
     
     self.refreshLbl = [[UILabel alloc] initWithFrame:CGRectMake((self.scanBgView.frame.size.width - kRefreshLbl_Width)/2.0, self.scanBgView.frame.size.height - kRefreshLbl_Height * kYScal - kRefreshLbl_BottomMargin * kYScal, kRefreshLbl_Width * kXScal, kRefreshLbl_Height * kYScal)];
@@ -341,13 +346,13 @@
     if (sender.selected) {
         sender.selected = NO;
         [self.wechatLoginBtn setImage:[UIImage imageNamed:@"code"] forState:UIControlStateNormal];
-        self.scanBgView.hidden = YES;
-        self.loginBgView.hidden = NO;
+        self.scanBgView.hidden = NO;
+        self.loginBgView.hidden = YES;
     } else {
         sender.selected = YES;
         [self.wechatLoginBtn setImage:[UIImage imageNamed:@"wechat"] forState:UIControlStateNormal];
-        self.scanBgView.hidden = NO;
-        self.loginBgView.hidden = YES;
+        self.scanBgView.hidden = YES;
+        self.loginBgView.hidden = NO;
     }
 }
 
@@ -428,6 +433,10 @@
             NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
             [parameter setValue:smsCode forKey:@"smsCode"];
             [parameter setValue:mobile forKey:@"mobile"];
+            NSDictionary *dict = self.user.organ;
+            NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+            NSString *orgCode = orgCodeArr[0];
+            [parameter setValue:orgCode forKey:@"orgCode"];
             [self loginWithSMS:parameter];
         } else if (mobile.length == 0 || !isMobile) {
             [STTextHudTool showText:@"您输入的用户名错误"];
@@ -435,6 +444,16 @@
             [STTextHudTool showText:@"请输入验证码"];
         }
     }
+}
+
+- (void)refreshQRCode{
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@2 forKey:@"type"];
+    [self getWXQRCode:parameter];
 }
 
 #pragma mark - netFunctions
@@ -506,6 +525,10 @@
         NSLog(@"error :%@",error);
         [STTextHudTool showText:@"error"];
     }];
+}
+
+- (void)dealloc {
+    [self.timer invalidate];
 }
 
 @end
