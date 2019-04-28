@@ -85,7 +85,7 @@
 #define kScanImg_Width 163
 #define kScanImg_Height 150
 
-@interface AddPatientViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface AddPatientViewController ()<UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UIImageView *bgImg;
@@ -128,7 +128,6 @@
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     self.isPasswordLogin = YES;
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refreshQRCode) userInfo:nil repeats:YES];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
@@ -138,6 +137,15 @@
     [parameter setValue:@2 forKey:@"type"];
     [self getWXQRCode:parameter];
     [self setupUI];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refreshQRCode) userInfo:nil repeats:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [self.timer invalidate];
 }
 
 - (void)setupUI {
@@ -238,6 +246,7 @@
     self.phoneTF.backgroundColor = [UIColor colorWithHexString:@"#68C9DE"];
     self.phoneTF.layer.cornerRadius = 2;
     self.phoneTF.layer.masksToBounds = YES;
+    self.phoneTF.delegate = self;
     self.phoneTF.center = CGPointMake(CGRectGetMaxX(self.phoneLbl.frame) + kPhoneLbl_RightMargin * kXScal + kPhoneTF_Width * kXScal/2.0, self.phoneLbl.center.y);
     [self.loginBgView addSubview:self.phoneTF];
     
@@ -265,6 +274,7 @@
     CGFloat verifyCodeTF_Width = self.dashView.frame.size.width - CGRectGetMaxX(self.verifyCodeLbl.frame) - kPhoneLbl_RightMargin * kXScal - kVerify_Btn_LeftMargin * kXScal - kVerify_Btn_Width * kXScal - kPhoneTF_RightMargin * kXScal;
     self.verifyCodeTF = [[UITextField alloc] initWithFrame:CGRectMake(self.passwordTF.frame.origin.x, self.passwordTF.frame.origin.y, verifyCodeTF_Width, self.phoneTF.frame.size.height)];
     self.verifyCodeTF.placeholder = @"请输入验证码";
+    self.verifyCodeTF.delegate = self;
     self.verifyCodeTF.font = [UIFont systemFontOfSize:kVerify_Btn_FontSize * kYScal];
     self.verifyCodeTF.backgroundColor = [UIColor colorWithHexString:@"#68C9DE"];
     [self.loginBgView addSubview:self.verifyCodeTF];
@@ -525,6 +535,28 @@
         NSLog(@"error :%@",error);
         [STTextHudTool showText:@"error"];
     }];
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    return [self validateNumber:string];
+}
+
+- (BOOL)validateNumber:(NSString*)number {
+    BOOL res = YES;
+    NSCharacterSet* tmpSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+    int i = 0;
+    while (i < number.length) {
+        NSString * string = [number substringWithRange:NSMakeRange(i, 1)];
+        NSRange range = [string rangeOfCharacterFromSet:tmpSet];
+        if (range.length == 0) {
+            res = NO;
+            break;
+        }
+        i++;
+    }
+    return res;
 }
 
 - (void)dealloc {

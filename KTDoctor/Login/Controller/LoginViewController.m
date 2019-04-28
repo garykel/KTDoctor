@@ -62,7 +62,7 @@
 #import "RegistOrResetView.h"
 #import "UserModel.h"
 
-@interface LoginViewController ()
+@interface LoginViewController ()<UITextFieldDelegate>
 @property (nonatomic,strong)UIImageView *bgImg;
 @property (nonatomic,strong)UIView *blueView;
 @property (nonatomic,strong)UIView *whiteView;
@@ -227,6 +227,7 @@
     self.phoneTF.backgroundColor = [UIColor colorWithHexString:@"#cceef3"];
     self.phoneTF.placeholder = @"请输入手机号";
     self.phoneTF.keyboardType = UIKeyboardTypeNumberPad;
+    self.phoneTF.delegate = self;
     [self.dashView addSubview:self.phoneTF];
     [self.phoneTF mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.equalTo(@(kPhone_Lbl_Heigh * kYScal));
@@ -281,6 +282,7 @@
     self.verifyCodeTF.backgroundColor = [UIColor colorWithHexString:@"#cceef3"];
     self.verifyCodeTF.placeholder = @"请输入验证码";
     self.verifyCodeTF.hidden = YES;
+    self.verifyCodeTF.delegate = self;
     self.verifyCodeTF.keyboardType = UIKeyboardTypeNumberPad;
     self.verifyCodeTF.font = [UIFont systemFontOfSize:kVerify_Btn_FontSize];
     [self.dashView addSubview:self.verifyCodeTF];
@@ -547,6 +549,28 @@
         NSLog(@"error :%@",error);
         [STTextHudTool showText:@"error"];
     }];
+}
+
+#pragma mark - UITextField
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    return [self validateNumber:string];
+}
+
+- (BOOL)validateNumber:(NSString*)number {
+    BOOL res = YES;
+    NSCharacterSet* tmpSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+    int i = 0;
+    while (i < number.length) {
+        NSString * string = [number substringWithRange:NSMakeRange(i, 1)];
+        NSRange range = [string rangeOfCharacterFromSet:tmpSet];
+        if (range.length == 0) {
+            res = NO;
+            break;
+        }
+        i++;
+    }
+    return res;
 }
 
 #pragma mark - ClearLonginInfoNotification
