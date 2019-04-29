@@ -10,6 +10,7 @@
 #import "LMJDropdownMenu.h"
 #import "UnitTextField.h"
 #import "UnitTextView.h"
+#import "AerobicGroupCell.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -71,11 +72,12 @@
 #define kPrescriptionBtn_TopMargin 30
 #define kPrescriptionBtn_RightMargin 62
 #define kPrescriptionBtn_FontSize 15
-#define kBottomHeight 368
+#define kBottomHeight 270
 #define kScrollview_Height 930
 #define kListView_TopMargin 20
 #define kListView_LeftMargin 16
 #define kListView_BottomMargin 83
+#define kCell_Height 118
 
 @interface CreateAerobicPrescriptionViewController ()<UIScrollViewDelegate,LMJDropdownMenuDelegate,UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *navView;
@@ -162,8 +164,8 @@
 - (void)setupUI {
     self.scrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(kTopView_LeftMargin * kXScal, CGRectGetMaxY(self.navView.frame), kWidth - 2 * kTopView_LeftMargin * kXScal, kHeight - CGRectGetMaxY(self.navView.frame))];
     self.scrollview.delegate = self;
-    self.scrollview.contentSize = CGSizeMake(kWidth - 2 * kTopView_LeftMargin * kXScal, kHeight - CGRectGetMaxY(self.navView.frame));
-    self.scrollview.backgroundColor = [UIColor whiteColor];
+    self.scrollview.contentSize = CGSizeMake(kWidth - 2 * kTopView_LeftMargin * kXScal, kScrollview_Height);
+    self.scrollview.backgroundColor = [UIColor clearColor];
     self.scrollview.showsVerticalScrollIndicator = NO;
     [self.view addSubview:self.scrollview];
     
@@ -302,8 +304,8 @@
     self.sportTimePointMenu.tag = 60;
     [self.view addSubview:self.sportTimePointMenu];
     
-    self.scrollview.contentSize = CGSizeMake(kWidth - 2 * kTopView_LeftMargin * kXScal, kScrollview_Height * kYScal);
-    self.listBgView = [[UIView alloc] initWithFrame:CGRectMake(self.topView.frame.origin.x, CGRectGetMaxY(self.topView.frame) + kTopView_BottomMargin * kYScal, self.topView.frame.size.width, self.scrollview.contentSize.height - kBottomHeight * kYScal)];
+//    self.scrollview.contentSize = CGSizeMake(kWidth - 2 * kTopView_LeftMargin * kXScal, kScrollview_Height * kYScal);
+    self.listBgView = [[UIView alloc] initWithFrame:CGRectMake(self.topView.frame.origin.x, CGRectGetMaxY(self.topView.frame) + kTopView_BottomMargin * kYScal, self.topView.frame.size.width, self.scrollview.contentSize.height - CGRectGetMaxY(self.topView.frame) - kTopView_BottomMargin * kYScal - kBottomHeight * kYScal)];
     self.listBgView.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
     [self.scrollview addSubview:self.listBgView];
     
@@ -311,6 +313,7 @@
     self.listView.dataSource = self;
     self.listView.delegate = self;
     self.listView.backgroundColor = [UIColor clearColor];
+    self.listView.showsVerticalScrollIndicator = NO;
     [self.listBgView addSubview:self.listView];
     
     self.dataView = [[UIView alloc] initWithFrame:CGRectMake(self.listView.frame.origin.x, CGRectGetMaxY(self.listView.frame), self.listView.frame.size.width, kListView_BottomMargin * kYScal)];
@@ -367,31 +370,35 @@
     [self.templateBtn addTarget:self action:@selector(saveAsCustomTemplate:) forControlEvents:UIControlEventTouchUpInside];
     [self.dataView addSubview:self.templateBtn];
     
-    self.prescriptionLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.listBgView.frame) + kPrescriptionLbl_TopMargin * kYScal, kPrescriptionLbl_Width * kXScal, kPrescriptionLbl_Height * kYScal)];
+    self.templateView = [[UIView alloc] initWithFrame:CGRectMake(self.listBgView.frame.origin.x, CGRectGetMaxY(self.listBgView.frame), self.listBgView.frame.size.width, kBottomHeight * kYScal)];
+    self.templateView.backgroundColor = [UIColor clearColor];
+    [self.scrollview addSubview:self.templateView];
+    
+    self.prescriptionLbl = [[UILabel alloc] initWithFrame:CGRectMake(0,kPrescriptionLbl_TopMargin * kYScal, kPrescriptionLbl_Width * kXScal, kPrescriptionLbl_Height * kYScal)];
     self.prescriptionLbl.text = @"处方名称";
     self.prescriptionLbl.font = [UIFont systemFontOfSize:kPrescriptionLbl_FontSize * kYScal];
     self.prescriptionLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    [self.scrollview addSubview:self.prescriptionLbl];
+    [self.templateView addSubview:self.prescriptionLbl];
     
     self.prescriptionTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.prescriptionLbl.frame) + kPrescriptionLbl_RightMargin * kXScal, 0, kPrescriptionTF_Width * kXScal, kPrescriptionTF_Height * kYScal)];
     self.prescriptionTF.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
     self.prescriptionTF.font = [UIFont systemFontOfSize:kPrescriptionTF_FontSize * kYScal];
     self.prescriptionTF.unitLbl.text = @"0/20";
     self.prescriptionTF.center = CGPointMake(CGRectGetMaxX(self.prescriptionLbl.frame) + kPrescriptionLbl_RightMargin * kXScal + kPrescriptionTF_Width * kXScal/2.0, self.prescriptionLbl.center.y);
-    [self.scrollview addSubview:self.prescriptionTF];
+    [self.templateView addSubview:self.prescriptionTF];
     
     self.doctorAdviceLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.prescriptionLbl.frame.origin.x, CGRectGetMaxY(self.prescriptionLbl.frame) + kDoctorAdviceLbl_TopMargin * kYScal, kPrescriptionLbl_Width * kXScal, kPrescriptionLbl_Height * kYScal)];
     self.doctorAdviceLbl.text = @"医       嘱";
     self.doctorAdviceLbl.font = [UIFont systemFontOfSize:kPrescriptionLbl_FontSize * kYScal];
     self.doctorAdviceLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    [self.scrollview addSubview:self.doctorAdviceLbl];
+    [self.templateView addSubview:self.doctorAdviceLbl];
     
     self.doctorAdviceView = [[UnitTextView alloc] initWithFrame:CGRectMake(self.prescriptionTF.frame.origin.x, CGRectGetMaxY(self.prescriptionTF.frame) + kDoctorAdviceTextview_TopMargin * kYScal, self.scrollview.frame.size.width - CGRectGetMaxX(self.doctorAdviceLbl.frame) - kPrescriptionLbl_RightMargin * kXScal, kDoctorAdviceTextview_Height * kYScal) textContainer:nil];
     self.doctorAdviceView.backgroundColor = [UIColor colorWithHexString:@"DBF2F7"];
     self.doctorAdviceView.textColor = [UIColor blackColor];
     self.doctorAdviceView.unitLbl.text = @"0/200";
     self.doctorAdviceView.font = [UIFont systemFontOfSize:kPrescriptionTF_FontSize * kYScal];
-    [self.scrollview addSubview:self.doctorAdviceView];
+    [self.templateView addSubview:self.doctorAdviceView];
     
     CGFloat left = (self.scrollview.frame.size.width - 2 * KPrescriptionBtn_Width * kXScal - kPrescriptionBtn_RightMargin * kXScal)/2.0;
     self.createBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -400,7 +407,7 @@
     [self.createBtn.titleLabel setFont:[UIFont systemFontOfSize:kPrescriptionBtn_FontSize * kYScal]];
     [self.createBtn addTarget:self action:@selector(createPrescription:) forControlEvents:UIControlEventTouchUpInside];
     self.createBtn.backgroundColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    [self.scrollview addSubview:self.createBtn];
+    [self.templateView addSubview:self.createBtn];
     
     self.giveupBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.giveupBtn.frame = CGRectMake(CGRectGetMaxX(self.createBtn.frame) + kPrescriptionBtn_RightMargin * kXScal, self.createBtn.frame.origin.y, KPrescriptionBtn_Width * kXScal, kPrescriptionBtn_Height * kYScal);
@@ -409,7 +416,7 @@
     [self.giveupBtn.titleLabel setFont:[UIFont systemFontOfSize:kPrescriptionBtn_FontSize * kYScal]];
     [self.giveupBtn addTarget:self action:@selector(giveup:) forControlEvents:UIControlEventTouchUpInside];
     [self.giveupBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.scrollview addSubview:self.giveupBtn];
+    [self.templateView addSubview:self.giveupBtn];
 }
 
 #pragma mark - button click events
@@ -435,6 +442,10 @@
     return self.groups.count;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return kCell_Height * kYScal;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 1;
 }
@@ -450,14 +461,52 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *reuseCellIdStr = [NSString stringWithFormat:@"TrainingGroupCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
+    NSString *reuseCellIdStr = [NSString stringWithFormat:@"AerobicGroupCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
+    AerobicGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
+        cell = [[AerobicGroupCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
         cell.selectionStyle          = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     }
-    cell.textLabel.text = [NSString stringWithFormat:@"row :%d",indexPath.section + 1];
+    cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
+    [cell.addBtn addTarget:self action:@selector(addGroup:) forControlEvents:UIControlEventTouchUpInside];
+    cell.addBtn.tag = 10000 + indexPath.section;
+    cell.removeBtn.tag = 20000 + indexPath.section;
+    [cell.removeBtn addTarget:self action:@selector(removeGroup:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
+}
+
+#pragma mark - button click events
+- (void)addGroup:(UIButton*)sender {
+    NSLog(@"增加行");
+}
+
+- (void)removeGroup:(UIButton*)sender {
+    NSLog(@"移除行");
+}
+
+#pragma mark - network functions
+- (void)getTemplateList:(NSMutableDictionary*)parameter {
+    
+}
+
+- (void)createPrescriptions:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_PRESCRIPTION_CREATE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            [STTextHudTool showText:@"开具处方成功"];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 @end

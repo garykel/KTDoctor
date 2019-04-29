@@ -36,4 +36,10 @@
 #define kDOCTOR_PRESCRIPTION_CREATE_URL @"/doctor/prescription/create" //开具新处方
 #define kDOCTOR_USER_PRIVATE_DEVICE_URL @"/doctor/user_private_device" //医师获取用户私有心率带
 #define kDOCTOR_CHANGE_HR_DEVICE_URL @"/doctor/change_hr_device"//医师更换用户私有心率带
+#define kDOCTOR_TEMPLATE_LIST_URL @"/doctor/template/list" //处方模板列表
+#define kDOCTOR_TEMPLATE_DELETE_URL @"/doctor/template/delete" //删除模板
+#define kDOCTOR_TEMPLATE_UPDATE_URL @"/doctor/template/update" //更新处方模板
+#define kDOCTOR_TEMPLATE_RECOMMEND_URL @"/doctor/template/recommend" //获取推荐处方模板
+#define kDOCTOR_TEMPLATE_CREATE_URL @"/doctor/template/create" //创建处方模板
+#define kDOCTOR_PRESCRIPTION_CREATE_URL @"/doctor/prescription/create"//开具新处方
 #endif /* DEFIN_h */

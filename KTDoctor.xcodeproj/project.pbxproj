@@ -40,6 +40,10 @@
 		5B02F7BA224B75D700BE8269 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B9224B75D700BE8269 /* GCDAsyncUdpSocket.m */; };
 		5B02F7BD224B7F4F00BE8269 /* SportDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */; };
 		5B0AC3112254A1570001C48F /* DS-DIGIB.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */; };
+		5B0CE8352276A99200B6D8B9 /* AerobicGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B0CE8342276A99200B6D8B9 /* AerobicGroupCell.m */; };
+		5B0CE838227707FF00B6D8B9 /* WQCodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B0CE837227707FF00B6D8B9 /* WQCodeScanner.m */; };
+		5B0CE83B2277084300B6D8B9 /* wq_code_scanner_line@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B0CE8392277084300B6D8B9 /* wq_code_scanner_line@2x.png */; };
+		5B0CE83C2277084300B6D8B9 /* wq_code_scanner_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B0CE83A2277084300B6D8B9 /* wq_code_scanner_back@2x.png */; };
 		5B126726225B3EFD00894CCF /* HistoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B126725225B3EFD00894CCF /* HistoryCell.m */; };
 		5B132536226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B132535226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m */; };
 		5B22E0582265C55A00C65B50 /* DateValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E0562265C55A00C65B50 /* DateValueFormatter.m */; };
@@ -175,6 +179,12 @@
 		5B02F7BB224B7F4F00BE8269 /* SportDataModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SportDataModel.h; sourceTree = "<group>"; };
 		5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SportDataModel.m; sourceTree = "<group>"; };
 		5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DS-DIGIB.TTF"; sourceTree = "<group>"; };
+		5B0CE8332276A99200B6D8B9 /* AerobicGroupCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AerobicGroupCell.h; sourceTree = "<group>"; };
+		5B0CE8342276A99200B6D8B9 /* AerobicGroupCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicGroupCell.m; sourceTree = "<group>"; };
+		5B0CE836227707FF00B6D8B9 /* WQCodeScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WQCodeScanner.h; sourceTree = "<group>"; };
+		5B0CE837227707FF00B6D8B9 /* WQCodeScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WQCodeScanner.m; sourceTree = "<group>"; };
+		5B0CE8392277084300B6D8B9 /* wq_code_scanner_line@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wq_code_scanner_line@2x.png"; sourceTree = "<group>"; };
+		5B0CE83A2277084300B6D8B9 /* wq_code_scanner_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wq_code_scanner_back@2x.png"; sourceTree = "<group>"; };
 		5B126724225B3EFD00894CCF /* HistoryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HistoryCell.h; sourceTree = "<group>"; };
 		5B126725225B3EFD00894CCF /* HistoryCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HistoryCell.m; sourceTree = "<group>"; };
 		5B132534226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreateAerobicPrescriptionViewController.h; sourceTree = "<group>"; };
@@ -385,6 +395,8 @@
 				5B3FD008227013CF007DC605 /* AerobicReportCell.m */,
 				5B5E2E102270551F00DB7534 /* ReportListCell.h */,
 				5B5E2E112270551F00DB7534 /* ReportListCell.m */,
+				5B0CE8332276A99200B6D8B9 /* AerobicGroupCell.h */,
+				5B0CE8342276A99200B6D8B9 /* AerobicGroupCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -416,6 +428,10 @@
 				5B22E0652266CF2500C65B50 /* AddTemplateViewController.m */,
 				5B22E0672266CF5F00C65B50 /* IntensionViewController.h */,
 				5B22E0682266CF5F00C65B50 /* IntensionViewController.m */,
+				5B0CE836227707FF00B6D8B9 /* WQCodeScanner.h */,
+				5B0CE837227707FF00B6D8B9 /* WQCodeScanner.m */,
+				5B0CE83A2277084300B6D8B9 /* wq_code_scanner_back@2x.png */,
+				5B0CE8392277084300B6D8B9 /* wq_code_scanner_line@2x.png */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -807,10 +823,12 @@
 				5BECDBB522365CA10025D6F2 /* Main.storyboard in Resources */,
 				09E47CB72237F97D00B33249 /* STSuccess@2x.png in Resources */,
 				5B0AC3112254A1570001C48F /* DS-DIGIB.TTF in Resources */,
+				5B0CE83B2277084300B6D8B9 /* wq_code_scanner_line@2x.png in Resources */,
 				5B02F78D2242269400BE8269 /* WHC_CameraVC.xib in Resources */,
 				09E47CB52237F97D00B33249 /* STError@2x.png in Resources */,
 				5B02F7812241DC6A00BE8269 /* WSDatePickerView.xib in Resources */,
 				09E47CB22237F97D00B33249 /* STTextHud.xib in Resources */,
+				5B0CE83C2277084300B6D8B9 /* wq_code_scanner_back@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -905,8 +923,10 @@
 				5BECDBF422365EDC0025D6F2 /* NSString+CPSignature.m in Sources */,
 				5BECDBB222365CA10025D6F2 /* ViewController.m in Sources */,
 				5BECDBF722365EDC0025D6F2 /* NSString+HMAC.m in Sources */,
+				5B0CE838227707FF00B6D8B9 /* WQCodeScanner.m in Sources */,
 				5B02F7A32244D02200BE8269 /* IndexPopCell.m in Sources */,
 				5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */,
+				5B0CE8352276A99200B6D8B9 /* AerobicGroupCell.m in Sources */,
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
 				5B3FD009227013CF007DC605 /* AerobicReportCell.m in Sources */,
 				5B02F7802241DC6A00BE8269 /* UIView+Extension.m in Sources */,
