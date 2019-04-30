@@ -14,6 +14,7 @@
 #define kTitleLbl_Width 250
 #define kSearchView_TopMargin 39
 #define kSearchView_LeftMargin 20
+#define kSearchView_Height 46
 #define kSearchView_BottomMargin 15
 #define kBottomView_BottomMargin 20
 #define kNameTF_LeftMargin 15
@@ -105,13 +106,13 @@
     [self.view addSubview:self.bgImg];
     self.bgImg.userInteractionEnabled = YES;
     
-    self.searchBgView = [[UIView alloc] initWithFrame:CGRectMake(kSearchView_LeftMargin * kXScal, CGRectGetMaxY(self.navView.frame) + kSearchView_TopMargin * kYScal, kWidth - 2 * kSearchView_LeftMargin * kXScal, kSearchBtn_Height * kYScal)];
+    self.searchBgView = [[UIView alloc] initWithFrame:CGRectMake(kSearchView_LeftMargin * kXScal, kSearchView_TopMargin * kYScal, kWidth - 2 * kSearchView_LeftMargin * kXScal, kSearchView_Height * kYScal)];
     self.searchBgView.backgroundColor = [UIColor colorWithHexString:@"#D4EEF1"];
     self.searchBgView.layer.cornerRadius = 4;
     self.searchBgView.layer.masksToBounds = YES;
     [self.bgImg addSubview:self.searchBgView];
     
-    self.bottomView = [[UIView alloc] initWithFrame:CGRectMake(self.searchBgView.frame.origin.x, CGRectGetMaxY(self.searchBgView.frame) + kSearchView_BottomMargin * kYScal, self.searchBgView.frame.size.width, self.searchBgView.frame.size.height)];
+    self.bottomView = [[UIView alloc] initWithFrame:CGRectMake(self.searchBgView.frame.origin.x, CGRectGetMaxY(self.searchBgView.frame) + kSearchView_BottomMargin * kYScal, self.searchBgView.frame.size.width,kHeight - CGRectGetMaxY(self.navView.frame) - CGRectGetMaxY(self.searchBgView.frame) - kSearchView_BottomMargin * kYScal - kBottomView_BottomMargin * kYScal)];
     self.bottomView.backgroundColor = [UIColor colorWithHexString:@"#C7F0F9"];
     [self.bgImg addSubview:self.bottomView];
 }
