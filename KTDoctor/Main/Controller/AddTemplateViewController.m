@@ -7,12 +7,36 @@
 //
 
 #import "AddTemplateViewController.h"
-
+#import "LMJDropdownMenu.h"
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
 #define kTitle_FontSize 22
 #define kTitleLbl_Width 250
-
+#define kSearchView_TopMargin 39
+#define kSearchView_LeftMargin 20
+#define kSearchView_BottomMargin 15
+#define kBottomView_BottomMargin 20
+#define kNameTF_LeftMargin 15
+#define kNameTF_TopMargin 13
+#define kNameTF_Width 134
+#define kNameTF_Heihgt 20
+#define kDieaseMenu_Width 133
+#define kRiskLevelMenu_Width 108
+#define kDeviceMenu_Width 133
+#define kTrainingPositionMenu_Width 125
+#define kTrainingDeviceMenu_Width 120
+#define kSearchBtn_Width 110
+#define kSearchBtn_Height 22
+#define kSearchBtn_FontSize 12.0
+#define kTemplateMenu_TopMargin 13
+#define kTemplateMenu_LeftMargin 15
+#define kDeleteBtn_Width 95
+#define kDeleteBtn_Heihgt 22
+#define kDeleteBtn_RightMargin 16
+#define kBtn_Space 15
+#define kPowerBtn_Width 115
+#define kAerobicBtn_Width 120
+#define kListBgView_TopMargin 12
 @interface AddTemplateViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
@@ -20,10 +44,18 @@
 @property (nonatomic,strong)UIImageView *bgImg;
 @property (nonatomic,strong)UIView *searchBgView;
 @property (nonatomic,strong)UIView *bottomView;
-@property (nonatomic,strong)UIButton *startTimeTF;
-@property (nonatomic,strong)UITextField *nameTF;
-@property (nonatomic,strong)UITextField *prescriptionTF;
+@property (nonatomic,strong)UITextField *nameTf;
+@property (nonatomic,strong)LMJDropdownMenu *dieaseMenu;
+@property (nonatomic,strong)LMJDropdownMenu *riskLevelMenu;
+@property (nonatomic,strong)LMJDropdownMenu *deviceMenu;
+@property (nonatomic,strong)LMJDropdownMenu *trainingPositionMenu;
+@property (nonatomic,strong)LMJDropdownMenu *trainingDeviceMenu;
 @property (nonatomic,strong)UIButton *searchBtn;
+@property (nonatomic,strong)LMJDropdownMenu *templateMenu;
+@property (nonatomic,strong)UIButton *createAerobicTemplateBtn;
+@property (nonatomic,strong)UIButton *createPowerTemplateBtn;
+@property (nonatomic,strong)UIButton *deleteBtn;
+@property (nonatomic,strong)UIView *listBgview;
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,strong)UILabel *noDataLbl;
 @property (nonatomic,copy)NSString *startTimeStr;
@@ -72,6 +104,16 @@
     self.bgImg.frame = CGRectMake(0, CGRectGetMaxY(self.navView.frame), kWidth, kHeight - CGRectGetMaxY(self.navView.frame));
     [self.view addSubview:self.bgImg];
     self.bgImg.userInteractionEnabled = YES;
+    
+    self.searchBgView = [[UIView alloc] initWithFrame:CGRectMake(kSearchView_LeftMargin * kXScal, CGRectGetMaxY(self.navView.frame) + kSearchView_TopMargin * kYScal, kWidth - 2 * kSearchView_LeftMargin * kXScal, kSearchBtn_Height * kYScal)];
+    self.searchBgView.backgroundColor = [UIColor colorWithHexString:@"#D4EEF1"];
+    self.searchBgView.layer.cornerRadius = 4;
+    self.searchBgView.layer.masksToBounds = YES;
+    [self.bgImg addSubview:self.searchBgView];
+    
+    self.bottomView = [[UIView alloc] initWithFrame:CGRectMake(self.searchBgView.frame.origin.x, CGRectGetMaxY(self.searchBgView.frame) + kSearchView_BottomMargin * kYScal, self.searchBgView.frame.size.width, self.searchBgView.frame.size.height)];
+    self.bottomView.backgroundColor = [UIColor colorWithHexString:@"#C7F0F9"];
+    [self.bgImg addSubview:self.bottomView];
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
