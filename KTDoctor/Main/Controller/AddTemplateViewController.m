@@ -8,6 +8,9 @@
 
 #import "AddTemplateViewController.h"
 #import "LMJDropdownMenu.h"
+#import "CustomTemplateCell.h"
+#import "SystemTemplateCell.h"
+
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
 #define kTitle_FontSize 22
@@ -45,6 +48,20 @@
 #define kAerobicBtn_Width 120
 #define kListBgView_TopMargin 12
 #define kListBgView_BottomMargin 15
+#define kCheck_LeftMargin 17
+#define kCheck_RightMargin 13
+#define kCheck_Width 16
+#define kSystemHeader_LefttMargin 15
+#define kHeaderView_RightMargin 130
+#define kHeaderView_TopMargin 16
+#define kHeaderView_Height 30
+#define kMiddleLine_Width 1
+#define kHeader_Btn_FontSize 13.0
+#define kListview_TopMargin 10
+#define kCell_Height 30
+
+CGSize customListviewSize;
+CGSize systemListviewSize;
 @interface AddTemplateViewController ()<UITableViewDelegate,UITableViewDataSource,LMJDropdownMenuDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
@@ -64,11 +81,16 @@
 @property (nonatomic,strong)UIButton *createPowerTemplateBtn;
 @property (nonatomic,strong)UIButton *deleteBtn;
 @property (nonatomic,strong)UIView *listBgview;
-@property (nonatomic,strong)UITableView *listView;
+@property (nonatomic,strong)UIView *customListviewBgView;
+@property (nonatomic,strong)UIView *systemListviewBgView;
+@property (nonatomic,strong)UITableView *customTemplateListView;
+@property (nonatomic,strong)UITableView *systemTemplateListView;
 @property (nonatomic,strong)UILabel *noDataLbl;
 @property (nonatomic,copy)NSString *startTimeStr;
 @property (nonatomic,assign)NSInteger offset;
 @property (nonatomic,assign)BOOL isFooterClick;
+@property (nonatomic,strong)NSMutableArray *customTemplateArr;
+@property (nonatomic,strong)NSMutableArray *systemTemplateArr;
 @end
 
 @implementation AddTemplateViewController
@@ -76,6 +98,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.customTemplateArr = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4" ,nil];
+    self.systemTemplateArr = [NSMutableArray arrayWithObjects:@"3m",@"4",@"7", nil];
     [self setNavBar];
     [self setupUI];
 }
@@ -217,12 +241,274 @@
     [self.deleteBtn.titleLabel setFont:[UIFont systemFontOfSize:kDeleteBtn_FontSize * kYScal]];
     [self.deleteBtn addTarget:self action:@selector(deleteBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.bottomView addSubview:self.deleteBtn];
+    [self configCustomTemplateView];
+    [self configSystemTemplateView];
+}
+
+- (void)configSystemTemplateView {
+    self.systemListviewBgView = [[UIView alloc] initWithFrame:CGRectMake(self.templateMenu.frame.origin.x, CGRectGetMaxY(self.templateMenu.frame) + kListBgView_TopMargin * kYScal, self.bottomView.frame.size.width - 2 * kTemplateMenu_LeftMargin * kXScal, self.bottomView.frame.size.height - CGRectGetMaxY(self.templateMenu.frame)- kListBgView_TopMargin * kYScal - kListBgView_BottomMargin * kYScal)];
+    self.systemListviewBgView.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    self.systemListviewBgView.layer.cornerRadius = 4;
+    self.systemListviewBgView.layer.masksToBounds = YES;
+    self.systemListviewBgView.hidden = YES;
+    [self.bottomView addSubview:self.systemListviewBgView];
     
-    self.listBgview = [[UIView alloc] initWithFrame:CGRectMake(self.templateMenu.frame.origin.x, CGRectGetMaxY(self.templateMenu.frame) + kListBgView_TopMargin * kYScal, self.bottomView.frame.size.width - 2 * kTemplateMenu_LeftMargin * kXScal, self.bottomView.frame.size.height - CGRectGetMaxY(self.templateMenu.frame)- kListBgView_TopMargin * kYScal - kListBgView_BottomMargin * kYScal)];
-    self.listBgview.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
-    self.listBgview.layer.cornerRadius = 4;
-    self.listBgview.layer.masksToBounds = YES;
-    [self.bottomView addSubview:self.listBgview];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, kHeaderView_TopMargin * kYScal, self.customListviewBgView.frame.size.width, kHeaderView_Height * kYScal)];
+    headerView.backgroundColor = [UIColor clearColor];
+    [self.systemListviewBgView addSubview:headerView];
+    systemListviewSize = headerView.frame.size;
+    
+    CGFloat btnWidth = (headerView.frame.size.width - kSystemHeader_LefttMargin * kXScal - kHeaderView_RightMargin * kXScal - 7 * kMiddleLine_Width)/8;
+    UIButton *nameBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    nameBtn.frame = CGRectMake(kSystemHeader_LefttMargin *kXScal, 0, btnWidth, kHeaderView_Height * kYScal);
+    [nameBtn setTitle:@"模板名称" forState:UIControlStateNormal];
+    nameBtn.backgroundColor = [UIColor whiteColor];
+    [nameBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    nameBtn.tag = 10;
+    [nameBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [nameBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:nameBtn];
+    
+    UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(nameBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line1.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line1];
+    
+    UIButton *dieaseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    dieaseBtn.frame = CGRectMake(CGRectGetMaxX(line1.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [dieaseBtn setTitle:@"适应病症" forState:UIControlStateNormal];
+    dieaseBtn.backgroundColor = [UIColor whiteColor];
+    [dieaseBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    dieaseBtn.tag = 20;
+    [dieaseBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [dieaseBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:dieaseBtn];
+    
+    UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(dieaseBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line2.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line2];
+    
+    UIButton *riskLevelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    riskLevelBtn.frame = CGRectMake(CGRectGetMaxX(line2.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [riskLevelBtn setTitle:@"风险等级" forState:UIControlStateNormal];
+    riskLevelBtn.backgroundColor = [UIColor whiteColor];
+    [riskLevelBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    riskLevelBtn.tag = 30;
+    [riskLevelBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [riskLevelBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:riskLevelBtn];
+    
+    UIView *line3 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(riskLevelBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line3.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line3];
+    
+    UIButton *positionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    positionBtn.frame = CGRectMake(CGRectGetMaxX(line3.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [positionBtn setTitle:@"训练部位" forState:UIControlStateNormal];
+    positionBtn.backgroundColor = [UIColor whiteColor];
+    [positionBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    positionBtn.tag = 40;
+    [positionBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [positionBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:positionBtn];
+    
+    UIView *line4 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(positionBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line4.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line4];
+    
+    UIButton *equipmentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    equipmentBtn.frame = CGRectMake(CGRectGetMaxX(line4.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [equipmentBtn setTitle:@"训练设备" forState:UIControlStateNormal];
+    equipmentBtn.backgroundColor = [UIColor whiteColor];
+    [equipmentBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    equipmentBtn.tag = 50;
+    [equipmentBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [equipmentBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:equipmentBtn];
+    
+    UIView *line5 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(equipmentBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line1.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line1];
+    
+    UIButton *weekBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    weekBtn.frame = CGRectMake(CGRectGetMaxX(line5.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [weekBtn setTitle:@"疗程周期" forState:UIControlStateNormal];
+    weekBtn.backgroundColor = [UIColor whiteColor];
+    [weekBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    weekBtn.tag = 60;
+    [weekBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [weekBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:weekBtn];
+    
+    UIView *line6 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(weekBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line1.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line1];
+    
+    UIButton *groupBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    groupBtn.frame = CGRectMake(CGRectGetMaxX(line6.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [groupBtn setTitle:@"训练组数" forState:UIControlStateNormal];
+    groupBtn.backgroundColor = [UIColor whiteColor];
+    [groupBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    groupBtn.tag = 70;
+    [groupBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [groupBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:groupBtn];
+    
+    UIView *line7 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(groupBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line7.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line7];
+    
+    UIButton *timeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    timeBtn.frame = CGRectMake(CGRectGetMaxX(line7.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [timeBtn setTitle:@"模板名称" forState:UIControlStateNormal];
+    timeBtn.backgroundColor = [UIColor whiteColor];
+    [timeBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    timeBtn.tag = 80;
+    [timeBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [timeBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:timeBtn];
+    
+    self.systemTemplateListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(headerView.frame) + kListview_TopMargin * kYScal, self.customListviewBgView.frame.size.width, self.customListviewBgView.frame.size.height - CGRectGetMaxY(headerView.frame) - kListview_TopMargin * kYScal) style:UITableViewStylePlain];
+    self.systemTemplateListView.dataSource = self;
+    self.systemTemplateListView.delegate = self;
+    self.systemTemplateListView.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    self.systemTemplateListView.tableFooterView = [[UIView alloc] init];
+    self.systemTemplateListView.separatorColor = [UIColor clearColor];
+    [self.systemListviewBgView addSubview:self.systemTemplateListView];
+}
+
+- (void)configCustomTemplateView {
+    self.customListviewBgView = [[UIView alloc] initWithFrame:CGRectMake(self.templateMenu.frame.origin.x, CGRectGetMaxY(self.templateMenu.frame) + kListBgView_TopMargin * kYScal, self.bottomView.frame.size.width - 2 * kTemplateMenu_LeftMargin * kXScal, self.bottomView.frame.size.height - CGRectGetMaxY(self.templateMenu.frame)- kListBgView_TopMargin * kYScal - kListBgView_BottomMargin * kYScal)];
+    self.customListviewBgView.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    self.customListviewBgView.layer.cornerRadius = 4;
+    self.customListviewBgView.layer.masksToBounds = YES;
+    [self.bottomView addSubview:self.customListviewBgView];
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, kHeaderView_TopMargin * kYScal, self.customListviewBgView.frame.size.width, kHeaderView_Height * kYScal)];
+    headerView.backgroundColor = [UIColor clearColor];
+    [self.customListviewBgView addSubview:headerView];
+    customListviewSize = headerView.frame.size;
+    
+    UIButton *check = [UIButton buttonWithType:UIButtonTypeCustom];
+    [check setImage:[UIImage imageNamed:@"radio_selected"] forState:UIControlStateNormal];
+    check.frame = CGRectMake(kCheck_LeftMargin * kXScal, (headerView.frame.size.height - kCheck_Width * kYScal)/2.0, kCheck_Width * kYScal, kCheck_Width * kYScal);
+    [check addTarget:self action:@selector(customTemplateSelectAll:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:check];
+    
+    CGFloat btnWidth = (headerView.frame.size.width - CGRectGetMaxX(check.frame) - kCheck_RightMargin * kXScal - kHeaderView_RightMargin * kXScal - 7 * kMiddleLine_Width)/8;
+    UIButton *nameBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    nameBtn.frame = CGRectMake(CGRectGetMaxX(check.frame) + kCheck_RightMargin *kXScal, 0, btnWidth, kHeaderView_Height * kYScal);
+    [nameBtn setTitle:@"模板名称" forState:UIControlStateNormal];
+    nameBtn.backgroundColor = [UIColor whiteColor];
+    [nameBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    nameBtn.tag = 10;
+    [nameBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [nameBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:nameBtn];
+    
+    UIView *line1 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(nameBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line1.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line1];
+    
+    UIButton *dieaseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    dieaseBtn.frame = CGRectMake(CGRectGetMaxX(line1.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [dieaseBtn setTitle:@"适应病症" forState:UIControlStateNormal];
+    dieaseBtn.backgroundColor = [UIColor whiteColor];
+    [dieaseBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    dieaseBtn.tag = 20;
+    [dieaseBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [dieaseBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:dieaseBtn];
+    
+    UIView *line2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(dieaseBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line2.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line2];
+    
+    UIButton *riskLevelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    riskLevelBtn.frame = CGRectMake(CGRectGetMaxX(line2.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [riskLevelBtn setTitle:@"风险等级" forState:UIControlStateNormal];
+    riskLevelBtn.backgroundColor = [UIColor whiteColor];
+    [riskLevelBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    riskLevelBtn.tag = 30;
+    [riskLevelBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [riskLevelBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:riskLevelBtn];
+    
+    UIView *line3 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(riskLevelBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line3.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line3];
+    
+    UIButton *positionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    positionBtn.frame = CGRectMake(CGRectGetMaxX(line3.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [positionBtn setTitle:@"训练部位" forState:UIControlStateNormal];
+    positionBtn.backgroundColor = [UIColor whiteColor];
+    [positionBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    positionBtn.tag = 40;
+    [positionBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [positionBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:positionBtn];
+    
+    UIView *line4 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(positionBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line4.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line4];
+    
+    UIButton *equipmentBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    equipmentBtn.frame = CGRectMake(CGRectGetMaxX(line4.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [equipmentBtn setTitle:@"训练设备" forState:UIControlStateNormal];
+    equipmentBtn.backgroundColor = [UIColor whiteColor];
+    [equipmentBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    equipmentBtn.tag = 50;
+    [equipmentBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [equipmentBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:equipmentBtn];
+    
+    UIView *line5 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(equipmentBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line1.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line1];
+    
+    UIButton *weekBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    weekBtn.frame = CGRectMake(CGRectGetMaxX(line5.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [weekBtn setTitle:@"疗程周期" forState:UIControlStateNormal];
+    weekBtn.backgroundColor = [UIColor whiteColor];
+    [weekBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    weekBtn.tag = 60;
+    [weekBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [weekBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:weekBtn];
+    
+    UIView *line6 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(weekBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line1.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line1];
+    
+    UIButton *groupBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    groupBtn.frame = CGRectMake(CGRectGetMaxX(line6.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [groupBtn setTitle:@"训练组数" forState:UIControlStateNormal];
+    groupBtn.backgroundColor = [UIColor whiteColor];
+    [groupBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    groupBtn.tag = 70;
+    [groupBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [groupBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:groupBtn];
+    
+    UIView *line7 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(groupBtn.frame), 0, kMiddleLine_Width, kHeaderView_Height * kYScal)];
+    line7.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    [headerView addSubview:line7];
+    
+    UIButton *timeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    timeBtn.frame = CGRectMake(CGRectGetMaxX(line7.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [timeBtn setTitle:@"模板名称" forState:UIControlStateNormal];
+    timeBtn.backgroundColor = [UIColor whiteColor];
+    [timeBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    timeBtn.tag = 80;
+    [timeBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [timeBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:timeBtn];
+    
+    self.customTemplateListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(headerView.frame) + kListview_TopMargin * kYScal, self.customListviewBgView.frame.size.width, self.customListviewBgView.frame.size.height - CGRectGetMaxY(headerView.frame) - kListview_TopMargin * kYScal) style:UITableViewStylePlain];
+    self.customTemplateListView.dataSource = self;
+    self.customTemplateListView.delegate = self;
+    self.customTemplateListView.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+    self.customTemplateListView.tableFooterView = [[UIView alloc] init];
+    self.customTemplateListView.separatorColor = [UIColor clearColor];
+    [self.customListviewBgView addSubview:self.customTemplateListView];
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
@@ -232,6 +518,76 @@
     UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
+}
+
+#pragma mark - UITableViewDataSource && UITableViewDelegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (tableView == self.customTemplateListView) {
+        return self.customTemplateArr.count;
+    } else {
+        return self.systemTemplateArr.count;
+    }
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return kCell_Height * kYScal;
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView == self.customTemplateListView) {
+        NSString *reuselCellStr = [NSString stringWithFormat:@"customTemplatecellId%ld%ld",indexPath.section,indexPath.row];
+        CustomTemplateCell *cell = [tableView dequeueReusableCellWithIdentifier:reuselCellStr];
+        if (cell == nil) {
+            cell = [[CustomTemplateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuselCellStr];
+            cell.selectionStyle          = UITableViewCellSelectionStyleNone;
+            cell.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+        }
+        cell.nameLbl.text = [NSString stringWithFormat:@"name %ld",indexPath.row];
+        cell.dieaseLbl.text = @"II型糖尿病";
+        cell.positionLbl.text = @"心肺";
+        cell.riskLevelLbl.text = @"中";
+        cell.equipmentLbl.text = @"功率车";
+        cell.weekLbl.text = [NSString stringWithFormat:@"%ld",indexPath.row + 2];
+        cell.groupLbl.text = [NSString stringWithFormat:@"%ld",indexPath.row + 1];
+        cell.timeLbl.text = [NSString stringWithFormat:@"02:03"];
+        return cell;
+    } else {
+        NSString *reuselCellStr = [NSString stringWithFormat:@"systemTemplatecellId%ld%ld",indexPath.section,indexPath.row];
+        SystemTemplateCell *cell = [tableView dequeueReusableCellWithIdentifier:reuselCellStr];
+        if (cell == nil) {
+            cell = [[SystemTemplateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuselCellStr];
+            cell.selectionStyle          = UITableViewCellSelectionStyleNone;
+            cell.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
+        }
+        cell.nameLbl.text = [NSString stringWithFormat:@"高风险用户初次体验 %ld",indexPath.row];
+        cell.dieaseLbl.text = @"II型糖尿病";
+        cell.positionLbl.text = @"心肺";
+        cell.riskLevelLbl.text = @"中";
+        cell.equipmentLbl.text = @"功率车";
+        cell.weekLbl.text = [NSString stringWithFormat:@"%ld",indexPath.row + 2];
+        cell.groupLbl.text = [NSString stringWithFormat:@"%ld",indexPath.row + 1];
+        cell.timeLbl.text = [NSString stringWithFormat:@"02:03"];
+        return cell;
+    }
+}
+
+#pragma mark - LMJDropdownMenu Delegate
+
+- (void)dropdownMenu:(LMJDropdownMenu *)menu selectedCellNumber:(NSInteger)number{
+    NSLog(@"你选择了：%ld",(long)number);
+    if (menu == self.templateMenu) {
+        if (number == 0) {
+            self.systemListviewBgView.hidden = YES;
+            self.customListviewBgView.hidden = NO;
+        } else if (number == 1) {
+            self.systemListviewBgView.hidden = NO;
+            self.customListviewBgView.hidden = YES;
+        }
+    }
 }
 
 #pragma mark - button click events
@@ -256,4 +612,11 @@
     NSLog(@"删除模板");
 }
 
+- (void)customTemplateSelectAll:(UIButton*)sender {
+    NSLog(@"自定义模板全选");
+}
+
+- (void)customTemplateItemClick:(UIButton*)sender {
+    NSLog(@"自定义模板item选择");
+}
 @end

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		09062671225CE621009A182D /* BindHRBandView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09062670225CE621009A182D /* BindHRBandView.m */; };
 		09062674225CE8B2009A182D /* SearchAndSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09062673225CE8B2009A182D /* SearchAndSelectView.m */; };
+		0962F89E227D8C0B00611E27 /* CustomTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */; };
+		0962F8A4227DDDA300611E27 /* SystemTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */; };
 		09E47CB22237F97D00B33249 /* STTextHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA72237F97C00B33249 /* STTextHud.xib */; };
 		09E47CB32237F97D00B33249 /* angle-mask@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA92237F97D00B33249 /* angle-mask@3x.png */; };
 		09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CAB2237F97D00B33249 /* NSString+Size.m */; };
@@ -124,6 +126,10 @@
 		09062670225CE621009A182D /* BindHRBandView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BindHRBandView.m; sourceTree = "<group>"; };
 		09062672225CE8B2009A182D /* SearchAndSelectView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchAndSelectView.h; sourceTree = "<group>"; };
 		09062673225CE8B2009A182D /* SearchAndSelectView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchAndSelectView.m; sourceTree = "<group>"; };
+		0962F89C227D8C0B00611E27 /* CustomTemplateCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomTemplateCell.h; sourceTree = "<group>"; };
+		0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomTemplateCell.m; sourceTree = "<group>"; };
+		0962F8A2227DDDA300611E27 /* SystemTemplateCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemTemplateCell.h; sourceTree = "<group>"; };
+		0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SystemTemplateCell.m; sourceTree = "<group>"; };
 		09E47CA62237F97C00B33249 /* STTextHud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTextHud.h; sourceTree = "<group>"; };
 		09E47CA72237F97C00B33249 /* STTextHud.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STTextHud.xib; sourceTree = "<group>"; };
 		09E47CA82237F97C00B33249 /* GCLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCLoadingView.h; sourceTree = "<group>"; };
@@ -402,6 +408,10 @@
 				5B5E2E112270551F00DB7534 /* ReportListCell.m */,
 				5B0CE8332276A99200B6D8B9 /* AerobicGroupCell.h */,
 				5B0CE8342276A99200B6D8B9 /* AerobicGroupCell.m */,
+				0962F89C227D8C0B00611E27 /* CustomTemplateCell.h */,
+				0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */,
+				0962F8A2227DDDA300611E27 /* SystemTemplateCell.h */,
+				0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -964,6 +974,7 @@
 				5B02F7B4224A262F00BE8269 /* PatientCell.m in Sources */,
 				5BECDBFA22365EDC0025D6F2 /* NSString+JsonConvert.m in Sources */,
 				5B875B86224CA9F000736FC2 /* EqualCellSqpceFlowLayout.m in Sources */,
+				0962F89E227D8C0B00611E27 /* CustomTemplateCell.m in Sources */,
 				5B875B90224CAE8900736FC2 /* PatientCell3.m in Sources */,
 				5BAEB8932275B8470087CA76 /* UnitTextView.m in Sources */,
 				5BCEB8B02251A8AB005185B5 /* MonitorDetailViewController.m in Sources */,
@@ -984,6 +995,7 @@
 				5B22E06C2267027600C65B50 /* LMJDropdownMenu.m in Sources */,
 				5BECDBF222365EDC0025D6F2 /* UIColor+Equal.m in Sources */,
 				5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */,
+				0962F8A4227DDDA300611E27 /* SystemTemplateCell.m in Sources */,
 				5B3E7B752278488C00A564CC /* SGQRCodeObtain.m in Sources */,
 				5B02F7902242269400BE8269 /* WHC_ChoicePictureVC.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,

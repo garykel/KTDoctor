@@ -55,7 +55,7 @@
 }
 
 - (void)setFrame:(CGRect)frame {
-    frame.size.width = kWidth - 2 * kListView_LeftMargin - 2 * kListBgView_LeftMargin;
+    frame.size.width = kWidth - 2 * kListView_LeftMargin * kXScal - 2 * kListBgView_LeftMargin * kXScal;
     [super setFrame:frame];
 }
 
