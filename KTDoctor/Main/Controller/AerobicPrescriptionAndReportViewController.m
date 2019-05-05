@@ -17,7 +17,7 @@
 #define kButton_Height 30
 #define kTimeLbl_LeftMargin 15
 #define kTimeLbl_FontSize 16.0
-#define kTimeLbl_Width 200
+#define kTimeLbl_Width 230
 #define kTitle_FontSize 22
 #define KSearchView_TopMargin 15
 #define kSearchView_Height 46
