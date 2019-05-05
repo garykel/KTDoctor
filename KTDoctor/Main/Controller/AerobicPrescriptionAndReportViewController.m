@@ -7,6 +7,7 @@
 //
 
 #import "AerobicPrescriptionAndReportViewController.h"
+#import "PrescriptionDetailViewController.h"
 #import "LMJDropdownMenu.h"
 #import "CustomTextField.h"
 #import "AerobicReportCell.h"
@@ -299,6 +300,8 @@
         cell.reportsValLbl.text = [NSString stringWithFormat:@"%d",reportNum];
         cell.reportsBtn.tag = 1000 + indexPath.section;
         [cell.reportsBtn addTarget:self action:@selector(showReport:) forControlEvents:UIControlEventTouchUpInside];
+        cell.prescriptionDetailBtn.tag = 2000+ indexPath.section;
+        [cell.prescriptionDetailBtn addTarget:self action:@selector(prescriptionDetail:) forControlEvents:UIControlEventTouchUpInside];
     }
     return cell;
 }
@@ -350,6 +353,45 @@
     }
 }
 
+- (void)prescriptionDetail:(UIButton*)sender {
+    NSLog(@"查看处方详情");
+    NSInteger index = sender.tag - 2000;
+    PrescriptionDetailViewController *detail = [[PrescriptionDetailViewController alloc] init];
+    [self.navigationController pushViewController:detail animated:NO];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    NSDictionary *prescriptionDict = [self.precriptionsArr objectAtIndex:index];
+    NSInteger id = [[prescriptionDict valueForKey:@"id"] integerValue];
+    [parameter setValue:@(id) forKey:@"id"];
+    [self checkPrescriptionDetail:parameter];
+}
+
+- (void)checkPrescriptionDetail:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_PRESCRIPTION_DETAIL_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            PrescriptionDetailViewController *detail = [[PrescriptionDetailViewController alloc] init];
+            detail.prescriptionDict = data;
+            [weakSelf.navigationController pushViewController:detail animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
 - (void)showReportList:(NSMutableDictionary*)parameter index:(NSInteger)index{
     __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_REPORTLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
@@ -372,7 +414,7 @@
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
-            [self.navigationController popToRootViewControllerAnimated:NO];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }

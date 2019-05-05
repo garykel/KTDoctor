@@ -7,6 +7,7 @@
 //
 
 #import "CreateAerobicPrescriptionViewController.h"
+#import "UserModel.h"
 #import "LMJDropdownMenu.h"
 #import "UnitTextField.h"
 #import "UnitTextView.h"
@@ -123,6 +124,8 @@
 @property (nonatomic,strong)UIButton *createBtn;
 @property (nonatomic,strong)UIButton *giveupBtn;
 @property (nonatomic,strong)NSMutableArray *groups;
+@property (nonatomic,strong)UserModel *user;
+@property (nonatomic,strong)NSMutableArray *recommendArr;
 @end
 
 @implementation CreateAerobicPrescriptionViewController
@@ -131,9 +134,25 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.hidden = YES;
+    self.recommendArr = [NSMutableArray array];
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4", nil];
     [self setNavBar];
     [self setupUI];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
+    [parameter setValue:disease forKey:@"disease"];
+    [parameter setValue:@"" forKey:@"difficulty"];
+    NSInteger riskLevel = [[self.prescriptionDict valueForKey:@"riskLevel"] integerValue];
+    [parameter setValue:@(riskLevel) forKey:@"risk"];
+    [parameter setValue:@1 forKey:@"type"];
+    [self getRecommendTemplateList:parameter];
 }
 
 - (void)setNavBar {
@@ -182,7 +201,7 @@
     [self.topView addSubview:self.dieaseLbl];
     
     self.dieaseTF = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, kDieaseTF_Width * kXScal, kDieaseTF_Height * kYScal)];
-    self.dieaseTF.text = @"II型糖尿病";
+    self.dieaseTF.text = [self.prescriptionDict valueForKey:@"disease"];
     self.dieaseTF.backgroundColor = [UIColor whiteColor];
     self.dieaseTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.dieaseTF.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze];
@@ -197,7 +216,16 @@
     [self.topView addSubview:self.riskLevelLbl];
     
     self.riskLevelTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelLbl.frame) + kDieaseLbl_RightMargin * kXScal, self.dieaseTF.frame.origin.y, kDieaseTF_Width * kXScal, kDieaseTF_Height * kYScal)];
-    self.riskLevelTF.text = @"中";
+    NSInteger riskLevel = [[self.prescriptionDict valueForKey:@"riskLevel"] integerValue];
+    NSString *riskLevelStr = @"低";
+    if (riskLevel == 1) {
+        riskLevelStr = @"低";
+    } else if (riskLevel == 2) {
+        riskLevelStr = @"中";
+    } else if (riskLevel == 3) {
+        riskLevelStr = @"高";
+    }
+    self.riskLevelTF.text = riskLevelStr;
     self.riskLevelTF.backgroundColor = [UIColor whiteColor];
     self.riskLevelTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.riskLevelTF.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
@@ -251,7 +279,7 @@
     [self.topView addSubview:self.templateLbl];
     
     self.templateMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(kTopView_LeftMargin * kXScal + CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal, CGRectGetMaxY(self.navView.frame) + kTopView_TopMargin * kYScal + CGRectGetMaxY(self.deviceTypeTF.frame) + kDieaseTF_BottomMargin * kYScal, kTemplateMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-    [self.templateMenu setMenuTitles:@[@"模板测试"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    [self.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
     self.templateMenu.delegate = self;
     self.templateMenu.tag = 30;
     [self.view addSubview:self.templateMenu];
@@ -488,6 +516,43 @@
 #pragma mark - network functions
 - (void)getTemplateList:(NSMutableDictionary*)parameter {
     
+}
+
+- (void)getRecommendTemplateList:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_RECOMMEND_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"*********获取推荐处方模板*****%@**************",responseObject);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            NSLog(@"rows is :%@",rows);
+            if (rows.count > 0) {
+                for (NSDictionary *dict in rows) {
+                    NSInteger type = [[dict valueForKey:@"type"] integerValue];
+                    NSArray *typeList = [dict valueForKey:@"typeList"];
+                    if (typeList.count > 0) {
+                        for (NSDictionary *typeDict in typeList) {
+                            NSInteger id = [[typeDict valueForKey:@"id"] integerValue];
+                            NSString *name = [typeDict valueForKey:@"name"];
+                            if ([name isEqualToString:self.traingDeviceMenu.mainBtn.titleLabel.text]) {
+                                [weakSelf.recommendArr addObject:[dict valueForKey:@"title"]];
+                            }
+                        }
+                    }
+                }
+            }
+            [weakSelf.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 
 - (void)createPrescriptions:(NSMutableDictionary*)parameter {
