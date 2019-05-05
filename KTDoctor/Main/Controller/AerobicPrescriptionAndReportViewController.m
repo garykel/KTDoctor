@@ -356,8 +356,6 @@
 - (void)prescriptionDetail:(UIButton*)sender {
     NSLog(@"查看处方详情");
     NSInteger index = sender.tag - 2000;
-    PrescriptionDetailViewController *detail = [[PrescriptionDetailViewController alloc] init];
-    [self.navigationController pushViewController:detail animated:NO];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];

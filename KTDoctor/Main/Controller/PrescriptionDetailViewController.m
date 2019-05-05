@@ -14,15 +14,37 @@
 #define kTitle_FontSize 22
 #define kTitleLbl_Width 150
 #define kLeftBtn_Width 21
-#define kTopView_TopMargin 20
-#define kTopView_BottomMargin 20
+#define kTopView_TopMargin 15
+#define kTopView_BottomMargin 15
 #define kTopView_LeftMargin 20
 #define kTopView_Height 151
-#define kBottomHeight 270
+#define kNameLbl_LeftMargin 15
+#define kNameLbl_TopMargin 18
+#define kNameLbl_BottomMargin 22
+#define kNameLbl_RightMargin 20
+#define kNameLbl_FontSize 13.0
+#define kNameLbl_Width 51
+#define kNameLbl_Height 13
+#define kNameTF_Width 482
+#define kNameTF_Height 19
+#define kNameTF_FontSize 13.0
+#define kDiseaseTF_Width 301
+#define kBottomHeight 209
 #define kScrollview_Height 930
 #define kListView_TopMargin 20
 #define kListView_LeftMargin 16
-#define kListView_BottomMargin 83
+#define kListView_BottomMargin 33
+#define kTrainingGroupLbl_LeftMargin 140
+#define kTrainingGroupLbl_RightMargin 9
+#define kTrainingGroupLbl_Width 55
+#define kTrainingGroupLbl_Height 13
+#define kTrainingGroupLbl_FontSize 13.0
+#define kTrainingGroupValLbl_FontSize 15.0
+#define kTrainingTimeLbl_RightMargin 10
+#define kTrainingTimeLbl_Width 68
+#define kTrainingTimeValLbl_Width 36
+#define kTrainingTimeValLbl_Height 12
+#define kDoctorAdviceView_TopMargin 14
 
 @interface PrescriptionDetailViewController ()<UIScrollViewDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -111,6 +133,25 @@
     self.topView.layer.masksToBounds = YES;
     self.topView.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
     [self.scrollview addSubview:self.topView];
+    
+    self.prescriptionLbl = [[UILabel alloc] initWithFrame:CGRectMake(kNameLbl_LeftMargin * kXScal, kNameLbl_TopMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.prescriptionLbl.text = @"处方名称";
+    self.prescriptionLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+    self.prescriptionLbl.font = [UIFont systemFontOfSize:kNameLbl_FontSize * kYScal];
+    [self.topView addSubview:self.prescriptionLbl];
+    
+    self.prescriptionTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.prescriptionLbl.frame) + kNameLbl_RightMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
+    self.prescriptionTF.enabled = NO;
+    self.prescriptionTF.center = CGPointMake(CGRectGetMaxX(self.prescriptionLbl.frame) + kNameLbl_RightMargin * kXScal + kNameTF_Width * kXScal/2.0, self.prescriptionLbl.center.y);
+    self.prescriptionTF.textColor = [UIColor colorWithHexString:@"#333333"];
+    self.prescriptionTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
+    self.prescriptionTF.backgroundColor = [UIColor whiteColor];
+    self.prescriptionTF.text = [self.prescriptionDict valueForKey:@"title"];
+    [self.topView addSubview:self.prescriptionTF];
+    
+    CGFloat leftMargin = self.topView.frame.size.width - kNameLbl_Width * kXScal - kNameLbl_RightMargin * kXScal - kDiseaseTF_Width * kXScal - kNameLbl_LeftMargin * kXScal;
+    self.dieaseLbl = [[UILabel alloc] initWithFrame:CGRectMake(leftMargin, self.prescriptionLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    [self.topView addSubview:self.dieaseLbl];
 }
 
 #pragma mark - button click events
