@@ -138,7 +138,7 @@ extern CGSize systemListviewSize;
     [self.contentView addSubview:self.seperateLine];
     
     self.editBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.editBtn setTitle:@"编辑" forState:UIControlStateNormal];
+    [self.editBtn setTitle:@"查看" forState:UIControlStateNormal];
     [self.editBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
     self.editBtn.frame = CGRectMake(CGRectGetMaxX(self.timeLbl.frame) + kEditBtn_LeftMargin * kXScal, (kCell_Height * kYScal - kEditBtn_Height * kYScal)/2.0, kEditBtn_Width * kXScal, kEditBtn_Height * kYScal);
     self.editBtn.layer.cornerRadius = kEditBtn_Height * kYScal/2.0;

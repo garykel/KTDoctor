@@ -46,7 +46,7 @@ extern CGSize customListviewSize;
 - (void)setUI {
     self.checkBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.checkBtn.frame = CGRectMake(kCheck_LeftMargin * kXScal, (kCell_Height * kXScal - kCheck_Width * kYScal)/2, kCheck_Width * kYScal, kCheck_Width * kYScal);
-    [self.checkBtn setImage:[UIImage imageNamed:@"radio_selected"] forState:UIControlStateNormal];
+    [self.checkBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
     [self.contentView addSubview:self.checkBtn];
     
     CGFloat itemLbl_Width = (customListviewSize.width - CGRectGetMaxX(self.checkBtn.frame) - kCheck_RightMargin * kXScal - kHeaderView_RightMargin * kXScal - 7 * kMiddleLine_Width)/8;

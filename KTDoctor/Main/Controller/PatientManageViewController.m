@@ -436,9 +436,6 @@
         } else if (number == 1) {
             self.type = 2;
         }
-        if (self.datas.count > 0) {
-            [self.datas removeAllObjects];
-        }
         [self showUserListWithKeyword:@""];
     }
 }

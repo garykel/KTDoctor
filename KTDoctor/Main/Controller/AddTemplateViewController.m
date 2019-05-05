@@ -10,6 +10,7 @@
 #import "LMJDropdownMenu.h"
 #import "CustomTemplateCell.h"
 #import "SystemTemplateCell.h"
+#import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -89,8 +90,12 @@ CGSize systemListviewSize;
 @property (nonatomic,copy)NSString *startTimeStr;
 @property (nonatomic,assign)NSInteger offset;
 @property (nonatomic,assign)BOOL isFooterClick;
+@property (nonatomic,strong)UIButton *checkAllBtn;
 @property (nonatomic,strong)NSMutableArray *customTemplateArr;
+@property (nonatomic,strong)NSMutableArray *customeTemplateCheckArr;
 @property (nonatomic,strong)NSMutableArray *systemTemplateArr;
+@property (nonatomic,strong)UserModel *user;
+@property (nonatomic,assign)NSInteger type;
 @end
 
 @implementation AddTemplateViewController
@@ -98,8 +103,12 @@ CGSize systemListviewSize;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
-    self.customTemplateArr = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4" ,nil];
-    self.systemTemplateArr = [NSMutableArray arrayWithObjects:@"3m",@"4",@"7", nil];
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
+    self.type = 2;
+    self.customTemplateArr = [NSMutableArray array];
+    self.customeTemplateCheckArr = [NSMutableArray array];
+    self.systemTemplateArr = [NSMutableArray array];
+    [self showTemplateListWithType:self.type];
     [self setNavBar];
     [self setupUI];
 }
@@ -236,7 +245,7 @@ CGSize systemListviewSize;
     self.deleteBtn.layer.masksToBounds = YES;
     [self.deleteBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.deleteBtn setTitle:@"删除" forState:UIControlStateNormal];
-    [self.deleteBtn setImage:[UIImage imageNamed:@"createTemplate"] forState:UIControlStateNormal];
+    [self.deleteBtn setImage:[UIImage imageNamed:@"delete"] forState:UIControlStateNormal];
     [self.deleteBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 0)];
     [self.deleteBtn.titleLabel setFont:[UIFont systemFontOfSize:kDeleteBtn_FontSize * kYScal]];
     [self.deleteBtn addTarget:self action:@selector(deleteBtnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -359,7 +368,7 @@ CGSize systemListviewSize;
     
     UIButton *timeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     timeBtn.frame = CGRectMake(CGRectGetMaxX(line7.frame), 0, btnWidth, kHeaderView_Height * kYScal);
-    [timeBtn setTitle:@"模板名称" forState:UIControlStateNormal];
+    [timeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
     timeBtn.backgroundColor = [UIColor whiteColor];
     [timeBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
     timeBtn.tag = 80;
@@ -374,6 +383,15 @@ CGSize systemListviewSize;
     self.systemTemplateListView.tableFooterView = [[UIView alloc] init];
     self.systemTemplateListView.separatorColor = [UIColor clearColor];
     [self.systemListviewBgView addSubview:self.systemTemplateListView];
+    
+    //添加头部的下拉刷新
+    MJRefreshNormalHeader *header = [[MJRefreshNormalHeader alloc] init];
+    [header setRefreshingTarget:self refreshingAction:@selector(headerClick)];
+    self.systemTemplateListView.mj_header = header;
+    
+    MJRefreshBackNormalFooter *footer = [[MJRefreshBackNormalFooter alloc] init];
+    [footer setRefreshingTarget:self refreshingAction:@selector(footerClick)];
+    self.systemTemplateListView.mj_footer = footer;
 }
 
 - (void)configCustomTemplateView {
@@ -387,15 +405,15 @@ CGSize systemListviewSize;
     [self.customListviewBgView addSubview:headerView];
     customListviewSize = headerView.frame.size;
     
-    UIButton *check = [UIButton buttonWithType:UIButtonTypeCustom];
-    [check setImage:[UIImage imageNamed:@"radio_selected"] forState:UIControlStateNormal];
-    check.frame = CGRectMake(kCheck_LeftMargin * kXScal, (headerView.frame.size.height - kCheck_Width * kYScal)/2.0, kCheck_Width * kYScal, kCheck_Width * kYScal);
-    [check addTarget:self action:@selector(customTemplateSelectAll:) forControlEvents:UIControlEventTouchUpInside];
-    [headerView addSubview:check];
+    self.checkAllBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.checkAllBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
+    self.checkAllBtn.frame = CGRectMake(kCheck_LeftMargin * kXScal, (headerView.frame.size.height - kCheck_Width * kYScal)/2.0, kCheck_Width * kYScal, kCheck_Width * kYScal);
+    [self.checkAllBtn addTarget:self action:@selector(customTemplateSelectAll:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:self.checkAllBtn];
     
-    CGFloat btnWidth = (headerView.frame.size.width - CGRectGetMaxX(check.frame) - kCheck_RightMargin * kXScal - kHeaderView_RightMargin * kXScal - 7 * kMiddleLine_Width)/8;
+    CGFloat btnWidth = (headerView.frame.size.width - CGRectGetMaxX(self.checkAllBtn.frame) - kCheck_RightMargin * kXScal - kHeaderView_RightMargin * kXScal - 7 * kMiddleLine_Width)/8;
     UIButton *nameBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    nameBtn.frame = CGRectMake(CGRectGetMaxX(check.frame) + kCheck_RightMargin *kXScal, 0, btnWidth, kHeaderView_Height * kYScal);
+    nameBtn.frame = CGRectMake(CGRectGetMaxX(self.checkAllBtn.frame) + kCheck_RightMargin *kXScal, 0, btnWidth, kHeaderView_Height * kYScal);
     [nameBtn setTitle:@"模板名称" forState:UIControlStateNormal];
     nameBtn.backgroundColor = [UIColor whiteColor];
     [nameBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
@@ -494,7 +512,7 @@ CGSize systemListviewSize;
     
     UIButton *timeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     timeBtn.frame = CGRectMake(CGRectGetMaxX(line7.frame), 0, btnWidth, kHeaderView_Height * kYScal);
-    [timeBtn setTitle:@"模板名称" forState:UIControlStateNormal];
+    [timeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
     timeBtn.backgroundColor = [UIColor whiteColor];
     [timeBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
     timeBtn.tag = 80;
@@ -509,6 +527,14 @@ CGSize systemListviewSize;
     self.customTemplateListView.tableFooterView = [[UIView alloc] init];
     self.customTemplateListView.separatorColor = [UIColor clearColor];
     [self.customListviewBgView addSubview:self.customTemplateListView];
+    //添加头部的下拉刷新
+    MJRefreshNormalHeader *header = [[MJRefreshNormalHeader alloc] init];
+    [header setRefreshingTarget:self refreshingAction:@selector(headerClick)];
+    self.customTemplateListView.mj_header = header;
+    
+    MJRefreshBackNormalFooter *footer = [[MJRefreshBackNormalFooter alloc] init];
+    [footer setRefreshingTarget:self refreshingAction:@selector(footerClick)];
+    self.customTemplateListView.mj_footer = footer;
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
@@ -546,14 +572,51 @@ CGSize systemListviewSize;
             cell.selectionStyle          = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
         }
-        cell.nameLbl.text = [NSString stringWithFormat:@"name %ld",indexPath.row];
-        cell.dieaseLbl.text = @"II型糖尿病";
-        cell.positionLbl.text = @"心肺";
-        cell.riskLevelLbl.text = @"中";
-        cell.equipmentLbl.text = @"功率车";
-        cell.weekLbl.text = [NSString stringWithFormat:@"%ld",indexPath.row + 2];
-        cell.groupLbl.text = [NSString stringWithFormat:@"%ld",indexPath.row + 1];
-        cell.timeLbl.text = [NSString stringWithFormat:@"02:03"];
+        NSDictionary *dict = [self.customTemplateArr objectAtIndex:indexPath.row];
+        cell.nameLbl.text = [dict valueForKey:@"title"];
+        cell.dieaseLbl.text = [dict valueForKey:@"disease"];
+        NSInteger trainPart = [[dict valueForKey:@"trainPart"] integerValue];
+        if (trainPart == 0) {
+            cell.positionLbl.text = @"心肺";
+        }
+        NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
+        NSString *riskLevelStr = @"低";
+        if (riskLevel == 1) {
+            riskLevelStr = @"低";
+        } else if (riskLevel == 2) {
+            riskLevelStr = @"中";
+        } else if (riskLevel == 3) {
+            riskLevelStr = @"高";
+        }
+        cell.riskLevelLbl.text = riskLevelStr;
+        NSArray *typeList = [dict valueForKey:@"typeList"];
+        NSLog(@"typeList:%@",typeList);
+        if (typeList.count > 0) {
+            NSInteger equipmentType = [[dict valueForKey:@"type"] integerValue];
+            for (NSDictionary *typeDict in typeList) {
+                NSInteger id = [[typeDict valueForKey:@"id"] integerValue];
+                NSString *name = [typeDict valueForKey:@"name"];
+                if (equipmentType == id) {
+                    cell.equipmentLbl.text = name;
+                }
+            }
+        }
+        cell.weekLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"treatmentPeriod"] integerValue]];
+        cell.groupLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"sectionNum"] integerValue]];
+        NSInteger targetDuration = [[dict valueForKey:@"targetDuration"] integerValue];
+        NSString *timeStr = [self getTimeString:targetDuration];
+        cell.timeLbl.text = timeStr;
+        BOOL hasSelect = [[self.customeTemplateCheckArr objectAtIndex:indexPath.row] boolValue];
+        if (hasSelect) {
+            [cell.checkBtn setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
+        } else {
+            [cell.checkBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
+        }
+        cell.checkBtn.tag = indexPath.row + 10000;
+        [cell.checkBtn addTarget:self action:@selector(customTemplateSelected:) forControlEvents:UIControlEventTouchUpInside];
+        [cell.editBtn addTarget:self action:@selector(editTemplate:)
+               forControlEvents:UIControlEventTouchUpInside];
+        cell.editBtn.tag = indexPath.row + 20000;
         return cell;
     } else {
         NSString *reuselCellStr = [NSString stringWithFormat:@"systemTemplatecellId%ld%ld",indexPath.section,indexPath.row];
@@ -563,16 +626,62 @@ CGSize systemListviewSize;
             cell.selectionStyle          = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
         }
-        cell.nameLbl.text = [NSString stringWithFormat:@"高风险用户初次体验 %ld",indexPath.row];
-        cell.dieaseLbl.text = @"II型糖尿病";
-        cell.positionLbl.text = @"心肺";
-        cell.riskLevelLbl.text = @"中";
-        cell.equipmentLbl.text = @"功率车";
-        cell.weekLbl.text = [NSString stringWithFormat:@"%ld",indexPath.row + 2];
-        cell.groupLbl.text = [NSString stringWithFormat:@"%ld",indexPath.row + 1];
-        cell.timeLbl.text = [NSString stringWithFormat:@"02:03"];
+        NSDictionary *dict = [self.systemTemplateArr objectAtIndex:indexPath.row];
+        cell.nameLbl.text = [dict valueForKey:@"title"];
+        cell.dieaseLbl.text = [dict valueForKey:@"disease"];
+        NSInteger trainPart = [[dict valueForKey:@"trainPart"] integerValue];
+        if (trainPart == 0) {
+            cell.positionLbl.text = @"心肺";
+        }
+        NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
+        NSString *riskLevelStr = @"低";
+        if (riskLevel == 1) {
+            riskLevelStr = @"低";
+        } else if (riskLevel == 2) {
+            riskLevelStr = @"中";
+        } else if (riskLevel == 3) {
+            riskLevelStr = @"高";
+        }
+        cell.riskLevelLbl.text = riskLevelStr;
+        NSArray *typeList = [dict valueForKey:@"typeList"];
+        NSLog(@"typeList:%@",typeList);
+        if (typeList.count > 0) {
+            NSInteger equipmentType = [[dict valueForKey:@"type"] integerValue];
+            for (NSDictionary *typeDict in typeList) {
+                NSInteger id = [[typeDict valueForKey:@"id"] integerValue];
+                NSString *name = [typeDict valueForKey:@"name"];
+                if (equipmentType == id) {
+                    cell.equipmentLbl.text = name;
+                }
+            }
+        }
+        cell.weekLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"treatmentPeriod"] integerValue]];
+        cell.groupLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"sectionNum"] integerValue]];
+        NSInteger targetDuration = [[dict valueForKey:@"targetDuration"] integerValue];
+        NSString *timeStr = [self getTimeString:targetDuration];
+        cell.timeLbl.text = timeStr;
         return cell;
     }
+}
+
+- (NSString *)getTimeString:(NSInteger)seconds {
+    NSString *timeStr = @"";
+    NSInteger minute = seconds / 60;
+    NSInteger second = seconds % 60;
+    timeStr = [NSString stringWithFormat:@"%02ld:%02ld",(long)minute,(long)second];
+    return timeStr;
+}
+
+- (void)headerClick {
+    self.isFooterClick = NO;
+    self.offset = 0;
+    [self showTemplateListWithType:self.type];
+}
+
+- (void)footerClick {
+    self.isFooterClick = YES;
+    self.offset += 10;
+    [self showTemplateListWithType:self.type];
 }
 
 #pragma mark - LMJDropdownMenu Delegate
@@ -583,40 +692,197 @@ CGSize systemListviewSize;
         if (number == 0) {
             self.systemListviewBgView.hidden = YES;
             self.customListviewBgView.hidden = NO;
+            self.type = 2;
+            [self showTemplateListWithType:self.type];
         } else if (number == 1) {
             self.systemListviewBgView.hidden = NO;
             self.customListviewBgView.hidden = YES;
+            self.type = 1;
+            [self showTemplateListWithType:self.type];
         }
     }
 }
 
 #pragma mark - button click events
-
+//返回
 - (void)back:(UIButton*)sender {
     [self.navigationController popViewControllerAnimated:NO];
 }
 
+//搜索
 - (void)searchBtnClick:(UIButton*)sender {
     NSLog(@"搜索");
 }
 
+//新建有氧模板
 - (void)createAerobicTemplateBtnClick:(UIButton*)sender {
     NSLog(@"新建有氧模板");
 }
 
+//新建力量模板
 - (void)createPowerTemplateBtnClick:(UIButton*)sender {
     NSLog(@"新建力量模板");
 }
 
+//删除模板
 - (void)deleteBtnClick:(UIButton*)sender {
     NSLog(@"删除模板");
 }
 
+//自定义模板全选
 - (void)customTemplateSelectAll:(UIButton*)sender {
     NSLog(@"自定义模板全选");
+    if (self.customeTemplateCheckArr.count > 0) {
+        [self.customeTemplateCheckArr removeAllObjects];
+    }
+    if (sender.selected) {
+        sender.selected = NO;
+        [self.checkAllBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
+        if (self.customTemplateArr.count > 0) {
+            for (NSInteger i = 0; i < self.customTemplateArr.count; i++) {
+                [self.customeTemplateCheckArr addObject:[NSNumber numberWithBool:NO]];
+            }
+        }
+    } else {
+        sender.selected = YES;
+        [self.checkAllBtn setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
+        if (self.customTemplateArr.count > 0) {
+            for (NSInteger i = 0; i < self.customTemplateArr.count; i++) {
+                [self.customeTemplateCheckArr addObject:[NSNumber numberWithBool:YES]];
+            }
+        }
+    }
+    [self.customTemplateListView reloadData];
 }
 
-- (void)customTemplateItemClick:(UIButton*)sender {
-    NSLog(@"自定义模板item选择");
+//单个选中某一个自定义模板
+- (void)customTemplateSelected:(UIButton*)sender {
+    NSInteger index = sender.tag - 10000;
+    if (sender.selected) {
+        sender.selected = NO;
+        [sender setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
+        [self.customeTemplateCheckArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:NO]];
+    } else {
+        sender.selected = YES;
+        [sender setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
+        [self.customeTemplateCheckArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:YES]];
+    }
+    BOOL check = [self checkHasSelectedAll];
+    if (check) {
+        [self.checkAllBtn setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
+    } else {
+        [self.checkAllBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
+    }
 }
+
+//检查是否全选
+- (BOOL)checkHasSelectedAll {
+    BOOL result = NO;
+    NSMutableArray *tempArr = [NSMutableArray array];
+    for (NSNumber *num in self.customeTemplateCheckArr) {
+        BOOL check = [num boolValue];
+        if (check) {
+            [tempArr addObject:num];
+        }
+    }
+    if (tempArr.count == self.customeTemplateCheckArr.count) {
+        result = YES;
+    } else {
+        result = NO;
+    }
+    return result;
+}
+
+//编辑模板
+- (void)editTemplate:(UIButton*)sender {
+    NSInteger index = sender.tag - 20000;
+    NSLog(@"编辑第%d行",index);
+}
+
+//自定义模板列表头视图标签选中
+- (void)customTemplateItemClick:(UIButton*)sender {
+    
+}
+
+#pragma mark - network functions
+
+- (void)showTemplateListWithType:(NSInteger)type{
+    __weak typeof (self)weakSelf = self;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@"" forKey:@"title"];
+    [parameter setValue:@"" forKey:@"diease"];
+    [parameter setValue:@"" forKey:@"difficulty"];
+    [parameter setValue:@"-create_time" forKey:@"sort"];
+    [parameter setValue:@(type) forKey:@"type"];
+    [parameter setValue:@1 forKey:@"templateType"];
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            if (weakSelf.isFooterClick) {
+                if (type == 1) {
+                    [weakSelf.systemTemplateArr addObjectsFromArray:rows];
+                    [weakSelf.systemTemplateListView.mj_footer endRefreshing];
+                } else {
+                    [weakSelf.customTemplateArr addObjectsFromArray:rows];
+                    [weakSelf.customTemplateListView.mj_footer endRefreshing];
+                }
+            } else {
+                if (rows.count > 0) {
+                    if (type == 1) {//系统模板
+                        if (weakSelf.systemTemplateArr.count > 0) {
+                            //替换前n个数据
+                            NSMutableArray *tempArr = [NSMutableArray array];
+                            [tempArr addObjectsFromArray:rows];
+                            if (weakSelf.systemTemplateArr.count > rows.count) {
+                                NSArray *afterArr = [weakSelf.systemTemplateArr subarrayWithRange:NSMakeRange(rows.count, weakSelf.systemTemplateArr.count - rows.count)];
+                                [tempArr addObjectsFromArray:afterArr];
+                            }
+                            weakSelf.systemTemplateArr = [tempArr mutableCopy];
+                        } else {
+                            [weakSelf.systemTemplateArr addObjectsFromArray:rows];
+                        }
+                        [weakSelf.systemTemplateListView.mj_header endRefreshing];
+                        [weakSelf.systemTemplateListView reloadData];
+                    } else {//自定义模板
+                        if (weakSelf.customTemplateArr.count > 0) {
+                            //替换前n个数据
+                            NSMutableArray *tempArr = [NSMutableArray array];
+                            [tempArr addObjectsFromArray:rows];
+                            if (weakSelf.customTemplateArr.count > rows.count) {
+                                NSArray *afterArr = [weakSelf.customTemplateArr subarrayWithRange:NSMakeRange(rows.count, weakSelf.customTemplateArr.count - rows.count)];
+                                [tempArr addObjectsFromArray:afterArr];
+                            }
+                            weakSelf.customTemplateArr = [tempArr mutableCopy];
+                        } else {
+                            [weakSelf.customTemplateArr addObjectsFromArray:rows];
+                        }
+                        [weakSelf.customTemplateListView.mj_header endRefreshing];
+                        [weakSelf.customTemplateListView reloadData];
+                    }
+                }
+            }
+            for (NSInteger i = 0; i < weakSelf.customTemplateArr.count; i++) {
+                [weakSelf.customeTemplateCheckArr addObject:[NSNumber numberWithBool:NO]];
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
 @end
