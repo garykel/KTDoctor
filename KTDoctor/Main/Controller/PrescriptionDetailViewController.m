@@ -9,6 +9,7 @@
 #import "PrescriptionDetailViewController.h"
 #import "UserModel.h"
 #import "UnitTextView.h"
+#import "AerobicGroupCell.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -24,8 +25,9 @@
 #define kNameLbl_BottomMargin 22
 #define kNameLbl_RightMargin 20
 #define kNameLbl_FontSize 13.0
-#define kNameLbl_Width 60
+#define kNameLbl_Width 55
 #define kNameLbl_Height 13
+#define kDoctorLbl_Width 65
 #define kNameTF_Width 482
 #define kNameTF_Height 19
 #define kNameTF_FontSize 13.0
@@ -48,8 +50,8 @@
 #define kTrainingTimeValLbl_Width 36
 #define kTrainingTimeValLbl_Height 12
 #define kDoctorAdviceView_TopMargin 14
-
-@interface PrescriptionDetailViewController ()<UIScrollViewDelegate>
+#define kCell_Height 118
+@interface PrescriptionDetailViewController ()<UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -88,14 +90,14 @@
 @property (nonatomic,strong)UILabel *avgDifficultyValLbl;
 @property (nonatomic,strong)UILabel *doctorAdviceLbl;
 @property (nonatomic,strong)UnitTextView *doctorAdviceView;
-@property (nonnull,strong)UserModel *user;
+@property (nonatomic,strong)NSMutableArray *groups;
 @end
 
 @implementation PrescriptionDetailViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.user = [[UserModel sharedUserModel] getCurrentUser];
+    self.groups = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4",@"5", nil];
     [self setNavBar];
     [self setupUI];
 }
@@ -174,7 +176,7 @@
     self.createTimeLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     [self.topView addSubview:self.createTimeLbl];
     
-    CGFloat space = (self.topView.frame.size.width - (kNameLbl_Width + kNameLbl_RightMargin + kNorMarlTF_Width) * kXScal * 3 - kNameLbl_LeftMargin * kXScal - kNorMarlTF_RightMargin * kXScal)/2;
+    CGFloat space = (self.topView.frame.size.width - (kNameLbl_Width + kNameLbl_RightMargin + kNorMarlTF_Width) * kXScal - (kDoctorLbl_Width + kNameLbl_RightMargin + kNorMarlTF_Width) * kXScal * 2 - kNameLbl_LeftMargin * kXScal - kNorMarlTF_RightMargin * kXScal)/2;
     self.createTimeTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.createTimeLbl.frame) + kNameLbl_RightMargin * kXScal, 0, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.createTimeTF.text = [self.prescriptionDict valueForKey:@"createTime"];
     self.createTimeTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
@@ -183,23 +185,23 @@
     self.createTimeTF.center = CGPointMake(CGRectGetMaxX(self.createTimeLbl.frame) + kNameLbl_RightMargin * kXScal + kNorMarlTF_Width * kXScal/2.0, self.createTimeLbl.center.y);
     [self.topView addSubview:self.createTimeTF];
     
-    self.doctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.createTimeTF.frame) + space, self.createTimeLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.doctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.createTimeTF.frame) + space, self.createTimeLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.doctorLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.doctorLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.doctorLbl.text = @"开具医师";
+    self.doctorLbl.text = @"开 具 医 师";
     [self.topView addSubview:self.doctorLbl];
     
     self.doctorTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.doctorLbl.frame) + kNameLbl_RightMargin *kXScal, self.createTimeTF.frame.origin.y, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.doctorTF.text = [self.user valueForKey:@"name"];
+    self.doctorTF.text = [self.prescriptionDict valueForKey:@"doctorName"];
     self.doctorTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.doctorTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.doctorTF.backgroundColor = [UIColor whiteColor];
     [self.topView addSubview:self.doctorTF];
     
-    self.riskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.doctorTF.frame) + space, self.createTimeLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.riskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.doctorTF.frame) + space, self.createTimeLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.riskLevelLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.riskLevelLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.riskLevelLbl.text = @"风险等级";
+    self.riskLevelLbl.text = @"风 险 等 级";
     [self.topView addSubview:self.riskLevelLbl];
     
     self.riskLevelTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelLbl.frame) + kNameLbl_RightMargin *kXScal, self.createTimeTF.frame.origin.y, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
@@ -219,6 +221,10 @@
     [self.topView addSubview:self.riskLevelTF];
     
     /////////////
+    NSArray *typeList = [self.prescriptionDict valueForKey:@"typeList"];
+    NSString *deviceTypeName = [typeList[0] valueForKey:@"name"];
+    NSString *positionName = [typeList[1] valueForKey:@"name"];
+    NSString *equipmentName = [typeList[2] valueForKey:@"name"];
     self.deviceTypeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.prescriptionLbl.frame.origin.x, CGRectGetMaxY(self.createTimeLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.deviceTypeLbl.text = @"设备类型";
     self.deviceTypeLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
@@ -226,78 +232,135 @@
     [self.topView addSubview:self.deviceTypeLbl];
     
     self.deviceTypeTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTypeLbl.frame) + kNameLbl_RightMargin * kXScal, 0, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.deviceTypeTF.text = @"有氧设备";
+    self.deviceTypeTF.text = deviceTypeName;
     self.deviceTypeTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.deviceTypeTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.deviceTypeTF.backgroundColor = [UIColor whiteColor];
     self.deviceTypeTF.center = CGPointMake(CGRectGetMaxX(self.deviceTypeLbl.frame) + kNameLbl_RightMargin * kXScal + kNorMarlTF_Width * kXScal/2.0, self.deviceTypeLbl.center.y);
     [self.topView addSubview:self.deviceTypeTF];
     
-    self.positionLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTypeTF.frame) + space, self.deviceTypeLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.positionLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTypeTF.frame) + space, self.deviceTypeLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.positionLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.positionLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.positionLbl.text = @"训练部位";
+    self.positionLbl.text = @"训 练 部 位";
     [self.topView addSubview:self.positionLbl];
     
     self.positionTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.positionLbl.frame) + kNameLbl_RightMargin *kXScal, self.deviceTypeTF.frame.origin.y, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.positionTF.text = @"心肺";
+    self.positionTF.text = positionName;
     self.positionTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.positionTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.positionTF.backgroundColor = [UIColor whiteColor];
     [self.topView addSubview:self.positionTF];
     
-    self.equipmentLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.positionTF.frame) + space, self.deviceTypeLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.equipmentLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.positionTF.frame) + space, self.deviceTypeLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.equipmentLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.equipmentLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.equipmentLbl.text = @"训练设备";
+    self.equipmentLbl.text = @"训 练 设 备";
     [self.topView addSubview:self.equipmentLbl];
     
     self.equipmentTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelLbl.frame) + kNameLbl_RightMargin *kXScal, self.deviceTypeTF.frame.origin.y, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.equipmentTF.text = @"功率车";
+    self.equipmentTF.text = equipmentName;
     self.equipmentTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.equipmentTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.equipmentTF.backgroundColor = [UIColor whiteColor];
     [self.topView addSubview:self.equipmentTF];
     
     self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.prescriptionLbl.frame.origin.x, CGRectGetMaxY(self.deviceTypeLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
-    self.weekLbl.text = @"疗      程";
+    self.weekLbl.text = @"疗       程";
     self.weekLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.weekLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     [self.topView addSubview:self.weekLbl];
     
     self.weekTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.weekLbl.frame) + kNameLbl_RightMargin * kXScal, 0, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.weekTF.text = @"有氧设备";
+    self.weekTF.text = [NSString stringWithFormat:@"%d",[[self.prescriptionDict valueForKey:@"treatmentPeriod"] integerValue]];
     self.weekTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.weekTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.weekTF.backgroundColor = [UIColor whiteColor];
     self.weekTF.center = CGPointMake(CGRectGetMaxX(self.weekLbl.frame) + kNameLbl_RightMargin * kXScal + kNorMarlTF_Width * kXScal/2.0, self.weekLbl.center.y);
     [self.topView addSubview:self.weekTF];
     
-    self.dayLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.weekTF.frame) + space, self.weekLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.dayLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.weekTF.frame) + space, self.weekLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.dayLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.dayLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.dayLbl.text = @"周训练频次";
     [self.topView addSubview:self.dayLbl];
     
     self.dayTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dayLbl.frame) + kNameLbl_RightMargin *kXScal, self.weekTF.frame.origin.y, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.dayTF.text = [NSString stringWithFormat:@"%d",[[self.prescriptionDict valueForKey:@"sportFrequency"] integerValue]];
+    self.dayTF.text = [NSString stringWithFormat:@"%d",[[self.prescriptionDict valueForKey:@"daysPerWeek"] integerValue]];
     self.dayTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.dayTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.dayTF.backgroundColor = [UIColor whiteColor];
     [self.topView addSubview:self.dayTF];
     
-    self.sportTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dayTF.frame) + space, self.weekLbl.frame.origin.y, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.sportTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dayTF.frame) + space, self.weekLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.sportTimeLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.sportTimeLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.sportTimeLbl.text = @"运动时间点";
     [self.topView addSubview:self.sportTimeLbl];
     
     self.sportTimeTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sportTimeLbl.frame) + kNameLbl_RightMargin *kXScal, self.weekTF.frame.origin.y, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.sportTimeTF.text = @"三餐前半小时";
+    NSInteger timing = [[self.prescriptionDict valueForKey:@"timing"] integerValue];
+    NSString *sportTimestr = @"任意";
+    if (timing == 1) {
+        sportTimestr = @"三餐前半小时";
+    } else if (timing == 2) {
+        sportTimestr = @"三餐后半小时";
+    }
+    self.sportTimeTF.text = sportTimestr;
     self.sportTimeTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.sportTimeTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.sportTimeTF.backgroundColor = [UIColor whiteColor];
     [self.topView addSubview:self.sportTimeTF];
+    
+    self.listBgView = [[UIView alloc] initWithFrame:CGRectMake(self.topView.frame.origin.x, CGRectGetMaxY(self.topView.frame) + kTopView_BottomMargin * kYScal, self.topView.frame.size.width, self.scrollview.contentSize.height - CGRectGetMaxY(self.topView.frame) - kTopView_BottomMargin * kYScal - kBottomHeight * kYScal)];
+    self.listBgView.layer.cornerRadius = 4;
+    self.listBgView.layer.masksToBounds = YES;
+    self.listBgView.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
+    [self.scrollview addSubview:self.listBgView];
+    
+    self.listView = [[UITableView alloc] initWithFrame:CGRectMake(kListView_LeftMargin * kXScal, kListView_TopMargin * kYScal, self.listBgView.frame.size.width - 2 * kListView_LeftMargin * kXScal, self.listBgView.frame.size.height - kListView_TopMargin * kYScal - kListView_BottomMargin * kYScal) style:UITableViewStylePlain];
+    self.listView.delegate = self;
+    self.listView.dataSource = self;
+    self.listView.backgroundColor = [UIColor clearColor];
+    self.listView.showsVerticalScrollIndicator = NO;
+    [self.listBgView addSubview:self.listView];
+}
+
+#pragma mark - UITableViewDataSource && UITableViewDelegate
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.groups.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return kCell_Height * kYScal;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 15;
+}
+
+- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    UIView *view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor clearColor];
+    return view;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *reuseCellIdStr = [NSString stringWithFormat:@"AerobicGroupCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
+    AerobicGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
+    if (cell == nil) {
+        cell = [[AerobicGroupCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
+        cell.selectionStyle          = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
+    }
+    cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
+    cell.addBtn.tag = 10000 + indexPath.section;
+    cell.removeBtn.tag = 20000 + indexPath.section;
+    return cell;
 }
 
 #pragma mark - button click events
