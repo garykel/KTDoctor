@@ -7,5 +7,6 @@ target 'KTDoctor' do
    pod 'SDWebImage'
    pod 'MJRefresh'
    pod 'Charts'
+   pod 'YYKit'
    use_frameworks!
 end

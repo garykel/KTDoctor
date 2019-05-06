@@ -51,6 +51,9 @@
 #define kTrainingTimeValLbl_Height 12
 #define kDoctorAdviceView_TopMargin 14
 #define kCell_Height 118
+
+CGSize prescriptionListviewSize;
+
 @interface PrescriptionDetailViewController ()<UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
@@ -324,6 +327,7 @@
     self.listView.backgroundColor = [UIColor clearColor];
     self.listView.showsVerticalScrollIndicator = NO;
     [self.listBgView addSubview:self.listView];
+    prescriptionListviewSize = self.listView.frame.size;
 }
 
 #pragma mark - UITableViewDataSource && UITableViewDelegate
