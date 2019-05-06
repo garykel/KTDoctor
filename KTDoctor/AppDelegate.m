@@ -7,9 +7,11 @@
 //
 
 #import "AppDelegate.h"
+#import "MainViewController.h"
 #import "LoginViewController.h"
 #import "MonitorViewController.h"
 #import "MonitorDetailViewController.h"
+
 @interface AppDelegate ()
 
 @end
@@ -18,18 +20,47 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.backgroundColor = [UIColor whiteColor];
-    LoginViewController *login = [[LoginViewController alloc] init];
-//    MonitorDetailViewController *login = [[MonitorDetailViewController alloc] init];
-//    MonitorViewController *login = [[MonitorViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:login];
-    self.window.rootViewController = nav;
-    [self.window makeKeyAndVisible];
+    
+    [self initWindow];
+    [self userCheckIsLogin];
     [self configIQKeyboard];
+    
     return YES;
 }
+
+//MARK: 初始化 window
+-(void)initWindow{
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor = KWhiteColor;
+    [self initUserManager];
+    [self.window makeKeyAndVisible];
+}
+
+
+
+//MARK: 初始化用户系统
+- (void)initUserManager{
+    
+    MainViewController *vc = [[MainViewController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
+    self.window.rootViewController = nav;
+}
+
+
+- (void)userCheckIsLogin
+{
+    //判断是否登录，如果未登录 则先进入登录页面
+    BOOL isLogin = [kUserDefaults boolForKey:kIsLoginUserDefaultKey];
+    
+    if (isLogin == false) {
+        LoginViewController *vc = [[LoginViewController alloc] init];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+        [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+
 
 - (void)configIQKeyboard{
     IQKeyboardManager *manager = [IQKeyboardManager sharedManager];
@@ -38,6 +69,8 @@
     manager.shouldToolbarUsesTextFieldTintColor = YES;
     //    manager.enableAutoToolbar = NO;
 }
+
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

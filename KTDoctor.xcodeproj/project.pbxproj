@@ -345,7 +345,6 @@
 		5BECDC02223662F90025D6F2 /* NetworkService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkService.m; sourceTree = "<group>"; };
 		5BECDC062236639A0025D6F2 /* NSString+NetworkingState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+NetworkingState.h"; sourceTree = "<group>"; };
 		5BECDC072236639A0025D6F2 /* NSString+NetworkingState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+NetworkingState.m"; sourceTree = "<group>"; };
-		5BECDC09223663C20025D6F2 /* DEFIN.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DEFIN.h; sourceTree = "<group>"; };
 		5BECDC0C223665390025D6F2 /* UserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserModel.h; sourceTree = "<group>"; };
 		5BECDC0D223665390025D6F2 /* UserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserModel.m; sourceTree = "<group>"; };
 		5BEDDA40226740B800E15D2B /* PatientListsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientListsCell.h; sourceTree = "<group>"; };
@@ -781,7 +780,6 @@
 				5BECDBB822365CA50025D6F2 /* LaunchScreen.storyboard */,
 				5BECDBBB22365CA50025D6F2 /* Info.plist */,
 				5BECDBBC22365CA50025D6F2 /* main.m */,
-				5BECDC09223663C20025D6F2 /* DEFIN.h */,
 				5BECDBFB22365F020025D6F2 /* PrefixHeader.pch */,
 				5B22E0532265B9F000C65B50 /* KTDoctor-Bridging-Header.h */,
 			);
