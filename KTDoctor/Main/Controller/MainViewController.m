@@ -17,6 +17,7 @@
 #import "RegistOrResetView.h"
 #import "DoctorRegistView.h"
 #import "UserModel.h"
+#import "OpenAerobicPrescriptionVC.h"
 
 #define kMain_NavView_LogoutBtn_LeftMargin 15
 #define kMain_NavView_LogoutBtn_Height 30
@@ -146,7 +147,10 @@
 }
 
 - (void)monitor:(UITapGestureRecognizer*)sender {
-    MonitorViewController *monitor = [[MonitorViewController alloc] init];
+//    MonitorViewController *monitor = [[MonitorViewController alloc] init];
+//    [self.navigationController pushViewController:monitor animated:NO];
+    
+    OpenAerobicPrescriptionVC *monitor = [[OpenAerobicPrescriptionVC alloc] init];
     [self.navigationController pushViewController:monitor animated:NO];
 }
 

@@ -10,7 +10,6 @@
 #import "AFURLRequestSerialization.h"
 #import "NSString+CPSignature.h"
 #import "NSString+TimeConvert.h"
-#import "DEFIN.h"
 #import "AFHTTPSessionManager.h"
 #import "UserModel.h"
 

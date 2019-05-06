@@ -19,7 +19,7 @@
 #import "AutoLayerMacros.h"
 #import "EmunMacros.h"
 #import "BlockMacros.h"
-#import "DEFIN.h"
+
 
 #pragma mark - 控件
 #import "CustomBtn.h"
@@ -111,29 +111,5 @@
 #import <SDWebImage/NSImage+WebCache.h>
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <AFNetworking/AFNetworkReachabilityManager.h>
-
-//宏定义
-#define UMAppKey @"5bfcfc95f1f5564b3600009c"//友盟appkey
-
-#define kWidth [UIScreen mainScreen].bounds.size.width
-#define kHeight [UIScreen mainScreen].bounds.size.height
-#define kStatusBarHeight    [[UIApplication sharedApplication] statusBarFrame].size.height
-#define kNavBarHeight       self.navigationController.navigationBar.frame.size.height
-#define kStatusBarTopMargin [[UIApplication sharedApplication] statusBarFrame].origin.y
-#define kTopHeight          (kStatusBarHeight + kNavBarHeight + kStatusBarTopMargin)
-#define kTabBarHeight       ([[UIApplication sharedApplication] statusBarFrame].size.height>20?83:49)
-
-#define kNavView_TopMargin 20
-#define kNavView_Height 60
-
-#define kIpadMiniSize CGSizeMake(1024, 768)
-#define kXScal (kWidth / kIpadMiniSize.width)
-#define kYScal (kHeight / kIpadMiniSize.height)
-
-//iPhone X
-#define IS_IPHONEX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
-#define RGBA(r, g, b, a) [UIColor colorWithRed:(r)/255.0f green:(g)/255.0f blue:(b)/255.0f alpha:(a)]
-
-
 
 #endif /* PrefixHeader_pch */
