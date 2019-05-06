@@ -7,6 +7,7 @@
 //
 
 #import "PrescriptionDetailViewController.h"
+#import "PrescriptionCell.h"
 #import "UserModel.h"
 #import "UnitTextView.h"
 #import "AerobicGroupCell.h"
@@ -355,15 +356,24 @@ CGSize prescriptionListviewSize;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *reuseCellIdStr = [NSString stringWithFormat:@"AerobicGroupCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
-    AerobicGroupCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
+    PrescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
     if (cell == nil) {
-        cell = [[AerobicGroupCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
+        cell = [[PrescriptionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
         cell.selectionStyle          = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     }
     cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
-    cell.addBtn.tag = 10000 + indexPath.section;
-    cell.removeBtn.tag = 20000 + indexPath.section;
+    NSArray *sections = [self.prescriptionDict valueForKey:@"sections"];
+    if (sections.count > 0) {
+        NSDictionary *dict = [sections objectAtIndex:indexPath.section];
+        NSString *rpeRange = [dict valueForKey:@"rpeRange"];
+        NSArray *rpeRangeArr = [rpeRange componentsSeparatedByString:@"-"];
+        if (rpeRangeArr.count > 0) {
+            cell.rpeLeftTF.text = rpeRangeArr[0];
+            cell.rpeRightTF.text = rpeRangeArr[1];
+        }
+        cell.difficultyTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]];
+    }
     return cell;
 }
 
