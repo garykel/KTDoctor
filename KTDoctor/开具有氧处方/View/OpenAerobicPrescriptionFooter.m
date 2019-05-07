@@ -45,23 +45,14 @@
     [self addSubview:self.footerBackView];
 }
 
-- (void)layoutSubviews{
+#pragma mark - public methods
+- (void)resetLabValue:(NSString *)string tag:(NSInteger)tag{
     
-    [super layoutSubviews];
-    
-    _footerBackView.mj_y = _headerBackView.bottom;
-    
-    CGFloat gap = [self fitSize:62];
-    _openPrescriptionBtn.mj_y = _doctorAdviceTextView.bottom + [self fitSize:30];
-    _openPrescriptionBtn.mj_x = (self.width - gap - _openPrescriptionBtn.width *2)/2.0;
-    
-    _giveupBtn.mj_x = _openPrescriptionBtn.right + gap;
-    _giveupBtn.mj_y = _openPrescriptionBtn.mj_y;
     
 }
 
-#pragma mark - setter and getter
 
+#pragma mark - setter and getter
 //headerBackView
 - (UIView *)headerBackView{
     
@@ -85,6 +76,14 @@
             
             UILabel *lab = [UILabel new];
             lab.frame = CGRectMake(i *gap, [self fitSize:16], gap, [self fitSize:13]);
+            
+            if(i==1){
+                self.trainingTimeLab = lab;
+            }else if (i == 3){
+                self.groupLab = lab;
+            }else if (i==5){
+                self.intensityLab = lab;
+            }
             
             if (i%2==0) {
                 lab.textAlignment = NSTextAlignmentRight;
@@ -134,19 +133,10 @@
 - (NSArray *)titles{
     
     if (!_titles) {
-        _titles = @[@"训练总时长：", @"04:58", @"训练组数：",  @"2", @"平均强度：", @"5"];
+        _titles = @[@"训练总时长：", @"0", @"训练组数：",  @"0", @"平均强度：", @"0"];
     }
     return _titles;
 }
-
-- (NSArray *)vaules{
-    
-    if (!_vaules) {
-        _vaules = @[@"04:58", @"2", @"5"];
-    }
-    return _vaules;
-}
-
 
 
 //footerBackView
@@ -267,6 +257,23 @@
         _model = [[KTOpenAerobicModel alloc] init];
     }
     return _model;
+}
+
+#pragma mark - other methods
+
+- (void)layoutSubviews{
+    
+    [super layoutSubviews];
+    
+    _footerBackView.mj_y = _headerBackView.bottom;
+    
+    CGFloat gap = [self fitSize:62];
+    _openPrescriptionBtn.mj_y = _doctorAdviceTextView.bottom + [self fitSize:30];
+    _openPrescriptionBtn.mj_x = (self.width - gap - _openPrescriptionBtn.width *2)/2.0;
+    
+    _giveupBtn.mj_x = _openPrescriptionBtn.right + gap;
+    _giveupBtn.mj_y = _openPrescriptionBtn.mj_y;
+    
 }
 
 

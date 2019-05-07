@@ -11,7 +11,7 @@
 #import "KTOpenAerobicModel.h"
 
 
-#pragma mark - 创建店铺
+#pragma mark - 通用Block
 
 typedef void (^dealGeneralOperation)(void);
 
@@ -22,6 +22,8 @@ typedef void (^dealBtnOperation)(UIButton *btn);
 typedef void (^dealOpenAerobicPrescriptionOperation)(KTOpenAerobicModel *model);
 
 typedef void (^dealOpenAerobicCellOperation)(NSInteger index);
+
+
 
 
 

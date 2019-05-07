@@ -57,10 +57,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableArray *titles_RTR;
 
 
+@property (nonatomic, assign) NSInteger currentIndex; //当前是第几行
+
 @property (nonatomic, copy) dealOpenAerobicCellOperation addBlock;
 @property (nonatomic, copy) dealOpenAerobicCellOperation deleteBlock;
-
-
 
 
 @end

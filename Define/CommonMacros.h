@@ -75,5 +75,7 @@
 //通知名
 #define kLoginSuccessNotification   @"xxtgLoginSuccessNotification"     //登陆成功通知
 #define kLogoutSuccessNotification  @"xxtgLogoutSuccessNotification"    //退出登录通知
+#define kHideDropDownNotification   @"ktHideDropDownNotification"       //隐藏下拉菜单通知
+
 
 #endif /* CommonMacros_h */

@@ -134,11 +134,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.hidden = YES;
+    
     self.recommendArr = [NSMutableArray array];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4", nil];
+    
+    
     [self setNavBar];
     [self setupUI];
+    
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
@@ -152,6 +156,7 @@
     NSInteger riskLevel = [[self.prescriptionDict valueForKey:@"riskLevel"] integerValue];
     [parameter setValue:@(riskLevel) forKey:@"risk"];
     [parameter setValue:@1 forKey:@"type"];
+    
     [self getRecommendTemplateList:parameter];
 }
 
@@ -518,8 +523,9 @@
     
 }
 
-- (void)getRecommendTemplateList:(NSMutableDictionary*)parameter {
-    __weak typeof (self)weakSelf = self;
+- (void)getRecommendTemplateList:(NSMutableDictionary*)parameter{
+    
+    kWeakSelf(self);
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_RECOMMEND_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
@@ -536,17 +542,17 @@
                             NSInteger id = [[typeDict valueForKey:@"id"] integerValue];
                             NSString *name = [typeDict valueForKey:@"name"];
                             if ([name isEqualToString:self.traingDeviceMenu.mainBtn.titleLabel.text]) {
-                                [weakSelf.recommendArr addObject:[dict valueForKey:@"title"]];
+                                [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
                             }
                         }
                     }
                 }
             }
-            [weakSelf.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+            [weakself.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
-            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+            [weakself.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }

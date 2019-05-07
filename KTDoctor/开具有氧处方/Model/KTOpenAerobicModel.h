@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - cell
 
+@property (nonatomic, strong) NSMutableArray *cells; 
 
 #pragma mark - footer
 

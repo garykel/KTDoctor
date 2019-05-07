@@ -119,14 +119,12 @@
 		5BF8D8F32280262F002199E4 /* NSObject+CheckIsLegal.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D8E92280262F002199E4 /* NSObject+CheckIsLegal.m */; };
 		5BF8D90822802689002199E4 /* NSString+Size.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D8F622802686002199E4 /* NSString+Size.m */; };
 		5BF8D90922802689002199E4 /* NSString+AttributedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D8F722802686002199E4 /* NSString+AttributedString.m */; };
-		5BF8D90A22802689002199E4 /* NSString+HmacUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D8F822802686002199E4 /* NSString+HmacUtils.m */; };
 		5BF8D90B22802689002199E4 /* NSString+md5.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D8FD22802687002199E4 /* NSString+md5.m */; };
 		5BF8D90C22802689002199E4 /* NSString+Chinese.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D8FF22802687002199E4 /* NSString+Chinese.m */; };
 		5BF8D90D22802689002199E4 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D90022802687002199E4 /* NSString+Additions.m */; };
 		5BF8D90E22802689002199E4 /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D90222802688002199E4 /* NSString+Base64.m */; };
 		5BF8D90F22802689002199E4 /* NSString+TimeConvert.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D90422802688002199E4 /* NSString+TimeConvert.m */; };
 		5BF8D91022802689002199E4 /* NSString+Method.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D90622802688002199E4 /* NSString+Method.m */; };
-		5BF8D91122802689002199E4 /* NSString+Signature.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D90722802688002199E4 /* NSString+Signature.m */; };
 		5BF8D913228026A6002199E4 /* NullSafe.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D912228026A6002199E4 /* NullSafe.m */; };
 		5BF8D918228026C5002199E4 /* UIButton+Block.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D916228026C5002199E4 /* UIButton+Block.m */; };
 		5BF8D919228026C5002199E4 /* UIButton+TargetEnable.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D917228026C5002199E4 /* UIButton+TargetEnable.m */; };
@@ -146,6 +144,7 @@
 		5BF8D9572280294A002199E4 /* OpenAerobicPrescriptionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D9542280294A002199E4 /* OpenAerobicPrescriptionHeader.m */; };
 		5BF8D9582280294A002199E4 /* OpenAerobicPrescriptionFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D9562280294A002199E4 /* OpenAerobicPrescriptionFooter.m */; };
 		5BF95288226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF95287226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m */; };
+		61040A612281225E0048F05F /* KTOpenAerobicriptionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 61040A602281225E0048F05F /* KTOpenAerobicriptionModel.m */; };
 		B1C96259FE76E5A7BE1B4D71 /* Pods_KTDoctor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 146BC1222E04A671B1AB1A38 /* Pods_KTDoctor.framework */; };
 /* End PBXBuildFile section */
 
@@ -387,11 +386,9 @@
 		5BF8D8F522802686002199E4 /* NSString+TimeConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+TimeConvert.h"; sourceTree = "<group>"; };
 		5BF8D8F622802686002199E4 /* NSString+Size.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Size.m"; sourceTree = "<group>"; };
 		5BF8D8F722802686002199E4 /* NSString+AttributedString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+AttributedString.m"; sourceTree = "<group>"; };
-		5BF8D8F822802686002199E4 /* NSString+HmacUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+HmacUtils.m"; sourceTree = "<group>"; };
 		5BF8D8F922802686002199E4 /* NSString+Method.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Method.h"; sourceTree = "<group>"; };
 		5BF8D8FA22802687002199E4 /* NSString+AttributedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+AttributedString.h"; sourceTree = "<group>"; };
 		5BF8D8FB22802687002199E4 /* NSString+Size.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Size.h"; sourceTree = "<group>"; };
-		5BF8D8FC22802687002199E4 /* NSString+Signature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Signature.h"; sourceTree = "<group>"; };
 		5BF8D8FD22802687002199E4 /* NSString+md5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+md5.m"; sourceTree = "<group>"; };
 		5BF8D8FE22802687002199E4 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
 		5BF8D8FF22802687002199E4 /* NSString+Chinese.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Chinese.m"; sourceTree = "<group>"; };
@@ -400,9 +397,7 @@
 		5BF8D90222802688002199E4 /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
 		5BF8D90322802688002199E4 /* NSString+md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+md5.h"; sourceTree = "<group>"; };
 		5BF8D90422802688002199E4 /* NSString+TimeConvert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+TimeConvert.m"; sourceTree = "<group>"; };
-		5BF8D90522802688002199E4 /* NSString+HmacUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+HmacUtils.h"; sourceTree = "<group>"; };
 		5BF8D90622802688002199E4 /* NSString+Method.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Method.m"; sourceTree = "<group>"; };
-		5BF8D90722802688002199E4 /* NSString+Signature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Signature.m"; sourceTree = "<group>"; };
 		5BF8D912228026A6002199E4 /* NullSafe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NullSafe.m; sourceTree = "<group>"; };
 		5BF8D914228026C5002199E4 /* UIButton+TargetEnable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+TargetEnable.h"; sourceTree = "<group>"; };
 		5BF8D915228026C5002199E4 /* UIButton+Block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+Block.h"; sourceTree = "<group>"; };
@@ -448,6 +443,8 @@
 		5BF8D9562280294A002199E4 /* OpenAerobicPrescriptionFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenAerobicPrescriptionFooter.m; sourceTree = "<group>"; };
 		5BF95286226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AerobicPrescriptionAndReportViewController.h; sourceTree = "<group>"; };
 		5BF95287226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicPrescriptionAndReportViewController.m; sourceTree = "<group>"; };
+		61040A5F2281225E0048F05F /* KTOpenAerobicriptionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KTOpenAerobicriptionModel.h; sourceTree = "<group>"; };
+		61040A602281225E0048F05F /* KTOpenAerobicriptionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KTOpenAerobicriptionModel.m; sourceTree = "<group>"; };
 		7253866FC6DCF0EB352C5605 /* Pods-KTDoctor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -897,16 +894,8 @@
 				5BF8D8D3228025A9002199E4 /* UIButton */,
 				5BF8D8D2228025A7002199E4 /* UIImage */,
 				5BF8D8D1228025A2002199E4 /* UIView */,
-				5BF8D8D022802590002199E4 /* UIViewController */,
 			);
 			path = Category;
-			sourceTree = "<group>";
-		};
-		5BF8D8D022802590002199E4 /* UIViewController */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = UIViewController;
 			sourceTree = "<group>";
 		};
 		5BF8D8D1228025A2002199E4 /* UIView */ = {
@@ -965,14 +954,10 @@
 				5BF8D90222802688002199E4 /* NSString+Base64.m */,
 				5BF8D90122802687002199E4 /* NSString+Chinese.h */,
 				5BF8D8FF22802687002199E4 /* NSString+Chinese.m */,
-				5BF8D90522802688002199E4 /* NSString+HmacUtils.h */,
-				5BF8D8F822802686002199E4 /* NSString+HmacUtils.m */,
 				5BF8D90322802688002199E4 /* NSString+md5.h */,
 				5BF8D8FD22802687002199E4 /* NSString+md5.m */,
 				5BF8D8F922802686002199E4 /* NSString+Method.h */,
 				5BF8D90622802688002199E4 /* NSString+Method.m */,
-				5BF8D8FC22802687002199E4 /* NSString+Signature.h */,
-				5BF8D90722802688002199E4 /* NSString+Signature.m */,
 				5BF8D8FB22802687002199E4 /* NSString+Size.h */,
 				5BF8D8F622802686002199E4 /* NSString+Size.m */,
 				5BF8D8F522802686002199E4 /* NSString+TimeConvert.h */,
@@ -1110,6 +1095,8 @@
 			children = (
 				5BF8D94E22802901002199E4 /* KTOpenAerobicModel.h */,
 				5BF8D94D22802901002199E4 /* KTOpenAerobicModel.m */,
+				61040A5F2281225E0048F05F /* KTOpenAerobicriptionModel.h */,
+				61040A602281225E0048F05F /* KTOpenAerobicriptionModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1339,6 +1326,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61040A612281225E0048F05F /* KTOpenAerobicriptionModel.m in Sources */,
 				5BF8D8EF2280262F002199E4 /* NSObject+ShadowAndCircleCorner.m in Sources */,
 				5B02F7BD224B7F4F00BE8269 /* SportDataModel.m in Sources */,
 				5B22E05D2266CE9D00C65B50 /* PatientManageViewController.m in Sources */,
@@ -1418,7 +1406,6 @@
 				5BF8D92922802708002199E4 /* UILabel+Init.m in Sources */,
 				5BF8D933228027D7002199E4 /* CustomBtn.m in Sources */,
 				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,
-				5BF8D90A22802689002199E4 /* NSString+HmacUtils.m in Sources */,
 				5B02F7762240E7F600BE8269 /* DropdownMenu.m in Sources */,
 				5BF8D8DB228025E6002199E4 /* CABasicAnimation+ZJAnimation.m in Sources */,
 				5BECDC082236639A0025D6F2 /* NSString+NetworkingState.m in Sources */,
@@ -1431,7 +1418,6 @@
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
 				5B22E06F2267192A00C65B50 /* CustomTextField.m in Sources */,
 				5B22E0602266CED500C65B50 /* AddPatientViewController.m in Sources */,
-				5BF8D91122802689002199E4 /* NSString+Signature.m in Sources */,
 				5BF8D8EE2280262F002199E4 /* NSObject+ImageZip.m in Sources */,
 				5BF8D919228026C5002199E4 /* UIButton+TargetEnable.m in Sources */,
 				5BF8D8BB228024F9002199E4 /* BaseWebViewController.m in Sources */,
