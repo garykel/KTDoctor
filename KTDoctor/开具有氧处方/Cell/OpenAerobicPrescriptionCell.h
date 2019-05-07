@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "KTOpenAerobicriptionModel.h"
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -61,6 +63,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) dealOpenAerobicCellOperation addBlock;
 @property (nonatomic, copy) dealOpenAerobicCellOperation deleteBlock;
+@property (nonatomic, copy) dealOpenAerobicCellModelOperation block;
+
+@property (nonatomic, strong) KTOpenAerobicriptionModel *model;
 
 
 @end

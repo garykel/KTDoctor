@@ -147,11 +147,11 @@
 }
 
 - (void)monitor:(UITapGestureRecognizer*)sender {
-    MonitorViewController *monitor = [[MonitorViewController alloc] init];
-    [self.navigationController pushViewController:monitor animated:NO];
-    
-//    OpenAerobicPrescriptionVC *monitor = [[OpenAerobicPrescriptionVC alloc] init];
+//    MonitorViewController *monitor = [[MonitorViewController alloc] init];
 //    [self.navigationController pushViewController:monitor animated:NO];
+    
+    OpenAerobicPrescriptionVC *monitor = [[OpenAerobicPrescriptionVC alloc] init];
+    [self.navigationController pushViewController:monitor animated:NO];
 }
 
 - (void)history:(UITapGestureRecognizer*)sender {

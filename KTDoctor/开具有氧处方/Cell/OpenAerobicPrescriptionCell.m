@@ -44,6 +44,125 @@
 //MARK:  - LMJDropdownMenu Delegate
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string // 当选择某个选项时调用
 {
+    if (menu == self.dropdownMenu_PSL) { //强度百分比左
+        
+        //条件：左边下拉列表范围 5- 100 等差为5 即（5，10，15，。。。。。100）
+        //    右边下拉列表范围 10-100 等差为5 条件 左边的选择的数永远小于右边，最小  值为左边最小值+5
+        if (![self isBlankString:string]) {
+            
+            NSInteger left = 0;
+            NSInteger right = 0;
+            if (![self isBlankString:self.model.percentStrength_PSR]) {
+                
+                right = [[self.model.percentStrength_PSR substringWithRange:NSMakeRange(0, self.model.percentStrength_PSR.length -1)] integerValue];
+                
+                left = [[string substringWithRange:NSMakeRange(0, string.length -1)] integerValue];
+                
+                if (right - left >=5) {
+                    self.model.percentStrength_PSL = string;
+                }else{
+                    [menu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+                    [STTextHudTool showText:@"请选择正确的强度百分比"];
+                }
+            }else{
+                self.model.percentStrength_PSL = string;
+            }
+        }
+        
+    }else if (menu == self.dropdownMenu_PSR){ //强度百分比右
+
+        if (![self isBlankString:string]) {
+            
+            if (![self isBlankString:string]) {
+                
+                NSInteger left = 0;
+                NSInteger right = 0;
+                if (![self isBlankString:self.model.percentStrength_PSL]) {
+                    
+                    left = [[self.model.percentStrength_PSL substringWithRange:NSMakeRange(0, self.model.percentStrength_PSL.length -1)] integerValue];
+                    
+                    right = [[string substringWithRange:NSMakeRange(0, string.length -1)] integerValue];
+                    
+                    if (right - left >=5) {
+                        self.model.percentStrength_PSR = string;
+                    }else{
+                        [menu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+                        [STTextHudTool showText:@"请选择正确的强度百分比"];
+                    }
+                }else{
+                    self.model.percentStrength_PSR = string;
+                }
+            }
+        }
+        
+    }else if (menu == self.dropdownMenu_TTL){ //训练时长左
+        if (![self isBlankString:string]) {
+            self.model.trainingTime_TTL = string;
+        }
+    }else if (menu == self.dropdownMenu_TTR){ //训练时长右
+        if (![self isBlankString:string]) {
+            self.model.trainingTime_TTR = string;
+        }
+        
+    }else if (menu == self.dropdownMenu_ST){ //强度
+        
+        if (![self isBlankString:string]) {
+            self.model.strength_ST = string;
+        }
+        
+    }else if (menu == self.dropdownMenu_RPEL){ //RPE区间左
+        
+        if (![self isBlankString:string]) {
+            self.model.RPE_RPEL = string;
+        }
+    }else if (menu == self.dropdownMenu_RPER){ //RPE区间右
+        
+        if (![self isBlankString:string]) {
+            self.model.RPE_RPER = string;
+        }
+    }else if (menu == self.dropdownMenu_RTL){ //组间休息左
+        
+        if (![self isBlankString:string]) {
+            self.model.restTime_RTL = string;
+        }
+    }else if (menu == self.dropdownMenu_RTR){ //组间休息右
+        
+        if (![self isBlankString:string]) {
+            //条件：组间休息左边下拉列表 0-9  当左边选0的时候， 右边下拉列表 20-59 当左边选择为1时 右边范围为0-59
+            
+            NSInteger left = [self.model.restTime_RTL integerValue];
+            NSInteger right = [string integerValue];
+            if (left == 0) {
+                
+                if (right>= 20) {
+                    self.model.restTime_RTR = string;
+                }else{
+                    [menu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+                    [STTextHudTool showText:@"请选择正确的组间休息"];
+                }
+            }else{
+                self.model.restTime_RTR = string;
+            }
+        }
+    }
+    
+    //block
+    if (
+        ![self isBlankString:self.model.percentStrength_PSL]
+        &&![self isBlankString:self.model.percentStrength_PSR]
+        &&![self isBlankString:self.model.trainingTime_TTR]
+        &&![self isBlankString:self.model.trainingTime_TTL]
+        &&![self isBlankString:self.model.RPE_RPER]
+        &&![self isBlankString:self.model.RPE_RPEL]
+        &&![self isBlankString:self.model.restTime_RTR]
+        &&![self isBlankString:self.model.restTime_RTL]
+        &&![self isBlankString:self.model.strength_ST]
+        )
+     {
+        if (self.block) {
+            self.block(self.model, self.currentIndex);
+        }
+    }
     
 }
 
@@ -202,13 +321,12 @@
 }
 
 
-
 - (NSMutableArray *)titles_PSR{
     if (!_titles_PSR) {
         _titles_PSR = [NSMutableArray array];
         for (NSInteger i = 1; i <= 20; i++) {
             
-            NSString * str = [NSString stringWithFormat:@"%ld", i*5];
+            NSString * str = [NSString stringWithFormat:@"%ld%@", i*5, @"%"];
             [_titles_PSR addObject:str];
         }
     }
@@ -221,7 +339,7 @@
         _titles_PSL = [NSMutableArray array];
         for (NSInteger i = 1; i <= 20; i++) {
             
-            NSString * str = [NSString stringWithFormat:@"%ld", i*5];
+            NSString * str = [NSString stringWithFormat:@"%ld%@", i*5, @"%"];
             [_titles_PSL addObject:str];
         }
     }
@@ -404,7 +522,7 @@
 - (NSMutableArray *)titles_RPEL{
     if (!_titles_RPEL) {
         _titles_RPEL = [NSMutableArray array];
-        for (NSInteger i = 0; i < 20; i++) {
+        for (NSInteger i = 0; i < 3; i++) {
             
             NSString * str = [NSString stringWithFormat:@"%.2f", i*0.5];
             [_titles_RPEL addObject:str];
@@ -417,7 +535,7 @@
 - (NSMutableArray *)titles_RPER{
     if (!_titles_RPER) {
         _titles_RPER = [NSMutableArray array];
-        for (NSInteger i = 1; i < 17; i++) {
+        for (NSInteger i = 1; i <= 20; i++) {
             
             NSString * str = [NSString stringWithFormat:@"%.2f", i*0.5];
             [_titles_RPER addObject:str];
@@ -537,6 +655,13 @@
         };
     }
     return _deleteBtn;
+}
+
+- (KTOpenAerobicriptionModel *)model{
+    if (!_model) {
+        _model = [KTOpenAerobicriptionModel new];
+    }
+    return _model;
 }
 
 #pragma mark - other methods

@@ -145,6 +145,7 @@
 		5BF8D9582280294A002199E4 /* OpenAerobicPrescriptionFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF8D9562280294A002199E4 /* OpenAerobicPrescriptionFooter.m */; };
 		5BF95288226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BF95287226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m */; };
 		61040A612281225E0048F05F /* KTOpenAerobicriptionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 61040A602281225E0048F05F /* KTOpenAerobicriptionModel.m */; };
+		6157CFF922816EF200411DA8 /* KTRecommendAerobicModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 6157CFF822816EF200411DA8 /* KTRecommendAerobicModel.m */; };
 		B1C96259FE76E5A7BE1B4D71 /* Pods_KTDoctor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 146BC1222E04A671B1AB1A38 /* Pods_KTDoctor.framework */; };
 /* End PBXBuildFile section */
 
@@ -445,6 +446,8 @@
 		5BF95287226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicPrescriptionAndReportViewController.m; sourceTree = "<group>"; };
 		61040A5F2281225E0048F05F /* KTOpenAerobicriptionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KTOpenAerobicriptionModel.h; sourceTree = "<group>"; };
 		61040A602281225E0048F05F /* KTOpenAerobicriptionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KTOpenAerobicriptionModel.m; sourceTree = "<group>"; };
+		6157CFF722816EF200411DA8 /* KTRecommendAerobicModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KTRecommendAerobicModel.h; sourceTree = "<group>"; };
+		6157CFF822816EF200411DA8 /* KTRecommendAerobicModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KTRecommendAerobicModel.m; sourceTree = "<group>"; };
 		7253866FC6DCF0EB352C5605 /* Pods-KTDoctor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KTDoctor.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KTDoctor/Pods-KTDoctor.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1097,6 +1100,8 @@
 				5BF8D94D22802901002199E4 /* KTOpenAerobicModel.m */,
 				61040A5F2281225E0048F05F /* KTOpenAerobicriptionModel.h */,
 				61040A602281225E0048F05F /* KTOpenAerobicriptionModel.m */,
+				6157CFF722816EF200411DA8 /* KTRecommendAerobicModel.h */,
+				6157CFF822816EF200411DA8 /* KTRecommendAerobicModel.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1369,6 +1374,7 @@
 				5BF8D92B22802708002199E4 /* UIView+Init.m in Sources */,
 				5BF8D90D22802689002199E4 /* NSString+Additions.m in Sources */,
 				5B875B9C224CAEDB00736FC2 /* PatientCell12.m in Sources */,
+				6157CFF922816EF200411DA8 /* KTRecommendAerobicModel.m in Sources */,
 				5BF8D94C228028EF002199E4 /* OpenAerobicPrescriptionCell.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
 				5BF8D9572280294A002199E4 /* OpenAerobicPrescriptionHeader.m in Sources */,
