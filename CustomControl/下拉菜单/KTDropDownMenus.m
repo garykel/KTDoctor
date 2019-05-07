@@ -57,9 +57,11 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
         make.centerY.equalTo(weakself.mas_centerY);
     }];
     
-    CAShapeLayer *mask = [CAShapeLayer layer];
-    mask.path = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:UIRectCornerTopLeft|UIRectCornerBottomLeft cornerRadii: CGSizeMake(4, 4)].CGPath;
-    self.layer.mask = mask;
+//    CAShapeLayer *mask = [CAShapeLayer layer];
+//    mask.path = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:UIRectCornerTopLeft|UIRectCornerBottomLeft cornerRadii: CGSizeMake(4, 4)].CGPath;
+//    self.layer.mask = mask;
+//    self.layer.masksToBounds = YES;
+
 }
 
 
@@ -327,22 +329,22 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         //切割超出圆角范围的子视图
         _mTableView.layer.masksToBounds = YES;
         
-        float lineH = [self fitSize:8];
-        float offset = self.bounds.size.width/4;
-
+        float lineH = [self fitSize:0.5];
+//        float offset = self.bounds.size.width/4;
+//
         UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, lineH)];
         line.backgroundColor = mDefindColor;
-
-        UIBezierPath *path = [UIBezierPath bezierPath];
-        [path moveToPoint:CGPointMake(0, lineH)];
-        [path addLineToPoint:CGPointMake(offset*3.1, lineH)];
-        [path addLineToPoint:CGPointMake(offset*3.3, 0)];
-        [path addLineToPoint:CGPointMake(offset*3.5, lineH)];
-        [path closePath];
-
-        CAShapeLayer *mask = [CAShapeLayer layer];
-        mask.path = path.CGPath;
-        line.layer.mask = mask;
+//
+//        UIBezierPath *path = [UIBezierPath bezierPath];
+//        [path moveToPoint:CGPointMake(0, lineH)];
+//        [path addLineToPoint:CGPointMake(offset*3.1, lineH)];
+//        [path addLineToPoint:CGPointMake(offset*3.3, 0)];
+//        [path addLineToPoint:CGPointMake(offset*3.5, lineH)];
+//        [path closePath];
+//
+//        CAShapeLayer *mask = [CAShapeLayer layer];
+//        mask.path = path.CGPath;
+//        line.layer.mask = mask;
         
     
         [_mTableView setTableHeaderView:line];

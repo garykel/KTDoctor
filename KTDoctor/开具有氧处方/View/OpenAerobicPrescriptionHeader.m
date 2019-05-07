@@ -63,6 +63,7 @@
                 [menu.mainBtn setTitle:@"请选择" forState:UIControlStateNormal];
                 [menu.mainBtn setTitleColor:RGB(220, 220, 220) forState:UIControlStateNormal];
                 self.model.trainingSiteStr = @"";
+                [STTextHudTool showText:@"请先选择训练部位！"];
             }
             self.model.trainingEquipmentStr = string;
         }
@@ -118,38 +119,14 @@
     return textField;
 }
 
-#pragma mark - delegate
-
-//- (BOOL)textFieldShouldReturn:(UITextField *)textField{
-//    [textField resignFirstResponder];
-//    return YES;
-//}
-//
-//- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-//{
-//    NSString * checkString = [textField.text stringByAppendingString:string];
-//    
-//    //获取到输入的拼音，不限制拼音输入，没有拼音 再进行检测
-//    UITextRange * markedRange = [textField markedTextRange];
-//    NSString * markedStr = [textField textInRange:markedRange];
-//    if (markedStr.length > 0) {
-//        return YES;
-//    }
-//    
-//    //正则条件 只能为 数字字母中文
-//    NSString * str = @"^[0-9a-zA-Z\u4e00-\u9fa5➋➌➍➎➏➐➑➒]*";
-//    NSPredicate *regextestmobile = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", str];
-//    if (([regextestmobile evaluateWithObject:checkString] == NO)) {
-//        return NO;
-//    }
-//    if (checkString.length > 20) {
-//        return NO;
-//    }
-//    return YES;
-//}
-
 
 #pragma mark - setter and getter
+
+- (void)setTitles_R:(NSArray *)titles_R{
+    
+    _titles_R = titles_R;
+    self.dropdownMenu_R.titles = titles_R;
+}
 
 //headerBackView
 - (UIView *)headerBackView{
@@ -390,18 +367,18 @@
     return _dropdownMenu_R;
 }
 
-
-- (NSMutableArray *)titles_R{
-    if (!_titles_R) {
-        _titles_R = [NSMutableArray array];
-        for (NSInteger i = 1; i <= 20; i++) {
-            
-            NSString * str = [NSString stringWithFormat:@"%ld", i*5];
-            [_titles_R addObject:str];
-        }
-    }
-    return _titles_R;
-}
+//
+//- (NSMutableArray *)titles_R{
+//    if (!_titles_R) {
+//        _titles_R = [NSMutableArray array];
+//        for (NSInteger i = 1; i <= 20; i++) {
+//            
+//            NSString * str = [NSString stringWithFormat:@"%ld", i*5];
+//            [_titles_R addObject:str];
+//        }
+//    }
+//    return _titles_R;
+//}
 
 
 //疗程

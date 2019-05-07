@@ -38,7 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) UILabel *recommendLab; //推荐模板
 @property (nonatomic, strong) KTDropDownMenus *dropdownMenu_R;
-@property (nonatomic, strong) NSMutableArray *titles_R;
+//@property (nonatomic, strong) NSMutableArray *titles_R;
+@property (nonatomic, strong) NSArray *titles_R;
+
 
 
 @property (nonatomic, strong) UILabel *treatmentLab; //疗程

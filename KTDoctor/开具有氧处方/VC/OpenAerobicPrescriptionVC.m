@@ -13,6 +13,7 @@
 #import "KTOpenAerobicModel.h"
 #import "KTOpenAerobicriptionModel.h"
 #import "UserModel.h"
+#import "KTRecommendAerobicModel.h"
 
 
 @interface OpenAerobicPrescriptionVC ()<UIScrollViewDelegate>
@@ -21,7 +22,9 @@
 @property (nonatomic, strong) OpenAerobicPrescriptionFooter *footer;
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
 @property (nonatomic, strong) KTOpenAerobicModel *model;
+@property (nonatomic, strong) KTRecommendAerobicModel *recommendAerobicmodel;
 @property (nonatomic, strong) UserModel *user;
+@property (nonatomic, strong) NSMutableArray *aimsHeaders;
 
 
 @end
@@ -31,7 +34,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    [self networkingRequest];
+    //[self networkingRequest];
     [self setNavView];
     [self initParams];
     [self addkeyBoardNotification];
@@ -102,46 +105,48 @@
     
     kWeakSelf(self);
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_RECOMMEND_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
-        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
-        NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"*********获取推荐处方模板*****%@**************",responseObject);
+        
+        weakself.recommendAerobicmodel = [KTRecommendAerobicModel modelWithJSON:responseObject];
+        NSInteger code = [weakself.recommendAerobicmodel.code integerValue];
+        
         if (code == 0) {
-            NSArray *rows = [responseObject valueForKey:@"rows"];
-            NSLog(@"rows is :%@",rows);
-            if (rows.count > 0) {
-                for (NSDictionary *dict in rows) {
-                    NSInteger type = [[dict valueForKey:@"type"] integerValue];
-                    NSArray *typeList = [dict valueForKey:@"typeList"];
-                    if (typeList.count > 0) {
-                        for (NSDictionary *typeDict in typeList) {
-                            NSInteger id = [[typeDict valueForKey:@"id"] integerValue];
-                            NSString *name = [typeDict valueForKey:@"name"];
-//                            if ([name isEqualToString:self.traingDeviceMenu.mainBtn.titleLabel.text]) {
-//                                [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
-//                            }
+            
+            if (weakself.recommendAerobicmodel.rows.count >0) {
+               
+                [weakself.recommendAerobicmodel.rows enumerateObjectsUsingBlock:^(KTRecommendAerobicItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                    
+                    NSInteger type = [obj.type integerValue];
+                    [obj.typeList enumerateObjectsUsingBlock:^(TypeList * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                        
+                        NSInteger aimId = [obj.id integerValue];
+                        if (aimId == type) {
+                            [weakself.aimsHeaders addObject: obj.name];
                         }
-                    }
-                }
+                    }];
+                    
+                    weakself.header.titles_R = [weakself.aimsHeaders copy];
+                }];
             }
-//            [weakself.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+            
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [weakself.navigationController popToRootViewControllerAnimated:NO];
         } else {
-            [STTextHudTool showText:msg];
+            [STTextHudTool showText:weakself.recommendAerobicmodel.msg];
         }
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);
     }];
 }
 
+
 - (void)createPrescriptions:(NSMutableDictionary*)parameter {
     __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_PRESCRIPTION_CREATE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-       // NSLog(@"**************%@**************",responseObject);
+        NSLog(@"**************%@**************",responseObject);
         if (code == 0) {
             [STTextHudTool showText:@"开具处方成功"];
         } else if (code == 10011) {
@@ -201,6 +206,11 @@
         }
     };
     
+    //ModelBlock
+    cell.block = ^(KTOpenAerobicriptionModel *model, NSInteger index) {
+        [weakself.model.cells replaceObjectAtIndex:index withObject:model];
+    };
+        
     return cell;
 }
 
@@ -282,6 +292,20 @@
     return _model;
 }
 
+- (KTRecommendAerobicModel *) recommendAerobicmodel{
+    
+    if (!_recommendAerobicmodel) {
+        _recommendAerobicmodel = [KTRecommendAerobicModel new];
+    }
+    return _recommendAerobicmodel;
+}
+
+- (NSMutableArray *)aimsHeaders{
+    if (!_aimsHeaders) {
+        _aimsHeaders = [NSMutableArray array];
+    }
+    return _aimsHeaders;
+}
 
 #pragma mark - notification methods
 
