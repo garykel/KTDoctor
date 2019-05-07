@@ -116,7 +116,7 @@
 #define kSummaryView_LeftMargin 29
 #define kSummaryView_Lbl_TopMargin 10
 #define kSummaryView_Lbl_LeftMargin 15
-#define kSummaryView_Lbl_Width 140
+#define kSummaryView_Lbl_Width 150
 #define kSummaryView_Lbl_Height 14
 #define kSummaryView_Lbl_FontSize 14.0
 #define kSummaryView_HRZoneLbl_RightMargin 58
