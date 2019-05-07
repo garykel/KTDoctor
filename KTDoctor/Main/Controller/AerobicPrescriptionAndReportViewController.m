@@ -291,7 +291,7 @@
             NSDictionary *equipmentDict = [typeList objectAtIndex:2];
             cell.trainingEquipmentNameLbl.text = [equipmentDict valueForKey:@"name"];
         }
-        cell.prescriptionNameLbl.text = [NSString stringWithFormat:@"测试%d",indexPath.section + 1];
+        cell.prescriptionNameLbl.text = [dict valueForKey:@"title"];
         cell.createTimeValLbl.text = [dict valueForKey:@"createTime"];
         cell.doctorNameLbl.text = [dict valueForKey:@"doctorName"];
         NSInteger sportDays = [[dict valueForKey:@"sportDays"] integerValue];
@@ -338,7 +338,7 @@
         [self.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
         [parameter setValue:@0 forKey:@"offset"];
-        [parameter setValue:@10 forKey:@"rows"];
+        [parameter setValue:@(reportNum) forKey:@"rows"];
         NSDictionary *dict = self.user.organ;
         NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
         NSString *orgCode = orgCodeArr[0];
