@@ -52,7 +52,7 @@
 {
     //判断是否登录，如果未登录 则先进入登录页面
     BOOL isLogin = [kUserDefaults boolForKey:kIsLoginUserDefaultKey];
-    
+    isLogin = NO;
     if (isLogin == false) {
         LoginViewController *vc = [[LoginViewController alloc] init];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];

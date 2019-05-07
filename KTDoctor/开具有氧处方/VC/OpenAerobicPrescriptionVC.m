@@ -12,6 +12,8 @@
 #import "OpenAerobicPrescriptionCell.h"
 #import "KTOpenAerobicModel.h"
 #import "KTOpenAerobicriptionModel.h"
+#import "UserModel.h"
+
 
 @interface OpenAerobicPrescriptionVC ()<UIScrollViewDelegate>
 
@@ -19,6 +21,8 @@
 @property (nonatomic, strong) OpenAerobicPrescriptionFooter *footer;
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
 @property (nonatomic, strong) KTOpenAerobicModel *model;
+@property (nonatomic, strong) UserModel *user;
+
 
 @end
 
@@ -27,9 +31,32 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    [self networkingRequest];
     [self setNavView];
     [self initParams];
     [self addkeyBoardNotification];
+}
+
+- (void)networkingRequest{
+    
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
+
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
+    [parameter setValue:disease forKey:@"disease"];
+    [parameter setValue:@"" forKey:@"difficulty"];
+    NSInteger riskLevel = [[self.prescriptionDict valueForKey:@"riskLevel"] integerValue];
+    [parameter setValue:@(riskLevel) forKey:@"risk"];
+    [parameter setValue:@1 forKey:@"type"];
+    
+    [self getRecommendTemplateList:parameter];
+
 }
 
 - (void)setNavView
@@ -63,6 +90,70 @@
     [self registerTableViewCell];
     [self.view addSubview:self.mTableView];
     self.mTableView.frame = CGRectMake(0, self.baseNavView.bottom, KScreenWidth, KScreenHeight-XXTG_SafeAreaBottomHeight);
+}
+
+
+#pragma mark - networking methods
+- (void)getTemplateList:(NSMutableDictionary*)parameter {
+    
+}
+
+- (void)getRecommendTemplateList:(NSMutableDictionary*)parameter{
+    
+    kWeakSelf(self);
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_RECOMMEND_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"*********获取推荐处方模板*****%@**************",responseObject);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            NSLog(@"rows is :%@",rows);
+            if (rows.count > 0) {
+                for (NSDictionary *dict in rows) {
+                    NSInteger type = [[dict valueForKey:@"type"] integerValue];
+                    NSArray *typeList = [dict valueForKey:@"typeList"];
+                    if (typeList.count > 0) {
+                        for (NSDictionary *typeDict in typeList) {
+                            NSInteger id = [[typeDict valueForKey:@"id"] integerValue];
+                            NSString *name = [typeDict valueForKey:@"name"];
+//                            if ([name isEqualToString:self.traingDeviceMenu.mainBtn.titleLabel.text]) {
+//                                [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
+//                            }
+                        }
+                    }
+                }
+            }
+//            [weakself.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakself.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)createPrescriptions:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_PRESCRIPTION_CREATE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+       // NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            [STTextHudTool showText:@"开具处方成功"];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 
 #pragma mark - scrolview.delegate
@@ -284,4 +375,6 @@
 
     [self removeKeyboardNotification];
 }
+
+
 @end

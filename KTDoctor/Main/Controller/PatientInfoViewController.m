@@ -9,6 +9,8 @@
 #import "PatientInfoViewController.h"
 #import "CreateAerobicPrescriptionViewController.h"
 #import "AerobicPrescriptionAndReportViewController.h"
+#import "OpenAerobicPrescriptionVC.h"
+
 #import "LMJDropdownMenu.h"
 #import "UnitTextField.h"
 #import "UserModel.h"
@@ -2488,10 +2490,15 @@
     NSLog(@"向右滑动");
 }
 
+
 - (void)createAerobicPrescription:(UIButton*)sender {
-    CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
-    create.prescriptionDict = self.latestInfoDict;
-    [self.navigationController pushViewController:create animated:NO];
+//    CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
+//    create.prescriptionDict = self.latestInfoDict;
+//    [self.navigationController pushViewController:create animated:NO];
+    
+    OpenAerobicPrescriptionVC *vc = [[OpenAerobicPrescriptionVC alloc] init];
+    vc.prescriptionDict = self.latestInfoDict;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)checkAerobicReport:(UIButton*)sender {

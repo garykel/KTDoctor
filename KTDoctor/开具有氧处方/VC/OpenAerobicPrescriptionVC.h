@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface OpenAerobicPrescriptionVC : BaseTableViewViewController
 
+@property (nonatomic, strong) NSDictionary *prescriptionDict;
 
 @end
 
