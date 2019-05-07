@@ -123,13 +123,42 @@
         
         kWeakSelf(self);
         _headerBtn.block = ^(UIButton *btn) {
-            NSLog(@"保存为自定义模板");
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"自定义模板名称" preferredStyle:UIAlertControllerStyleAlert];
+            [alertController addAction:[UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleCancel handler:nil]];
+            
+            [alertController addAction:[UIAlertAction actionWithTitle:@"放弃" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    UITextField*userNameTextField = alertController.textFields.firstObject;
+                NSLog(@"支付密码：%@",userNameTextField.text);
+            }]];
+            [alertController addTextFieldWithConfigurationHandler:^(UITextField*_Nonnull textField) {
+                textField.placeholder=@"请输入名称";
+                textField.secureTextEntry=YES;
+                }];
+            [[weakself currentViewController] presentViewController:alertController animated:YES completion:nil];
         };
     }
     return _headerBtn;
 }
 
-
+- (UIViewController *)currentViewController
+{
+    UIWindow *keyWindow  = [UIApplication sharedApplication].keyWindow;
+    UIViewController *vc = keyWindow.rootViewController;
+    while (vc.presentedViewController)
+    {
+        vc = vc.presentedViewController;
+        
+        if ([vc isKindOfClass:[UINavigationController class]])
+        {
+            vc = [(UINavigationController *)vc visibleViewController];
+        }
+        else if ([vc isKindOfClass:[UITabBarController class]])
+        {
+            vc = [(UITabBarController *)vc selectedViewController];
+        }
+    }
+    return vc;
+}
 - (NSArray *)titles{
     
     if (!_titles) {
