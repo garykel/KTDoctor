@@ -11,10 +11,9 @@
 #import "OpenAerobicPrescriptionFooter.h"
 #import "OpenAerobicPrescriptionCell.h"
 #import "KTOpenAerobicModel.h"
+#import "KTOpenAerobicriptionModel.h"
 
-
-
-@interface OpenAerobicPrescriptionVC ()
+@interface OpenAerobicPrescriptionVC ()<UIScrollViewDelegate>
 
 @property (nonatomic, strong) OpenAerobicPrescriptionHeader *header;
 @property (nonatomic, strong) OpenAerobicPrescriptionFooter *footer;
@@ -40,13 +39,22 @@
     //添加导航条
     self.baseNavView.navTitleLabel.text = @"开具有氧处方";
     self.baseNavView.leftNavBtn.hidden = NO;
+    
+    kWeakSelf(self);
+    self.baseNavView.leftBlock = ^{
+        [kNotificationCenter postNotificationName:kHideDropDownNotification object:nil];
+        [weakself.navigationController popViewControllerAnimated:YES];
+    };
 }
 
 
 - (void)initParams{
     
     [self createUI];
-    
+    UITapGestureRecognizer *tapGest = [[UITapGestureRecognizer alloc] initWithActionBlock:^(id  _Nonnull sender) {
+        [kNotificationCenter postNotificationName:kHideDropDownNotification object:nil];
+    }];
+    [self.view addGestureRecognizer:tapGest];
 }
 
 
@@ -57,30 +65,52 @@
     self.mTableView.frame = CGRectMake(0, self.baseNavView.bottom, KScreenWidth, KScreenHeight-XXTG_SafeAreaBottomHeight);
 }
 
-
-#pragma mark -
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+#pragma mark - scrolview.delegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
     
-    return 2;
-    
+    [kNotificationCenter postNotificationName:kHideDropDownNotification object:nil];
 }
 
 
+#pragma mark - tableview.delegate
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    
+    return self.model.cells.count;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
     OpenAerobicPrescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"OpenAerobicPrescriptionCell"];
     NSString *groupStr = [NSString stringWithFormat:@"第%@组", [self translationArabicNum:indexPath.row +1]];
     cell.groupLab.text = groupStr;
+    cell.currentIndex = indexPath.row;
+    
+    
+    kWeakSelf(self);
+    //添加Block
+    cell.addBlock = ^(NSInteger index) {
+        
+        KTOpenAerobicriptionModel *cellModel = [[KTOpenAerobicriptionModel alloc] init];
+        [weakself.model.cells insertObject:cellModel atIndex:index];
+        [weakself.mTableView reloadData];
+        
+        weakself.footer.groupLab.text = [NSString stringWithFormat:@"%ld", weakself.model.cells.count];
+
+    };
+    
+    //删除Block
+    cell.deleteBlock = ^(NSInteger index) {
+        
+        if (weakself.model.cells.count >1) {
+            [weakself.model.cells removeObjectAtIndex:index];
+            [weakself.mTableView reloadData];
+            
+            weakself.footer.groupLab.text = [NSString stringWithFormat:@"%ld", weakself.model.cells.count];
+
+        }
+    };
     
     return cell;
-}
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    
 }
 
 
@@ -93,7 +123,6 @@
     self.mTableView.backgroundColor = KWhiteColor;
     self.mTableView.separatorColor = KWhiteColor;
     self.mTableView.rowHeight = [self fitSize:133];
-    
     self.mTableView.tableHeaderView = self.header;
     self.mTableView.tableFooterView = self.footer;
     
@@ -144,20 +173,31 @@
     return _footer;
 }
 
+
 //model
 - (KTOpenAerobicModel *)model{
     
     if (!_model) {
+        
         _model = [KTOpenAerobicModel new];
+        for (NSInteger i = 0; i< 2; i++) {
+    
+            KTOpenAerobicriptionModel *cellModel = [[KTOpenAerobicriptionModel alloc] init];
+            [_model.cells addObject:cellModel];
+        }
+        
+        self.footer.groupLab.text = [NSString stringWithFormat:@"%ld", _model.cells.count];
     }
     return _model;
 }
 
 
 #pragma mark - notification methods
+
 - (void)hideKeyboard
 {
     [self.view endEditing:NO];
+    [kNotificationCenter postNotificationName:kHideDropDownNotification object:nil];
 }
 
 - (void)keyboardWillShow:(NSNotification *)aNotification{
@@ -167,17 +207,10 @@
         self.tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard)];
         [self.view addGestureRecognizer:self.tap];
     }
-
-//    NSDictionary *userInfo = [aNotification userInfo];
-//    NSValue *aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
-//    CGRect keyboardRect = [aValue CGRectValue];
-//    _keyBoardHeight = keyboardRect.size.height;
-//    self.mTableView.frame = CGRectMake(0, _topView.bottom, KScreenWidth, KScreenHeight-_topView.bottom-XXTG_SafeAreaBottomHeight-_keyBoardHeight);
 }
 
 - (void)keyboardWillHide:(NSNotification *)aNotification{ //当键退出时调用
 
-//    self.mTableView.frame = CGRectMake(0, _topView.bottom, KScreenWidth, KScreenHeight-_topView.bottom-XXTG_SafeAreaBottomHeight);
     if (self.tap) {
         [self.view removeGestureRecognizer:self.tap];
         self.tap = nil;
@@ -209,7 +242,7 @@
 
 - (void)textViewTextChanged:(NSNotification *)aNotification
 {
-    UITextView * textView = aNotification.object;
+    UITextView *textView = aNotification.object;
     NSString *text = textView.text;
     
     if (textView == self.footer.prescriptionTextView.textview) { //处方名称
@@ -226,6 +259,7 @@
 }
 
 
+
 #pragma mark - other methods
 
 //添加键盘通知
@@ -234,7 +268,6 @@
     [kNotificationCenter addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [kNotificationCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     [kNotificationCenter addObserver:self selector:@selector(textFieldTextChanged:) name:UITextFieldTextDidChangeNotification object:nil];
-    
     [kNotificationCenter addObserver:self selector:@selector(textViewTextChanged:) name:UITextViewTextDidChangeNotification object:nil];
 }
 
@@ -245,7 +278,6 @@
     [kNotificationCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
     [kNotificationCenter removeObserver:self name:UITextFieldTextDidChangeNotification object:nil];
     [kNotificationCenter removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
-
 }
 
 - (void)dealloc{

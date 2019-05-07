@@ -26,9 +26,13 @@
     if (self) {
         
         self.selectionStyle = UITableViewCellSelectionStyleNone;
-        
         [self addSubview:self.backView];
         [self addSubview:self.canvasView];
+        
+        [self addSubview:self.addBtn];
+        [self addSubview:self.deleteBtn];
+        
+        [kNotificationCenter addObserver:self selector:@selector(hiddenAllCityList) name:kHideDropDownNotification object:nil];
         
     }
     return self;
@@ -117,7 +121,7 @@
         [_canvasView addSubview:self.restTimeGapLab];
         [_canvasView addSubview:self.dropdownMenu_RTL];
         [_canvasView addSubview:self.dropdownMenu_RTR];
-
+        
     }
     return _canvasView;
 }
@@ -512,6 +516,8 @@
         kWeakSelf(self);
         _addBtn.block = ^(UIButton *btn) {
             
+            NSInteger aimsIndex = weakself.currentIndex + 1;
+            weakself.addBlock(aimsIndex);
         };
     }
     return _addBtn;
@@ -527,6 +533,7 @@
         kWeakSelf(self);
         _deleteBtn.block = ^(UIButton *btn) {
             
+            weakself.deleteBlock(weakself.currentIndex);
         };
     }
     return _deleteBtn;
@@ -608,9 +615,18 @@
     
     _dropdownMenu_RTR.mj_x = _restTimeGapLab.right;
     _dropdownMenu_RTR.mj_y = _restTimeLab.mj_y - dropdownMenu_gap;
+    
+    
+    CGFloat btnheight = (_canvasView.height - _addBtn.width *2 - 10)/2.0;
+    
+    _addBtn.mj_x = _deleteBtn.mj_x = _canvasView.right + 15;
+    _addBtn.mj_y = btnheight + 15;
+    _deleteBtn.mj_y = _addBtn.bottom + 10;
+    
 }
 
-- (void)dealloc{
+
+- (void)hiddenAllCityList{
     
     //强度百分比
     if (_dropdownMenu_PSL) {
@@ -630,15 +646,15 @@
     if (_dropdownMenu_TTR) {
         [_dropdownMenu_TTR hiddenCityList];
     }
-
-
+    
+    
     //强度
     if (_dropdownMenu_ST) {
         [_dropdownMenu_ST hiddenCityList];
     }
     
-
-
+    
+    
     //RPE区间
     if (_dropdownMenu_RPEL) {
         [_dropdownMenu_RPEL hiddenCityList];
@@ -647,8 +663,8 @@
     if (_dropdownMenu_RPER) {
         [_dropdownMenu_RPER hiddenCityList];
     }
-
-
+    
+    
     //组间休息
     if (_dropdownMenu_RTL) {
         [_dropdownMenu_RTL hiddenCityList];
@@ -658,6 +674,12 @@
         [_dropdownMenu_RTR hiddenCityList];
     }
 
+}
+
+- (void)dealloc{
+    
+    //[self hiddenAllCityList];
+    [kNotificationCenter removeObserver:self name:kHideDropDownNotification object:nil];
 }
 
 

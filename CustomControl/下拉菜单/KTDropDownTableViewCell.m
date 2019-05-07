@@ -13,9 +13,11 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self addSubview:self.cityLabel];
+    
+    if(self){
         
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        [self addSubview:self.cityLabel];
     }
     return self;
 }

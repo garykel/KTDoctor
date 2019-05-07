@@ -97,6 +97,7 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
                                aimsH);
         
 
+        weakself.mTableView.hidden = NO;
         weakself.listView.frame = [self.window convertRect:rc fromView:self] ;
         weakself.mTableView.frame = CGRectMake(0, 0, weakself.bounds.size.width, weakself.listView.bounds.size.height);
 
@@ -121,11 +122,12 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
     [UIView animateWithDuration:AnimateTime  animations:^{
         
         weakself.dropDownImage.transform = CGAffineTransformIdentity;
+        
         CGRect rc = CGRectMake(0, weakself.mainBtn.bottom, weakself.bounds.size.width, 0);
         weakself.listView.frame = [self.window convertRect:rc fromView:self] ;
-
-        
         weakself.mTableView.frame = CGRectMake(0, 0, weakself.bounds.size.width, 0);
+        
+        weakself.mTableView.hidden = YES;
         
         
     }completion:^(BOOL finished) {

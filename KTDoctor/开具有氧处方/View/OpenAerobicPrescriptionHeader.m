@@ -37,6 +37,9 @@
     
     [self addSubview:self.headerBackView];
     [self addSubview:self.footerBackView];
+    
+    [kNotificationCenter addObserver:self selector:@selector(hiddenAllCityList) name:kHideDropDownNotification object:nil];
+
 }
 
 
@@ -687,8 +690,8 @@
 }
 
 
-- (void)dealloc{
-    
+
+- (void)hiddenAllCityList{
     
     //训练部位
     if (_dropdownMenu_TS) {
@@ -699,13 +702,13 @@
     if (_dropdownMenu_TE) {
         [_dropdownMenu_TE hiddenCityList];
     }
-
+    
     //推荐模板
     if (_dropdownMenu_R) {
         [_dropdownMenu_R hiddenCityList];
     }
     
-
+    
     //疗程
     if (_dropdownMenu_T) {
         [_dropdownMenu_T hiddenCityList];
@@ -722,7 +725,14 @@
     if (_dropdownMenu_PM) {
         [_dropdownMenu_PM hiddenCityList];
     }
-    
+
 }
+
+- (void)dealloc{
+    
+    //[self hiddenAllCityList];
+    [kNotificationCenter removeObserver:self name:kHideDropDownNotification object:nil];
+}
+
 
 @end
