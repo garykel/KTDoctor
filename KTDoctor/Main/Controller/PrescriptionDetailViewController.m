@@ -336,6 +336,7 @@ CGSize prescriptionListviewSize;
     self.listView.dataSource = self;
     self.listView.backgroundColor = [UIColor clearColor];
     self.listView.showsVerticalScrollIndicator = NO;
+    self.listView.tableFooterView = [[UIView alloc] init];
     [self.listBgView addSubview:self.listView];
     prescriptionListviewSize = self.listView.frame.size;
     
@@ -353,7 +354,8 @@ CGSize prescriptionListviewSize;
     self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingGroupLbl_RightMargin * kXScal + kTrainingGroupValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
     self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
-    self.trainingGroupValLbl.text = @"4";
+    NSInteger sectionNum = [[self.prescriptionDict valueForKey:@"sectionNum"] integerValue];
+    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",sectionNum];
     [self.dataView addSubview:self.trainingGroupValLbl];
     
     CGFloat hspace = (self.dataView.frame.size.width - 2 * kTrainingGroupLbl_LeftMargin * kXScal - 2 * (kTrainingGroupLbl_Width + kTrainingGroupLbl_RightMargin + kTrainingGroupValLbl_Width) * kXScal - (kTrainingTimeLbl_Width + kTrainingTimeLbl_RightMargin + kTrainingGroupValLbl_Width) * kXScal)/2;
@@ -368,7 +370,7 @@ CGSize prescriptionListviewSize;
     self.trainingTimeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingTimeLbl.center.y);
     self.trainingTimeValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.trainingTimeValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
-    self.trainingTimeValLbl.text = @"24:24";
+    self.trainingTimeValLbl.text = [self computeTotalTrainingTime];
     [self.dataView addSubview:self.trainingTimeValLbl];
     
     self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeValLbl.frame) + hspace, self.trainingGroupLbl.frame.origin.y, kTrainingGroupLbl_Width * kXScal, kTrainingGroupValLbl_Height * kYScal)];
@@ -381,7 +383,8 @@ CGSize prescriptionListviewSize;
     self.avgDifficultyValLbl.center = CGPointMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.avgDifficultyLbl.center.y);
     self.avgDifficultyValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
-    self.avgDifficultyValLbl.text = @"4";
+    NSInteger avgDifficulty = [self computerAvgDifficulty];
+    self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",avgDifficulty];
     [self.dataView addSubview:self.avgDifficultyValLbl];
     
     self.doctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.listBgView.frame.origin.x, CGRectGetMaxY(self.listBgView.frame) + kDoctorAdviceLbl_TopMargin * kYScal, kDoctorLbl_Width * kXScal, kDoctorLbl_Height * kYScal)];
@@ -400,6 +403,41 @@ CGSize prescriptionListviewSize;
     self.doctorAdviceValLbl.font = [UIFont systemFontOfSize:kDoctorLbl_FontSize * kYScal];
     self.doctorAdviceValLbl.text = [self.prescriptionDict valueForKey:@"doctorAdvice"];
     [self.doctorAdviceView addSubview:self.doctorAdviceValLbl];
+}
+
+//计算训练总时长
+- (NSString*)computeTotalTrainingTime {
+    NSString *resultStr = @"00:00";
+    if (self.groups.count > 0) {
+        NSInteger sumDuration = 0;
+        for (NSDictionary *dict in self.groups) {
+            sumDuration += [[dict valueForKey:@"duration"] integerValue];
+            sumDuration += [[dict valueForKey:@"restDuration"] integerValue];
+        }
+        resultStr = [self getTimeString:sumDuration];
+    }
+    return resultStr;
+}
+
+- (NSString *)getTimeString:(NSInteger)seconds {
+    NSString *timeStr = @"";
+    NSInteger minute = seconds / 60;
+    NSInteger second = seconds % 60;
+    timeStr = [NSString stringWithFormat:@"%02ld:%02ld",(long)minute,(long)second];
+    return timeStr;
+}
+
+//计算平均强度
+- (NSInteger)computerAvgDifficulty {
+    NSInteger avgDifficulty = 0;
+    if (self.groups.count > 0) {
+        NSInteger sumDifficulty = 0;
+        for (NSDictionary *dict in self.groups) {
+            sumDifficulty += [[dict valueForKey:@"difficulty"] integerValue];
+        }
+        avgDifficulty = sumDifficulty / self.groups.count;
+    }
+    return avgDifficulty;
 }
 
 #pragma mark - UITableViewDataSource && UITableViewDelegate
@@ -446,6 +484,22 @@ CGSize prescriptionListviewSize;
         cell.rpeLeftTF.text = rpeRangeArr[0];
         cell.rpeRightTF.text = rpeRangeArr[1];
     }
+    NSString *hrRange = [dict valueForKey:@"hrRange"];
+    NSArray *hrRangeArr = [hrRange componentsSeparatedByString:@"-"];
+    if (hrRangeArr.count > 0) {
+        cell.difficultyLeftTF.text = [NSString stringWithFormat:@"%@%%",hrRangeArr[0]];
+        cell.difficultyRightTF.text = [NSString stringWithFormat:@"%@%%",hrRangeArr[1]];
+    }
+    NSInteger duration = [[dict valueForKey:@"duration"] integerValue];
+    NSInteger trainingMin = duration / 60;
+    NSInteger trainingSec = duration % 60;
+    cell.traingingTimeLeftTF.text = [NSString stringWithFormat:@"%d",trainingMin];
+    cell.traingingTimeRightTF.text = [NSString stringWithFormat:@"%d",trainingSec];
+    NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
+    NSInteger restMin = restDuration / 60;
+    NSInteger restSec = restDuration % 60;
+    cell.restLeftTF.text = [NSString stringWithFormat:@"%d",restMin];
+    cell.restRightTF.text = [NSString stringWithFormat:@"%d",restSec];
     cell.difficultyTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]];
     return cell;
 }
