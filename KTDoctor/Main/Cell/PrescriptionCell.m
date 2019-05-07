@@ -106,6 +106,7 @@ extern CGSize prescriptionListviewSize;
     self.traingingTimeLeftTF.backgroundColor = [UIColor whiteColor];
     self.traingingTimeLeftTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.traingingTimeLeftTF.font = [UIFont systemFontOfSize:kPercentTF_FontSize * kYScal];
+    self.traingingTimeLeftTF.enabled = NO;
     [self.contentView addSubview:self.traingingTimeLeftTF];
     
     self.traingingTimeMinLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeLeftTF.frame) + kTrainingTimeTF_RightMargin * kXScal, 0, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -119,6 +120,7 @@ extern CGSize prescriptionListviewSize;
     self.traingingTimeRightTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.traingingTimeRightTF.font = [UIFont systemFontOfSize:kPercentTF_FontSize * kYScal];
     self.traingingTimeRightTF.backgroundColor = [UIColor whiteColor];
+    self.traingingTimeRightTF.enabled = NO;
     [self.contentView addSubview:self.traingingTimeRightTF];
     
     self.traingingTimeSecLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeRightTF.frame) + kTrainingTimeTF_RightMargin * kXScal, self.traingingTimeMinLbl.frame.origin.y, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -137,6 +139,7 @@ extern CGSize prescriptionListviewSize;
     self.difficultyTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.difficultyTF.backgroundColor = [UIColor whiteColor];
     self.difficultyTF.font = [UIFont systemFontOfSize:kPercentTF_FontSize * kYScal];
+    self.difficultyTF.enabled = NO;
     [self.contentView addSubview:self.difficultyTF];
     
     self.rpeZoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(kItemLbl_LeftMargin * kXScal, CGRectGetMaxY(self.difficultyPercentLbl.frame) + kLongLbl_BottomMargin * kYScal, kLongLbl_Width * kXScal, kItemLbl_Height * kYScal)];
@@ -177,6 +180,7 @@ extern CGSize prescriptionListviewSize;
     self.restLeftTF.backgroundColor = [UIColor whiteColor];
     self.restLeftTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.restLeftTF.font = [UIFont systemFontOfSize:kPercentTF_FontSize * kYScal];
+    self.restLeftTF.enabled = NO;
     [self.contentView addSubview:self.restLeftTF];
     
     self.restMinLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.restLeftTF.frame) + kTrainingTimeTF_RightMargin * kXScal, 0, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -190,6 +194,7 @@ extern CGSize prescriptionListviewSize;
     self.restRightTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.restRightTF.font = [UIFont systemFontOfSize:kPercentTF_FontSize * kYScal];
     self.restRightTF.backgroundColor = [UIColor whiteColor];
+    self.restRightTF.enabled = NO;
     [self.contentView addSubview:self.restRightTF];
     
     self.restSecLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.restRightTF.frame) + kTrainingTimeTF_RightMargin * kXScal, self.restMinLbl.frame.origin.y, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];

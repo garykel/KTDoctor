@@ -9,7 +9,6 @@
 #import "PrescriptionDetailViewController.h"
 #import "PrescriptionCell.h"
 #import "UserModel.h"
-#import "UnitTextView.h"
 #import "AerobicGroupCell.h"
 
 #define kBackButton_LeftMargin 15
@@ -29,6 +28,11 @@
 #define kNameLbl_Width 55
 #define kNameLbl_Height 13
 #define kDoctorLbl_Width 65
+#define kDoctorLbl_Height 12
+#define kDoctorLbl_RightMargin 16
+#define kDoctorLbl_FontSize 13.0
+#define kDoctorAdviceValLbl_LeftMargin 10
+#define kDoctorAdviceValLbl_Height 13
 #define kNameTF_Width 482
 #define kNameTF_Height 19
 #define kNameTF_FontSize 13.0
@@ -39,18 +43,21 @@
 #define kScrollview_Height 930
 #define kListView_TopMargin 20
 #define kListView_LeftMargin 16
-#define kListView_BottomMargin 33
+#define kListView_BottomMargin 43
 #define kTrainingGroupLbl_LeftMargin 140
 #define kTrainingGroupLbl_RightMargin 9
-#define kTrainingGroupLbl_Width 55
+#define kTrainingGroupLbl_TopMargin 16
+#define kTrainingGroupLbl_Width 65
 #define kTrainingGroupLbl_Height 13
 #define kTrainingGroupLbl_FontSize 13.0
 #define kTrainingGroupValLbl_FontSize 15.0
+#define kTrainingGroupValLbl_Width 30
+#define kTrainingGroupValLbl_Height 12
 #define kTrainingTimeLbl_RightMargin 10
-#define kTrainingTimeLbl_Width 68
-#define kTrainingTimeValLbl_Width 36
-#define kTrainingTimeValLbl_Height 12
-#define kDoctorAdviceView_TopMargin 14
+#define kTrainingTimeLbl_Width 80
+#define kTrainingTimeValLbl_Width 45
+#define kDoctorAdviceLbl_TopMargin 19
+#define kDoctorAdviceView_Height 22
 #define kCell_Height 118
 
 CGSize prescriptionListviewSize;
@@ -93,7 +100,8 @@ CGSize prescriptionListviewSize;
 @property (nonatomic,strong)UILabel *avgDifficultyLbl;
 @property (nonatomic,strong)UILabel *avgDifficultyValLbl;
 @property (nonatomic,strong)UILabel *doctorAdviceLbl;
-@property (nonatomic,strong)UnitTextView *doctorAdviceView;
+@property (nonatomic,strong)UIView *doctorAdviceView;
+@property (nonatomic,strong)UILabel *doctorAdviceValLbl;
 @property (nonatomic,strong)NSMutableArray *groups;
 @end
 
@@ -101,7 +109,8 @@ CGSize prescriptionListviewSize;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.groups = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4",@"5", nil];
+    self.groups = [NSMutableArray array];
+    self.groups = [NSMutableArray arrayWithArray:[self.prescriptionDict valueForKey:@"sections"]];
     [self setNavBar];
     [self setupUI];
 }
@@ -329,6 +338,68 @@ CGSize prescriptionListviewSize;
     self.listView.showsVerticalScrollIndicator = NO;
     [self.listBgView addSubview:self.listView];
     prescriptionListviewSize = self.listView.frame.size;
+    
+    self.dataView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.listView.frame), self.listView.frame.size.width, kListView_BottomMargin * kYScal)];
+    self.dataView.backgroundColor = [UIColor clearColor];
+    [self.listBgView addSubview:self.dataView];
+    
+    self.trainingGroupLbl = [[UILabel alloc] initWithFrame:CGRectMake(kTrainingGroupLbl_LeftMargin * kXScal, kTrainingGroupLbl_TopMargin * kYScal, kTrainingGroupLbl_Width * kXScal, kTrainingGroupLbl_Height * kYScal)];
+    self.trainingGroupLbl.text = @"训练组数：";
+    self.trainingGroupLbl.font = [UIFont systemFontOfSize:kTrainingGroupLbl_FontSize * kYScal];
+    self.trainingGroupLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+    [self.dataView addSubview:self.trainingGroupLbl];
+    
+    self.trainingGroupValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingGroupLbl_RightMargin * kXScal, 0, kTrainingGroupValLbl_Width, kTrainingGroupValLbl_Height * kYScal)];
+    self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingGroupLbl_RightMargin * kXScal + kTrainingGroupValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
+    self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+    self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
+    self.trainingGroupValLbl.text = @"4";
+    [self.dataView addSubview:self.trainingGroupValLbl];
+    
+    CGFloat hspace = (self.dataView.frame.size.width - 2 * kTrainingGroupLbl_LeftMargin * kXScal - 2 * (kTrainingGroupLbl_Width + kTrainingGroupLbl_RightMargin + kTrainingGroupValLbl_Width) * kXScal - (kTrainingTimeLbl_Width + kTrainingTimeLbl_RightMargin + kTrainingGroupValLbl_Width) * kXScal)/2;
+    
+    self.trainingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + hspace, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingGroupValLbl_Height * kYScal)];
+    self.trainingTimeLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+    self.trainingTimeLbl.font = [UIFont systemFontOfSize:kTrainingGroupLbl_FontSize * kYScal];
+    self.trainingTimeLbl.text = @"训练总时长：";
+    [self.dataView addSubview:self.trainingTimeLbl];
+    
+    self.trainingTimeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingGroupValLbl_Height * kYScal)];
+    self.trainingTimeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingTimeLbl.center.y);
+    self.trainingTimeValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+    self.trainingTimeValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
+    self.trainingTimeValLbl.text = @"24:24";
+    [self.dataView addSubview:self.trainingTimeValLbl];
+    
+    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeValLbl.frame) + hspace, self.trainingGroupLbl.frame.origin.y, kTrainingGroupLbl_Width * kXScal, kTrainingGroupValLbl_Height * kYScal)];
+    self.avgDifficultyLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+    self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kTrainingGroupLbl_FontSize * kYScal];
+    self.avgDifficultyLbl.text = @"平均强度：";
+    [self.dataView addSubview:self.avgDifficultyLbl];
+    
+    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingGroupValLbl_Height * kYScal)];
+    self.avgDifficultyValLbl.center = CGPointMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.avgDifficultyLbl.center.y);
+    self.avgDifficultyValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+    self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
+    self.avgDifficultyValLbl.text = @"4";
+    [self.dataView addSubview:self.avgDifficultyValLbl];
+    
+    self.doctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.listBgView.frame.origin.x, CGRectGetMaxY(self.listBgView.frame) + kDoctorAdviceLbl_TopMargin * kYScal, kDoctorLbl_Width * kXScal, kDoctorLbl_Height * kYScal)];
+    self.doctorLbl.font = [UIFont systemFontOfSize:kDoctorLbl_FontSize * kYScal];
+    self.doctorLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+    self.doctorLbl.text = @"医      嘱";
+    [self.scrollview addSubview:self.doctorLbl];
+    
+    self.doctorAdviceView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.doctorLbl.frame) + kDoctorLbl_RightMargin * kXScal, 0, self.scrollview.frame.size.width - CGRectGetMaxX(self.doctorLbl.frame) - kDoctorLbl_RightMargin * kXScal, kDoctorAdviceView_Height * kYScal)];
+    self.doctorAdviceView.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
+    self.doctorAdviceView.center = CGPointMake(CGRectGetMaxX(self.doctorLbl.frame) + kDoctorLbl_RightMargin * kXScal + (self.scrollview.frame.size.width - CGRectGetMaxX(self.doctorLbl.frame) - kDoctorLbl_RightMargin * kXScal)/2.0, self.doctorLbl.center.y);
+    [self.scrollview addSubview:self.doctorAdviceView];
+    
+    self.doctorAdviceValLbl = [[UILabel alloc] initWithFrame:CGRectMake(kDoctorAdviceValLbl_LeftMargin * kXScal, (self.doctorAdviceView.frame.size.height - kDoctorAdviceValLbl_Height * kYScal)/2.0, self.doctorAdviceView.frame.size.width - kDoctorAdviceValLbl_LeftMargin * kXScal, kDoctorAdviceValLbl_Height * kYScal)];
+    self.doctorAdviceValLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+    self.doctorAdviceValLbl.font = [UIFont systemFontOfSize:kDoctorLbl_FontSize * kYScal];
+    self.doctorAdviceValLbl.text = [self.prescriptionDict valueForKey:@"doctorAdvice"];
+    [self.doctorAdviceView addSubview:self.doctorAdviceValLbl];
 }
 
 #pragma mark - UITableViewDataSource && UITableViewDelegate
@@ -345,7 +416,11 @@ CGSize prescriptionListviewSize;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 15;
+    if (section == self.groups.count - 1) {
+        return 0;
+    } else {
+        return 15;
+    }
 }
 
 - (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -363,17 +438,15 @@ CGSize prescriptionListviewSize;
         cell.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     }
     cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
-    NSArray *sections = [self.prescriptionDict valueForKey:@"sections"];
-    if (sections.count > 0) {
-        NSDictionary *dict = [sections objectAtIndex:indexPath.section];
-        NSString *rpeRange = [dict valueForKey:@"rpeRange"];
-        NSArray *rpeRangeArr = [rpeRange componentsSeparatedByString:@"-"];
-        if (rpeRangeArr.count > 0) {
-            cell.rpeLeftTF.text = rpeRangeArr[0];
-            cell.rpeRightTF.text = rpeRangeArr[1];
-        }
-        cell.difficultyTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]];
+    NSDictionary *dict = [self.groups objectAtIndex:indexPath.section];
+    NSLog(@"dict is :%@",dict);
+    NSString *rpeRange = [dict valueForKey:@"rpeRange"];
+    NSArray *rpeRangeArr = [rpeRange componentsSeparatedByString:@"-"];
+    if (rpeRangeArr.count > 0) {
+        cell.rpeLeftTF.text = rpeRangeArr[0];
+        cell.rpeRightTF.text = rpeRangeArr[1];
     }
+    cell.difficultyTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]];
     return cell;
 }
 
