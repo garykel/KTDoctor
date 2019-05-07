@@ -57,10 +57,7 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
         make.centerY.equalTo(weakself.mas_centerY);
     }];
     
-//    CAShapeLayer *mask = [CAShapeLayer layer];
-//    mask.path = [UIBezierPath bezierPathWithRoundedRect:self.bounds byRoundingCorners:UIRectCornerTopLeft|UIRectCornerBottomLeft cornerRadii: CGSizeMake(4, 4)].CGPath;
-//    self.layer.mask = mask;
-//    self.layer.masksToBounds = YES;
+    [self addShadowAndCircleCorner:self.layer corner:5];
 
 }
 
@@ -82,6 +79,7 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
 
 - (void)showCityList
 {
+    
     if ([self.delegate respondsToSelector:@selector(dropdownMenuWillShow:)]) {
         [self.delegate dropdownMenuWillShow:self]; // 将要显示回调代理
     }

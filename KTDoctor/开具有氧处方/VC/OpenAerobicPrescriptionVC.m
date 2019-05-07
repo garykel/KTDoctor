@@ -34,7 +34,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    //[self networkingRequest];
+    [self networkingRequest];
     [self setNavView];
     [self initParams];
     [self addkeyBoardNotification];
