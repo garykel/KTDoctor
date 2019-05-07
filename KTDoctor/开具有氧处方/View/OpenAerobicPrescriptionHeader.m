@@ -33,7 +33,7 @@
 
 - (void)setupContent
 {
-    self.backgroundColor = mBackgroudColor;
+    self.backgroundColor = [UIColor clearColor];
     
     [self addSubview:self.headerBackView];
     [self addSubview:self.footerBackView];

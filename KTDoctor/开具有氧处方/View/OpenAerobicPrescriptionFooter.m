@@ -123,7 +123,7 @@
         
         kWeakSelf(self);
         _headerBtn.block = ^(UIButton *btn) {
-            
+            NSLog(@"保存为自定义模板");
         };
     }
     return _headerBtn;
