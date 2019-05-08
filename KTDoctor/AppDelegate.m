@@ -41,7 +41,8 @@
 //MARK: 初始化用户系统
 - (void)initUserManager{
     
-    MainViewController *vc = [[MainViewController alloc] init];
+//    MainViewController *vc = [[MainViewController alloc] init];
+    LoginViewController *vc = [[LoginViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
     self.window.rootViewController = nav;

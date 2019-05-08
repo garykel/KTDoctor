@@ -9,6 +9,7 @@
 #import "PatientInfoViewController.h"
 #import "CreateAerobicPrescriptionViewController.h"
 #import "AerobicPrescriptionAndReportViewController.h"
+#import "CreatePowerPrescriptionViewController.h"
 #import "OpenAerobicPrescriptionVC.h"
 
 #import "LMJDropdownMenu.h"
@@ -409,17 +410,20 @@
 @property (nonatomic,strong)UIButton *powerReportBtn;//查看力量历史处方及报告
 @property (nonatomic,strong)UIButton *createAerobicPrescriptionBtn;//开具有氧处方
 @property (nonatomic,strong)UIButton *createPowerPrescriptionBtn;//开具力量处方
+
+@property (nonatomic,assign)NSInteger offset;
 @end
 
 @implementation PatientInfoViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.offset = 2;
     self.navigationController.navigationBar.hidden = YES;
     if (self.infoArr.count > 0) {
         self.latestInfoDict = [self.infoArr objectAtIndex:0];
         if (self.infoArr.count > 1) {
-            self.olderInfoDict = [self.infoArr objectAtIndex:1];
+            self.olderInfoDict = [self.infoArr lastObject];
         }
     }
     self.allHrDevices = [NSMutableArray array];
@@ -545,7 +549,8 @@
     [self.changeBtn.titleLabel setFont:[UIFont systemFontOfSize:kICCardBtn_FontSize * kYScal]];
     [self.changeBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.changeBtn.center = CGPointMake(self.icCardBtn.frame.origin.x + kICCardBtn_Width * kXScal / 2.0, self.hrLbl.center.y);
-    [self.changeBtn setTitle:@"修改资料" forState:UIControlStateNormal];
+    [self.changeBtn setTitle:@"更换" forState:UIControlStateNormal];
+    [self.changeBtn addTarget:self action:@selector(updateHRDevice) forControlEvents:UIControlEventTouchUpInside];
     self.changeBtn.layer.cornerRadius = kICCardBtn_Height * kYScal/2.0;
     self.changeBtn.layer.masksToBounds = YES;
     [self.scrollview addSubview:self.changeBtn];
@@ -605,6 +610,7 @@
     [self.createPowerPrescriptionBtn setTitle:@"开具力量处方" forState:UIControlStateNormal];
     self.createPowerPrescriptionBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.createPowerPrescriptionBtn.layer.masksToBounds = YES;
+    [self.createPowerPrescriptionBtn addTarget:self action:@selector(createPowerPrescription:) forControlEvents:UIControlEventTouchUpInside];
     [self.createPowerPrescriptionBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
     [self.createPowerPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.createPowerPrescriptionBtn];
@@ -2488,19 +2494,36 @@
 
 - (void)rightBtnClick:(UIButton*)sender {
     NSLog(@"向右滑动");
+    self.offset+=1;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
+    [parameter setValue:@1 forKey:@"rows"];
+    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    [self checkMorePatientInfo:parameter];
 }
 
 
 - (void)createAerobicPrescription:(UIButton*)sender {
-//    CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
-//    create.prescriptionDict = self.latestInfoDict;
-//    [self.navigationController pushViewController:create animated:NO];
-//
-    OpenAerobicPrescriptionVC *vc = [[OpenAerobicPrescriptionVC alloc] init];
-    vc.prescriptionDict = self.latestInfoDict;
-    [self.navigationController pushViewController:vc animated:YES];
+    CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
+    create.prescriptionDict = self.latestInfoDict;
+    [self.navigationController pushViewController:create animated:NO];
+
+//    OpenAerobicPrescriptionVC *vc = [[OpenAerobicPrescriptionVC alloc] init];
+//    vc.prescriptionDict = self.latestInfoDict;
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 
+- (void)createPowerPrescription:(UIButton*)sender {
+    CreatePowerPrescriptionViewController *create = [[CreatePowerPrescriptionViewController alloc] init];
+    create.prescriptionDict = self.latestInfoDict;
+    [self.navigationController pushViewController:create animated:NO];
+}
 
 - (void)checkAerobicReport:(UIButton*)sender {
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -2613,8 +2636,64 @@
         NSLog(@"error :%@",error);
     }];
 }
+
+- (void)updateHRDevice {
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    [parameter setValue:@0 forKey:@"offset"];
+    NSInteger userId = [self.user.userId integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@"" forKey:@"deviceCode"];
+    [self changePrivateHrDevice:parameter];
+}
+
 - (void)changePrivateHrDevice:(NSMutableDictionary*)parameter {
-    
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRESCRIPTION_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            AerobicPrescriptionAndReportViewController *report = [[AerobicPrescriptionAndReportViewController alloc] init];
+            report.precriptionsArr = [rows mutableCopy];
+            report.patientInfo = self.latestInfoDict;
+            [weakSelf.navigationController pushViewController:report animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)checkMorePatientInfo:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERINFO_MORE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"************** 1:%@**************",responseObject);
+        if (code == 0) {
+            NSArray *data = [responseObject valueForKey:@"data"];
+            [weakSelf.infoArr addObjectsFromArray:data];
+            NSLog(@"weakSelf.infoArr is :%@",weakSelf.infoArr);
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 
 @end

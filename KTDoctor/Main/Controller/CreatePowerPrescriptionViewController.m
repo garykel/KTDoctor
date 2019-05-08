@@ -1,12 +1,12 @@
 //
-//  CreateAerobicPrescriptionViewController.m
+//  CreatePowerPrescriptionViewController.m
 //  KTDoctor
 //
-//  Created by duwei on 2019/4/23.
+//  Created by duwei on 2019/5/8.
 //  Copyright © 2019 dz. All rights reserved.
 //
 
-#import "CreateAerobicPrescriptionViewController.h"
+#import "CreatePowerPrescriptionViewController.h"
 #import "UserModel.h"
 #import "LMJDropdownMenu.h"
 #import "UnitTextField.h"
@@ -80,7 +80,7 @@
 #define kListView_BottomMargin 83
 #define kCell_Height 118
 
-@interface CreateAerobicPrescriptionViewController ()<UIScrollViewDelegate,LMJDropdownMenuDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface CreatePowerPrescriptionViewController ()<UIScrollViewDelegate,LMJDropdownMenuDelegate,UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -129,7 +129,7 @@
 @property (nonatomic,copy)NSString *customTemplateName;
 @end
 
-@implementation CreateAerobicPrescriptionViewController
+@implementation CreatePowerPrescriptionViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -182,7 +182,7 @@
     self.titleLbl.font = [UIFont systemFontOfSize:kTitle_FontSize];
     self.titleLbl.textColor = [UIColor whiteColor];
     self.titleLbl.textAlignment = NSTextAlignmentCenter;
-    self.titleLbl.text = @"开具有氧处方";
+    self.titleLbl.text = @"开具力量处方";
     [self.navView addSubview:self.titleLbl];
 }
 
@@ -246,7 +246,7 @@
     
     self.deviceTypeTF = [[UITextField alloc] initWithFrame:CGRectMake(self.dieaseTF.frame.origin.x, 0, kDieaseTF_Width * kXScal, kDieaseTF_Height * kYScal)];
     self.deviceTypeTF.textColor = [UIColor colorWithHexString:@"#333333"];
-    self.deviceTypeTF.text = @"有氧设备";
+    self.deviceTypeTF.text = @"力量设备";
     self.deviceTypeTF.backgroundColor = [UIColor whiteColor];
     self.deviceTypeTF.center = CGPointMake(CGRectGetMaxX(self.deviceTypeLbl.frame) + kDieaseLbl_RightMargin * kXScal + kDieaseTF_Width * kXScal/2.0, self.deviceTypeLbl.center.y);
     self.deviceTypeTF.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
@@ -260,7 +260,7 @@
     [self.topView addSubview:self.trainingPositionLbl];
     
     self.trainingPositionMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(kTopView_LeftMargin * kXScal + self.riskLevelTF.frame.origin.x,CGRectGetMaxY(self.navView.frame) + kTopView_TopMargin * kYScal + self.deviceTypeTF.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-    [self.trainingPositionMenu setMenuTitles:@[@"心肺"] rowHeight:kDieaseTF_Height * kYScal attr:@{@"title":@"请选择",@"titleFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal]}];
+    [self.trainingPositionMenu setMenuTitles:@[@"胸部",@"背部",@"腿部",@"小腿",@"斯密斯"] rowHeight:kDieaseTF_Height * kYScal attr:@{@"title":@"请选择",@"titleFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal]}];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 10;
     [self.view addSubview:self.trainingPositionMenu];
@@ -338,7 +338,7 @@
     self.sportTimePointMenu.tag = 60;
     [self.view addSubview:self.sportTimePointMenu];
     
-//    self.scrollview.contentSize = CGSizeMake(kWidth - 2 * kTopView_LeftMargin * kXScal, kScrollview_Height * kYScal);
+    //    self.scrollview.contentSize = CGSizeMake(kWidth - 2 * kTopView_LeftMargin * kXScal, kScrollview_Height * kYScal);
     self.listBgView = [[UIView alloc] initWithFrame:CGRectMake(self.topView.frame.origin.x, CGRectGetMaxY(self.topView.frame) + kTopView_BottomMargin * kYScal, self.topView.frame.size.width, self.scrollview.contentSize.height - CGRectGetMaxY(self.topView.frame) - kTopView_BottomMargin * kYScal - kBottomHeight * kYScal)];
     self.listBgView.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
     [self.scrollview addSubview:self.listBgView];
@@ -372,28 +372,28 @@
     self.trainingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + space, 0, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
     self.trainingTimeLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.trainingTimeLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-    self.trainingTimeLbl.text = @"训练总时长：";
+    self.trainingTimeLbl.text = @"训练总量：";
     [self.dataView addSubview:self.trainingTimeLbl];
     
     self.trainingTimeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
     self.trainingTimeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingTimeLbl.center.y);
     self.trainingTimeValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.trainingTimeValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingTimeValLbl.text = @"24:24";
+    self.trainingTimeValLbl.text = @"7.50kg";
     [self.dataView addSubview:self.trainingTimeValLbl];
     
-    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeValLbl.frame) + space, 0, kTrainingGroupLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
-    self.avgDifficultyLbl.textColor = [UIColor colorWithHexString:@"#333333"];
-    self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-    self.avgDifficultyLbl.text = @"平均强度：";
-    [self.dataView addSubview:self.avgDifficultyLbl];
-    
-    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.avgDifficultyValLbl.center = CGPointMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.avgDifficultyLbl.center.y);
-    self.avgDifficultyValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
-    self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.avgDifficultyValLbl.text = @"4";
-    [self.dataView addSubview:self.avgDifficultyValLbl];
+//    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeValLbl.frame) + space, 0, kTrainingGroupLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
+//    self.avgDifficultyLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+//    self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
+//    self.avgDifficultyLbl.text = @"平均强度：";
+//    [self.dataView addSubview:self.avgDifficultyLbl];
+//
+//    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
+//    self.avgDifficultyValLbl.center = CGPointMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.avgDifficultyLbl.center.y);
+//    self.avgDifficultyValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+//    self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
+//    self.avgDifficultyValLbl.text = @"4";
+//    [self.dataView addSubview:self.avgDifficultyValLbl];
     
     self.templateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.templateBtn.frame = CGRectMake((self.dataView.frame.size.width - kTemplateButton_Width * kXScal)/2, self.dataView.frame.size.height - kTemplateButton_Height * kYScal - kTemplateButton_BottomMargin * kYScal, kTemplateButton_Width * kXScal, kTemplateButton_Height * kYScal);
@@ -473,7 +473,7 @@
             NSString *orgCode = orgCodeArr[0];
             [parameter setValue:orgCode forKey:@"orgCode"];
             [parameter setValue:@1 forKey:@"type"]; //类型
-            [parameter setValue:@1 forKey:@"type2"]; //类型2，1=强度，2=功率
+            [parameter setValue:@2 forKey:@"type2"]; //类型2，1=强度，2=功率
             [parameter setValue:weakself.customTemplateName forKey:@"title"];
             NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
             [parameter setValue:disease forKey:@"disease"];
@@ -671,4 +671,6 @@
         NSLog(@"error :%@",error);
     }];
 }
+
+
 @end
