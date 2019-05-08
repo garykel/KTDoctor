@@ -314,12 +314,13 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
         _mTableView.separatorColor = mDefindColor;
         _mTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
         _mTableView.tableFooterView.backgroundColor = self.backgroundColor;
+        _mTableView.showsVerticalScrollIndicator = NO;
         
         //设置边框的颜色
-        [_mTableView.layer setBorderColor:mDefindColor.CGColor];
+//        [_mTableView.layer setBorderColor:mDefindColor.CGColor];
         
         //设置边框的粗细
-        [_mTableView.layer setBorderWidth:1.0];
+//        [_mTableView.layer setBorderWidth:1.0];
         
         //设置圆角的半径
         [_mTableView.layer setCornerRadius:5];
