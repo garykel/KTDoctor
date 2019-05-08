@@ -44,7 +44,7 @@
 //    MainViewController *vc = [[MainViewController alloc] init];
     LoginViewController *vc = [[LoginViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-    [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
+//    [self.window.rootViewController presentViewController:nav animated:YES completion:nil];
     self.window.rootViewController = nav;
 }
 
