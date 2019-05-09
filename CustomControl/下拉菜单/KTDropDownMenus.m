@@ -16,7 +16,6 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
 @interface KTDropDownMenus ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UIImageView *dropDownImage;
-@property (nonatomic, strong) UITableView *mTableView;
 @property (nonatomic, strong) UIView *listView;   // 尖头图标
 @property (nonatomic, assign) BOOL isHiddenBtn;
 
@@ -64,7 +63,7 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
 
 
 //MARK:  - Response Methods
-- (void)clickMainBtn :(id)sender
+- (void)clickMainBtn :(UIButton *)sender
 {
     [self.window addSubview:self.listView]; // 将下拉视图添加到控件的俯视图上
   
@@ -75,6 +74,7 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
         
         [self hiddenCityList];
     }
+    [self.delegate dropdownMenu:self mainBtnClick:sender];
 }
 
 - (void)showCityList

@@ -22,7 +22,7 @@
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellNumber:(NSInteger)number; // 当选择某个选项时调用str
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string; // 当选择某个选项时调用
 
-
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton*)sender;//下拉按钮点击时调用
 
 @end
 
@@ -32,7 +32,7 @@
 @property (nonatomic, copy) NSString *defualtStr; //默认显示
 @property (nonatomic, strong) NSArray *titles;
 @property (nonatomic, assign) float dropdownHeight;
-
+@property (nonatomic, strong) UITableView *mTableView;
 @property (nonatomic, weak) id<XXTGDropdownMenuDelegate> delegate;
 
 - (void)showCityList; // 显示下拉菜单
