@@ -611,15 +611,16 @@
             NSLog(@"rows is :%@",rows);
             if (rows.count > 0) {
                 for (NSDictionary *dict in rows) {
-                    NSArray *typeList = [dict valueForKey:@"typeList"];
-                    if (typeList.count > 0) {
-                        for (NSDictionary *typeDict in typeList) {
-                            NSString *name = [typeDict valueForKey:@"name"];
-                            if ([name isEqualToString:self.traingDeviceMenu.mainBtn.titleLabel.text]) {
-                                [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
-                            }
-                        }
-                    }
+//                    NSArray *typeList = [dict valueForKey:@"typeList"];
+//                    if (typeList.count > 0) {
+//                        for (NSDictionary *typeDict in typeList) {
+//                            NSString *name = [typeDict valueForKey:@"name"];
+//                            if ([name isEqualToString:self.traingDeviceMenu.mainBtn.titleLabel.text]) {
+//                                [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
+//                            }
+//                        }
+//                    }
+                    [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
                 }
             }
             [weakself.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
