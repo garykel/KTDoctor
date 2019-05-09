@@ -74,6 +74,7 @@
 		5B875B9F224CAEFB00736FC2 /* PatientCell16.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B9E224CAEFB00736FC2 /* PatientCell16.m */; };
 		5BAEB8932275B8470087CA76 /* UnitTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAEB8922275B8470087CA76 /* UnitTextView.m */; };
 		5BB54FC32282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB54FC22282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m */; };
+		5BB9D3DB2284025A00EACDE2 /* CreatePrescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB9D3DA2284025A00EACDE2 /* CreatePrescriptionCell.m */; };
 		5BCEB8B02251A8AB005185B5 /* MonitorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BCEB8AF2251A8AB005185B5 /* MonitorDetailViewController.m */; };
 		5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD964062239052D006FD9CD /* NSString+mobile.m */; };
 		5BD9640B22390AC2006FD9CD /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BD9640A22390AC2006FD9CD /* MainViewController.m */; };
@@ -297,6 +298,8 @@
 		5BAEB8922275B8470087CA76 /* UnitTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnitTextView.m; sourceTree = "<group>"; };
 		5BB54FC12282EEF700B2FFDF /* CreatePowerPrescriptionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreatePowerPrescriptionViewController.h; sourceTree = "<group>"; };
 		5BB54FC22282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreatePowerPrescriptionViewController.m; sourceTree = "<group>"; };
+		5BB9D3D92284025A00EACDE2 /* CreatePrescriptionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreatePrescriptionCell.h; sourceTree = "<group>"; };
+		5BB9D3DA2284025A00EACDE2 /* CreatePrescriptionCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreatePrescriptionCell.m; sourceTree = "<group>"; };
 		5BCEB8AE2251A8AB005185B5 /* MonitorDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MonitorDetailViewController.h; sourceTree = "<group>"; };
 		5BCEB8AF2251A8AB005185B5 /* MonitorDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MonitorDetailViewController.m; sourceTree = "<group>"; };
 		5BD964052239052D006FD9CD /* NSString+mobile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+mobile.h"; sourceTree = "<group>"; };
@@ -558,6 +561,8 @@
 				0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */,
 				5B35691E22801DEC001BD84C /* PrescriptionCell.h */,
 				5B35691F22801DED001BD84C /* PrescriptionCell.m */,
+				5BB9D3D92284025A00EACDE2 /* CreatePrescriptionCell.h */,
+				5BB9D3DA2284025A00EACDE2 /* CreatePrescriptionCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1447,6 +1452,7 @@
 				5BF8D8F02280262F002199E4 /* NSObject+CheckIsNull.m in Sources */,
 				5BF95288226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
+				5BB9D3DB2284025A00EACDE2 /* CreatePrescriptionCell.m in Sources */,
 				5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */,
 				5BF44CD92256097D006C3405 /* HistoryDetailViewController.m in Sources */,
 				5B126726225B3EFD00894CCF /* HistoryCell.m in Sources */,

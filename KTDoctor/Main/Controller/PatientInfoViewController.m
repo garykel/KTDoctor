@@ -2513,7 +2513,6 @@
     CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
     create.prescriptionDict = self.latestInfoDict;
     [self.navigationController pushViewController:create animated:NO];
-
 //    OpenAerobicPrescriptionVC *vc = [[OpenAerobicPrescriptionVC alloc] init];
 //    vc.prescriptionDict = self.latestInfoDict;
 //    [self.navigationController pushViewController:vc animated:YES];
