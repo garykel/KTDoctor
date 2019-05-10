@@ -27,6 +27,7 @@
 #define kDifficultyPercentImg_Right 15
 #define kMenu_Width 61
 #define kMenu_Height 20
+#define kDropdownHeight 30
 #define kMenu_RightMargin  9
 #define kTildeLbl_Width 7
 #define kTildeLbl_Height 3
@@ -44,6 +45,10 @@
 #define kListBgView_LeftMargin 20
 #define kCell_Height 118
 #define kDifficultyMenu_RightMargin 29
+
+@interface CreatePrescriptionCell()<XXTGDropdownMenuDelegate>
+
+@end
 
 @implementation CreatePrescriptionCell
 
@@ -89,9 +94,12 @@
     self.difficultyImg.layer.masksToBounds = YES;
     [self.infoBgView addSubview:self.difficultyImg];
     
-    self.difficultyLeftMenu = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyImg.frame) + kDifficultyPercentImg_Right * kXScal, 0, kMenu_Width * kXScal, kMenu_Height * kYScal)];
+    self.difficultyLeftMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyImg.frame) + kDifficultyPercentImg_Right * kXScal, 0, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     self.difficultyLeftMenu.backgroundColor = [UIColor whiteColor];
     self.difficultyLeftMenu.center = CGPointMake(CGRectGetMaxX(self.difficultyImg.frame) + kDifficultyPercentImg_Right * kXScal + kMenu_Width * kXScal/2.0, self.difficultyPercentLbl.center.y);
+    [self.difficultyLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.difficultyLeftMenu.delegate = self;
+    self.difficultyLeftMenu.titles = @[@"5",@"10",@"15",@"20",@"25",@"30",@"35",@"40",@"45",@"50",@"55",@"60",@"65",@"70",@"75",@"80",@"85",@"90",@"95",@"100"];
     [self.infoBgView addSubview:self.difficultyLeftMenu];
     
     self.difficultyTildeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyLeftMenu.frame) + kMenu_RightMargin * kXScal, 0, kTildeLbl_Width * kXScal, kTildeLbl_Height * kYScal)];
@@ -101,8 +109,10 @@
     self.difficultyTildeLbl.text = @"~";
     [self.infoBgView addSubview:self.difficultyTildeLbl];
     
-    self.difficultyRightMenu = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyTildeLbl.frame) + kMenu_RightMargin * kXScal, self.difficultyLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    self.difficultyRightMenu.backgroundColor = [UIColor whiteColor];
+    self.difficultyRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyTildeLbl.frame) + kMenu_RightMargin * kXScal, self.difficultyLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
+    [self.difficultyRightMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.difficultyRightMenu.delegate = self;
+    self.difficultyRightMenu.titles = @[@"10",@"15",@"20",@"25",@"30",@"35",@"40",@"45",@"50",@"55",@"60",@"65",@"70",@"75",@"80",@"85",@"90",@"95",@"100"];
     [self.infoBgView addSubview:self.difficultyRightMenu];
     
     CGFloat space = (self.infoBgView.frame.size.width - kDifficultyPercentLbl_LeftMargin * kXScal - kDifficultyPercentLbl_Width * kXScal - kDifficultyPercentLbl_RightMargin * kXScal - kDifficultyPercentImg_Widht * kXScal -kDifficultyPercentImg_Right * kXScal - 2 * kMenu_Width * kXScal - kMenu_RightMargin * kXScal - kTildeLbl_Width * kXScal - kMenu_RightMargin * kXScal - kTrainingTimeLbl_Width * kXScal - kTrainingTimeLbl_Right * kXScal - 2 * kMenu_Width * kXScal - 2 * kMinLbl_Width * kXScal - 3 * kMenu_RightMargin * kXScal - kDifficultyLbl_Width * kXScal - kTrainingTimeLbl_Right - kMenu_Width * kXScal)/2;
@@ -112,8 +122,14 @@
     self.traingingTimeLbl.text = @"训练时长";
     [self.infoBgView addSubview:self.traingingTimeLbl];
     
-    self.traingingTimeLeftMenu = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeLbl.frame) + kTrainingTimeLbl_Right * kXScal, self.difficultyRightMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    self.traingingTimeLeftMenu.backgroundColor = [UIColor whiteColor];
+    self.traingingTimeLeftMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeLbl.frame) + kTrainingTimeLbl_Right * kXScal, self.difficultyRightMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
+    [self.traingingTimeLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.traingingTimeLeftMenu.delegate = self;
+    NSMutableArray *times = [NSMutableArray array];
+    for (NSInteger i = 0; i < 60; i++) {
+        [times addObject:[NSString stringWithFormat:@"%d",i]];
+    }
+    self.traingingTimeLeftMenu.titles = [times copy];
     [self.infoBgView addSubview:self.traingingTimeLeftMenu];
     
     self.traingingTimeMinLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeLeftMenu.frame) + kMenu_RightMargin * kXScal, 0, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -123,8 +139,10 @@
     self.traingingTimeMinLbl.font = [UIFont systemFontOfSize:kDifficultyPercentLbl_Fontsize * kYScal];
     [self.infoBgView addSubview:self.traingingTimeMinLbl];
     
-    self.traingingTimeRightMenu = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeMinLbl.frame) + kMenu_RightMargin * kXScal, self.traingingTimeLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    self.traingingTimeRightMenu.backgroundColor = [UIColor whiteColor];
+    self.traingingTimeRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeMinLbl.frame) + kMenu_RightMargin * kXScal, self.traingingTimeLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
+    [self.traingingTimeRightMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.traingingTimeRightMenu.delegate = self;
+    self.traingingTimeRightMenu.titles = [times copy];
     [self.infoBgView addSubview:self.traingingTimeRightMenu];
     
     self.traingingTimeSecLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeRightMenu.frame) + kMenu_RightMargin * kXScal, self.traingingTimeMinLbl.frame.origin.y, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -139,8 +157,14 @@
     self.difficultyLbl.text = @"强   度";
     [self.infoBgView addSubview:self.difficultyLbl];
     
-    self.difficultyMenu = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyLbl.frame) + kMenu_RightMargin * kXScal, self.traingingTimeRightMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    self.difficultyMenu.backgroundColor = [UIColor whiteColor];
+    self.difficultyMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyLbl.frame) + kMenu_RightMargin * kXScal, self.traingingTimeRightMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
+    [self.difficultyMenu setDropdownHeight:kDropdownHeight * kYScal];
+    NSMutableArray *difficulties = [NSMutableArray array];
+    for (NSInteger j = 0; j < 16 ; j++) {
+        [difficulties addObject:[NSString stringWithFormat:@"%d",j + 1]];
+    }
+    self.difficultyMenu.delegate = self;
+    self.difficultyMenu.titles = [difficulties copy];
     [self.infoBgView addSubview:self.difficultyMenu];
     
     self.rpeZoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.difficultyPercentLbl.frame.origin.x, CGRectGetMaxY(self.difficultyPercentLbl.frame) + kDifficultyPercentLbl_BottomMargin * kYScal, kDifficultyPercentLbl_Width * kXScal, kDifficultyPercentLbl_Height * kYScal)];
@@ -149,9 +173,11 @@
     self.rpeZoneLbl.text = @"R P E 区间";
     [self.infoBgView addSubview:self.rpeZoneLbl];
     
-    self.rpeLeftMenu = [[UIView alloc] initWithFrame:CGRectMake(self.difficultyLeftMenu.frame.origin.x, 0, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    self.rpeLeftMenu.backgroundColor = [UIColor whiteColor];
+    self.rpeLeftMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.difficultyLeftMenu.frame.origin.x, 0, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     self.rpeLeftMenu.center = CGPointMake(self.difficultyLeftMenu.frame.origin.x + kMenu_Width * kXScal/2.0, self.rpeZoneLbl.center.y);
+    [self.rpeLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.rpeLeftMenu.delegate = self;
+    self.rpeLeftMenu.titles = @[@"0.0",@"0.5",@"1.0"];
     [self.infoBgView addSubview:self.rpeLeftMenu];
     
     self.rpeTildeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.difficultyTildeLbl.frame.origin.x, 0, kTildeLbl_Width * kXScal, kTildeLbl_Height * kYScal)];
@@ -161,8 +187,10 @@
     self.rpeTildeLbl.center = CGPointMake(self.difficultyTildeLbl.frame.origin.x + kTildeLbl_Width * kXScal/2.0, self.rpeLeftMenu.center.y);
     [self.infoBgView addSubview:self.rpeTildeLbl];
     
-    self.rpeRightMenu = [[UIView alloc] initWithFrame:CGRectMake(self.difficultyRightMenu.frame.origin.x, self.rpeLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    self.rpeRightMenu.backgroundColor = [UIColor whiteColor];
+    self.rpeRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.difficultyRightMenu.frame.origin.x, self.rpeLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
+    [self.rpeRightMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.rpeRightMenu.delegate = self;
+    self.rpeRightMenu.titles = @[@"0.0",@"0.5",@"1.0",@"1.5",@"2.0",@"2.5",@"3.0",@"3.5",@"4.0",@"4.5",@"5.0",@"5.5",@"6.0",@"6.5",@"7.0",@"7.5",@"8.0",@"8.5",@"9.0",@"9.5",@"10.0"];
     [self.infoBgView addSubview:self.rpeRightMenu];
     
     self.restLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.traingingTimeLbl.frame.origin.x, self.rpeZoneLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeLbl_Height * kYScal)];
@@ -171,8 +199,10 @@
     self.restLbl.text = @"组间休息";
     [self.infoBgView addSubview:self.restLbl];
     
-    self.restLeftMenu = [[UIView alloc] initWithFrame:CGRectMake(self.traingingTimeLeftMenu.frame.origin.x, self.rpeLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    self.restLeftMenu.backgroundColor = [UIColor whiteColor];
+    self.restLeftMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.traingingTimeLeftMenu.frame.origin.x, self.rpeLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
+    [self.restLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.restLeftMenu.delegate = self;
+    self.restLeftMenu.titles = @[@"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9"];
     [self.infoBgView addSubview:self.restLeftMenu];
     
     self.restMinLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.traingingTimeMinLbl.frame.origin.x, 0, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -182,8 +212,14 @@
     self.restMinLbl.center = CGPointMake(self.traingingTimeMinLbl.frame.origin.x + kMinLbl_Width * kXScal/2.0, self.restLeftMenu.center.y);
     [self.infoBgView addSubview:self.restMinLbl];
     
-    self.restRightMenu = [[UIView alloc] initWithFrame:CGRectMake(self.traingingTimeRightMenu.frame.origin.x, self.restLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    self.restRightMenu.backgroundColor = [UIColor whiteColor];
+    self.restRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.traingingTimeRightMenu.frame.origin.x, self.restLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
+    [self.restLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.restLeftMenu.delegate = self;
+    NSMutableArray *seconds = [NSMutableArray array];
+    for (NSInteger k = 0; k < 60; k++) {
+        [seconds addObject:[NSString stringWithFormat:@"%d",k]];
+    }
+    self.restLeftMenu.titles = [seconds copy];
     [self.infoBgView addSubview:self.restRightMenu];
     
     self.restSecLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.traingingTimeSecLbl.frame.origin.x, self.restMinLbl.frame.origin.y, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -204,6 +240,17 @@
     self.removeBtn.layer.cornerRadius = kAddBtn_Width * kYScal/2.0;
     self.removeBtn.layer.masksToBounds = YES;
     [self.bgView addSubview:self.removeBtn];
+}
+
+#pragma mark - XXTGDropdownMenuDelegate
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
+{
+    
+}
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

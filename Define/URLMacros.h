@@ -43,6 +43,5 @@
 #define kDOCTOR_TEMPLATE_RECOMMEND_URL @"/doctor/template/recommend" //获取推荐处方模板
 #define kDOCTOR_TEMPLATE_CREATE_URL @"/doctor/template/create" //创建处方模板
 #define kDOCTOR_PRESCRIPTION_CREATE_URL @"/doctor/prescription/create"//开具新处方
-
-
+#define kDOCTOR_TEMPLATE_INFO_URL @"/doctor/template/info" //处方模板详细信息
 #endif /* URLMacros_h */

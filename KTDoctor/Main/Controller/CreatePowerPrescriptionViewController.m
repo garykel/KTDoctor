@@ -575,11 +575,11 @@
 }
 
 - (void)addGroup:(UIButton*)sender {
-    NSLog(@"增加行");
+
 }
 
 - (void)removeGroup:(UIButton*)sender {
-    NSLog(@"移除行");
+
 }
 
 #pragma mark - network functions
