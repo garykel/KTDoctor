@@ -94,6 +94,7 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)NSMutableArray *customTemplateArr;
 @property (nonatomic,strong)NSMutableArray *customeTemplateCheckArr;
 @property (nonatomic,strong)NSMutableArray *systemTemplateArr;
+@property (nonatomic,strong)NSMutableArray *customTemplateIdArr;
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,assign)NSInteger type;
 @end
@@ -108,6 +109,7 @@ CGSize systemListviewSize;
     self.customTemplateArr = [NSMutableArray array];
     self.customeTemplateCheckArr = [NSMutableArray array];
     self.systemTemplateArr = [NSMutableArray array];
+    self.customTemplateIdArr = [NSMutableArray array];
     [self showTemplateListWithType:self.type];
     [self setNavBar];
     [self setupUI];
@@ -727,6 +729,14 @@ CGSize systemListviewSize;
 //删除模板
 - (void)deleteBtnClick:(UIButton*)sender {
     NSLog(@"删除模板");
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    NSString *ids = [self.customTemplateIdArr componentsJoinedByString:@","];
+    [parameter setValue:ids forKey:@"id"];
+    [self deleteCustomTemplate:parameter];
 }
 
 //自定义模板全选
@@ -738,6 +748,9 @@ CGSize systemListviewSize;
     if (sender.selected) {
         sender.selected = NO;
         [self.checkAllBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
+        if (self.customTemplateIdArr.count > 0) {
+            [self.customTemplateIdArr removeAllObjects];
+        }
         if (self.customTemplateArr.count > 0) {
             for (NSInteger i = 0; i < self.customTemplateArr.count; i++) {
                 [self.customeTemplateCheckArr addObject:[NSNumber numberWithBool:NO]];
@@ -745,14 +758,23 @@ CGSize systemListviewSize;
         }
     } else {
         sender.selected = YES;
+        if (self.customTemplateIdArr.count > 0) {
+            [self.customTemplateIdArr removeAllObjects];
+        }
+        for (NSDictionary *dict in self.customTemplateArr) {
+            NSString *idStr = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"id"] integerValue]];
+            [self.customTemplateIdArr addObject:idStr];
+        }
         [self.checkAllBtn setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
         if (self.customTemplateArr.count > 0) {
             for (NSInteger i = 0; i < self.customTemplateArr.count; i++) {
                 [self.customeTemplateCheckArr addObject:[NSNumber numberWithBool:YES]];
             }
         }
+        
     }
     [self.customTemplateListView reloadData];
+    NSLog(@"customeTemplateids is :%@",self.customTemplateIdArr);
 }
 
 //单个选中某一个自定义模板
@@ -762,10 +784,24 @@ CGSize systemListviewSize;
         sender.selected = NO;
         [sender setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
         [self.customeTemplateCheckArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:NO]];
+        NSDictionary *dict = [self.customTemplateArr objectAtIndex:index];
+        NSMutableArray *tempArr = [NSMutableArray arrayWithArray:self.customTemplateIdArr];
+        for (NSInteger i = 0; i < tempArr.count; i++) {
+            NSString *idStr = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"id"] integerValue]];
+            NSString *str = [tempArr objectAtIndex:i];
+            if ([idStr isEqualToString:str]) {
+                [self.customTemplateIdArr removeObject:idStr];
+            }
+        }
     } else {
         sender.selected = YES;
         [sender setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
         [self.customeTemplateCheckArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:YES]];
+        [self.customTemplateArr removeObjectAtIndex:index];
+        NSDictionary *dict = [self.customTemplateArr objectAtIndex:index];
+        NSInteger id = [[dict valueForKey:@"id"] integerValue];
+        NSString *idStr = [NSString stringWithFormat:@"%d",id];
+        [self.customTemplateIdArr addObject:idStr];
     }
     BOOL check = [self checkHasSelectedAll];
     if (check) {
@@ -773,6 +809,7 @@ CGSize systemListviewSize;
     } else {
         [self.checkAllBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
     }
+    NSLog(@"self.customTemplateIdArr is :%@",self.customTemplateIdArr);
 }
 
 //检查是否全选
@@ -805,6 +842,27 @@ CGSize systemListviewSize;
 }
 
 #pragma mark - network functions
+
+- (void)deleteCustomTemplate:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_DELETE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            [weakSelf.customTemplateListView reloadData];
+            [STTextHudTool showText:@"删除成功"];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 
 - (void)showTemplateListWithType:(NSInteger)type{
     __weak typeof (self)weakSelf = self;
