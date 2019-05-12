@@ -22,7 +22,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [self initWindow];
-    [self userCheckIsLogin];
+//    [self userCheckIsLogin];
     [self configIQKeyboard];
     
     return YES;

@@ -128,6 +128,7 @@
 @property (nonatomic,strong)NSMutableArray *recommendTemplateArr;//满足条件的推荐模板
 @property (nonatomic,assign)NSInteger type;
 @property (nonatomic,assign)NSInteger targetDuration;
+@property (nonatomic,strong)NSMutableArray *sections;
 @end
 
 @implementation CreateAerobicPrescriptionViewController
@@ -619,7 +620,7 @@
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@1 forKey:@"type"]; //类型
+    [parameter setValue:@(self.type) forKey:@"type"]; //类型
     [parameter setValue:@1 forKey:@"type2"]; //类型2，1=强度，2=功率
     NSInteger userId = [[self.prescriptionDict valueForKey:@"userId"] integerValue];
     [parameter setValue:@(userId) forKey:@"userId"];

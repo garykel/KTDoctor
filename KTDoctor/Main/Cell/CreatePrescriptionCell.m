@@ -13,7 +13,7 @@
 #define kInfoView_RightMargin 48
 #define kGroupNameLbl_TopMargin 15
 #define kGroupNameLbl_LeftMargin 15
-#define kGroupNameLbl_Width 65
+#define kGroupNameLbl_Width 70
 #define kGroupNameLbl_Height 16
 #define kGroupNameLbl_Fontsize 17.0
 #define kDifficultyPercentLbl_LeftMargin 16
@@ -213,13 +213,13 @@
     [self.infoBgView addSubview:self.restMinLbl];
     
     self.restRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.traingingTimeRightMenu.frame.origin.x, self.restLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
-    [self.restLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
-    self.restLeftMenu.delegate = self;
+    [self.restRightMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.restRightMenu.delegate = self;
     NSMutableArray *seconds = [NSMutableArray array];
     for (NSInteger k = 0; k < 60; k++) {
         [seconds addObject:[NSString stringWithFormat:@"%d",k]];
     }
-    self.restLeftMenu.titles = [seconds copy];
+    self.restRightMenu.titles = [seconds copy];
     [self.infoBgView addSubview:self.restRightMenu];
     
     self.restSecLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.traingingTimeSecLbl.frame.origin.x, self.restMinLbl.frame.origin.y, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -246,7 +246,45 @@
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    
+    if (menu == self.traingingTimeLeftMenu) {
+        NSInteger num = [string integerValue];
+        if (num == 0) {
+            NSMutableArray *items = [NSMutableArray array];
+            for (NSInteger i = 20; i < 60; i++) {
+                [items addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+            self.traingingTimeRightMenu.titles = [items copy];
+            [self.traingingTimeRightMenu.mTableView reloadData];
+        } else if (num > 0) {
+            NSMutableArray *items = [NSMutableArray array];
+            for (NSInteger i = 0; i < 60; i++) {
+                [items addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+            self.traingingTimeRightMenu.titles = [items copy];
+            [self.traingingTimeRightMenu.mTableView reloadData];
+        }
+    } else if (menu == self.restLeftMenu) {
+        NSInteger num = [string integerValue];
+        if (num == 0) {
+            NSMutableArray *items = [NSMutableArray array];
+            for (NSInteger i = 20; i < 60; i++) {
+                [items addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+            self.restRightMenu.titles = [items copy];
+            [self.restRightMenu.mTableView reloadData];
+        } else if (num > 0) {
+            NSMutableArray *items = [NSMutableArray array];
+            for (NSInteger i = 0; i < 60; i++) {
+                [items addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+            self.restRightMenu.titles = [items copy];
+            [self.restRightMenu.mTableView reloadData];
+        }
+    } else if(menu == self.difficultyLeftMenu) {
+        [self.difficultyLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
+    } else if (menu == self.difficultyRightMenu) {
+        [self.difficultyRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
+    }
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {

@@ -734,9 +734,11 @@ CGSize systemListviewSize;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
-    NSString *ids = [self.customTemplateIdArr componentsJoinedByString:@","];
-    [parameter setValue:ids forKey:@"id"];
-    [self deleteCustomTemplate:parameter];
+    if (self.customTemplateIdArr.count > 0) {
+        NSString *ids = [self.customTemplateIdArr componentsJoinedByString:@","];
+        [parameter setValue:ids forKey:@"id"];
+        [self deleteCustomTemplate:parameter];
+    }
 }
 
 //自定义模板全选
