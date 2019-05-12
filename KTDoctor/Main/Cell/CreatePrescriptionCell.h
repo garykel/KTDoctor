@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "KTDropDownMenus.h"
+#import "AerobicriptionModel.h"
 
 @interface CreatePrescriptionCell : UITableViewCell
 @property (nonatomic,strong)UIView *bgView;//蓝色背景视图
@@ -36,4 +37,5 @@
 @property (nonatomic,strong)UILabel *restSecLbl;
 @property (nonatomic,strong)UIButton *addBtn;
 @property (nonatomic,strong)UIButton *removeBtn;
+@property (nonatomic,strong)AerobicriptionModel *model;
 @end

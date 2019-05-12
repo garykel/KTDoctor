@@ -11,6 +11,7 @@
 		09062674225CE8B2009A182D /* SearchAndSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09062673225CE8B2009A182D /* SearchAndSelectView.m */; };
 		0962F89E227D8C0B00611E27 /* CustomTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */; };
 		0962F8A4227DDDA300611E27 /* SystemTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */; };
+		09B681172288602900255F5D /* AerobicriptionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B681162288602900255F5D /* AerobicriptionModel.m */; };
 		09E47CB22237F97D00B33249 /* STTextHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA72237F97C00B33249 /* STTextHud.xib */; };
 		09E47CB32237F97D00B33249 /* angle-mask@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA92237F97D00B33249 /* angle-mask@3x.png */; };
 		09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CAB2237F97D00B33249 /* NSString+Size.m */; };
@@ -177,6 +178,8 @@
 		0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomTemplateCell.m; sourceTree = "<group>"; };
 		0962F8A2227DDDA300611E27 /* SystemTemplateCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemTemplateCell.h; sourceTree = "<group>"; };
 		0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SystemTemplateCell.m; sourceTree = "<group>"; };
+		09B681152288602900255F5D /* AerobicriptionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AerobicriptionModel.h; sourceTree = "<group>"; };
+		09B681162288602900255F5D /* AerobicriptionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicriptionModel.m; sourceTree = "<group>"; };
 		09E47CA62237F97C00B33249 /* STTextHud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTextHud.h; sourceTree = "<group>"; };
 		09E47CA72237F97C00B33249 /* STTextHud.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STTextHud.xib; sourceTree = "<group>"; };
 		09E47CA82237F97C00B33249 /* GCLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCLoadingView.h; sourceTree = "<group>"; };
@@ -483,6 +486,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09B6811422885F6500255F5D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				09B681152288602900255F5D /* AerobicriptionModel.h */,
+				09B681162288602900255F5D /* AerobicriptionModel.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		09E47CA52237F94F00B33249 /* STTextHudTool */ = {
 			isa = PBXGroup;
 			children = (
@@ -739,6 +751,7 @@
 		5BD9640822390AA6006FD9CD /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				09B6811422885F6500255F5D /* Model */,
 				5B02F7AE2249D8EC00BE8269 /* View */,
 				5B02F7A422487E6900BE8269 /* Controller */,
 				5B02F7A02244D00000BE8269 /* Cell */,
@@ -1399,6 +1412,7 @@
 				5B02F7822241DC6A00BE8269 /* WSDatePickerView.m in Sources */,
 				5B02F7AA2248B45100BE8269 /* SortViewController.m in Sources */,
 				5BF8D90922802689002199E4 /* NSString+AttributedString.m in Sources */,
+				09B681172288602900255F5D /* AerobicriptionModel.m in Sources */,
 				5BF44CD62256096D006C3405 /* HistoryViewController.m in Sources */,
 				5B3E7B742278488C00A564CC /* SGQRCodeScanView.m in Sources */,
 				5BF8D938228027F0002199E4 /* KTDropDownMenus.m in Sources */,

@@ -14,6 +14,7 @@
 #import "UnitTextView.h"
 #import "AerobicGroupCell.h"
 #import "CreatePrescriptionCell.h"
+#import "AerobicriptionModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -129,6 +130,9 @@
 @property (nonatomic,assign)NSInteger type;
 @property (nonatomic,assign)NSInteger targetDuration;
 @property (nonatomic,strong)NSMutableArray *sections;
+@property (nonatomic,assign)NSInteger treatmentPeriod;
+@property (nonatomic,assign)NSInteger daysPerWeek;
+@property (nonatomic,assign)NSInteger timing;
 @end
 
 @implementation CreateAerobicPrescriptionViewController
@@ -301,7 +305,6 @@
     self.traingDeviceMenu.defualtStr = @"请选择";
     self.traingDeviceMenu.delegate = self;
     self.traingDeviceMenu.titles = @[@"功率车",@"椭圆机"];
-//    [self.traingDeviceMenu setMenuTitles:@[@"功率车",@"椭圆机"] rowHeight:kDieaseTF_Height * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
     self.traingDeviceMenu.delegate = self;
     self.traingDeviceMenu.tag = 20;
     [self.topBgView addSubview:self.traingDeviceMenu];
@@ -313,7 +316,6 @@
     [self.topBgView addSubview:self.templateLbl];
     
     self.templateMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal, 0, kTemplateMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
     [self.templateMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.templateMenu.defualtStr = @"请选择";
     self.templateMenu.delegate = self;
@@ -519,7 +521,7 @@
         cell.backgroundColor = [UIColor clearColor];
     }
     cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
-    NSDictionary *dict = [self.groups objectAtIndex:indexPath.section];
+    AerobicriptionModel *dict = [self.groups objectAtIndex:indexPath.section];
     NSArray *hrRangeArr = [[dict valueForKey:@"hrRange"] componentsSeparatedByString:@"-"];
     if (hrRangeArr.count > 0) {
         NSString *leftDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[0] integerValue]];
@@ -551,6 +553,7 @@
     [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration/60] forState:UIControlStateNormal];
     [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
     [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
+    cell.model = dict;
     [cell.addBtn addTarget:self action:@selector(addGroup:) forControlEvents:UIControlEventTouchUpInside];
     cell.addBtn.tag = 10000 + indexPath.section;
     cell.removeBtn.tag = 20000 + indexPath.section;
@@ -624,20 +627,42 @@
     [parameter setValue:@1 forKey:@"type2"]; //类型2，1=强度，2=功率
     NSInteger userId = [[self.prescriptionDict valueForKey:@"userId"] integerValue];
     [parameter setValue:@(userId) forKey:@"userId"];
-    [parameter setValue:@"自定义处方测试" forKey:@"title"];
+    [parameter setValue:self.prescriptionTF.text forKey:@"title"];
     NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
     [parameter setValue:disease forKey:@"disease"];
-    [parameter setValue:@3 forKey:@"treatmentPeriod"];
-    [parameter setValue:@4 forKey:@"daysPerWeek"];
-    [parameter setValue:@2 forKey:@"timing"];
+    [parameter setValue:@(self.treatmentPeriod) forKey:@"treatmentPeriod"];
+    [parameter setValue:@(self.daysPerWeek) forKey:@"daysPerWeek"];
+    [parameter setValue:@(self.timing) forKey:@"timing"];
     [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
     NSInteger riskLevel = [[self.prescriptionDict valueForKey:@"riskLevel"] integerValue];
     [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
     [parameter setValue:@500 forKey:@"targetCalorie"];
     [parameter setValue:@300 forKey:@"targetDuration"];
-    [parameter setValue:@"多运动" forKey:@"doctorAdvice"];
+    [parameter setValue:self.doctorAdviceView.text forKey:@"doctorAdvice"];
     NSArray *sections = @[@{@"title":@"第1小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第2小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第3小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"}];
-    [parameter setValue:sections forKey:@"sections"];
+//    [parameter setValue:sections forKey:@"sections"];
+    if (self.groups.count > 0) {
+        NSMutableArray *groups = [NSMutableArray array];
+        for (AerobicriptionModel *model in self.groups) {
+            NSMutableDictionary *group = [NSMutableDictionary dictionary];
+            [group setValue:model.title forKey:@"title"];
+            [group setValue:model.hrRange forKey:@"hrRange"];
+            [group setValue:model.rpeRange forKey:@"rpeRange"];
+            [group setValue:model.difficulty forKey:@"difficulty"];
+            [group setValue:@(model.calorie) forKey:@"calorie"];
+            [group setValue:@(model.duration) forKey:@"duration"];
+            [group setValue:@(model.restDuration) forKey:@"restDuration"];
+            [group setValue:@(model.speed) forKey:@"speed"];
+            [group setValue:@(model.weight) forKey:@"weight"];
+            [group setValue:@(model.times) forKey:@"times"];
+            [group setValue:@(model.rotationAngle) forKey:@"rotationAngle"];
+            [groups addObject:group];
+        }
+        [parameter setValue:groups forKey:@"sections"];
+    } else {
+        [parameter setValue:@[] forKey:@"sections"];
+    }
+//    NSLog(@"new paramet is :%@",parameter);
     [self createPrescriptions:parameter];
 }
 
@@ -742,9 +767,11 @@
         NSLog(@"当前选择的模板是:%@",self.selectedTemplateDict);
         NSInteger treatmentPeriod = [[self.selectedTemplateDict valueForKey:@"treatmentPeriod"] integerValue];
         [self.treatmentMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",treatmentPeriod] forState:UIControlStateNormal];
+        self.treatmentPeriod = treatmentPeriod;
         [self.treatmentMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         NSInteger daysPerWeek = [[self.selectedTemplateDict valueForKey:@"daysPerWeek"] integerValue];
         [self.trainingFrequencyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",daysPerWeek] forState:UIControlStateNormal];
+        self.daysPerWeek = daysPerWeek;
         [self.trainingFrequencyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         NSInteger timing = [[self.selectedTemplateDict valueForKey:@"timing"] integerValue];
         NSString *timingStr = @"任意";
@@ -753,6 +780,7 @@
         } else if(timing == 2) {
             timingStr = @"三餐后一小时";
         }
+        self.timing = timing;
         [self.sportTimePointMenu.mainBtn setTitle:timingStr forState:UIControlStateNormal];
         [self.sportTimePointMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -766,18 +794,25 @@
     }else if (menu == self.treatmentMenu){ //疗程
         
         if (![self isBlankString:string]) {
-            
+            self.treatmentPeriod = [string integerValue];
         }
         
     }else if (menu == self.trainingFrequencyMenu){ //周训练频次
         
         if (![self isBlankString:string]) {
-            
+            self.daysPerWeek = [string integerValue];
         }
         
     }else if (menu == self.sportTimePointMenu){ //运动时间点
         
         if (![self isBlankString:string]) {
+            if ([string isEqualToString:@"任意"]) {
+                self.timing = 3;
+            } else if ([string isEqualToString:@"三餐前半小时"]) {
+                self.timing = 1;
+            } else if ([string isEqualToString:@"三餐后一小时"]) {
+                self.timing = 2;
+            }
         }
     }
 }
@@ -841,7 +876,14 @@
             NSLog(@"rows is :%@",data);
             if (data.count > 0) {
                 NSArray *sections = [data valueForKey:@"sections"];
-                weakself.groups = [sections mutableCopy];
+                NSMutableArray *templates = [NSMutableArray array];
+                if (sections.count > 0) {
+                    for (NSDictionary *dict in sections) {
+                        AerobicriptionModel *model = [AerobicriptionModel cp_objWithDict:dict];
+                        [templates addObject:model];
+                    }
+                }
+                weakself.groups = [templates mutableCopy];
                 [weakself.listView reloadData];
                 weakself.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",weakself.groups.count];
                 [weakself computeTotalTrainingTime];
@@ -928,7 +970,7 @@
 - (void)computeTotalTrainingTime {
     if (self.groups.count > 0) {
         NSInteger sumTime = 0;
-        for (NSDictionary *dict in self.groups) {
+        for (AerobicriptionModel *dict in self.groups) {
             sumTime += [[dict valueForKey:@"duration"] integerValue];
             sumTime += [[dict valueForKey:@"restDuration"] integerValue];
         }
@@ -941,7 +983,7 @@
 - (void)computeAvgDifficulty {
     if (self.groups.count > 0) {
         NSInteger sumDifficulty = 0;
-        for (NSDictionary *dict in self.groups) {
+        for (AerobicriptionModel *dict in self.groups) {
             sumDifficulty += [[dict valueForKey:@"difficulty"] integerValue];
         }
         self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",sumDifficulty / self.groups.count];

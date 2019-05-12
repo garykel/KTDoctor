@@ -25,7 +25,7 @@
 #define kDifficultyPercentLbl_Fontsize 13.0
 #define kDifficultyPercentImg_Widht 13
 #define kDifficultyPercentImg_Right 15
-#define kMenu_Width 61
+#define kMenu_Width 68
 #define kMenu_Height 20
 #define kDropdownHeight 30
 #define kMenu_RightMargin  9
@@ -76,7 +76,7 @@
     [self.bgView addSubview:self.infoBgView];
     
     self.groupNameLbl = [[UILabel alloc] initWithFrame:CGRectMake(kGroupNameLbl_LeftMargin * kXScal, kGroupNameLbl_TopMargin * kYScal, kGroupNameLbl_Width * kXScal, kGroupNameLbl_Height * kYScal)];
-    self.groupNameLbl.text = @"第1组";
+    self.groupNameLbl.text = self.model.title;
     self.groupNameLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     self.groupNameLbl.font = [UIFont systemFontOfSize:kGroupNameLbl_Fontsize * kYScal];
     [self.infoBgView addSubview:self.groupNameLbl];
@@ -246,7 +246,15 @@
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    if (menu == self.traingingTimeLeftMenu) {
+    if (menu == self.difficultyLeftMenu) {
+        [self.difficultyLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
+        NSString *difficultyRight = self.difficultyRightMenu.mainBtn.titleLabel.text;
+        self.model.hrRange = [NSString stringWithFormat:@"%@-%@",string,[difficultyRight substringToIndex:(difficultyRight.length - 1)]];
+    } else if (menu == self.difficultyRightMenu) {
+        [self.difficultyRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
+        NSString *difficultyLeft = self.difficultyLeftMenu.mainBtn.titleLabel.text;
+        self.model.hrRange = [NSString stringWithFormat:@"%@-%@",[difficultyLeft substringToIndex:(difficultyLeft.length - 1)],string];
+    } else if (menu == self.traingingTimeLeftMenu) {
         NSInteger num = [string integerValue];
         if (num == 0) {
             NSMutableArray *items = [NSMutableArray array];
@@ -263,6 +271,17 @@
             self.traingingTimeRightMenu.titles = [items copy];
             [self.traingingTimeRightMenu.mTableView reloadData];
         }
+        NSInteger sec = [self.traingingTimeRightMenu.mainBtn.titleLabel.text integerValue];
+        self.model.duration = num * 60 + sec;
+    } else if (menu == self.traingingTimeRightMenu) {
+        NSInteger min = [self.traingingTimeLeftMenu.mainBtn.titleLabel.text integerValue];
+        self.model.duration = min * 60 + [string integerValue];
+    } else if (menu == self.difficultyMenu) {
+        self.model.difficulty = string;
+    } else if (menu == self.rpeLeftMenu) {
+        self.model.rpeRange = [NSString stringWithFormat:@"%@-%@",string,self.rpeRightMenu.mainBtn.titleLabel.text];
+    } else if (menu == self.rpeRightMenu) {
+        self.model.rpeRange = [NSString stringWithFormat:@"%@-%@",self.rpeLeftMenu.mainBtn.titleLabel.text,string];
     } else if (menu == self.restLeftMenu) {
         NSInteger num = [string integerValue];
         if (num == 0) {
@@ -280,10 +299,11 @@
             self.restRightMenu.titles = [items copy];
             [self.restRightMenu.mTableView reloadData];
         }
-    } else if(menu == self.difficultyLeftMenu) {
-        [self.difficultyLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
-    } else if (menu == self.difficultyRightMenu) {
-        [self.difficultyRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
+        NSInteger sec = [self.restRightMenu.mainBtn.titleLabel.text integerValue];
+        self.model.restDuration = num * 60 + sec;
+    } else if (menu == self.rpeRightMenu) {
+        NSInteger min = [self.restLeftMenu.mainBtn.titleLabel.text integerValue];
+        self.model.restDuration = min * 60 + [string integerValue];
     }
 }
 
