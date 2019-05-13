@@ -31,6 +31,7 @@
 #define kDOCTOR_USER_SPORTLIST_URL @"/doctor/user_sport_list" //医师查看用户历史运动列表
 #define kUSER_SPORT_DETAIL_URL @"/doctor/user_sport_detail" //医师查看用户运动结果详情
 #define kDOCTOR_USERINFO_MORE_URL @"/doctor/user_info_more" //医师获取用户信息(多条)
+#define kDOCTOR_USERINFO_URL @"/doctor/user_info" //医师获取用户信息
 #define kDOCTOR_USER_PRESCRIPTION_LIST_URL @"/doctor/user_prescription_list" //医师获取用户处方列表
 #define kDOCTOR_USER_REPORTLIST_URL @"/doctor/user_report_list" //医师获取用户处方报告及列表
 #define kDOCTOR_PRESCRIPTION_DETAIL_URL @"/doctor/prescription/detail" //医师查看处方详情

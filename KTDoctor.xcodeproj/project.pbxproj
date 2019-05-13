@@ -73,6 +73,7 @@
 		5B875B99224CAEC400736FC2 /* PatientCell9.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B98224CAEC400736FC2 /* PatientCell9.m */; };
 		5B875B9C224CAEDB00736FC2 /* PatientCell12.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B9B224CAEDB00736FC2 /* PatientCell12.m */; };
 		5B875B9F224CAEFB00736FC2 /* PatientCell16.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B9E224CAEFB00736FC2 /* PatientCell16.m */; };
+		5BAE45E22289561800902EA3 /* PatientBaseInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE45E12289561800902EA3 /* PatientBaseInfoViewController.m */; };
 		5BAEB8932275B8470087CA76 /* UnitTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAEB8922275B8470087CA76 /* UnitTextView.m */; };
 		5BB54FC32282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB54FC22282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m */; };
 		5BB9D3DB2284025A00EACDE2 /* CreatePrescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB9D3DA2284025A00EACDE2 /* CreatePrescriptionCell.m */; };
@@ -297,6 +298,8 @@
 		5B875B9B224CAEDB00736FC2 /* PatientCell12.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell12.m; sourceTree = "<group>"; };
 		5B875B9D224CAEFB00736FC2 /* PatientCell16.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell16.h; sourceTree = "<group>"; };
 		5B875B9E224CAEFB00736FC2 /* PatientCell16.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell16.m; sourceTree = "<group>"; };
+		5BAE45E02289561800902EA3 /* PatientBaseInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientBaseInfoViewController.h; sourceTree = "<group>"; };
+		5BAE45E12289561800902EA3 /* PatientBaseInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientBaseInfoViewController.m; sourceTree = "<group>"; };
 		5BAEB8912275B8470087CA76 /* UnitTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnitTextView.h; sourceTree = "<group>"; };
 		5BAEB8922275B8470087CA76 /* UnitTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnitTextView.m; sourceTree = "<group>"; };
 		5BB54FC12282EEF700B2FFDF /* CreatePowerPrescriptionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreatePowerPrescriptionViewController.h; sourceTree = "<group>"; };
@@ -606,6 +609,8 @@
 				5B138769227EC3580017BA57 /* PrescriptionDetailViewController.m */,
 				5B22E05E2266CED500C65B50 /* AddPatientViewController.h */,
 				5B22E05F2266CED500C65B50 /* AddPatientViewController.m */,
+				5BAE45E02289561800902EA3 /* PatientBaseInfoViewController.h */,
+				5BAE45E12289561800902EA3 /* PatientBaseInfoViewController.m */,
 				5B22E0642266CF2500C65B50 /* AddTemplateViewController.h */,
 				5B22E0652266CF2500C65B50 /* AddTemplateViewController.m */,
 				5B22E0672266CF5F00C65B50 /* IntensionViewController.h */,
@@ -1439,6 +1444,7 @@
 				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,
 				5B02F7762240E7F600BE8269 /* DropdownMenu.m in Sources */,
 				5BF8D8DB228025E6002199E4 /* CABasicAnimation+ZJAnimation.m in Sources */,
+				5BAE45E22289561800902EA3 /* PatientBaseInfoViewController.m in Sources */,
 				5BECDC082236639A0025D6F2 /* NSString+NetworkingState.m in Sources */,
 				5B875B93224CAE9D00736FC2 /* PatientCell4.m in Sources */,
 				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,

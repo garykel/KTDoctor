@@ -7,6 +7,7 @@
 //
 
 #import "AddPatientViewController.h"
+#import "PatientBaseInfoViewController.h"
 #import <CoreImage/CoreImage.h>
 #import "UserModel.h"
 
@@ -494,15 +495,28 @@
 }
 //密码登录
 - (void)loginWithPassword:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUSER_LOGIN_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         if (code != 0) {
             NSString *msg = [responseObject valueForKey:@"msg"];
             [STTextHudTool showText:msg];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:@"登录成功"];
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSMutableDictionary *para = [NSMutableDictionary dictionary];
+            NSDictionary *dict = weakSelf.user.organ;
+            NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+            NSString *orgCode = orgCodeArr[0];
+            [para setValue:orgCode forKey:@"orgCode"];
+            NSInteger userId = [[data valueForKey:@"userId"] integerValue];
+            [para setValue:@(userId) forKey:@"userId"];
+            [weakSelf doctorGetUserInfo:para];
         }
-        NSLog(@"dict :%@",responseObject);
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);
     }];
@@ -523,17 +537,55 @@
 
 //短信验证啊登录
 - (void)loginWithSMS:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kSMS_LOGIN_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
         if (code == 0) {
             [STTextHudTool showText:@"登录成功"];
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSMutableDictionary *para = [NSMutableDictionary dictionary];
+            NSDictionary *dict = weakSelf.user.organ;
+            NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+            NSString *orgCode = orgCodeArr[0];
+            [para setValue:orgCode forKey:@"orgCode"];
+            NSInteger userId = [[data valueForKey:@"userId"] integerValue];
+            [para setValue:@(userId) forKey:@"userId"];
+            [weakSelf doctorGetUserInfo:para];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);
         [STTextHudTool showText:@"error"];
+    }];
+}
+
+//医师获取用户信息
+- (void)doctorGetUserInfo:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERINFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSLog(@"data is :%@",data);
+            PatientBaseInfoViewController *info = [[PatientBaseInfoViewController alloc] init];
+            info.userInfo = data;
+            [weakSelf.navigationController pushViewController:info animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            NSString *msg = [responseObject valueForKey:@"msg"];
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
     }];
 }
 
