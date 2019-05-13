@@ -14,7 +14,7 @@
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
 #define kTitle_FontSize 30
-#define kTitleLbl_Width 450
+#define kTitleLbl_Width 460
 #define kTitleLbl_Height 29
 #define kTitleLbl_TopMargin 120
 #define kTitleLbl_BottomMargin 43
@@ -38,18 +38,18 @@
 #define kPasswordBtn_LeftMargin 20
 #define kPasswordBtn_Height 15
 #define kPasswordBtn_RightMargin 12
-#define kPasswordBtn_Width 60
+#define kPasswordBtn_Width 70
 #define kPasswordBtn_FontSize 15.0
 #define kPasswordBtn_BottomMargin 18.0
 #define kMiddleView_Width 3
 #define kMiddleView_Height 15
 #define kMiddleView_RightMargin 11
-#define KCodeBtn_width 105
+#define KCodeBtn_width 110
 #define kCodeBtn_Height 15
 #define kCodeBtn_FontSize 15.0
 #define kMiddleLine_Heigh 1
 #define kMiddleLine_LeftMargin 20
-#define kPhoneLbl_Width 48
+#define kPhoneLbl_Width 50
 #define kPhoneLbl_Height 12
 #define kPhoneLbl_FontSize 12.0
 #define kPhoneLbl_TopMargin 32.0
@@ -72,14 +72,14 @@
 
 #define kWechatTitleLbl_TopMargin 19
 #define kWechatTitleLbl_BottomMargin 13
-#define kWechatTitleLbl_Width 72
+#define kWechatTitleLbl_Width 78
 #define kWechatTitleLbl_Height 17
 #define kWechatTitleLbl_FontSize 18
-#define kScanLbl_Width 144
+#define kScanLbl_Width 155
 #define kScanLbl_Height 12
 #define kScanLbl_FontSize 12.0
 #define kRefreshLbl_BottomMargin 9
-#define kRefreshLbl_Width 90
+#define kRefreshLbl_Width 100
 #define kRefreshLbl_Height 10
 #define kRefreshLbl_FontSize 10
 #define kScanImg_TopMargin 42
@@ -248,6 +248,7 @@
     self.phoneTF.layer.cornerRadius = 2;
     self.phoneTF.layer.masksToBounds = YES;
     self.phoneTF.delegate = self;
+    self.phoneTF.keyboardType = UIKeyboardTypeNumberPad;
     self.phoneTF.center = CGPointMake(CGRectGetMaxX(self.phoneLbl.frame) + kPhoneLbl_RightMargin * kXScal + kPhoneTF_Width * kXScal/2.0, self.phoneLbl.center.y);
     [self.loginBgView addSubview:self.phoneTF];
     
