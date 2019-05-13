@@ -140,7 +140,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
     self.recommendArr = [NSMutableArray array];
     self.recommendTemplateArr = [NSMutableArray array];
     self.selectedTemplateIndex = -1;
@@ -603,7 +604,27 @@
             NSInteger targetCalorie = [[self.selectedTemplateDict valueForKey:@"targetCalorie"] integerValue];
             [parameter setValue:@(targetCalorie) forKey:@"targetCalorie"];
             [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
-            [parameter setValue:self.groups forKey:@"sections"];
+            if (self.groups.count > 0) {
+                NSMutableArray *groups = [NSMutableArray array];
+                for (AerobicriptionModel *model in self.groups) {
+                    NSMutableDictionary *group = [NSMutableDictionary dictionary];
+                    [group setValue:model.title forKey:@"title"];
+                    [group setValue:model.hrRange forKey:@"hrRange"];
+                    [group setValue:model.rpeRange forKey:@"rpeRange"];
+                    [group setValue:model.difficulty forKey:@"difficulty"];
+                    [group setValue:@(model.calorie) forKey:@"calorie"];
+                    [group setValue:@(model.duration) forKey:@"duration"];
+                    [group setValue:@(model.restDuration) forKey:@"restDuration"];
+                    [group setValue:@(model.speed) forKey:@"speed"];
+                    [group setValue:@(model.weight) forKey:@"weight"];
+                    [group setValue:@(model.times) forKey:@"times"];
+                    [group setValue:@(model.rotationAngle) forKey:@"rotationAngle"];
+                    [groups addObject:group];
+                }
+                [parameter setValue:groups forKey:@"sections"];
+            } else {
+                [parameter setValue:@[] forKey:@"sections"];
+            }
             [weakself createCustomTemplate:parameter];
         }
     }]];
@@ -628,7 +649,7 @@
     NSInteger userId = [[self.prescriptionDict valueForKey:@"userId"] integerValue];
     [parameter setValue:@(userId) forKey:@"userId"];
     [parameter setValue:self.prescriptionTF.text forKey:@"title"];
-    NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
+    NSString *disease = self.dieaseTF.text;
     [parameter setValue:disease forKey:@"disease"];
     [parameter setValue:@(self.treatmentPeriod) forKey:@"treatmentPeriod"];
     [parameter setValue:@(self.daysPerWeek) forKey:@"daysPerWeek"];
@@ -636,11 +657,9 @@
     [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
     NSInteger riskLevel = [[self.prescriptionDict valueForKey:@"riskLevel"] integerValue];
     [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
-    [parameter setValue:@500 forKey:@"targetCalorie"];
-    [parameter setValue:@300 forKey:@"targetDuration"];
+    [parameter setValue:@0 forKey:@"targetCalorie"];
+    [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
     [parameter setValue:self.doctorAdviceView.text forKey:@"doctorAdvice"];
-    NSArray *sections = @[@{@"title":@"第1小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第2小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第3小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"}];
-//    [parameter setValue:sections forKey:@"sections"];
     if (self.groups.count > 0) {
         NSMutableArray *groups = [NSMutableArray array];
         for (AerobicriptionModel *model in self.groups) {
@@ -662,7 +681,6 @@
     } else {
         [parameter setValue:@[] forKey:@"sections"];
     }
-//    NSLog(@"new paramet is :%@",parameter);
     [self createPrescriptions:parameter];
 }
 

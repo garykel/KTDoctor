@@ -273,15 +273,22 @@
         }
         NSInteger sec = [self.traingingTimeRightMenu.mainBtn.titleLabel.text integerValue];
         self.model.duration = num * 60 + sec;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];
     } else if (menu == self.traingingTimeRightMenu) {
         NSInteger min = [self.traingingTimeLeftMenu.mainBtn.titleLabel.text integerValue];
         self.model.duration = min * 60 + [string integerValue];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];
     } else if (menu == self.difficultyMenu) {
         self.model.difficulty = string;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeAvgDifficultyNotification" object:nil];
     } else if (menu == self.rpeLeftMenu) {
-        self.model.rpeRange = [NSString stringWithFormat:@"%@-%@",string,self.rpeRightMenu.mainBtn.titleLabel.text];
+        CGFloat rpeLeft = [string floatValue];
+        CGFloat rpeRight = [self.rpeRightMenu.mainBtn.titleLabel.text floatValue];
+        self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.rpeRightMenu) {
-        self.model.rpeRange = [NSString stringWithFormat:@"%@-%@",self.rpeLeftMenu.mainBtn.titleLabel.text,string];
+        CGFloat rpeLeft = [self.rpeLeftMenu.mainBtn.titleLabel.text floatValue];
+        CGFloat rpeRight = [string floatValue];
+        self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.restLeftMenu) {
         NSInteger num = [string integerValue];
         if (num == 0) {
@@ -301,9 +308,11 @@
         }
         NSInteger sec = [self.restRightMenu.mainBtn.titleLabel.text integerValue];
         self.model.restDuration = num * 60 + sec;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];
     } else if (menu == self.rpeRightMenu) {
         NSInteger min = [self.restLeftMenu.mainBtn.titleLabel.text integerValue];
         self.model.restDuration = min * 60 + [string integerValue];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];
     }
 }
 
