@@ -47,6 +47,8 @@
 		5B126726225B3EFD00894CCF /* HistoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B126725225B3EFD00894CCF /* HistoryCell.m */; };
 		5B132536226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B132535226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m */; };
 		5B13876A227EC3580017BA57 /* PrescriptionDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B138769227EC3580017BA57 /* PrescriptionDetailViewController.m */; };
+		5B15F365228AA940005DA806 /* PatientQuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B15F364228AA940005DA806 /* PatientQuestionViewController.m */; };
+		5B15F368228AA959005DA806 /* PatientRiskLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B15F367228AA959005DA806 /* PatientRiskLevelViewController.m */; };
 		5B22E0582265C55A00C65B50 /* DateValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E0562265C55A00C65B50 /* DateValueFormatter.m */; };
 		5B22E05D2266CE9D00C65B50 /* PatientManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E05C2266CE9D00C65B50 /* PatientManageViewController.m */; };
 		5B22E0602266CED500C65B50 /* AddPatientViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E05F2266CED500C65B50 /* AddPatientViewController.m */; };
@@ -245,6 +247,10 @@
 		5B132535226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreateAerobicPrescriptionViewController.m; sourceTree = "<group>"; };
 		5B138768227EC3580017BA57 /* PrescriptionDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrescriptionDetailViewController.h; sourceTree = "<group>"; };
 		5B138769227EC3580017BA57 /* PrescriptionDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrescriptionDetailViewController.m; sourceTree = "<group>"; };
+		5B15F363228AA940005DA806 /* PatientQuestionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientQuestionViewController.h; sourceTree = "<group>"; };
+		5B15F364228AA940005DA806 /* PatientQuestionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientQuestionViewController.m; sourceTree = "<group>"; };
+		5B15F366228AA959005DA806 /* PatientRiskLevelViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientRiskLevelViewController.h; sourceTree = "<group>"; };
+		5B15F367228AA959005DA806 /* PatientRiskLevelViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientRiskLevelViewController.m; sourceTree = "<group>"; };
 		5B22E0532265B9F000C65B50 /* KTDoctor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KTDoctor-Bridging-Header.h"; sourceTree = "<group>"; };
 		5B22E0562265C55A00C65B50 /* DateValueFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateValueFormatter.m; sourceTree = "<group>"; };
 		5B22E0572265C55A00C65B50 /* DateValueFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateValueFormatter.h; sourceTree = "<group>"; };
@@ -611,6 +617,10 @@
 				5B22E05F2266CED500C65B50 /* AddPatientViewController.m */,
 				5BAE45E02289561800902EA3 /* PatientBaseInfoViewController.h */,
 				5BAE45E12289561800902EA3 /* PatientBaseInfoViewController.m */,
+				5B15F363228AA940005DA806 /* PatientQuestionViewController.h */,
+				5B15F364228AA940005DA806 /* PatientQuestionViewController.m */,
+				5B15F366228AA959005DA806 /* PatientRiskLevelViewController.h */,
+				5B15F367228AA959005DA806 /* PatientRiskLevelViewController.m */,
 				5B22E0642266CF2500C65B50 /* AddTemplateViewController.h */,
 				5B22E0652266CF2500C65B50 /* AddTemplateViewController.m */,
 				5B22E0672266CF5F00C65B50 /* IntensionViewController.h */,
@@ -1369,6 +1379,7 @@
 				5BF8D8DE22802605002199E4 /* NSDate+ZJDate.m in Sources */,
 				5B02F77F2241DC6A00BE8269 /* NSDate+Extension.m in Sources */,
 				5B13876A227EC3580017BA57 /* PrescriptionDetailViewController.m in Sources */,
+				5B15F368228AA959005DA806 /* PatientRiskLevelViewController.m in Sources */,
 				5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */,
 				5B875B99224CAEC400736FC2 /* PatientCell9.m in Sources */,
 				09062674225CE8B2009A182D /* SearchAndSelectView.m in Sources */,
@@ -1394,6 +1405,7 @@
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
 				5B3FD009227013CF007DC605 /* AerobicReportCell.m in Sources */,
 				5B02F7802241DC6A00BE8269 /* UIView+Extension.m in Sources */,
+				5B15F365228AA940005DA806 /* PatientQuestionViewController.m in Sources */,
 				5BF8D90C22802689002199E4 /* NSString+Chinese.m in Sources */,
 				5BF8D8B6228024F9002199E4 /* BaseNavViewController.m in Sources */,
 				5B875B96224CAEAF00736FC2 /* PatientCell6.m in Sources */,
