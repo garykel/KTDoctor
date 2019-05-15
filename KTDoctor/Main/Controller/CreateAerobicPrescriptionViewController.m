@@ -699,12 +699,25 @@
 - (void)addGroup:(UIButton*)sender {
     NSLog(@"增加行");
     NSInteger index = sender.tag - 10000;
-    NSDictionary *dict = [self.groups objectAtIndex:index];
+    AerobicriptionModel *model = [self.groups objectAtIndex:index];
+    AerobicriptionModel *dict = [[AerobicriptionModel alloc] init];
+    dict.title = model.title;
+    dict.hrRange = model.hrRange;
+    dict.rpeRange = model.rpeRange;
+    dict.difficulty = model.difficulty;
+    dict.calorie = model.calorie;
+    dict.duration = model.duration;
+    dict.restDuration = model.restDuration;
+    dict.speed = model.speed;
+    dict.weight = model.weight;
+    dict.times = model.times;
+    dict.rotationAngle = model.rotationAngle;
     [self.groups insertObject:dict atIndex:index];
     [self.listView insertSection:index withRowAnimation:UITableViewRowAnimationNone];
     [self.listView reloadData];
     [self computeAvgDifficulty];
     [self computeTotalTrainingTime];
+    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
 }
 
 - (void)removeGroup:(UIButton*)sender {
@@ -716,6 +729,7 @@
         [self computeAvgDifficulty];
         [self computeTotalTrainingTime];
     }
+    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
 }
 
 #pragma mark - XXTGDropdownMenuDelegate
