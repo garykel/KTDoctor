@@ -7,6 +7,7 @@
 //
 
 #import "PatientQuestionViewController.h"
+#import "PatientRiskLevelViewController.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -651,133 +652,6 @@
     CGSize latestQuestion5Lbl9Size = [self.question5SubLbl9 sizeThatFits:CGSizeMake(kAnswer1Lbl_Width * kXScal, MAXFLOAT)];
     self.question5SubLbl9.frame = CGRectMake(CGRectGetMaxX(self.question5Num9Lbl.frame), self.question5Num9Lbl.frame.origin.y, latestQuestion5Lbl9Size.width, latestQuestion5Lbl9Size.height);
     [self.infoView addSubview:self.question5SubLbl9];
-//
-//    self.latestQuestion5Lbl22 = [[UILabel alloc] initWithFrame:CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl1.frame) + kFifthAnswerLbl_TopMargin * kYScal, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl22.text = @"2.";
-//    self.latestQuestion5Lbl22.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl22.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl22];
-//
-//    self.latestQuestion5Lbl2 = [[UILabel alloc] initWithFrame:CGRectMake(self.latestQuestion5Lbl1.frame.origin.x, CGRectGetMaxY(self.latestQuestion5Lbl1.frame) + kFifthAnswerLbl_BottomMargin * kYScal, kFifthAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl2.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    self.latestQuestion5Lbl2.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl2.text = @"呼吸急促，在休息或轻度用力时呼吸困难；";
-//    self.latestQuestion5Lbl2.numberOfLines = 0;
-//    CGSize latestQuestion5Lbl2Size = [self.latestQuestion5Lbl2 sizeThatFits:CGSizeMake(kFifthAnswerLbl_Width * kXScal, MAXFLOAT)];
-//    self.latestQuestion5Lbl2.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5Lbl11.frame) + kFifthAnswerNoLbl_RightMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl1.frame) + kFifthAnswerLbl_BottomMargin * kYScal, latestQuestion5Lbl2Size.width, latestQuestion5Lbl2Size.height);
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl2];
-//    self.latestQuestion5Lbl22.frame = CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, self.latestQuestion5Lbl2.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal);
-//
-//    self.latestQuestion5Lbl33 = [[UILabel alloc] initWithFrame:CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl2.frame) + kFifthAnswerLbl_TopMargin * kYScal, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl33.text = @"3.";
-//    self.latestQuestion5Lbl33.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl33.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl33];
-//
-//    self.latestQuestion5Lbl3 = [[UILabel alloc] initWithFrame:CGRectMake(self.latestQuestion5Lbl1.frame.origin.x, CGRectGetMaxY(self.latestQuestion5Lbl2.frame) + kFifthAnswerLbl_BottomMargin * kYScal, kFifthAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl3.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    self.latestQuestion5Lbl3.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl3.text = @"端坐呼吸困难（坐着都感觉呼吸困难）；";
-//    self.latestQuestion5Lbl3.numberOfLines = 0;
-//    CGSize latestQuestion5Lbl3Size = [self.latestQuestion5Lbl3 sizeThatFits:CGSizeMake(kFifthAnswerLbl_Width * kXScal, MAXFLOAT)];
-//    self.latestQuestion5Lbl3.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5Lbl11.frame) + kFifthAnswerNoLbl_RightMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl2.frame) + kFifthAnswerLbl_BottomMargin * kYScal, latestQuestion5Lbl3Size.width, latestQuestion5Lbl3Size.height);
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl3];
-//    self.latestQuestion5Lbl33.frame = CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, self.latestQuestion5Lbl3.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal);
-//
-//    self.latestQuestion5Lbl44 = [[UILabel alloc] initWithFrame:CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl3.frame) + kFifthAnswerLbl_TopMargin * kYScal, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl44.text = @"4.";
-//    self.latestQuestion5Lbl44.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl44.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl44];
-//
-//    self.latestQuestion5Lbl4 = [[UILabel alloc] initWithFrame:CGRectMake(self.latestQuestion5Lbl1.frame.origin.x, CGRectGetMaxY(self.latestQuestion5Lbl3.frame) + kFifthAnswerLbl_BottomMargin * kYScal, kFifthAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl4.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    self.latestQuestion5Lbl4.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl4.text = @"踝部水肿；";
-//    self.latestQuestion5Lbl4.numberOfLines = 0;
-//    CGSize latestQuestion5Lbl4Size = [self.latestQuestion5Lbl4 sizeThatFits:CGSizeMake(kFifthAnswerLbl_Width * kXScal, MAXFLOAT)];
-//    self.latestQuestion5Lbl4.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5Lbl11.frame) + kFifthAnswerNoLbl_RightMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl3.frame) + kFifthAnswerLbl_BottomMargin * kYScal, latestQuestion5Lbl4Size.width, latestQuestion5Lbl4Size.height);
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl4];
-//    self.latestQuestion5Lbl44.frame = CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, self.latestQuestion5Lbl4.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal);
-//
-//    self.latestQuestion5Lbl55 = [[UILabel alloc] initWithFrame:CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl4.frame) + kFifthAnswerLbl_TopMargin * kYScal, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl55.text = @"5.";
-//    self.latestQuestion5Lbl55.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl55.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl55];
-//
-//    self.latestQuestion5Lbl5 = [[UILabel alloc] initWithFrame:CGRectMake(self.latestQuestion5Lbl1.frame.origin.x, CGRectGetMaxY(self.latestQuestion5Lbl4.frame) + kFifthAnswerLbl_BottomMargin * kYScal, kFifthAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl5.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    self.latestQuestion5Lbl5.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl5.text = @"心悸或心动过速；";
-//    self.latestQuestion5Lbl5.numberOfLines = 0;
-//    CGSize latestQuestion5Lbl5Size = [self.latestQuestion5Lbl5 sizeThatFits:CGSizeMake(kFifthAnswerLbl_Width * kXScal, MAXFLOAT)];
-//    self.latestQuestion5Lbl5.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5Lbl11.frame) + kFifthAnswerNoLbl_RightMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl4.frame) + kFifthAnswerLbl_BottomMargin * kYScal, latestQuestion5Lbl5Size.width, latestQuestion5Lbl5Size.height);
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl5];
-//    self.latestQuestion5Lbl55.frame = CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, self.latestQuestion5Lbl5.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal);
-//
-//    self.latestQuestion5Lbl66 = [[UILabel alloc] initWithFrame:CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl5.frame) + kFifthAnswerLbl_TopMargin * kYScal, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl66.text = @"6.";
-//    self.latestQuestion5Lbl66.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl66.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl66];
-//
-//    self.latestQuestion5Lbl6 = [[UILabel alloc] initWithFrame:CGRectMake(self.latestQuestion5Lbl1.frame.origin.x, CGRectGetMaxY(self.latestQuestion5Lbl5.frame) + kFifthAnswerLbl_BottomMargin * kYScal, kFifthAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl6.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    self.latestQuestion5Lbl6.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl6.text = @"间歇性跛行（有疼痛感，或与供血不足有关的下肢痉挛）；";
-//    self.latestQuestion5Lbl6.numberOfLines = 0;
-//    CGSize latestQuestion5Lbl6Size = [self.latestQuestion5Lbl6 sizeThatFits:CGSizeMake(kFifthAnswerLbl_Width * kXScal, MAXFLOAT)];
-//    self.latestQuestion5Lbl6.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5Lbl11.frame) + kFifthAnswerNoLbl_RightMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl5.frame) + kFifthAnswerLbl_BottomMargin * kYScal, latestQuestion5Lbl6Size.width, latestQuestion5Lbl6Size.height);
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl6];
-//    self.latestQuestion5Lbl66.frame = CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, self.latestQuestion5Lbl6.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal);
-//
-//    self.latestQuestion5Lbl77 = [[UILabel alloc] initWithFrame:CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl6.frame) + kFifthAnswerLbl_TopMargin * kYScal, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl77.text = @"7.";
-//    self.latestQuestion5Lbl77.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl77.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl77];
-//
-//    self.latestQuestion5Lbl7 = [[UILabel alloc] initWithFrame:CGRectMake(self.latestQuestion5Lbl1.frame.origin.x, CGRectGetMaxY(self.latestQuestion5Lbl6.frame) + kFifthAnswerLbl_BottomMargin * kYScal, kFifthAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl7.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    self.latestQuestion5Lbl7.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl7.text = @"已知的心脏杂音；";
-//    self.latestQuestion5Lbl7.numberOfLines = 0;
-//    CGSize latestQuestion5Lbl7Size = [self.latestQuestion5Lbl7 sizeThatFits:CGSizeMake(kFifthAnswerLbl_Width * kXScal, MAXFLOAT)];
-//    self.latestQuestion5Lbl7.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5Lbl11.frame) + kFifthAnswerNoLbl_RightMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl6.frame) + kFifthAnswerLbl_BottomMargin * kYScal, latestQuestion5Lbl7Size.width, latestQuestion5Lbl7Size.height);
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl7];
-//    self.latestQuestion5Lbl77.frame = CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, self.latestQuestion5Lbl7.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal);
-//
-//    self.latestQuestion5Lbl88 = [[UILabel alloc] initWithFrame:CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl7.frame) + kFifthAnswerLbl_TopMargin * kYScal, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl88.text = @"8.";
-//    self.latestQuestion5Lbl88.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl88.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl88];
-//
-//    self.latestQuestion5Lbl8 = [[UILabel alloc] initWithFrame:CGRectMake(self.latestQuestion5Lbl1.frame.origin.x, CGRectGetMaxY(self.latestQuestion5Lbl7.frame) + kFifthAnswerLbl_BottomMargin * kYScal, kFifthAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl8.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    self.latestQuestion5Lbl8.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl8.text = @"异常疲劳或日常活动呼吸困难；";
-//    self.latestQuestion5Lbl8.numberOfLines = 0;
-//    CGSize latestQuestion5Lbl8Size = [self.latestQuestion5Lbl8 sizeThatFits:CGSizeMake(kFifthAnswerLbl_Width * kXScal, MAXFLOAT)];
-//    self.latestQuestion5Lbl8.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5Lbl11.frame) + kFifthAnswerNoLbl_RightMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl7.frame) + kFifthAnswerLbl_BottomMargin * kYScal, latestQuestion5Lbl8Size.width, latestQuestion5Lbl8Size.height);
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl8];
-//    self.latestQuestion5Lbl88.frame = CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, self.latestQuestion5Lbl8.frame.origin.y, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal);
-//
-//    self.latestQuestion5Lbl99 = [[UILabel alloc] initWithFrame:CGRectMake(kFifthAnswerLbl_LeftMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl8.frame) + kFifthAnswerLbl_TopMargin * kYScal, kSecondAnswerLbl_Yes_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl99.text = @"9.";
-//    self.latestQuestion5Lbl99.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl99.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl99];
-//
-//    self.latestQuestion5Lbl9 = [[UILabel alloc] initWithFrame:CGRectMake(self.latestQuestion5Lbl1.frame.origin.x, CGRectGetMaxY(self.latestQuestion5Lbl8.frame) + kFifthAnswerLbl_BottomMargin * kYScal, kFifthAnswerLbl_Width * kXScal, kAnswerLbl_FontSize * kYScal)];
-//    self.latestQuestion5Lbl9.font = [UIFont systemFontOfSize:kAnswerLbl_FontSize * kYScal];
-//    self.latestQuestion5Lbl9.textColor = [UIColor colorWithHexString:@"#444444"];
-//    self.latestQuestion5Lbl9.text = @"由大脑供血不足引起的头晕或晕厥。";
-//    self.latestQuestion5Lbl9.numberOfLines = 0;
-//    CGSize latestQuestion5Lbl9Size = [self.latestQuestion5Lbl9 sizeThatFits:CGSizeMake(kFifthAnswerLbl_Width * kXScal, MAXFLOAT)];
-//    self.latestQuestion5Lbl9.frame = CGRectMake(CGRectGetMaxX(self.latestQuestion5Lbl11.frame) + kFifthAnswerNoLbl_RightMargin * kXScal, CGRectGetMaxY(self.latestQuestion5Lbl8.frame) + kFifthAnswerLbl_BottomMargin * kYScal, latestQuestion5Lbl9Size.width, latestQuestion5Lbl9Size.height);
-//    [self.leftContentView addSubview:self.latestQuestion5Lbl9];
     
     self.previousPage = [UIButton buttonWithType:UIButtonTypeCustom];
     CGFloat left = (kWidth - 2 * kNextBtn_Width * kXScal - kNextBtn_RightMargin * kXScal)/2;
@@ -795,6 +669,7 @@
     [self.nextPage setTitle:@"下一页" forState:UIControlStateNormal];
     [self.nextPage.titleLabel setFont:[UIFont systemFontOfSize:kNextBtn_FontSize * kYScal]];
     self.nextPage.backgroundColor = [UIColor colorWithHexString:@"#0FAAC9"];
+    [self.nextPage addTarget:self action:@selector(next:) forControlEvents:UIControlEventTouchUpInside];
     [self.bgImg addSubview:self.nextPage];
 }
 
@@ -811,6 +686,12 @@
 
 - (void)back:(UIButton*)sender {
     [self.navigationController popViewControllerAnimated:NO];
+}
+
+- (void)next:(UIButton*)sender {
+    PatientRiskLevelViewController *risk = [[PatientRiskLevelViewController alloc] init];
+    risk.userInfo = self.userInfo;
+    [self.navigationController pushViewController:risk animated:NO];
 }
 /*
 #pragma mark - Navigation

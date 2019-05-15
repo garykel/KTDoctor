@@ -277,7 +277,8 @@
     
     self.birthTF = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.birthStar.frame) + kNameTF_LeftMargin * kXScal, self.phoneTF.frame.origin.y, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     [self.birthTF setTitle:[self.userInfo valueForKey:@"birthdate"] forState:UIControlStateNormal];
-    self.birthTF.titleLabel.textAlignment = NSTextAlignmentLeft;
+    self.birthTF.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+    self.birthTF.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     [self.birthTF.titleLabel setFont:[UIFont systemFontOfSize:kNameTF_FontSize * kYScal]];
     [self.birthTF setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.birthTF addTarget:self action:@selector(chooseBirthDay:) forControlEvents:UIControlEventTouchUpInside];
