@@ -133,7 +133,7 @@ extern CGSize systemListviewSize;
     self.timeLbl.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:self.timeLbl];
     
-    self.seperateLine = [[UIView alloc] initWithFrame:CGRectMake(self.nameLbl.frame.origin.x, kCell_Height - kSeperateLine_Height, itemLbl_Width * 8 + 7 * kMiddleLine_Width, kSeperateLine_Height)];
+    self.seperateLine = [[UIView alloc] initWithFrame:CGRectMake(self.nameLbl.frame.origin.x, kCell_Height * kYScal - kSeperateLine_Height, itemLbl_Width * 8 + 7 * kMiddleLine_Width, kSeperateLine_Height)];
     self.seperateLine.backgroundColor = [UIColor lightGrayColor];
     [self.contentView addSubview:self.seperateLine];
     

@@ -7,7 +7,7 @@
 //
 
 #import "AddTemplateViewController.h"
-#import "LMJDropdownMenu.h"
+#import "KTDropDownMenus.h"
 #import "CustomTemplateCell.h"
 #import "SystemTemplateCell.h"
 #import "UserModel.h"
@@ -27,6 +27,7 @@
 #define kNameTF_Heihgt 20
 #define kNameTF_FontSize 12.0
 #define kNameTF_RightMargin 15
+#define kDropdownHeight 30
 #define kDieaseMenu_Width 133
 #define kRiskLevelMenu_Width 108
 #define kDeviceMenu_Width 133
@@ -63,7 +64,7 @@
 
 CGSize customListviewSize;
 CGSize systemListviewSize;
-@interface AddTemplateViewController ()<UITableViewDelegate,UITableViewDataSource,LMJDropdownMenuDelegate>
+@interface AddTemplateViewController ()<UITableViewDelegate,UITableViewDataSource,XXTGDropdownMenuDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -71,13 +72,13 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)UIView *searchBgView;
 @property (nonatomic,strong)UIView *bottomView;
 @property (nonatomic,strong)UITextField *nameTf;
-@property (nonatomic,strong)LMJDropdownMenu *dieaseMenu;
-@property (nonatomic,strong)LMJDropdownMenu *riskLevelMenu;
-@property (nonatomic,strong)LMJDropdownMenu *deviceMenu;
-@property (nonatomic,strong)LMJDropdownMenu *trainingPositionMenu;
-@property (nonatomic,strong)LMJDropdownMenu *trainingDeviceMenu;
+@property (nonatomic,strong)KTDropDownMenus *dieaseMenu;
+@property (nonatomic,strong)KTDropDownMenus *riskLevelMenu;
+@property (nonatomic,strong)KTDropDownMenus *deviceMenu;
+@property (nonatomic,strong)KTDropDownMenus *trainingPositionMenu;
+@property (nonatomic,strong)KTDropDownMenus *trainingDeviceMenu;
 @property (nonatomic,strong)UIButton *searchBtn;
-@property (nonatomic,strong)LMJDropdownMenu *templateMenu;
+@property (nonatomic,strong)KTDropDownMenus *templateMenu;
 @property (nonatomic,strong)UIButton *createAerobicTemplateBtn;
 @property (nonatomic,strong)UIButton *createPowerTemplateBtn;
 @property (nonatomic,strong)UIButton *deleteBtn;
@@ -160,32 +161,42 @@ CGSize systemListviewSize;
     self.nameTf.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     [self.searchBgView addSubview:self.nameTf];
     
-    self.dieaseMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.nameTf.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kDieaseMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
-    [self.dieaseMenu setMenuTitles:@[] rowHeight:kNameTF_Heihgt attr:@{@"title":@"适用病症",@"titleFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal]}];
+    self.dieaseMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.nameTf.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kDieaseMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
+    [self.dieaseMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.dieaseMenu.defualtStr = @"适应病症";
+    self.dieaseMenu.titles = @[@"II型糖尿病"];
     self.dieaseMenu.delegate = self;
     self.dieaseMenu.tag = 10;
     [self.searchBgView addSubview:self.dieaseMenu];
     
-    self.riskLevelMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dieaseMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kRiskLevelMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
-    [self.riskLevelMenu setMenuTitles:@[] rowHeight:kNameTF_Heihgt attr:@{@"title":@"风险等级",@"titleFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal]}];
+    self.riskLevelMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dieaseMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kRiskLevelMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
+    [self.riskLevelMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.riskLevelMenu.defualtStr = @"风险等级";
+    self.riskLevelMenu.titles = @[@"高",@"中",@"低"];
     self.riskLevelMenu.delegate = self;
     self.riskLevelMenu.tag = 20;
     [self.searchBgView addSubview:self.riskLevelMenu];
     
-    self.deviceMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kDeviceMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
-    [self.deviceMenu setMenuTitles:@[] rowHeight:kNameTF_Heihgt attr:@{@"title":@"有氧设备",@"titleFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal]}];
+    self.deviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kDeviceMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
+    [self.deviceMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.deviceMenu.defualtStr = @"有氧设备";
+    self.deviceMenu.titles = @[@"有氧设备",@"力量设备"];
     self.deviceMenu.delegate = self;
     self.deviceMenu.tag = 30;
     [self.searchBgView addSubview:self.deviceMenu];
     
-    self.trainingPositionMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
-    [self.trainingPositionMenu setMenuTitles:@[] rowHeight:kNameTF_Heihgt attr:@{@"title":@"训练部位",@"titleFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal]}];
+    self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
+    [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.trainingPositionMenu.defualtStr = @"训练部位";
+    self.trainingPositionMenu.titles = @[@"心肺"];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 40;
     [self.searchBgView addSubview:self.trainingPositionMenu];
     
-    self.trainingDeviceMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingPositionMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
-    [self.trainingDeviceMenu setMenuTitles:@[] rowHeight:kNameTF_Heihgt attr:@{@"title":@"训练设备",@"titleFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kNameTF_FontSize * kYScal]}];
+    self.trainingDeviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingPositionMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
+    [self.trainingDeviceMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.trainingDeviceMenu.defualtStr = @"训练设备";
+    self.trainingDeviceMenu.titles = @[@"功率车",@"椭圆机"];
     self.trainingDeviceMenu.delegate = self;
     self.trainingDeviceMenu.tag = 50;
     [self.searchBgView addSubview:self.trainingDeviceMenu];
@@ -205,8 +216,10 @@ CGSize systemListviewSize;
     self.bottomView.backgroundColor = [UIColor colorWithHexString:@"#C7F0F9"];
     [self.bgImg addSubview:self.bottomView];
     
-    self.templateMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(kTemplateMenu_LeftMargin * kXScal, kTemplateMenu_TopMargin * kYScal, kTemplateMenu_Width * kXScal, kTemplateMenu_Height * kYScal)];
-    [self.templateMenu setMenuTitles:@[@"自定义模板",@"系统模板"] rowHeight:kNameTF_Heihgt attr:@{@"title":@"自定义模板",@"titleFont":[UIFont systemFontOfSize:kTemplateMenu_FontSize * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kTemplateMenu_FontSize * kYScal]}];
+    self.templateMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(kTemplateMenu_LeftMargin * kXScal, kTemplateMenu_TopMargin * kYScal, kTemplateMenu_Width * kXScal, kTemplateMenu_Height * kYScal)];
+    [self.templateMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.templateMenu.defualtStr = @"自定义模板";
+    self.templateMenu.titles = @[@"自定义模板",@"系统模板"];
     self.templateMenu.delegate = self;
     self.templateMenu.tag = 60;
     [self.bottomView addSubview:self.templateMenu];
@@ -686,23 +699,27 @@ CGSize systemListviewSize;
     [self showTemplateListWithType:self.type];
 }
 
-#pragma mark - LMJDropdownMenu Delegate
+#pragma mark - XXTGDropdownMenuDelegate
 
-- (void)dropdownMenu:(LMJDropdownMenu *)menu selectedCellNumber:(NSInteger)number{
-    NSLog(@"你选择了：%ld",(long)number);
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
+{
     if (menu == self.templateMenu) {
-        if (number == 0) {
+        if ([string isEqualToString:@"自定义模板"]) {
             self.systemListviewBgView.hidden = YES;
             self.customListviewBgView.hidden = NO;
             self.type = 2;
             [self showTemplateListWithType:self.type];
-        } else if (number == 1) {
+        } else if ([string isEqualToString:@"系统模板"]) {
             self.systemListviewBgView.hidden = NO;
             self.customListviewBgView.hidden = YES;
             self.type = 1;
             [self showTemplateListWithType:self.type];
         }
     }
+}
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    
 }
 
 #pragma mark - button click events

@@ -45,7 +45,7 @@ extern CGSize customListviewSize;
 
 - (void)setUI {
     self.checkBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.checkBtn.frame = CGRectMake(kCheck_LeftMargin * kXScal, (kCell_Height * kXScal - kCheck_Width * kYScal)/2, kCheck_Width * kYScal, kCheck_Width * kYScal);
+    self.checkBtn.frame = CGRectMake(kCheck_LeftMargin * kXScal, (kCell_Height * kYScal - kCheck_Width * kYScal)/2, kCheck_Width * kYScal, kCheck_Width * kYScal);
     [self.checkBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
     [self.contentView addSubview:self.checkBtn];
     
@@ -135,7 +135,7 @@ extern CGSize customListviewSize;
     self.timeLbl.textAlignment = NSTextAlignmentCenter;
     [self.contentView addSubview:self.timeLbl];
     
-    self.seperateLine = [[UIView alloc] initWithFrame:CGRectMake(self.nameLbl.frame.origin.x, kCell_Height - kSeperateLine_Height, itemLbl_Width * 8 + 7 * kMiddleLine_Width, kSeperateLine_Height)];
+    self.seperateLine = [[UIView alloc] initWithFrame:CGRectMake(self.nameLbl.frame.origin.x, kCell_Height * kYScal - kSeperateLine_Height, itemLbl_Width * 8 + 7 * kMiddleLine_Width * kXScal, kSeperateLine_Height )];
     self.seperateLine.backgroundColor = [UIColor lightGrayColor];
     [self.contentView addSubview:self.seperateLine];
     

@@ -13,6 +13,7 @@
 #import "WHC_PhotoListCell.h"
 #import "WHC_PictureListVC.h"
 #import "WHC_CameraVC.h"
+#import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -111,7 +112,7 @@
 @property (nonatomic,strong)UnitTextField *gmdzdbTF;
 @property (nonatomic,strong)UILabel *hrDeviceLbl;//心率带
 @property (nonatomic,strong)UIImageView *hrDeviceStar;
-@property (nonatomic,strong)UnitTextField *hrDeviceTF;
+@property (nonatomic,strong)KTDropDownMenus *hrDeviceTF;
 @property (nonatomic,strong)UIButton *changeBtn;
 @property (nonatomic,strong)UILabel *maxAlertHrLbl;//最大报警心率
 @property (nonatomic,strong)UnitTextField *maxAlertHrTF;
@@ -119,6 +120,8 @@
 @property (nonatomic,strong)UIImage *selectedImg;
 @property (nonatomic,assign)BOOL needUploadImg;
 @property (nonatomic,copy)NSString *birthday;
+@property (nonatomic,strong)UserModel *user;
+@property (nonatomic,strong)NSMutableArray *privateDeviceArr;
 @end
 
 @implementation PatientBaseInfoViewController
@@ -126,6 +129,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    self.privateDeviceArr = [NSMutableArray arrayWithObjects:@"无", nil];
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    NSInteger userId = [[self.userInfo valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    [self getPrivateHrDevice:parameter];
     self.birthday = [self.userInfo valueForKey:@"birthdate"];
     self.needUploadImg = NO;
     [self setNavBar];
@@ -458,9 +471,13 @@
     self.hrDeviceStar.frame = CGRectMake(CGRectGetMaxX(self.hrDeviceLbl.frame) + kNameLbl_RightMargin * kXScal, self.gmdzdbStar.frame.origin.y, kHeadStar_Width * kXScal, kHeadStar_Width * kXScal);
     [self.infoView addSubview:self.hrDeviceStar];
     
-    self.hrDeviceTF = [[UnitTextField alloc] initWithFrame:CGRectMake(self.szyTF.frame.origin.x, self.gmdzdbTF.frame.origin.y, kShortTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.hrDeviceTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.hrDeviceTF.text = @"无";
+    self.hrDeviceTF = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.szyTF.frame.origin.x, self.gmdzdbTF.frame.origin.y, kShortTF_Width * kXScal, kNameTF_Height * kYScal)];
+    [self.hrDeviceTF setDropdownHeight:kDropdownHeight * kYScal];
+    self.hrDeviceTF.defualtStr = @"无";
+    [self.hrDeviceTF.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    self.hrDeviceTF.delegate = self;
+    self.hrDeviceTF.titles = [self.privateDeviceArr copy];
+    self.hrDeviceTF.delegate = self;
     self.hrDeviceTF.backgroundColor = [UIColor whiteColor];
     [self.infoView addSubview:self.hrDeviceTF];
     
@@ -473,6 +490,7 @@
     [self.changeBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.changeBtn.backgroundColor = [UIColor colorWithHexString:@"#25ABD9"];
     [self.changeBtn.titleLabel setFont:[UIFont systemFontOfSize:kChangeBtn_FontSize * kYScal]];
+    
     [self.infoView addSubview:self.changeBtn];
     
     self.maxAlertHrLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.gmdzdbLbl.frame.origin.x, CGRectGetMaxY(self.gmdzdbLbl.frame) + kNameLbl_BottomMargin * kYScal, self.gmdzdbLbl.frame.size.width, kNameLbl_Height * kYScal)];
@@ -676,6 +694,36 @@
         NSLog(@"error :%@",error);
     }];
 }
-#pragma mark - netWork fuctions
 
+#pragma mark - netWork fuctions
+- (void)getPrivateHrDevice:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRIVATE_DEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"bind device :%@ :%@",responseObject,error);
+        if (code == 0) {
+            NSArray *privateDevices = [responseObject valueForKey:@"data"];
+            if (privateDevices.count > 0) {
+                NSDictionary *dict = [privateDevices objectAtIndex:0];
+                NSString *deviceCode = [dict valueForKey:@"deviceCode"];
+                [weakSelf.privateDeviceArr addObjectsFromArray:privateDevices];
+                [weakSelf.hrDeviceTF.mainBtn setTitle:deviceCode forState:UIControlStateNormal];
+                [weakSelf.hrDeviceTF.mTableView reloadData];
+            } else {
+                [weakSelf.hrDeviceTF.mainBtn setTitle:@"无" forState:UIControlStateNormal];
+                [weakSelf.hrDeviceTF.mTableView reloadData];
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 @end
