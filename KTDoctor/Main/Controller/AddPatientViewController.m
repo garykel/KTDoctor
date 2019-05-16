@@ -318,7 +318,7 @@
     self.QRCodeLbl.textAlignment = NSTextAlignmentCenter;
     [self.scanBgView addSubview:self.QRCodeLbl];
     
-    self.scanLbl = [[UILabel alloc] initWithFrame:CGRectMake((self.scanBgView.frame.size.width - kScanLbl_Width)/2.0, CGRectGetMaxY(self.QRCodeLbl.frame) + kWechatTitleLbl_BottomMargin * kYScal, kScanLbl_Width * kXScal, kScanLbl_Height * kYScal)];
+    self.scanLbl = [[UILabel alloc] initWithFrame:CGRectMake((self.scanBgView.frame.size.width - kScanLbl_Width * kXScal)/2.0, CGRectGetMaxY(self.QRCodeLbl.frame) + kWechatTitleLbl_BottomMargin * kYScal, kScanLbl_Width * kXScal, kScanLbl_Height * kYScal)];
     self.scanLbl.font = [UIFont systemFontOfSize:kScanLbl_FontSize * kYScal];
     self.scanLbl.textAlignment = NSTextAlignmentCenter;
     self.scanLbl.textColor = [UIColor colorWithHexString:@"#011945"];
@@ -326,7 +326,7 @@
     [self.scanBgView addSubview:self.scanLbl];
     
     self.scanImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@""]];
-    self.scanImg.frame = CGRectMake((self.scanBgView.frame.size.width - kScanImg_Width)/2.0, CGRectGetMaxY(self.scanLbl.frame) + kScanImg_TopMargin * kYScal, kScanImg_Width * kXScal, kScanImg_Height * kYScal);
+    self.scanImg.frame = CGRectMake((self.scanBgView.frame.size.width - kScanImg_Width * kXScal)/2.0, CGRectGetMaxY(self.scanLbl.frame) + kScanImg_TopMargin * kYScal, kScanImg_Width * kXScal, kScanImg_Height * kYScal);
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(refreshQRCode)];
     [self.scanBgView addGestureRecognizer:tap];
     [self.scanBgView addSubview:self.scanImg];
