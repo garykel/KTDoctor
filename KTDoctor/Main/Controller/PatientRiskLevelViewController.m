@@ -10,6 +10,7 @@
 #import "CreateAerobicPrescriptionViewController.h"
 #import "CreatePowerPrescriptionViewController.h"
 #import "MainViewController.h"
+#import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -51,6 +52,7 @@
 @property (nonatomic,strong)UIButton *createAerobicPrescriptionBtn;
 @property (nonatomic,strong)UIButton *createPowerPrescriptionBtn;
 @property (nonatomic,strong)UIButton *finishBtn;
+@property (nonatomic,strong)UserModel *user;
 @end
 
 @implementation PatientRiskLevelViewController
@@ -58,6 +60,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
     [self setNavBar];
     [self setupUI];
 }
@@ -206,11 +209,58 @@
 
 //完成
 - (void)finish:(UIButton*)sender {
-    NSArray *tempCVs = [self.navigationController viewControllers];
-    for (UIViewController *vc in tempCVs) {
-        if ([vc isKindOfClass:[MainViewController class]]) {
-            [self.navigationController popToViewController:vc animated:NO];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionaryWithDictionary:self.userInfo];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+//    [parameter setValue:@"II型糖尿病" forKey:@"disease"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"restHr"] integerValue]) forKey:@"restHr"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"weight"] floatValue]) forKey:@"weight"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"height"] floatValue]) forKey:@"height"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"waistline"] floatValue]) forKey:@"waistline"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"hrv"] floatValue]) forKey:@"hrv"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"fbg"] floatValue]) forKey:@"fbg"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"sbp"] integerValue]) forKey:@"sbp"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"dbp"] integerValue]) forKey:@"dbp"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"hdl"] floatValue]) forKey:@"hdl"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"bfr"] integerValue]) forKey:@"bfr"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"sportFrequency"] integerValue]) forKey:@"sportFrequency"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"hasHbp"] integerValue]) forKey:@"hasHbp"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"hasHbs"] integerValue]) forKey:@"hasHbs"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"hasHbf"] integerValue]) forKey:@"hasHbf"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"hasSmoking"] integerValue]) forKey:@"hasSmoking"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"familyDiabetes"] integerValue]) forKey:@"familyDiabetes"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"familySuddenDeath"] integerValue]) forKey:@"familySuddenDeath"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"threeMonthStatus"] integerValue]) forKey:@"threeMonthStatus"];
+////    [parameter setValue:@([[self.userInfo valueForKey:@"mobile"] integerValue]) forKey:@"mobile"];
+////    [parameter setValue:@([[self.userInfo valueForKey:@"smsCode"] floatValue]) forKey:@"smsCode"];
+//    [parameter setValue:@([[self.userInfo valueForKey:@"maxAlarmHr"] integerValue]) forKey:@"maxAlarmHr"];
+    [self doctorSaveUserInfo:parameter];
+}
+
+#pragma mark - networkFunctions
+- (void)doctorSaveUserInfo:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_SAVE_USERINFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        if (code == 0) {
+            NSArray *tempCVs = [self.navigationController viewControllers];
+            for (UIViewController *vc in tempCVs) {
+                if ([vc isKindOfClass:[MainViewController class]]) {
+                    [self.navigationController popToViewController:vc animated:NO];
+                }
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
         }
-    }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 @end

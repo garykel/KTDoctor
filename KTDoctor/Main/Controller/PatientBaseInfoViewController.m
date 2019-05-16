@@ -126,6 +126,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.birthday = [self.userInfo valueForKey:@"birthdate"];
     self.needUploadImg = NO;
     [self setNavBar];
     [self setupUI];
