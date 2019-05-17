@@ -11,6 +11,8 @@
 #import "CustomTemplateCell.h"
 #import "SystemTemplateCell.h"
 #import "UserModel.h"
+#import "ChooseTemplateTypeView.h"
+#import "CreateTemplateViewController.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -61,6 +63,8 @@
 #define kHeader_Btn_FontSize 13.0
 #define kListview_TopMargin 10
 #define kCell_Height 30
+#define kView_Height 240
+#define kView_LeftMargin 185
 
 CGSize customListviewSize;
 CGSize systemListviewSize;
@@ -98,6 +102,7 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)NSMutableArray *customTemplateIdArr;
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,assign)NSInteger type;
+@property (nonatomic,strong)ChooseTemplateTypeView *template;
 @end
 
 @implementation AddTemplateViewController
@@ -736,6 +741,25 @@ CGSize systemListviewSize;
 //新建有氧模板
 - (void)createAerobicTemplateBtnClick:(UIButton*)sender {
     NSLog(@"新建有氧模板");
+    self.template = [[ChooseTemplateTypeView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kView_LeftMargin * kXScal, kView_Height * kYScal)];
+    [self.template.intensiteBtn addTarget:self action:@selector(createIntensiteTemplate:) forControlEvents:UIControlEventTouchUpInside];
+    [self.template.powerBtn addTarget:self action:@selector(createPowerTemplate:) forControlEvents:UIControlEventTouchUpInside];
+    [self.template show];
+}
+
+//新建强度模板
+- (void)createIntensiteTemplate:(UIButton*)sender {
+    [self.template dismiss];
+    CreateTemplateViewController *template = [[CreateTemplateViewController alloc] init];
+    template.type = 1;
+    [self.navigationController pushViewController:template animated:NO];
+}
+//新建功率模板
+- (void)createPowerTemplate:(UIButton*)sender {
+    [self.template dismiss];
+    CreateTemplateViewController *template = [[CreateTemplateViewController alloc] init];
+    template.type = 2;
+    [self.navigationController pushViewController:template animated:NO];
 }
 
 //新建力量模板

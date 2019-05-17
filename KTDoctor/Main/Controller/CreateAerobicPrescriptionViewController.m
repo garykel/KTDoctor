@@ -34,6 +34,7 @@
 #define kDieaseTF_Width 211
 #define kDieaseTF_Height 19
 #define kDropdownHeight 30
+#define kDropdownHeight 30
 #define kDieaseTF_BottomMargin 15
 #define kTemplateMenu_Width 356
 #define kWeekMenu_Width 160

@@ -229,6 +229,7 @@ extern NSMutableArray *patientsArr;
 
 - (void)handleTapGesture:(UITapGestureRecognizer*)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
+        //点击区域外消失
         CGPoint location = [gesture locationInView:self];
         NSLog(@"location :%@",NSStringFromCGPoint(location));
         if (!CGRectContainsPoint(self.contentView.frame, location)) {
