@@ -122,6 +122,7 @@
 @property (nonatomic,copy)NSString *birthday;
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,strong)NSMutableArray *privateDeviceArr;
+@property (nonatomic,copy)NSString *selectedDeviceCode;
 @end
 
 @implementation PatientBaseInfoViewController
@@ -129,9 +130,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    self.privateDeviceArr = [NSMutableArray arrayWithObjects:@"无", nil];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
+    self.privateDeviceArr = [NSMutableArray arrayWithObjects:@"无", nil];
+    self.selectedDeviceCode = @"";
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
@@ -139,10 +141,27 @@
     NSInteger userId = [[self.userInfo valueForKey:@"userId"] integerValue];
     [parameter setValue:@(userId) forKey:@"userId"];
     [self getPrivateHrDevice:parameter];
+    
+    
+    
     self.birthday = [self.userInfo valueForKey:@"birthdate"];
     self.needUploadImg = NO;
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    NSMutableDictionary *para = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [para setValue:orgCode forKey:@"orgCode"];
+    NSInteger userId = [[self.userInfo valueForKey:@"userId"] integerValue];
+    [para setValue:@(userId) forKey:@"userId"];
+    [para setValue:orgCode forKey:@"orgCode"];
+    [para setValue:@14 forKey:@"deviceType"];
+    [self getAvailableHrDevice:para];
 }
 
 - (void)setNavBar {
@@ -473,7 +492,7 @@
     
     self.hrDeviceTF = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.szyTF.frame.origin.x, self.gmdzdbTF.frame.origin.y, kShortTF_Width * kXScal, kNameTF_Height * kYScal)];
     [self.hrDeviceTF setDropdownHeight:kDropdownHeight * kYScal];
-    self.hrDeviceTF.defualtStr = @"无";
+//    self.hrDeviceTF.defualtStr = @"无";
     [self.hrDeviceTF.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.hrDeviceTF.delegate = self;
     self.hrDeviceTF.titles = [self.privateDeviceArr copy];
@@ -490,7 +509,7 @@
     [self.changeBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.changeBtn.backgroundColor = [UIColor colorWithHexString:@"#25ABD9"];
     [self.changeBtn.titleLabel setFont:[UIFont systemFontOfSize:kChangeBtn_FontSize * kYScal]];
-    
+    [self.changeBtn addTarget:self action:@selector(changePrivateHRDevice:) forControlEvents:UIControlEventTouchUpInside];
     [self.infoView addSubview:self.changeBtn];
     
     self.maxAlertHrLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.gmdzdbLbl.frame.origin.x, CGRectGetMaxY(self.gmdzdbLbl.frame) + kNameLbl_BottomMargin * kYScal, self.gmdzdbLbl.frame.size.width, kNameLbl_Height * kYScal)];
@@ -575,6 +594,18 @@
     }
 }
 
+- (void)changePrivateHRDevice:(UIButton*)sender {
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    NSInteger userId = [[self.userInfo valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    [parameter setValue:self.selectedDeviceCode forKey:@"deviceCode"];
+    [self changeUserPrivateHrDevice:parameter];
+}
+
 - (void)back:(UIButton*)sender {
     [self.navigationController popViewControllerAnimated:NO];
 }
@@ -627,11 +658,26 @@
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    
+    if (menu == self.hrDeviceTF) {
+        if ([string isEqualToString:@"无"]) {
+            self.selectedDeviceCode = @"";
+        } else {
+            self.selectedDeviceCode = string;
+        }
+    }
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
-    
+    if (menu == self.hrDeviceTF) {
+        [self.hrDeviceTF.mTableView reloadData];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [parameter setValue:@14 forKey:@"deviceType"];
+        [self getAvailableHrDevice:parameter];
+    }
 }
 
 #pragma mark - WHC_ChoicePictureVCDelegate
@@ -696,26 +742,29 @@
 }
 
 #pragma mark - netWork fuctions
-- (void)getPrivateHrDevice:(NSMutableDictionary*)parameter {
+- (void)getPrivateHrDevice:(NSMutableDictionary *)parameter {
     __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRIVATE_DEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSString *error = [responseObject valueForKey:@"error"];
-        NSLog(@"bind device :%@ :%@",responseObject,error);
+        NSLog(@"private hr device :%@ :%@",responseObject,error);
         if (code == 0) {
             NSArray *privateDevices = [responseObject valueForKey:@"data"];
             if (privateDevices.count > 0) {
                 NSDictionary *dict = [privateDevices objectAtIndex:0];
                 NSString *deviceCode = [dict valueForKey:@"deviceCode"];
-                [weakSelf.privateDeviceArr addObjectsFromArray:privateDevices];
                 [weakSelf.hrDeviceTF.mainBtn setTitle:deviceCode forState:UIControlStateNormal];
-                [weakSelf.hrDeviceTF.mTableView reloadData];
+                [weakSelf.hrDeviceTF.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                weakSelf.hrDeviceTF.defualtStr = deviceCode;
             } else {
                 [weakSelf.hrDeviceTF.mainBtn setTitle:@"无" forState:UIControlStateNormal];
+                [weakSelf.hrDeviceTF.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
                 [weakSelf.hrDeviceTF.mTableView reloadData];
             }
         } else if (code == 10011) {
+            [weakSelf.hrDeviceTF hiddenCityList];
+            [weakSelf.sexMenu hiddenCityList];
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [self.navigationController popToRootViewControllerAnimated:NO];
@@ -726,4 +775,67 @@
         NSLog(@"error :%@",error);
     }];
 }
+
+- (void)getAvailableHrDevice:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_AVAILABLE_DEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"private hr device :%@ :%@",responseObject,error);
+        if (weakSelf.privateDeviceArr.count > 0) {
+            [weakSelf.privateDeviceArr removeAllObjects];
+        }
+        [weakSelf.privateDeviceArr addObject:@"无"];
+        if (code == 0) {
+            NSArray *privateDevices = [responseObject valueForKey:@"data"];
+            if (privateDevices.count > 0) {
+                for (NSDictionary *device in privateDevices) {
+                    NSString *deviceId = [device valueForKey:@"deviceCode"];
+                    if (![weakSelf.privateDeviceArr containsObject:deviceId]) {
+                        [weakSelf.privateDeviceArr addObject:deviceId];
+                    }
+                }
+                weakSelf.hrDeviceTF.titles = [weakSelf.privateDeviceArr copy];
+                [weakSelf.hrDeviceTF.mTableView reloadData];
+            } else {
+                [weakSelf.hrDeviceTF.mainBtn setTitle:@"无" forState:UIControlStateNormal];
+                [weakSelf.hrDeviceTF.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                [weakSelf.hrDeviceTF.mTableView reloadData];
+            }
+        } else if (code == 10011) {
+            [weakSelf.hrDeviceTF hiddenCityList];
+            [weakSelf.sexMenu hiddenCityList];
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)changeUserPrivateHrDevice:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_CHANGE_HR_DEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"bind device :%@ :%@",responseObject,error);
+        if (code == 0) {
+            [STTextHudTool showText:@"成功"];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
 @end
