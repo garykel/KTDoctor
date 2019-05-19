@@ -71,6 +71,7 @@
 @property (nonatomic,strong)UILabel *trainingPositionLbl;//训练部位
 @property (nonatomic,strong)KTDropDownMenus *trainingPositionMenu;
 @property (nonatomic,strong)UILabel *trainingDeviceLbl;//训练设备
+@property (nonatomic,strong)KTDropDownMenus *traingDeviceMenu;
 @property (nonatomic,strong)UILabel *treatmentLbl;
 @property (nonatomic,strong)KTDropDownMenus *treatmentMenu;
 @property (nonatomic,strong)UILabel *weekLbl;
@@ -235,61 +236,64 @@
     self.trainingPositionLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     [self.topBgView addSubview:self.trainingPositionLbl];
     
-//    self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake( self.riskLevelTF.frame.origin.x,self.deviceTypeTF.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.trainingPositionMenu setMenuTitles:@[@"胸部",@"背部",@"腿部",@"小腿",@"斯密斯"]  rowHeight:kDieaseTF_Height * kYScal attr:@{@"title":@"请选择",@"titleFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal]}];
+    self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake( self.riskLevelMenu.frame.origin.x,self.deviceTypeTF.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.trainingPositionMenu.defualtStr = @"请选择";
+    self.trainingPositionMenu.delegate = self;
+    self.trainingPositionMenu.titles = @[@"胸部",@"背部",@"腿部",@"小腿",@"斯密斯"];
+    self.trainingPositionMenu.delegate = self;
+    self.trainingPositionMenu.backgroundColor = [UIColor whiteColor];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 10;
-//    [self.topBgView addSubview:self.trainingPositionMenu];
+    [self.topBgView addSubview:self.trainingPositionMenu];
     
     CGFloat trainingDeviceLbl_LeftMargin = self.topBgView.frame.size.width - kRiskLevelLbl_Width * kXScal - kDieaseLbl_RightMargin * kXScal -  kTrainingDeviceMenu_Width * kXScal - kTrainingDeviceLbl_RightMargin * kXScal;
     self.trainingDeviceLbl = [[UILabel alloc] initWithFrame:CGRectMake(trainingDeviceLbl_LeftMargin, self.deviceTypeLbl.frame.origin.y, kRiskLevelLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.trainingDeviceLbl.text = @"训 练 设 备";
     self.trainingDeviceLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.trainingDeviceLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
-//    [self.topBgView addSubview:self.trainingDeviceLbl];
+    [self.topBgView addSubview:self.trainingDeviceLbl];
     
-//    self.traingDeviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingDeviceLbl.frame) + kTrainingDeviceLbl_RightMargin * kXScal, self.trainingPositionMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.traingDeviceMenu setMenuTitles:@[@"功率车",@"椭圆机"] rowHeight:kDieaseTF_Height * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
-//    self.traingDeviceMenu.delegate = self;
-//    self.traingDeviceMenu.tag = 20;
-//    [self.topBgView addSubview:self.traingDeviceMenu];
-//
-//    self.templateLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.dieaseLbl.frame.origin.x, CGRectGetMaxY(self.deviceTypeLbl.frame) + kDieaseLbl_BottomMargin * kYScal, kDieaseLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
-//    self.templateLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
-//    self.templateLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-//    self.templateLbl.text = @"推荐模板";
-//    [self.topBgView addSubview:self.templateLbl];
-//
-//    self.templateMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal, 0, kTemplateMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
-//    self.templateMenu.center = CGPointMake(CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal + kTemplateMenu_Width * kXScal/2.0, self.templateLbl.center.y);
-//    self.templateMenu.delegate = self;
-//    self.templateMenu.tag = 30;
-//    [self.topBgView addSubview:self.templateMenu];
+    self.traingDeviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingDeviceLbl.frame) + kTrainingDeviceLbl_RightMargin * kXScal, self.trainingPositionMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.traingDeviceMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.traingDeviceMenu.defualtStr = @"请选择";
+    self.traingDeviceMenu.delegate = self;
+    self.traingDeviceMenu.titles = @[@"功率车",@"椭圆机"];
+    self.traingDeviceMenu.delegate = self;
+    self.traingDeviceMenu.backgroundColor = [UIColor whiteColor];
+    self.traingDeviceMenu.delegate = self;
+    self.traingDeviceMenu.tag = 10;
+    [self.topBgView addSubview:self.traingDeviceMenu];
     
-//    self.treatmentLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.dieaseLbl.frame.origin.x, CGRectGetMaxY(self.templateLbl.frame) + kDieaseLbl_BottomMargin * kYScal, kDieaseLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
+    self.treatmentLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.dieaseLbl.frame.origin.x, CGRectGetMaxY(self.deviceTypeLbl.frame) + kDieaseLbl_BottomMargin * kYScal, kDieaseLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.treatmentLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.treatmentLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.treatmentLbl.text = @"疗程";
-//    [self.topBgView addSubview:self.treatmentLbl];
+    [self.topBgView addSubview:self.treatmentLbl];
     
-//    self.treatmentMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.templateMenu.frame.origin.x, CGRectGetMaxY(self.templateMenu.frame) + kDieaseTF_BottomMargin * kYScal, kWeekMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.treatmentMenu setMenuTitles:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    self.treatmentMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.deviceTypeTF.frame.origin.x, CGRectGetMaxY(self.deviceTypeTF.frame) + kDieaseTF_BottomMargin * kYScal, kWeekMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.treatmentMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.treatmentMenu.defualtStr = @"";
+    self.treatmentMenu.delegate = self;
+    self.treatmentMenu.titles = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12"];
+    self.treatmentMenu.delegate = self;
+    self.treatmentMenu.backgroundColor = [UIColor whiteColor];
+    self.treatmentMenu.delegate = self;
     self.treatmentMenu.delegate = self;
     self.treatmentMenu.tag = 40;
-//    [self.topBgView addSubview:self.treatmentMenu];
+    [self.topBgView addSubview:self.treatmentMenu];
     
     self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.weekLbl.text = @"周";
     self.weekLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.weekLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
-//    [self.topBgView addSubview:self.weekLbl];
+    [self.topBgView addSubview:self.weekLbl];
     
     self.trainingFrequencyLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.riskLevelLbl.frame.origin.x, self.treatmentLbl.frame.origin.y, kRiskLevelLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.trainingFrequencyLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.trainingFrequencyLbl.text = @"周训练频次";
     self.trainingFrequencyLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-//    [self.topBgView addSubview:self.trainingFrequencyLbl];
+    [self.topBgView addSubview:self.trainingFrequencyLbl];
     
     self.dayLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingFrequencyLbl.frame) + kDieaseLbl_RightMargin * kXScal + kTrainingPositionMenu_Width * kXScal + kWeekMenu_RightMargin * kXScal, self.weekLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.dayLbl.text = @"周";
@@ -298,22 +302,33 @@
 //    [self.topBgView addSubview:self.dayLbl];
     
     self.trainingFrequencyMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.trainingPositionMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.trainingFrequencyMenu setMenuTitles:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    [self.trainingFrequencyMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.trainingFrequencyMenu.defualtStr = @"";
+    self.trainingFrequencyMenu.delegate = self;
+    self.trainingFrequencyMenu.titles = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7"];
+    self.trainingFrequencyMenu.delegate = self;
+    self.trainingFrequencyMenu.backgroundColor = [UIColor whiteColor];
     self.trainingFrequencyMenu.delegate = self;
     self.trainingFrequencyMenu.tag = 50;
-//    [self.topBgView addSubview:self.trainingFrequencyMenu];
+    [self.topBgView addSubview:self.trainingFrequencyMenu];
     
     self.sportTimePointLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.trainingDeviceLbl.frame.origin.x, self.treatmentLbl.frame.origin.y, kRiskLevelLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.sportTimePointLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.sportTimePointLbl.text = @"运动时间点";
     self.sportTimePointLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-//    [self.topBgView addSubview:self.sportTimePointLbl];
+    [self.topBgView addSubview:self.sportTimePointLbl];
     
-//    self.sportTimePointMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.traingDeviceMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.sportTimePointMenu setMenuTitles:@[@"任意",@"三餐前半小时",@"三餐后一小时"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    self.sportTimePointMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.traingDeviceMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.sportTimePointMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.sportTimePointMenu.defualtStr = @"";
+    self.sportTimePointMenu.delegate = self;
+    self.sportTimePointMenu.titles = @[@"任意",@"三餐前半小时",@"三餐后一小时"];
+    self.sportTimePointMenu.delegate = self;
+    self.sportTimePointMenu.backgroundColor = [UIColor whiteColor];
+    self.sportTimePointMenu.delegate = self;
     self.sportTimePointMenu.delegate = self;
     self.sportTimePointMenu.tag = 60;
-//    [self.topBgView addSubview:self.sportTimePointMenu];
+    [self.topBgView addSubview:self.sportTimePointMenu];
 }
 
 - (void)configFooterview {
