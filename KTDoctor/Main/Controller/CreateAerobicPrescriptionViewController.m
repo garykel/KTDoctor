@@ -167,6 +167,10 @@
     [self getRecommendTemplateList:parameter];
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)setNavBar {
     self.navView = [[UIView alloc] initWithFrame:CGRectMake(0, kNavView_TopMargin, kWidth, kNavView_Height)];
     self.navView.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];

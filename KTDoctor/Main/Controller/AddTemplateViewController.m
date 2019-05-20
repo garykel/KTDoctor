@@ -13,6 +13,8 @@
 #import "UserModel.h"
 #import "ChooseTemplateTypeView.h"
 #import "CreateTemplateViewController.h"
+#import "CheckTemplateInfoViewController.h"
+#import "UpdateTemplateInfoViewController.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -610,7 +612,6 @@ CGSize systemListviewSize;
         }
         cell.riskLevelLbl.text = riskLevelStr;
         NSArray *typeList = [dict valueForKey:@"typeList"];
-        NSLog(@"typeList:%@",typeList);
         if (typeList.count > 0) {
             NSInteger equipmentType = [[dict valueForKey:@"type"] integerValue];
             for (NSDictionary *typeDict in typeList) {
@@ -664,7 +665,6 @@ CGSize systemListviewSize;
         }
         cell.riskLevelLbl.text = riskLevelStr;
         NSArray *typeList = [dict valueForKey:@"typeList"];
-        NSLog(@"typeList:%@",typeList);
         if (typeList.count > 0) {
             NSInteger equipmentType = [[dict valueForKey:@"type"] integerValue];
             for (NSDictionary *typeDict in typeList) {
@@ -680,6 +680,9 @@ CGSize systemListviewSize;
         NSInteger targetDuration = [[dict valueForKey:@"targetDuration"] integerValue];
         NSString *timeStr = [self getTimeString:targetDuration];
         cell.timeLbl.text = timeStr;
+        [cell.editBtn addTarget:self action:@selector(editTemplate:)
+               forControlEvents:UIControlEventTouchUpInside];
+        cell.editBtn.tag = indexPath.row + 20000;
         return cell;
     }
 }
@@ -877,6 +880,19 @@ CGSize systemListviewSize;
 - (void)editTemplate:(UIButton*)sender {
     NSInteger index = sender.tag - 20000;
     NSLog(@"编辑第%d行",index);
+    if (self.type == 1) {
+        NSLog(@"查看系统模板");
+    } else {
+        NSDictionary *templateDict = [self.customTemplateArr objectAtIndex:index];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        NSInteger id = [[templateDict valueForKey:@"id"] integerValue];
+        [parameter setValue:@(id) forKey:@"id"];
+        [self getTemplateDetailInfo:parameter];
+    }
 }
 
 //自定义模板列表头视图标签选中
@@ -885,6 +901,33 @@ CGSize systemListviewSize;
 }
 
 #pragma mark - network functions
+
+//获取处方模板详细信息
+- (void)getTemplateDetailInfo:(NSMutableDictionary*)parameter {
+    kWeakSelf(self);
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_INFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"*********获取推荐处方模板详细信息*****%@**************",responseObject);
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSLog(@"rows is :%@",data);
+            if (data.count > 0) {
+                UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
+                update.templateInfo = data;
+                [self.navigationController pushViewController:update animated:NO];
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakself.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 
 - (void)deleteCustomTemplate:(NSMutableDictionary *)parameter {
     __weak typeof (self)weakSelf = self;

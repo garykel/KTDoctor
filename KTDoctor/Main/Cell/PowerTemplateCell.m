@@ -1,12 +1,12 @@
 //
-//  CreatePrescriptionCell.m
+//  PowerTemplateCell.m
 //  KTDoctor
 //
-//  Created by duwei on 2019/5/9.
+//  Created by duwei on 2019/5/20.
 //  Copyright © 2019 dz. All rights reserved.
 //
 
-#import "CreatePrescriptionCell.h"
+#import "PowerTemplateCell.h"
 #define kBgView_LeftMargin 20
 #define kInfoView_TopMargin 15
 #define kInfoView_LeftMargin 16
@@ -46,11 +46,11 @@
 #define kCell_Height 118
 #define kDifficultyMenu_RightMargin 29
 
-@interface CreatePrescriptionCell()<XXTGDropdownMenuDelegate>
+@interface PowerTemplateCell()<XXTGDropdownMenuDelegate>
 
 @end
 
-@implementation CreatePrescriptionCell
+@implementation PowerTemplateCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -70,8 +70,8 @@
     [self.contentView addSubview:self.bgView];
     
     self.infoBgView = [[UIView alloc] initWithFrame:CGRectMake(kInfoView_LeftMargin * kXScal, kInfoView_TopMargin * kYScal, kWidth - 2 * kBgView_LeftMargin * kXScal - kInfoView_LeftMargin * kXScal - kInfoView_RightMargin* kXScal, kCell_Height * kYScal)];
-//    self.infoBgView.layer.cornerRadius = 4;
-//    self.infoBgView.layer.masksToBounds = YES;
+    //    self.infoBgView.layer.cornerRadius = 4;
+    //    self.infoBgView.layer.masksToBounds = YES;
     self.infoBgView.backgroundColor = [UIColor colorWithHexString:@"#F5FDFF"];
     [self.bgView addSubview:self.infoBgView];
     
@@ -154,14 +154,14 @@
     self.difficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.traingingTimeSecLbl.frame) + space, self.traingingTimeLbl.frame.origin.y, kDifficultyLbl_Width * kXScal, kDifficultyLbl_Height * kYScal)];
     self.difficultyLbl.font = [UIFont systemFontOfSize:kDifficultyPercentLbl_Fontsize * kYScal];
     self.difficultyLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
-    self.difficultyLbl.text = @"强   度";
+    self.difficultyLbl.text = @"功   率";
     [self.infoBgView addSubview:self.difficultyLbl];
     
     self.difficultyMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyLbl.frame) + kMenu_RightMargin * kXScal, self.traingingTimeRightMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.difficultyMenu setDropdownHeight:kDropdownHeight * kYScal];
     NSMutableArray *difficulties = [NSMutableArray array];
-    for (NSInteger j = 0; j < 16 ; j++) {
-        [difficulties addObject:[NSString stringWithFormat:@"%d",j + 1]];
+    for (NSInteger j = 0; j < 20 ; j++) {
+        [difficulties addObject:[NSString stringWithFormat:@"%d",10 + j * 10]];
     }
     self.difficultyMenu.delegate = self;
     self.difficultyMenu.titles = [difficulties copy];
@@ -279,6 +279,7 @@
         self.model.duration = min * 60 + [string integerValue];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];
     } else if (menu == self.difficultyMenu) {
+        [self.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@w",string] forState:UIControlStateNormal];
         self.model.difficulty = string;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeAvgDifficultyNotification" object:nil];
     } else if (menu == self.rpeLeftMenu) {
@@ -309,7 +310,7 @@
         NSInteger sec = [self.restRightMenu.mainBtn.titleLabel.text integerValue];
         self.model.restDuration = num * 60 + sec;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];
-    } else if (menu == self.restRightMenu) {
+    } else if (menu == self.rpeRightMenu) {
         NSInteger min = [self.restLeftMenu.mainBtn.titleLabel.text integerValue];
         self.model.restDuration = min * 60 + [string integerValue];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];
@@ -317,12 +318,12 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
-
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 

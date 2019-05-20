@@ -79,6 +79,10 @@
 		5BAEB8932275B8470087CA76 /* UnitTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAEB8922275B8470087CA76 /* UnitTextView.m */; };
 		5BB39802228E91EE00A56A38 /* ChooseTemplateTypeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB39801228E91ED00A56A38 /* ChooseTemplateTypeView.m */; };
 		5BB39805228EAD1F00A56A38 /* CreateTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB39804228EAD1F00A56A38 /* CreateTemplateViewController.m */; };
+		5BB398082292594B00A56A38 /* PowerTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB398072292594B00A56A38 /* PowerTemplateCell.m */; };
+		5BB3980B229289B900A56A38 /* CheckTemplateInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB3980A229289B900A56A38 /* CheckTemplateInfoViewController.m */; };
+		5BB3980E22928AE400A56A38 /* UpdateTemplateInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB3980D22928AE400A56A38 /* UpdateTemplateInfoViewController.m */; };
+		5BB3981122928B1500A56A38 /* CheckTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB3981022928B1500A56A38 /* CheckTemplateCell.m */; };
 		5BB54FC32282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB54FC22282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m */; };
 		5BB9D3DB2284025A00EACDE2 /* CreatePrescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB9D3DA2284025A00EACDE2 /* CreatePrescriptionCell.m */; };
 		5BCEB8B02251A8AB005185B5 /* MonitorDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BCEB8AF2251A8AB005185B5 /* MonitorDetailViewController.m */; };
@@ -314,6 +318,14 @@
 		5BB39801228E91ED00A56A38 /* ChooseTemplateTypeView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChooseTemplateTypeView.m; sourceTree = "<group>"; };
 		5BB39803228EAD1F00A56A38 /* CreateTemplateViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreateTemplateViewController.h; sourceTree = "<group>"; };
 		5BB39804228EAD1F00A56A38 /* CreateTemplateViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreateTemplateViewController.m; sourceTree = "<group>"; };
+		5BB398062292594B00A56A38 /* PowerTemplateCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PowerTemplateCell.h; sourceTree = "<group>"; };
+		5BB398072292594B00A56A38 /* PowerTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PowerTemplateCell.m; sourceTree = "<group>"; };
+		5BB39809229289B900A56A38 /* CheckTemplateInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CheckTemplateInfoViewController.h; sourceTree = "<group>"; };
+		5BB3980A229289B900A56A38 /* CheckTemplateInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CheckTemplateInfoViewController.m; sourceTree = "<group>"; };
+		5BB3980C22928AE400A56A38 /* UpdateTemplateInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UpdateTemplateInfoViewController.h; sourceTree = "<group>"; };
+		5BB3980D22928AE400A56A38 /* UpdateTemplateInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UpdateTemplateInfoViewController.m; sourceTree = "<group>"; };
+		5BB3980F22928B1500A56A38 /* CheckTemplateCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CheckTemplateCell.h; sourceTree = "<group>"; };
+		5BB3981022928B1500A56A38 /* CheckTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CheckTemplateCell.m; sourceTree = "<group>"; };
 		5BB54FC12282EEF700B2FFDF /* CreatePowerPrescriptionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreatePowerPrescriptionViewController.h; sourceTree = "<group>"; };
 		5BB54FC22282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreatePowerPrescriptionViewController.m; sourceTree = "<group>"; };
 		5BB9D3D92284025A00EACDE2 /* CreatePrescriptionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreatePrescriptionCell.h; sourceTree = "<group>"; };
@@ -590,6 +602,10 @@
 				5B35691F22801DED001BD84C /* PrescriptionCell.m */,
 				5BB9D3D92284025A00EACDE2 /* CreatePrescriptionCell.h */,
 				5BB9D3DA2284025A00EACDE2 /* CreatePrescriptionCell.m */,
+				5BB398062292594B00A56A38 /* PowerTemplateCell.h */,
+				5BB398072292594B00A56A38 /* PowerTemplateCell.m */,
+				5BB3980F22928B1500A56A38 /* CheckTemplateCell.h */,
+				5BB3981022928B1500A56A38 /* CheckTemplateCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -619,6 +635,10 @@
 				5BB54FC22282EEF700B2FFDF /* CreatePowerPrescriptionViewController.m */,
 				5BB39803228EAD1F00A56A38 /* CreateTemplateViewController.h */,
 				5BB39804228EAD1F00A56A38 /* CreateTemplateViewController.m */,
+				5BB39809229289B900A56A38 /* CheckTemplateInfoViewController.h */,
+				5BB3980A229289B900A56A38 /* CheckTemplateInfoViewController.m */,
+				5BB3980C22928AE400A56A38 /* UpdateTemplateInfoViewController.h */,
+				5BB3980D22928AE400A56A38 /* UpdateTemplateInfoViewController.m */,
 				5B138768227EC3580017BA57 /* PrescriptionDetailViewController.h */,
 				5B138769227EC3580017BA57 /* PrescriptionDetailViewController.m */,
 				5B22E05E2266CED500C65B50 /* AddPatientViewController.h */,
@@ -1455,6 +1475,7 @@
 				5BF8D9582280294A002199E4 /* OpenAerobicPrescriptionFooter.m in Sources */,
 				5BF8D93C22802804002199E4 /* KTTextView.m in Sources */,
 				0962F89E227D8C0B00611E27 /* CustomTemplateCell.m in Sources */,
+				5BB3980E22928AE400A56A38 /* UpdateTemplateInfoViewController.m in Sources */,
 				5B875B90224CAE8900736FC2 /* PatientCell3.m in Sources */,
 				5BF8D94F22802901002199E4 /* KTOpenAerobicModel.m in Sources */,
 				5BAEB8932275B8470087CA76 /* UnitTextView.m in Sources */,
@@ -1474,6 +1495,7 @@
 				5BECDBF522365EDC0025D6F2 /* UIColor+Hex.m in Sources */,
 				09E47CB92237F97D00B33249 /* STTextHudTool.m in Sources */,
 				5BEC2E442269BD8800CDDF09 /* UnitTextField.m in Sources */,
+				5BB3981122928B1500A56A38 /* CheckTemplateCell.m in Sources */,
 				09062671225CE621009A182D /* BindHRBandView.m in Sources */,
 				5B6067572268672B003E8DF4 /* PatientInfoViewController.m in Sources */,
 				5B518ECD223795050071AF80 /* DashView.m in Sources */,
@@ -1491,6 +1513,7 @@
 				5B3E7B752278488C00A564CC /* SGQRCodeObtain.m in Sources */,
 				5BF8D90F22802689002199E4 /* NSString+TimeConvert.m in Sources */,
 				5B02F7902242269400BE8269 /* WHC_ChoicePictureVC.m in Sources */,
+				5BB398082292594B00A56A38 /* PowerTemplateCell.m in Sources */,
 				5BF8D90B22802689002199E4 /* NSString+md5.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
 				5BF8D8F02280262F002199E4 /* NSObject+CheckIsNull.m in Sources */,
@@ -1503,6 +1526,7 @@
 				5B22E0662266CF2500C65B50 /* AddTemplateViewController.m in Sources */,
 				09E47CBC223A8FD700B33249 /* RegistOrResetView.m in Sources */,
 				5B02F7A72248810000BE8269 /* MonitorViewController.m in Sources */,
+				5BB3980B229289B900A56A38 /* CheckTemplateInfoViewController.m in Sources */,
 				5BF8D92822802708002199E4 /* UIImageView+Init.m in Sources */,
 				5B132536226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m in Sources */,
 				5BECDC04223662F90025D6F2 /* NetworkService.m in Sources */,
