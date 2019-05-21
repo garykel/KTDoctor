@@ -2534,17 +2534,18 @@
 }
 
 - (void)createPowerPrescription:(UIButton*)sender {
-    CreatePowerPrescriptionViewController *create = [[CreatePowerPrescriptionViewController alloc] init];
-    create.prescriptionDict = self.latestInfoDict;
-    if (self.deviceTypeArr.count > 0) {
-        for (NSDictionary *dict in self.deviceTypeArr) {
-            NSString *name = [dict valueForKey:@"name"];
-            if ([name isEqualToString:@"力量设备"]) {
-                create.deviceTypeArr = [dict valueForKey:@"children"];
-            }
-        }
-    }
-    [self.navigationController pushViewController:create animated:NO];
+    [STTextHudTool showText:@"敬请期待！"];
+//    CreatePowerPrescriptionViewController *create = [[CreatePowerPrescriptionViewController alloc] init];
+//    create.prescriptionDict = self.latestInfoDict;
+//    if (self.deviceTypeArr.count > 0) {
+//        for (NSDictionary *dict in self.deviceTypeArr) {
+//            NSString *name = [dict valueForKey:@"name"];
+//            if ([name isEqualToString:@"力量设备"]) {
+//                create.deviceTypeArr = [dict valueForKey:@"children"];
+//            }
+//        }
+//    }
+//    [self.navigationController pushViewController:create animated:NO];
 }
 
 - (void)checkAerobicReport:(UIButton*)sender {

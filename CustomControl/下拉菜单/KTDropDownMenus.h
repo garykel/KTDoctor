@@ -27,7 +27,7 @@
 @end
 
 @interface KTDropDownMenus : UIView
-
+@property (nonatomic, strong) UIImageView *dropDownImage;
 @property (nonatomic, strong) UIButton *mainBtn;
 @property (nonatomic, copy) NSString *defualtStr; //默认显示
 @property (nonatomic, strong) NSArray *titles;

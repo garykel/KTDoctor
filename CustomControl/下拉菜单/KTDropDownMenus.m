@@ -15,7 +15,6 @@ static float AnimateTime = 0.25f;  // 下拉动画时间
 
 @interface KTDropDownMenus ()<UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) UIImageView *dropDownImage;
 @property (nonatomic, strong) UIView *listView;   // 尖头图标
 @property (nonatomic, assign) BOOL isHiddenBtn;
 

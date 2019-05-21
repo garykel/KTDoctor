@@ -19,7 +19,6 @@
 #define kTopView_BottomMargin 20
 #define kTopView_LeftMargin 20
 #define kTopView_Height 151
-#define kTopView_Height 151
 #define kNameTF_LeftMargin 10
 #define kNameTF_RightMargin 16
 #define kDieaseLbl_Width 54
@@ -627,7 +626,6 @@
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
     
 }
-
 
 #pragma mark - network functions
 

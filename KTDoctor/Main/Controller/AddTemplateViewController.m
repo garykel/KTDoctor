@@ -906,19 +906,35 @@ CGSize systemListviewSize;
 - (void)editTemplate:(UIButton*)sender {
     NSInteger index = sender.tag - 20000;
     NSLog(@"编辑第%d行",index);
+//    if (self.type == 1) {
+//        NSLog(@"查看系统模板");
+//        CheckTemplateInfoViewController *info = [[CheckTemplateInfoViewController alloc] init];
+//        [self.navigationController pushViewController:info animated:NO];
+//    } else {
+//        NSDictionary *templateDict = [self.customTemplateArr objectAtIndex:index];
+//        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+//        NSDictionary *dict = self.user.organ;
+//        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+//        NSString *orgCode = orgCodeArr[0];
+//        [parameter setValue:orgCode forKey:@"orgCode"];
+//        NSInteger id = [[templateDict valueForKey:@"id"] integerValue];
+//        [parameter setValue:@(id) forKey:@"id"];
+//        [self getTemplateDetailInfo:parameter];
+//    }
+    NSDictionary *templateDict;
     if (self.type == 1) {
-        NSLog(@"查看系统模板");
+        templateDict = [self.systemTemplateArr objectAtIndex:index];
     } else {
-        NSDictionary *templateDict = [self.customTemplateArr objectAtIndex:index];
-        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        NSDictionary *dict = self.user.organ;
-        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-        NSString *orgCode = orgCodeArr[0];
-        [parameter setValue:orgCode forKey:@"orgCode"];
-        NSInteger id = [[templateDict valueForKey:@"id"] integerValue];
-        [parameter setValue:@(id) forKey:@"id"];
-        [self getTemplateDetailInfo:parameter];
+        templateDict = [self.customTemplateArr objectAtIndex:index];
     }
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    NSInteger id = [[templateDict valueForKey:@"id"] integerValue];
+    [parameter setValue:@(id) forKey:@"id"];
+    [self getTemplateDetailInfo:parameter];
 }
 
 //自定义模板列表头视图标签选中
@@ -939,9 +955,15 @@ CGSize systemListviewSize;
             NSDictionary *data = [responseObject valueForKey:@"data"];
             NSLog(@"rows is :%@",data);
             if (data.count > 0) {
-                UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
-                update.templateInfo = data;
-                [self.navigationController pushViewController:update animated:NO];
+                if (weakself.type == 1) {
+                    CheckTemplateInfoViewController *info = [[CheckTemplateInfoViewController alloc] init];
+                    info.templateInfo = data;
+                    [self.navigationController pushViewController:info animated:NO];
+                } else {
+                    UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
+                    update.templateInfo = data;
+                    [self.navigationController pushViewController:update animated:NO];
+                }
             }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
