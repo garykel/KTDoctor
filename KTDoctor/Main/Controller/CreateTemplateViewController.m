@@ -256,7 +256,13 @@
     [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.trainingPositionMenu.defualtStr = @"请选择";
     self.trainingPositionMenu.delegate = self;
-    self.trainingPositionMenu.titles = @[@"心肺"];
+    NSMutableArray *positionArr = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            [positionArr addObject:[dict valueForKey:@"name"]];
+        }
+    }
+    self.trainingPositionMenu.titles = [positionArr copy];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.backgroundColor = [UIColor whiteColor];
     self.trainingPositionMenu.delegate = self;
@@ -274,7 +280,18 @@
     [self.traingDeviceMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.traingDeviceMenu.defualtStr = @"请选择";
     self.traingDeviceMenu.delegate = self;
-    self.traingDeviceMenu.titles = @[@"功率车",@"椭圆机",@"卧式功率车"];
+    NSMutableArray *trainingEquipMentArr = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict1 in self.deviceTypeArr) {
+            NSArray *children = [dict1 valueForKey:@"children"];
+            if (children.count > 0) {
+                for (NSDictionary *child in children) {
+                    [trainingEquipMentArr addObject:[child valueForKey:@"name"]];
+                }
+            }
+        }
+    }
+    self.traingDeviceMenu.titles = [trainingEquipMentArr copy];
     self.traingDeviceMenu.delegate = self;
     self.traingDeviceMenu.backgroundColor = [UIColor whiteColor];
     self.traingDeviceMenu.delegate = self;

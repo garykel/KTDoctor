@@ -105,6 +105,7 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,assign)NSInteger type;
 @property (nonatomic,strong)ChooseTemplateTypeView *template;
+@property (nonatomic,strong)NSArray *deviceTypeArr;
 @end
 
 @implementation AddTemplateViewController
@@ -763,13 +764,30 @@ CGSize systemListviewSize;
     [self.template dismiss];
     CreateTemplateViewController *template = [[CreateTemplateViewController alloc] init];
     template.type = 1;
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            NSString *name = [dict valueForKey:@"name"];
+            if ([name isEqualToString:@"有氧设备"]) {
+                template.deviceTypeArr = [dict valueForKey:@"children"];
+            }
+        }
+    }
     [self.navigationController pushViewController:template animated:NO];
 }
+
 //新建功率模板
 - (void)createPowerTemplate:(UIButton*)sender {
     [self.template dismiss];
     CreateTemplateViewController *template = [[CreateTemplateViewController alloc] init];
     template.type = 2;
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            NSString *name = [dict valueForKey:@"name"];
+            if ([name isEqualToString:@"有氧设备"]) {
+                template.deviceTypeArr = [dict valueForKey:@"children"];
+            }
+        }
+    }
     [self.navigationController pushViewController:template animated:NO];
 }
 
@@ -945,7 +963,8 @@ CGSize systemListviewSize;
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSLog(@"**************%@**************",responseObject);
         if (code == 0) {
-            
+            NSArray *data = [responseObject valueForKey:@"data"];
+            weakSelf.deviceTypeArr = data;
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];

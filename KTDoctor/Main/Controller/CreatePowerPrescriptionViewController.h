@@ -7,11 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
 @interface CreatePowerPrescriptionViewController : UIViewController
 @property (nonatomic,strong)NSDictionary *prescriptionDict;
+@property (nonatomic,strong)NSArray *deviceTypeArr;
 @end
-
-NS_ASSUME_NONNULL_END

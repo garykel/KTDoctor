@@ -412,6 +412,9 @@
 @property (nonatomic,strong)UIButton *createPowerPrescriptionBtn;//开具力量处方
 
 @property (nonatomic,assign)NSInteger offset;
+
+
+@property (nonatomic,strong)NSArray *deviceTypeArr;
 @end
 
 @implementation PatientInfoViewController
@@ -436,6 +439,10 @@
     NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
     [parameter setValue:@(userId) forKey:@"userId"];
     [self getPrivateHrDevice:parameter];
+    
+    NSMutableDictionary *para = [NSMutableDictionary dictionary];
+    [para setValue:orgCode forKey:@"orgCode"];
+    [self getDeviceTypeList:parameter];
     [self setNavBar];
     [self setupUI];
 }
@@ -2512,6 +2519,14 @@
 - (void)createAerobicPrescription:(UIButton*)sender {
     CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
     create.prescriptionDict = self.latestInfoDict;
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            NSString *name = [dict valueForKey:@"name"];
+            if ([name isEqualToString:@"有氧设备"]) {
+                create.deviceTypeArr = [dict valueForKey:@"children"];
+            }
+        }
+    }
     [self.navigationController pushViewController:create animated:NO];
 //    OpenAerobicPrescriptionVC *vc = [[OpenAerobicPrescriptionVC alloc] init];
 //    vc.prescriptionDict = self.latestInfoDict;
@@ -2521,6 +2536,14 @@
 - (void)createPowerPrescription:(UIButton*)sender {
     CreatePowerPrescriptionViewController *create = [[CreatePowerPrescriptionViewController alloc] init];
     create.prescriptionDict = self.latestInfoDict;
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            NSString *name = [dict valueForKey:@"name"];
+            if ([name isEqualToString:@"力量设备"]) {
+                create.deviceTypeArr = [dict valueForKey:@"children"];
+            }
+        }
+    }
     [self.navigationController pushViewController:create animated:NO];
 }
 
@@ -2695,4 +2718,25 @@
     }];
 }
 
+//获取设备类型列表
+- (void)getDeviceTypeList:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDEVICE_TYPE_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *data = [responseObject valueForKey:@"data"];
+            weakSelf.deviceTypeArr = data;
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 @end

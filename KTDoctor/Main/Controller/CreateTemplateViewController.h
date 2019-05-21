@@ -8,5 +8,6 @@
 
 #import <UIKit/UIKit.h>
 @interface CreateTemplateViewController : UIViewController
+@property (nonatomic,strong)NSArray *deviceTypeArr;
 @property (nonatomic,assign)NSInteger type;
 @end
