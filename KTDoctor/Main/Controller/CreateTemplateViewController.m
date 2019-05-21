@@ -10,6 +10,7 @@
 #import "CreatePrescriptionCell.h"
 #import "PowerTemplateCell.h"
 #import "AerobicriptionModel.h"
+#import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -104,6 +105,7 @@
 @property (nonatomic,assign)NSInteger daysPerWeek;
 @property (nonatomic,assign)NSInteger timing;
 @property (nonatomic,strong)NSMutableArray *groups;
+@property (nonatomic,strong)UserModel *user;
 @end
 
 @implementation CreateTemplateViewController
@@ -111,7 +113,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
-    self.groups = [NSMutableArray array];    
+    self.groups = [NSMutableArray array];
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
     AerobicriptionModel *model = [[AerobicriptionModel alloc] init];
     [self.groups addObject:model];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
@@ -174,6 +177,8 @@
     [self configFooterview];
     self.listView.tableHeaderView = self.topView;
     self.listView.tableFooterView = self.bottomView;
+    [self computeTotalTrainingTime];
+    [self computeAvgDifficulty];
 }
 
 - (void)configHeaderview {
@@ -316,7 +321,7 @@
     self.treatmentMenu.tag = 40;
     [self.topBgView addSubview:self.treatmentMenu];
     
-    self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
+    self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width *kXScal + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.weekLbl.text = @"周";
     self.weekLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.weekLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
@@ -382,7 +387,7 @@
     self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
     self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingGroupValLbl.text = @"4";
+    self.trainingGroupValLbl.text = @"1";
     [self.dataView addSubview:self.trainingGroupValLbl];
     
     CGFloat space = (self.dataView.frame.size.width - 2 * kTrainingTimeLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal - 3 * kTrainingTimeLbl_RightMargin - 3 * kTrainingTimeValLbl_Width * kXScal)/2;
@@ -610,7 +615,78 @@
 }
 
 - (void)saveOrCreate:(UIButton*)sender {
+    __weak typeof (self)weakSelf = self;
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSDictionary *dict = weakSelf.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [parameter setValue:@1 forKey:@"type"]; //类型
+        [parameter setValue:@(weakSelf.type) forKey:@"type2"]; //类型2，1=强度，2=功率
+        [parameter setValue:weakSelf.templateNameTF.text forKey:@"title"];
+        NSString *disease = weakSelf.dieaseMenu.mainBtn.titleLabel.text;
+        [parameter setValue:disease forKey:@"disease"];
+        [parameter setValue:weakSelf.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
+        [parameter setValue:weakSelf.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
+        NSString *timingStr = weakSelf.sportTimePointMenu.mainBtn.titleLabel.text;
+        NSInteger timing = 0;
+        if ([timingStr isEqualToString:@"任意"]) {
+            timing = 3;
+        } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
+            timing = 1;
+        } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
+            timing = 2;
+        }
+        [parameter setValue:@(timing) forKey:@"timing"];
+        NSString *riskLevelStr = weakSelf.riskLevelMenu.mainBtn.titleLabel.text;
+        NSInteger riskLevel = 1;
+        if ([riskLevelStr isEqualToString:@"低"]) {
+            riskLevel = 1;
+        } else if ([riskLevelStr isEqualToString:@"中"]) {
+            riskLevel = 2;
+        } else if ([riskLevelStr isEqualToString:@"高"]) {
+            riskLevel = 3;
+        }
+        [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
+        [parameter setValue:@(weakSelf.targetDuration) forKey:@"targetDuration"];
+        if (self.groups.count > 0) {
+            NSMutableArray *groups = [NSMutableArray array];
+            for (NSInteger i = 0; i < weakSelf.groups.count; i++) {
+                AerobicriptionModel *model = (AerobicriptionModel*)[weakSelf.groups objectAtIndex:i];
+                NSMutableDictionary *group = [NSMutableDictionary dictionary];
+                [group setValue:[NSString stringWithFormat:@"第%ld组",i] forKey:@"title"];
+                [group setValue:model.hrRange forKey:@"hrRange"];
+                [group setValue:model.rpeRange forKey:@"rpeRange"];
+                NSString *difficultyStr = @"";
+                if ([model.difficulty integerValue] > 9) {
+                    difficultyStr = model.difficulty;
+                } else {
+                    difficultyStr = [NSString stringWithFormat:@"0%@",model.difficulty];
+                }
+                [group setValue:difficultyStr forKey:@"difficulty"];
+                [group setValue:@(model.calorie) forKey:@"calorie"];
+                [group setValue:@(model.duration) forKey:@"duration"];
+                [group setValue:@(model.restDuration) forKey:@"restDuration"];
+                [group setValue:@(model.speed) forKey:@"speed"];
+                [group setValue:@(model.weight) forKey:@"weight"];
+                [group setValue:@(model.times) forKey:@"times"];
+                [group setValue:@(model.rotationAngle) forKey:@"rotationAngle"];
+                [groups addObject:group];
+            }
+            [parameter setValue:groups forKey:@"sections"];
+        } else {
+            [parameter setValue:@[] forKey:@"sections"];
+        }
+        [self createCustomTemplate:parameter];
+    }];
     
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:okAction];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:NO completion:nil];
 }
 
 - (void)giveup:(UIButton*)sender {
@@ -660,6 +736,28 @@
         [self computeTotalTrainingTime];
     }
     self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
+}
+
+#pragma mark - network functions
+
+- (void)createCustomTemplate:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_CREATE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************新建模板%@**************",responseObject);
+        if (code == 0) {
+            [STTextHudTool showText:@"保存成功"];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 
 @end

@@ -113,6 +113,7 @@ CGSize systemListviewSize;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCustomTemplates:) name:@"UpdateCustomTemplatesNotification" object:nil];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.type = 2;
     self.customTemplateArr = [NSMutableArray array];
@@ -869,7 +870,7 @@ CGSize systemListviewSize;
         sender.selected = YES;
         [sender setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
         [self.customeTemplateCheckArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:YES]];
-        [self.customTemplateArr removeObjectAtIndex:index];
+//        [self.customTemplateArr removeObjectAtIndex:index];
         NSDictionary *dict = [self.customTemplateArr objectAtIndex:index];
         NSInteger id = [[dict valueForKey:@"id"] integerValue];
         NSString *idStr = [NSString stringWithFormat:@"%d",id];
@@ -905,22 +906,6 @@ CGSize systemListviewSize;
 //编辑模板
 - (void)editTemplate:(UIButton*)sender {
     NSInteger index = sender.tag - 20000;
-    NSLog(@"编辑第%d行",index);
-//    if (self.type == 1) {
-//        NSLog(@"查看系统模板");
-//        CheckTemplateInfoViewController *info = [[CheckTemplateInfoViewController alloc] init];
-//        [self.navigationController pushViewController:info animated:NO];
-//    } else {
-//        NSDictionary *templateDict = [self.customTemplateArr objectAtIndex:index];
-//        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-//        NSDictionary *dict = self.user.organ;
-//        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-//        NSString *orgCode = orgCodeArr[0];
-//        [parameter setValue:orgCode forKey:@"orgCode"];
-//        NSInteger id = [[templateDict valueForKey:@"id"] integerValue];
-//        [parameter setValue:@(id) forKey:@"id"];
-//        [self getTemplateDetailInfo:parameter];
-//    }
     NSDictionary *templateDict;
     if (self.type == 1) {
         templateDict = [self.systemTemplateArr objectAtIndex:index];
@@ -1006,6 +991,10 @@ CGSize systemListviewSize;
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSLog(@"**************%@**************",responseObject);
         if (code == 0) {
+            [weakSelf.customTemplateArr removeAllObjects];
+            for (NSInteger i = 0; i < weakSelf.customTemplateArr.count; i++) {
+                [weakSelf.customeTemplateCheckArr addObject:[NSNumber numberWithBool:NO]];
+            }
             [weakSelf.customTemplateListView reloadData];
             [STTextHudTool showText:@"删除成功"];
         } else if (code == 10011) {
@@ -1097,6 +1086,13 @@ CGSize systemListviewSize;
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);
     }];
+}
+
+#pragma mark - UpdateCustomTemplatesNotification
+
+- (void)refreshCustomTemplates:(NSNotification*)noti {
+    self.offset = 0;
+    [self showTemplateListWithType:self.type];
 }
 
 @end

@@ -331,7 +331,7 @@
     self.treatmentMenu.tag = 40;
     [self.topBgView addSubview:self.treatmentMenu];
     
-    self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
+    self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width * kXScal + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.weekLbl.text = @"周";
     self.weekLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.weekLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
@@ -635,6 +635,8 @@
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
         if (code == 0) {
+            [STTextHudTool showText:@"修改成功"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCustomTemplatesNotification" object:nil];
             [weakSelf.navigationController popViewControllerAnimated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
