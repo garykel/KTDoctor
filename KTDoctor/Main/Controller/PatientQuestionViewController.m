@@ -733,8 +733,8 @@
         [self.smokeNoImg setImage:[UIImage imageNamed:@"radio_unselected"] forState:UIControlStateNormal];
         [self.userInfo setValue:@1 forKey:@"hasSmoking"];
     } else if (tag == 100) {
-        [self.smokeYesImg setImage:[UIImage imageNamed:@"radio_selected"] forState:UIControlStateNormal];
-        [self.smokeNoImg setImage:[UIImage imageNamed:@"radio_unselected"] forState:UIControlStateNormal];
+        [self.smokeYesImg setImage:[UIImage imageNamed:@"radio_unselected"] forState:UIControlStateNormal];
+        [self.smokeNoImg setImage:[UIImage imageNamed:@"radio_selected"] forState:UIControlStateNormal];
         [self.userInfo setValue:@2 forKey:@"hasSmoking"];
     } else if (tag == 110) {
         [self.question3YesImg setImage:[UIImage imageNamed:@"radio_selected"] forState:UIControlStateNormal];

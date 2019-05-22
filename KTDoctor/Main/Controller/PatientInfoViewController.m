@@ -7,12 +7,13 @@
 //
 
 #import "PatientInfoViewController.h"
+#import "PatientBaseInfoViewController.h"
 #import "CreateAerobicPrescriptionViewController.h"
 #import "AerobicPrescriptionAndReportViewController.h"
 #import "CreatePowerPrescriptionViewController.h"
 #import "OpenAerobicPrescriptionVC.h"
 
-#import "LMJDropdownMenu.h"
+#import "KTDropDownMenus.h"
 #import "UnitTextField.h"
 #import "UserModel.h"
 
@@ -44,6 +45,7 @@
 #define kHRDeviceLbl_Width 48
 #define kHRDeviceLbl_FontSize 13.0
 #define kHRDeviceLbl_RightMargin 10.0
+#define kDropdownHeight 30
 #define kHRDeviceLbl_Height 13
 #define kHRDeviceMenu_Width 179
 #define kHRDeviceMenu_Height 21
@@ -128,7 +130,7 @@
 #define kBottomLongButton_Width 188
 #define kBottomShortButton_Width 113
 #define kBottomButton_FontSize 14.0
-@interface PatientInfoViewController ()<LMJDropdownMenuDelegate>
+@interface PatientInfoViewController ()<XXTGDropdownMenuDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -139,7 +141,7 @@
 @property (nonatomic,strong)UIButton *testResultBtn;
 @property (nonatomic,strong)UITableView *testResultListView;
 @property (nonatomic,strong)UILabel *hrLbl;
-@property (nonatomic,strong)LMJDropdownMenu *hrMenu;
+@property (nonatomic,strong)KTDropDownMenus *hrMenu;
 @property (nonatomic,strong)UIButton *icCardBtn;
 @property (nonatomic,strong)UIButton *updateInfoBtn;
 @property (nonatomic,strong)UIButton *changeBtn;
@@ -413,7 +415,8 @@
 
 @property (nonatomic,assign)NSInteger offset;
 
-
+@property (nonatomic,strong)NSMutableArray *privateDeviceArr;
+@property (nonatomic,copy)NSString *selectedDeviceCode;
 @property (nonatomic,strong)NSArray *deviceTypeArr;
 @end
 
@@ -430,6 +433,8 @@
         }
     }
     self.allHrDevices = [NSMutableArray array];
+    self.privateDeviceArr = [NSMutableArray arrayWithObjects:@"无", nil];
+    self.selectedDeviceCode = @"";
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     NSDictionary *dict = self.user.organ;
@@ -445,6 +450,20 @@
     [self getDeviceTypeList:parameter];
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    NSMutableDictionary *para = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [para setValue:orgCode forKey:@"orgCode"];
+    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
+    [para setValue:@(userId) forKey:@"userId"];
+    [para setValue:orgCode forKey:@"orgCode"];
+    [para setValue:@14 forKey:@"deviceType"];
+    [self showAllHrDevices:para];
 }
 
 - (void)setNavBar {
@@ -505,6 +524,7 @@
     [self.updateInfoBtn setTitle:@"修改资料" forState:UIControlStateNormal];
     self.updateInfoBtn.layer.cornerRadius = kICCardBtn_Height * kYScal/2.0;
     self.updateInfoBtn.layer.masksToBounds = YES;
+    [self.updateInfoBtn addTarget:self action:@selector(updateInfoBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollview addSubview:self.updateInfoBtn];
     
     CGFloat leftView_Width = (self.scrollview.frame.size.width - kMiddle_Space * kXScal)/2.0;
@@ -544,10 +564,14 @@
     self.hrLbl.font = [UIFont systemFontOfSize:kHRDeviceLbl_FontSize * kYScal];
     [self.scrollview addSubview:self.hrLbl];
     
-    self.hrMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.hrLbl.frame) + kHRDeviceLbl_RightMargin * kXScal, 0, kHRDeviceMenu_Width * kXScal, kHRDeviceMenu_Height * kYScal)];
-    [self.hrMenu.mainBtn setTitle:@"无" forState:UIControlStateNormal];
+    self.hrMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.hrLbl.frame) + kHRDeviceLbl_RightMargin * kXScal, 0, kHRDeviceMenu_Width * kXScal, kHRDeviceMenu_Height * kYScal)];
     self.hrMenu.delegate = self;
     self.hrMenu.center = CGPointMake(CGRectGetMaxX(self.hrLbl.frame) + kHRDeviceLbl_RightMargin * kXScal + kHRDeviceMenu_Width * kXScal / 2.0, self.hrLbl.center.y);
+    [self.hrMenu setDropdownHeight:kDropdownHeight * kYScal];
+    //    self.hrMenu.defualtStr = @"无";
+    [self.hrMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    self.hrMenu.titles = [self.privateDeviceArr copy];
+    self.hrMenu.delegate = self;
     [self.scrollview addSubview:self.hrMenu];
     
     self.changeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -2515,6 +2539,16 @@
     [self checkMorePatientInfo:parameter];
 }
 
+- (void)updateInfoBtnClick:(UIButton*)sender {
+    NSMutableDictionary *para = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [para setValue:orgCode forKey:@"orgCode"];
+    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
+    [para setValue:@(userId) forKey:@"userId"];
+    [self doctorGetUserInfo:para];
+}
 
 - (void)createAerobicPrescription:(UIButton*)sender {
     CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
@@ -2563,18 +2597,30 @@
     [self getUserPrescriptionList:parameter];
 }
 
-#pragma mark - LMJDropdownMenuDelegate
+#pragma mark - XXTGDropdownMenuDelegate
 
-- (void)dropdownMenuWillShow:(LMJDropdownMenu *)menu {
-    NSLog(@"显示公有心率带");
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    NSDictionary *dict = self.user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@14 forKey:@"deviceType"];
-    [parameter setValue:@"" forKey:@"keyword"];
-//    [self showAllHrDevices:parameter];
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
+{
+    if (menu == self.hrMenu) {
+        if ([string isEqualToString:@"无"]) {
+            self.selectedDeviceCode = @"";
+        } else {
+            self.selectedDeviceCode = string;
+        }
+    }
+}
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    if (menu == self.hrMenu) {
+        [self.hrMenu.mTableView reloadData];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [parameter setValue:@14 forKey:@"deviceType"];
+        [self showAllHrDevices:parameter];
+    }
 }
 
 #pragma mark - network Fuctions
@@ -2613,18 +2659,30 @@
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_AVAILABLE_DEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"**************%@**************",responseObject);
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"private hr device :%@ :%@",responseObject,error);
+        if (weakSelf.privateDeviceArr.count > 0) {
+            [weakSelf.privateDeviceArr removeAllObjects];
+        }
+        [weakSelf.privateDeviceArr addObject:@"无"];
         if (code == 0) {
-            NSArray *datas = [responseObject valueForKey:@"data"];
-            if (datas.count > 0) {
-                NSMutableArray *allHrDevices = [NSMutableArray array];
-                [allHrDevices addObject:@"无"];
-                [allHrDevices addObjectsFromArray:datas];
-                [weakSelf.hrMenu setMenuTitles:allHrDevices rowHeight:kDropMenu_Item_Height attr:@{@"title":weakSelf.hrMenuTitle,@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+            NSArray *privateDevices = [responseObject valueForKey:@"data"];
+            if (privateDevices.count > 0) {
+                for (NSDictionary *device in privateDevices) {
+                    NSString *deviceId = [device valueForKey:@"deviceCode"];
+                    if (![weakSelf.privateDeviceArr containsObject:deviceId]) {
+                        [weakSelf.privateDeviceArr addObject:deviceId];
+                    }
+                }
+                weakSelf.hrMenu.titles = [weakSelf.privateDeviceArr copy];
+                [weakSelf.hrMenu.mTableView reloadData];
             } else {
-                [STTextHudTool showText:@"无闲置心率带"];
+                [weakSelf.hrMenu.mainBtn setTitle:@"无" forState:UIControlStateNormal];
+                [weakSelf.hrMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+                [weakSelf.hrMenu.mTableView reloadData];
             }
         } else if (code == 10011) {
+            [weakSelf.hrMenu hiddenCityList];
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [self.navigationController popToRootViewControllerAnimated:NO];
@@ -2663,32 +2721,29 @@
 - (void)updateHRDevice {
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     [parameter setValue:@0 forKey:@"offset"];
-    NSInteger userId = [self.user.userId integerValue];
+    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
     [parameter setValue:@(userId) forKey:@"userId"];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@"" forKey:@"deviceCode"];
+    [parameter setValue:self.selectedDeviceCode forKey:@"deviceCode"];
     [self changePrivateHrDevice:parameter];
 }
 
 - (void)changePrivateHrDevice:(NSMutableDictionary*)parameter {
     __weak typeof (self)weakSelf = self;
-    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRESCRIPTION_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_CHANGE_HR_DEVICE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"**************%@**************",responseObject);
+        NSString *error = [responseObject valueForKey:@"error"];
+        NSLog(@"bind device :%@ :%@",responseObject,error);
         if (code == 0) {
-            NSArray *rows = [responseObject valueForKey:@"rows"];
-            AerobicPrescriptionAndReportViewController *report = [[AerobicPrescriptionAndReportViewController alloc] init];
-            report.precriptionsArr = [rows mutableCopy];
-            report.patientInfo = self.latestInfoDict;
-            [weakSelf.navigationController pushViewController:report animated:NO];
+            [STTextHudTool showText:@"成功"];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
-            [self.navigationController popToRootViewControllerAnimated:NO];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }
@@ -2712,6 +2767,30 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+//医师获取用户信息
+- (void)doctorGetUserInfo:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERINFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSLog(@"data is :%@",data);
+            PatientBaseInfoViewController *info = [[PatientBaseInfoViewController alloc] init];
+            info.userInfo = data;
+            [weakSelf.navigationController pushViewController:info animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            NSString *msg = [responseObject valueForKey:@"msg"];
             [STTextHudTool showText:msg];
         }
     } andFaild:^(NSError *error) {

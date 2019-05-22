@@ -649,7 +649,7 @@
         [self upLoadImage];
     } else {
         PatientQuestionViewController *question = [[PatientQuestionViewController alloc] init];
-        question.userInfo = self.userInfo;
+        question.userInfo = [self.userInfo mutableCopy];
         [self.navigationController pushViewController:question animated:NO];
     }
 }

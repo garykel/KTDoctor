@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PatientQuestionViewController : UIViewController
-@property (nonatomic,strong)NSDictionary *userInfo;
+@property (nonatomic,strong)NSMutableDictionary *userInfo;
 @end
 
 NS_ASSUME_NONNULL_END
