@@ -750,7 +750,43 @@ CGSize systemListviewSize;
 
 //搜索
 - (void)searchBtnClick:(UIButton*)sender {
-    NSLog(@"搜索");
+    NSInteger riskLevel = 0;
+    NSString *riskLevelStr = self.riskLevelMenu.mainBtn.titleLabel.text;
+    if (self.type == 1) {
+        if (![riskLevelStr isEqualToString:@"风险等级"]) {
+            if ([riskLevelStr isEqualToString:@"高"]) {
+                riskLevel = 3;
+            } else if ([riskLevelStr isEqualToString:@"中"]) {
+                riskLevel = 2;
+            } else if ([riskLevelStr isEqualToString:@"低"]) {
+                riskLevel = 1;
+            }
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || SELF.riskLevel = %d",self.nameTf.text,riskLevel];
+            self.systemTemplateArr = [NSMutableArray arrayWithArray:[self.systemTemplateArr filteredArrayUsingPredicate:predicate]];
+            [self.systemTemplateListView reloadData];
+        } else {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.nameTf.text];
+            self.systemTemplateArr = [NSMutableArray arrayWithArray:[self.systemTemplateArr filteredArrayUsingPredicate:predicate]];
+            [self.systemTemplateListView reloadData];
+        }
+    } else {
+        if (![riskLevelStr isEqualToString:@"风险等级"]) {
+            if ([riskLevelStr isEqualToString:@"高"]) {
+                riskLevel = 3;
+            } else if ([riskLevelStr isEqualToString:@"中"]) {
+                riskLevel = 2;
+            } else if ([riskLevelStr isEqualToString:@"低"]) {
+                riskLevel = 1;
+            }
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || SELF.riskLevel = %d",self.nameTf.text,riskLevel];
+            self.customTemplateArr = [NSMutableArray arrayWithArray:[self.customTemplateArr filteredArrayUsingPredicate:predicate]];
+            [self.customTemplateListView reloadData];
+        } else {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.nameTf.text];
+            self.customTemplateArr = [NSMutableArray arrayWithArray:[self.customTemplateArr filteredArrayUsingPredicate:predicate]];
+            [self.customTemplateListView reloadData];
+        }
+    }
 }
 
 //新建有氧模板
