@@ -113,7 +113,7 @@ CGSize systemListviewSize;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCustomTemplates:) name:@"UpdateCustomTemplatesNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCustomTemplates) name:@"UpdateCustomTemplatesNotification" object:nil];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.type = 2;
     self.customTemplateArr = [NSMutableArray array];
@@ -637,11 +637,13 @@ CGSize systemListviewSize;
         NSInteger targetDuration = [[dict valueForKey:@"targetDuration"] integerValue];
         NSString *timeStr = [self getTimeString:targetDuration];
         cell.timeLbl.text = timeStr;
-        BOOL hasSelect = [[self.customeTemplateCheckArr objectAtIndex:indexPath.row] boolValue];
-        if (hasSelect) {
-            [cell.checkBtn setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
-        } else {
-            [cell.checkBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
+        if (self.customeTemplateCheckArr.count > 0) {
+            BOOL hasSelect = [[self.customeTemplateCheckArr objectAtIndex:indexPath.row] boolValue];
+            if (hasSelect) {
+                [cell.checkBtn setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
+            } else {
+                [cell.checkBtn setImage:[UIImage imageNamed:@"template_unselected"] forState:UIControlStateNormal];
+            }
         }
         cell.checkBtn.tag = indexPath.row + 10000;
         [cell.checkBtn addTarget:self action:@selector(customTemplateSelected:) forControlEvents:UIControlEventTouchUpInside];
@@ -799,7 +801,6 @@ CGSize systemListviewSize;
 
 //删除模板
 - (void)deleteBtnClick:(UIButton*)sender {
-    NSLog(@"删除模板");
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
@@ -870,7 +871,6 @@ CGSize systemListviewSize;
         sender.selected = YES;
         [sender setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
         [self.customeTemplateCheckArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:YES]];
-//        [self.customTemplateArr removeObjectAtIndex:index];
         NSDictionary *dict = [self.customTemplateArr objectAtIndex:index];
         NSInteger id = [[dict valueForKey:@"id"] integerValue];
         NSString *idStr = [NSString stringWithFormat:@"%d",id];
@@ -991,11 +991,17 @@ CGSize systemListviewSize;
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSLog(@"**************%@**************",responseObject);
         if (code == 0) {
-            [weakSelf.customTemplateArr removeAllObjects];
-            for (NSInteger i = 0; i < weakSelf.customTemplateArr.count; i++) {
-                [weakSelf.customeTemplateCheckArr addObject:[NSNumber numberWithBool:NO]];
+            if (weakSelf.customeTemplateCheckArr.count > 0) {
+                [weakSelf.customeTemplateCheckArr removeAllObjects];
             }
-            [weakSelf.customTemplateListView reloadData];
+ 
+            if (weakSelf.customTemplateIdArr.count > 0) {
+                [weakSelf.customTemplateIdArr removeAllObjects];
+            }
+            if (weakSelf.customTemplateArr.count > 0) {
+                [weakSelf.customTemplateArr removeAllObjects];
+            }
+            [weakSelf refreshCustomTemplates];
             [STTextHudTool showText:@"删除成功"];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
@@ -1071,6 +1077,14 @@ CGSize systemListviewSize;
                         [weakSelf.customTemplateListView.mj_header endRefreshing];
                         [weakSelf.customTemplateListView reloadData];
                     }
+                } else {
+                    if (type == 1) {//系统模板
+                        [weakSelf.systemTemplateListView.mj_header endRefreshing];
+                        [weakSelf.systemTemplateListView reloadData];
+                    } else {//自定义模板
+                        [weakSelf.customTemplateListView.mj_header endRefreshing];
+                        [weakSelf.customTemplateListView reloadData];
+                    }
                 }
             }
             for (NSInteger i = 0; i < weakSelf.customTemplateArr.count; i++) {
@@ -1090,7 +1104,7 @@ CGSize systemListviewSize;
 
 #pragma mark - UpdateCustomTemplatesNotification
 
-- (void)refreshCustomTemplates:(NSNotification*)noti {
+- (void)refreshCustomTemplates{
     self.offset = 0;
     [self showTemplateListWithType:self.type];
 }
