@@ -735,6 +735,28 @@ CGSize systemListviewSize;
             self.type = 1;
             [self showTemplateListWithType:self.type];
         }
+    } else if (menu == self.deviceMenu) {
+        if (self.deviceTypeArr.count > 0) {
+            NSMutableArray *equipments = [NSMutableArray array];
+            for (NSDictionary *dict in self.deviceTypeArr) {
+                NSString *name = [dict valueForKey:@"name"];
+                if ([name isEqualToString:string]) {
+                    NSArray *deviceTypeArr = [dict valueForKey:@"children"];
+                    if (deviceTypeArr.count > 0) {
+                        for (NSDictionary *dict1 in deviceTypeArr) {
+                            NSArray *children = [dict1 valueForKey:@"children"];
+                            if (children.count > 0) {
+                                for (NSDictionary *child in children) {
+                                    [equipments addObject:[child valueForKey:@"name"]];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            self.trainingDeviceMenu.titles = [equipments copy];
+            [self.trainingDeviceMenu.mTableView reloadData];
+        }
     }
 }
 
@@ -983,6 +1005,21 @@ CGSize systemListviewSize;
                 } else {
                     UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
                     update.templateInfo = data;
+                    NSString *str = [self DataTOjsonString:data];
+                    NSLog(@"str is :%@",str);
+                    NSArray *typeList = [data valueForKey:@"typeList"];
+                    if (weakself.deviceTypeArr.count > 0) {
+                        if (typeList.count > 0) {
+                            NSDictionary *typeDict = typeList[0];
+                            NSString *typeName = [typeDict valueForKey:@"name"];
+                            for (NSDictionary *dict in self.deviceTypeArr) {
+                                NSString *name = [dict valueForKey:@"name"];
+                                if ([name isEqualToString:typeName]) {
+                                    update.deviceTypeArr = [dict valueForKey:@"children"];
+                                }
+                            }
+                        }
+                    }
                     [self.navigationController pushViewController:update animated:NO];
                 }
             }
@@ -996,6 +1033,20 @@ CGSize systemListviewSize;
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);
     }];
+}
+
+- (NSString*)DataTOjsonString:(id)object{
+    NSString *jsonString = nil;
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
+    if (!jsonData) {
+        NSLog(@"Got an error: %@", error);
+    } else {
+        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    return jsonString;
 }
 
 //获取设备类型列表

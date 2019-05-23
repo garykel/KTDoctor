@@ -310,7 +310,7 @@
             }
         }
     }
-    self.traingDeviceMenu.delegate = self;
+    self.traingDeviceMenu.titles = [trainingEquipMentArr copy];
     NSInteger type = [[self.templateInfo valueForKey:@"type"] integerValue];
     NSArray *typeList = [self.templateInfo valueForKey:@"typeList"];
     if (typeList.count > 0) {
@@ -716,9 +716,9 @@
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSString *orgCode = [self.templateInfo valueForKey:@"orgCode"];
     [parameter setValue:orgCode forKey:@"orgCode"];
-    NSInteger type = [[self.templateInfo valueForKey:@"type"] integerValue];
-    [parameter setValue:@(type) forKey:@"type"]; //类型
-    [parameter setValue:@(self.typeid) forKey:@"id"];
+    NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
+    [parameter setValue:@(self.typeid) forKey:@"type"]; //类型
+    [parameter setValue:@(id) forKey:@"id"];
     [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
     [parameter setValue:self.templateNameTF.text forKey:@"title"];
     NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;

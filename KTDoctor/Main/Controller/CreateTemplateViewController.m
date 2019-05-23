@@ -301,7 +301,6 @@
         }
     }
     self.traingDeviceMenu.titles = [trainingEquipMentArr copy];
-    self.traingDeviceMenu.delegate = self;
     self.traingDeviceMenu.backgroundColor = [UIColor whiteColor];
     self.traingDeviceMenu.delegate = self;
     self.traingDeviceMenu.tag = 10;
