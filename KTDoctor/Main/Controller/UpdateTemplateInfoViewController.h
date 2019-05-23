@@ -10,5 +10,6 @@
 
 @interface UpdateTemplateInfoViewController : UIViewController
 @property (nonatomic,strong)NSDictionary *templateInfo;
+@property (nonatomic,strong)NSArray *deviceTypeArr;
 @end
 

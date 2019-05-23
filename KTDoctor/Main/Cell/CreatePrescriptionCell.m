@@ -59,6 +59,7 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDifficultLevel:) name:@"UpdateDifficultLevelNotification" object:nil];
         [self setUI];
     }
     return self;
@@ -249,11 +250,25 @@
     if (menu == self.difficultyLeftMenu) {
         [self.difficultyLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
         NSString *difficultyRight = self.difficultyRightMenu.mainBtn.titleLabel.text;
-        self.model.hrRange = [NSString stringWithFormat:@"%@-%@",string,[difficultyRight substringToIndex:(difficultyRight.length - 1)]];
+        if (difficultyRight.length > 0) {
+            self.model.hrRange = [NSString stringWithFormat:@"%@-%@",string,[difficultyRight substringToIndex:(difficultyRight.length - 1)]];
+        }
+        NSInteger start = [string integerValue];
+        NSMutableArray *titles =  [NSMutableArray array];
+        for (NSInteger i = start + 5; i<=100; i++) {
+            if (i%5==0) {
+                [titles addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+        }
+        self.difficultyRightMenu.titles = [titles copy];
+        [self.difficultyRightMenu.mTableView reloadData];
+        self.difficultyRightMenu.mainBtn.titleLabel.text = @"";
     } else if (menu == self.difficultyRightMenu) {
         [self.difficultyRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
         NSString *difficultyLeft = self.difficultyLeftMenu.mainBtn.titleLabel.text;
-        self.model.hrRange = [NSString stringWithFormat:@"%@-%@",[difficultyLeft substringToIndex:(difficultyLeft.length - 1)],string];
+        if (difficultyLeft.length > 0) {
+            self.model.hrRange = [NSString stringWithFormat:@"%@-%@",[difficultyLeft substringToIndex:(difficultyLeft.length - 1)],string];
+        }
     } else if (menu == self.traingingTimeLeftMenu) {
         NSInteger num = [string integerValue];
         if (num == 0) {
@@ -316,8 +331,21 @@
     }
 }
 
-- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+- (void)updateDifficultLevel:(NSNotification*)noti {
+    NSDictionary *userinfo = [noti userInfo];
+    NSInteger difficulty = [[userinfo valueForKey:@"value"] integerValue];
+    NSMutableArray *difficulties = [NSMutableArray array];
+    for (NSInteger i = 1; i <=difficulty; i++) {
+        [difficulties addObject:[NSString stringWithFormat:@"%d",i]];
+    }
+    self.difficultyMenu.titles = [difficulties copy];
+    [self.difficultyMenu.mTableView reloadData];
+}
 
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    if (menu == self.difficultyRightMenu) {
+        self.difficultyRightMenu.mainBtn.titleLabel.text = @"";
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

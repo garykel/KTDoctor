@@ -47,4 +47,5 @@
 #define kDOCTOR_PRESCRIPTION_CREATE_URL @"/doctor/prescription/create"//开具新处方
 #define kDOCTOR_TEMPLATE_INFO_URL @"/doctor/template/info" //处方模板详细信息
 #define kDEVICE_TYPE_LIST_URL @"/device_type/list" //设备类型列表
+#define kDEVICE_TYPE_INFO_URL @"/device_type/info" //设备类型信息
 #endif /* URLMacros_h */

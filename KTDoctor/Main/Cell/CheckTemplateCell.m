@@ -267,11 +267,15 @@
     if (menu == self.difficultyLeftMenu) {
         [self.difficultyLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
         NSString *difficultyRight = self.difficultyRightMenu.mainBtn.titleLabel.text;
-        self.model.hrRange = [NSString stringWithFormat:@"%@-%@",string,[difficultyRight substringToIndex:(difficultyRight.length - 1)]];
+        if (difficultyRight.length > 0) {
+            self.model.hrRange = [NSString stringWithFormat:@"%@-%@",string,[difficultyRight substringToIndex:(difficultyRight.length - 1)]];
+        }
     } else if (menu == self.difficultyRightMenu) {
         [self.difficultyRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
         NSString *difficultyLeft = self.difficultyLeftMenu.mainBtn.titleLabel.text;
-        self.model.hrRange = [NSString stringWithFormat:@"%@-%@",[difficultyLeft substringToIndex:(difficultyLeft.length - 1)],string];
+        if (difficultyLeft.length > 0) {
+            self.model.hrRange = [NSString stringWithFormat:@"%@-%@",[difficultyLeft substringToIndex:(difficultyLeft.length - 1)],string];
+        }
     } else if (menu == self.traingingTimeLeftMenu) {
         NSInteger num = [string integerValue];
         if (num == 0) {

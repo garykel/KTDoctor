@@ -10,6 +10,7 @@
 #import "CreatePrescriptionCell.h"
 #import "PowerTemplateCell.h"
 #import "AerobicriptionModel.h"
+#import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -102,7 +103,10 @@
 @property (nonatomic,assign)NSInteger treatmentPeriod;
 @property (nonatomic,assign)NSInteger daysPerWeek;
 @property (nonatomic,assign)NSInteger timing;
+@property (nonatomic,strong)UserModel *user;
 @property (nonatomic,strong)NSMutableArray *groups;
+@property (nonatomic,strong)NSMutableArray *equipIds;
+@property (nonatomic,assign)NSInteger typeid;
 @end
 
 @implementation UpdateTemplateInfoViewController
@@ -110,7 +114,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray array];
+    self.equipIds = [NSMutableArray array];
     NSArray *sections = [self.templateInfo valueForKey:@"sections"];
     NSMutableArray *templates = [NSMutableArray array];
     if (sections.count > 0) {
@@ -152,7 +158,7 @@
     self.titleLbl.font = [UIFont systemFontOfSize:kTitle_FontSize];
     self.titleLbl.textColor = [UIColor whiteColor];
     self.titleLbl.textAlignment = NSTextAlignmentCenter;
-    self.titleLbl.text = @"新建有氧处方模板";
+    self.titleLbl.text = @"修改有氧处方模板";
     [self.navView addSubview:self.titleLbl];
 }
 
@@ -274,11 +280,9 @@
     self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake( self.riskLevelMenu.frame.origin.x,self.deviceTypeTF.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
     [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.trainingPositionMenu.defualtStr = @"请选择";
-    self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.titles = @[@"心肺"];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.backgroundColor = [UIColor whiteColor];
-    self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 10;
     [self.trainingPositionMenu.mainBtn setTitle:@"心肺" forState:UIControlStateNormal];
     [self.topBgView addSubview:self.trainingPositionMenu];
@@ -294,7 +298,18 @@
     [self.traingDeviceMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.traingDeviceMenu.defualtStr = @"请选择";
     self.traingDeviceMenu.delegate = self;
-    self.traingDeviceMenu.titles = @[@"功率车",@"椭圆机",@"卧式功率车"];
+    NSMutableArray *trainingEquipMentArr = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict1 in self.deviceTypeArr) {
+            NSArray *children = [dict1 valueForKey:@"children"];
+            self.equipIds = [children mutableCopy];
+            if (children.count > 0) {
+                for (NSDictionary *child in children) {
+                    [trainingEquipMentArr addObject:[child valueForKey:@"name"]];
+                }
+            }
+        }
+    }
     self.traingDeviceMenu.delegate = self;
     NSInteger type = [[self.templateInfo valueForKey:@"type"] integerValue];
     NSArray *typeList = [self.templateInfo valueForKey:@"typeList"];
@@ -620,7 +635,24 @@
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    
+    if (menu == self.traingDeviceMenu) {
+        if (self.equipIds.count > 0) {
+            for (NSDictionary *dict in self.equipIds) {
+                NSString *name = [dict valueForKey:@"name"];
+                if ([string isEqualToString:name]) {
+                    NSInteger id = [[dict valueForKey:@"id"] integerValue];
+                    self.typeid = id;
+                    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+                    NSDictionary *dict = self.user.organ;
+                    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+                    NSString *orgCode = orgCodeArr[0];
+                    [parameter setValue:orgCode forKey:@"orgCode"];
+                    [parameter setValue:@(id) forKey:@"id"];
+                    [self getDeviceTypeInfo:parameter];
+                }
+            }
+        }
+    }
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
@@ -628,6 +660,31 @@
 }
 
 #pragma mark - network functions
+
+- (void)getDeviceTypeInfo:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDEVICE_TYPE_INFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************获取设备类型信息%@**************",responseObject);
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSArray *attr = [data valueForKey:@"attrs"];
+            if (attr.count > 0) {
+                NSDictionary *dict = attr[0];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateDifficultLevelNotification" object:nil userInfo:dict];
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 
 - (void)updateTemplate:(NSMutableDictionary *)parameter {
     __weak typeof (self)weakSelf = self;
@@ -659,9 +716,9 @@
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSString *orgCode = [self.templateInfo valueForKey:@"orgCode"];
     [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@(1) forKey:@"type"]; //类型
-    NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
-    [parameter setValue:@(id) forKey:@"id"];
+    NSInteger type = [[self.templateInfo valueForKey:@"type"] integerValue];
+    [parameter setValue:@(type) forKey:@"type"]; //类型
+    [parameter setValue:@(self.typeid) forKey:@"id"];
     [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
     [parameter setValue:self.templateNameTF.text forKey:@"title"];
     NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;
