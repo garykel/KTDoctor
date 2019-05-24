@@ -15,6 +15,7 @@
 #import "CreateTemplateViewController.h"
 #import "CheckTemplateInfoViewController.h"
 #import "UpdateTemplateInfoViewController.h"
+#import "CreatePowerTemplateViewController.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -854,7 +855,20 @@ CGSize systemListviewSize;
 
 //新建力量模板
 - (void)createPowerTemplateBtnClick:(UIButton*)sender {
-    NSLog(@"新建力量模板");
+    [self.template dismiss];
+    CreatePowerTemplateViewController *template = [[CreatePowerTemplateViewController alloc] init];
+    template.type = 2;
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            NSString *name = [dict valueForKey:@"name"];
+            if ([name isEqualToString:@"力量设备"]) {
+                template.deviceTypeArr = [dict valueForKey:@"children"];
+                NSString *deviceTypeArr = [self convertToJSONData:template.deviceTypeArr];
+                NSLog(@"deviceTypeArr  is :%@",deviceTypeArr);
+            }
+        }
+    }
+    [self.navigationController pushViewController:template animated:NO];
 }
 
 //删除模板
@@ -1005,8 +1019,8 @@ CGSize systemListviewSize;
                 } else {
                     UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
                     update.templateInfo = data;
-                    NSString *str = [self DataTOjsonString:data];
-                    NSLog(@"str is :%@",str);
+                    NSString *jsonStr = [self convertToJSONData:data];
+                    NSLog(@"jsonStr is :%@",jsonStr);
                     NSArray *typeList = [data valueForKey:@"typeList"];
                     if (weakself.deviceTypeArr.count > 0) {
                         if (typeList.count > 0) {
@@ -1033,20 +1047,6 @@ CGSize systemListviewSize;
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);
     }];
-}
-
-- (NSString*)DataTOjsonString:(id)object{
-    NSString *jsonString = nil;
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object
-                                                       options:NSJSONWritingPrettyPrinted
-                                                         error:&error];
-    if (!jsonData) {
-        NSLog(@"Got an error: %@", error);
-    } else {
-        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    }
-    return jsonString;
 }
 
 //获取设备类型列表
