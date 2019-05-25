@@ -414,7 +414,8 @@
 @property (nonatomic,strong)UIButton *createPowerPrescriptionBtn;//开具力量处方
 
 @property (nonatomic,assign)NSInteger offset;
-
+@property (nonatomic,assign)NSInteger leftOffset;//向左偏移
+@property (nonatomic,assign)BOOL hasEnded;//是否停止获取网络数据
 @property (nonatomic,strong)NSMutableArray *privateDeviceArr;
 @property (nonatomic,copy)NSString *selectedDeviceCode;
 @property (nonatomic,strong)NSArray *deviceTypeArr;
@@ -425,6 +426,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.offset = 2;
+    self.leftOffset = 2;
+    self.hasEnded = NO;
     self.navigationController.navigationBar.hidden = YES;
     if (self.infoArr.count > 0) {
         self.latestInfoDict = [self.infoArr objectAtIndex:0];
@@ -594,10 +597,9 @@
     
     self.rightBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.rightBtn setImage:[UIImage imageNamed:@"right"] forState:UIControlStateNormal];
-    self.rightBtn.frame = CGRectMake(kWidth - kLeftBtn_Width * kXScal, self.view.center.y, kLeftBtn_Width * kXScal, kLeftBtn_Width * kWidth);
+    self.rightBtn.frame = CGRectMake(kWidth - kLeftBtn_Width * kXScal, self.view.center.y, kLeftBtn_Width * kXScal, kLeftBtn_Width * kXScal);
     [self.rightBtn addTarget:self action:@selector(rightBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
-    [keyWindow addSubview:self.rightBtn];
+    [self.view  addSubview:self.rightBtn];
     
     [self configLatestInfoView];
     [self configOlderInfoView];
@@ -2491,25 +2493,164 @@
     
     self.olderRiskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(kSummaryView_LeftMargin * kXScal, kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
     self.olderRiskLevelLbl.text = @"风险等级：中";
+    self.olderRiskLevelLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
+    self.olderRiskLevelLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+    [self.olderSummaryView addSubview:self.olderRiskLevelLbl];
+    
+    self.olderHRZoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderSummaryView.frame.size.width - kSummaryView_Lbl_Width * kXScal - kSummaryView_HRZoneLbl_RightMargin * kXScal, self.olderRiskLevelLbl.frame.origin.y, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
+    self.olderHRZoneLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
+    self.olderHRZoneLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+    [self.olderSummaryView addSubview:self.olderHRZoneLbl];
+    
+    self.olderRPERangeLbll = [[UILabel alloc] initWithFrame:CGRectMake(self.olderRiskLevelLbl.frame.origin.x, self.olderSummaryView.frame.size.height - kSummaryView_Lbl_Height * kYScal - kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
+    self.olderRPERangeLbll.textColor = [UIColor colorWithHexString:@"#333333"];
+    self.olderRPERangeLbll.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
+    [self.olderSummaryView addSubview:self.olderRPERangeLbll];
+    
     NSInteger riskLevel = [[self.olderInfoDict valueForKey:@"riskLevel"] integerValue];
     if (riskLevel > 0) {
         NSDictionary *riskDict = [self getHrRangeAndRPERange:riskLevel];
         self.olderRiskLevelLbl.text = [NSString stringWithFormat:@"风险等级：%@",[riskDict valueForKey:@"riskLevel"]];
-        self.olderRiskLevelLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
-        self.olderRiskLevelLbl.textColor = [UIColor colorWithHexString:@"#333333"];
-        [self.olderSummaryView addSubview:self.olderRiskLevelLbl];
-        
-        self.olderHRZoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.olderSummaryView.frame.size.width - kSummaryView_Lbl_Width * kXScal - kSummaryView_HRZoneLbl_RightMargin * kXScal, self.olderRiskLevelLbl.frame.origin.y, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
+
         self.olderHRZoneLbl.text = [NSString stringWithFormat:@"心率区间：%@",[riskDict valueForKey:@"hrRange"]];
-        self.olderHRZoneLbl.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
-        self.olderHRZoneLbl.textColor = [UIColor colorWithHexString:@"#333333"];
-        [self.olderSummaryView addSubview:self.olderHRZoneLbl];
-        
-        self.olderRPERangeLbll = [[UILabel alloc] initWithFrame:CGRectMake(self.olderRiskLevelLbl.frame.origin.x, self.olderSummaryView.frame.size.height - kSummaryView_Lbl_Height * kYScal - kSummaryView_Lbl_TopMargin * kYScal, kSummaryView_Lbl_Width * kXScal, kSummaryView_Lbl_Height * kYScal)];
-        self.olderRPERangeLbll.textColor = [UIColor colorWithHexString:@"#333333"];
+
         self.olderRPERangeLbll.text = [NSString stringWithFormat:@"RPE范围：%@",[riskDict valueForKey:@"rpeRange"]];
-        self.olderRPERangeLbll.font = [UIFont systemFontOfSize:kSummaryView_Lbl_FontSize * kYScal];
-        [self.olderSummaryView addSubview:self.olderRPERangeLbll];
+    }
+}
+
+- (void)configOlderInfoViewData:(NSDictionary*)dict {
+    self.oldTimeLbl.text = [NSString stringWithFormat:@"更新日期：%@",[dict valueForKey:@"createTime"]];
+    NSString *headUrl = [dict valueForKey:@"headUrl"];
+    [self.olderPatientImg sd_setImageWithURL:[NSURL URLWithString:headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+    self.olderNameTF.text = [dict valueForKey:@"name"];
+    NSInteger olderSex = [[dict valueForKey:@"sex"] integerValue];
+    NSString *sex = @"男";
+    if (olderSex == 1) {
+        sex = @"男";
+    } else if (olderSex == 2) {
+        sex = @"女";
+    }
+    self.olderSexTF.text = sex;
+    self.olderPhoneTF.text = [dict valueForKey:@"mobile"];
+    self.olderBirthTF.text = [dict valueForKey:@"birthdate"];
+    CGFloat height = [[dict valueForKey:@"height"] floatValue];
+    self.olderHeightTF.text = [NSString stringWithFormat:@"%.1f",height];
+    CGFloat weight = [[dict valueForKey:@"weight"] floatValue];
+    self.olderWeightTF.text = [NSString stringWithFormat:@"%.1f",weight];
+    CGFloat waistline = [[dict valueForKey:@"waistline"] floatValue];
+    self.olderWaistTF.text = [NSString stringWithFormat:@"%.1f",waistline];
+    CGFloat fbg = [[dict valueForKey:@"fbg"] floatValue];
+    self.olderKFXTHRTF.text = [NSString stringWithFormat:@"%.1f",fbg];
+    self.olderQuietHRTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"restHr"] integerValue]];
+    CGFloat hrv = [[dict valueForKey:@"hrv"] floatValue];
+    self.olderXLBYTF.text = [NSString stringWithFormat:@"%.1f",hrv];
+    NSInteger sbp = [[dict valueForKey:@"sbp"] integerValue];
+    self.olderSSYTF.text = [NSString stringWithFormat:@"%d",sbp];
+    NSInteger dbp = [[dict valueForKey:@"dbp"] integerValue];
+    self.olderSZYTF.text = [NSString stringWithFormat:@"%d",dbp];
+    CGFloat hdl = [[dict valueForKey:@"hdl"] floatValue];
+    self.olderGMDZDBTF.text = [NSString stringWithFormat:@"%.1f",hdl];
+    CGFloat bmi = [[dict valueForKey:@"bmi"] floatValue];
+    self.olderSTZLZSTF.text = [NSString stringWithFormat:@"%.1f",bmi];
+    NSInteger olderMaxAlarmHr = [[dict valueForKey:@"maxAlarmHr"] integerValue];
+    self.olderMaxAlertTF.text = [NSString stringWithFormat:@"%d",olderMaxAlarmHr];
+    NSInteger sportFrequency = [[dict valueForKey:@"sportFrequency"] integerValue];
+    if (sportFrequency == 2) {
+        self.olderAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    if (sportFrequency == 1) {
+        self.olderAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderAnswer1YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    NSInteger hasHbp = [[dict valueForKey:@"hasHbp"] integerValue];
+    if (hasHbp == 1) {
+        self.olderHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbpYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    if (hasHbp == 2) {
+        self.olderHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbpNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    NSInteger hasHbs = [[dict valueForKey:@"hasHbs"] integerValue];
+    if (hasHbs == 1) {
+        self.olderHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbsYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    if (hasHbs == 2) {
+        self.olderHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbsNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    NSInteger hasHbf = [[dict valueForKey:@"hasHbf"] integerValue];
+    if (hasHbf == 1) {
+        self.olderHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbfYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    if (hasHbf == 2) {
+        self.olderHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderHbfNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    NSInteger hasSmoking = [[dict valueForKey:@"hasSmoking"] integerValue];
+    if (hasSmoking == 1) {
+        self.olderSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderSmokeYesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    if (hasSmoking == 2) {
+        self.olderSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderSmokeNoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    NSInteger familyDiabetes = [[dict valueForKey:@"familyDiabetes"] integerValue];
+    if (familyDiabetes == 1) {
+        self.olderQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion3YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    if (familyDiabetes == 2) {
+        self.olderQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion3NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    NSInteger familySuddenDeath = [[dict valueForKey:@"familySuddenDeath"] integerValue];
+    if (familySuddenDeath == 1) {
+        self.olderQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion4YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    if (familySuddenDeath == 2) {
+        self.olderQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion4NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    NSInteger threeMonthStatus = [[dict valueForKey:@"threeMonthStatus"] integerValue];
+    if (threeMonthStatus == 1) {
+        self.olderQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion5YesImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    if (threeMonthStatus == 2) {
+        self.olderQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
+    } else {
+        self.olderQuestion5NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_unselected"]];
+    }
+    
+    NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
+    if (riskLevel > 0) {
+        NSDictionary *riskDict = [self getHrRangeAndRPERange:riskLevel];
+        self.olderRiskLevelLbl.text = [NSString stringWithFormat:@"风险等级：%@",[riskDict valueForKey:@"riskLevel"]];
+        
+        self.olderHRZoneLbl.text = [NSString stringWithFormat:@"心率区间：%@",[riskDict valueForKey:@"hrRange"]];
+        
+        self.olderRPERangeLbll.text = [NSString stringWithFormat:@"RPE范围：%@",[riskDict valueForKey:@"rpeRange"]];
     }
 }
 
@@ -2520,23 +2661,39 @@
 }
 
 - (void)leftBtnClick:(UIButton*)sender {
-    NSLog(@"向左滑动");
+    if (self.leftOffset - 2 > 0) {
+        if (self.infoArr.count > 2) {
+            NSDictionary *dict = [self.infoArr objectAtIndex:(self.leftOffset - 2)];
+            [self configOlderInfoViewData:dict];
+            self.leftOffset --;
+        }
+    } else {
+        [STTextHudTool showText:@"不能再向左滑了"];
+    }
 }
 
 - (void)rightBtnClick:(UIButton*)sender {
-    NSLog(@"向右滑动");
-    self.offset+=1;
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
-    NSDictionary *dict = user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@(self.offset) forKey:@"offset"];
-    [parameter setValue:@1 forKey:@"rows"];
-    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
-    [parameter setValue:@(userId) forKey:@"userId"];
-    [self checkMorePatientInfo:parameter];
+    if (!self.hasEnded) {
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+        NSDictionary *dict = user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [parameter setValue:@(self.offset) forKey:@"offset"];
+        [parameter setValue:@1 forKey:@"rows"];
+        NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
+        [parameter setValue:@(userId) forKey:@"userId"];
+        [self checkMorePatientInfo:parameter];
+    } else {
+        if (self.leftOffset <self.offset) {
+            self.leftOffset ++;
+            NSDictionary *dict = [self.infoArr objectAtIndex:(self.leftOffset - 1)];
+            [self configOlderInfoViewData:dict];
+        } else {
+            [STTextHudTool showText:@"已经到头了"];
+        }
+    }
 }
 
 - (void)updateInfoBtnClick:(UIButton*)sender {
@@ -2760,8 +2917,19 @@
         NSLog(@"************** 1:%@**************",responseObject);
         if (code == 0) {
             NSArray *data = [responseObject valueForKey:@"data"];
-            [weakSelf.infoArr addObjectsFromArray:data];
-            NSLog(@"weakSelf.infoArr is :%@",weakSelf.infoArr);
+            if (data.count == 0) {
+                [STTextHudTool showText:@"已经到头了"];
+                weakSelf.hasEnded = YES;
+            } else {
+                weakSelf.offset+=1;
+                weakSelf.leftOffset = self.offset;
+                [weakSelf.infoArr addObjectsFromArray:data];
+                if (weakSelf.infoArr.count > 1) {
+                    weakSelf.latestInfoDict = [weakSelf.infoArr lastObject];
+                    [weakSelf configOlderInfoViewData:weakSelf.latestInfoDict];
+                }
+                NSLog(@"weakSelf.infoArr count is %d",weakSelf.infoArr.count);
+            }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
