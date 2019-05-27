@@ -19,9 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign)NSInteger duration;
 @property (nonatomic,assign)NSInteger restDuration;
 @property (nonatomic,assign)NSInteger speed;
-@property (nonatomic,assign)NSInteger weight;
+@property (nonatomic,assign)CGFloat weight;
 @property (nonatomic,assign)NSInteger times;
-@property (nonatomic,assign)NSInteger rotationAngle;
+@property (nonatomic,copy)NSString *rotationAngle;
 @end
 
 NS_ASSUME_NONNULL_END

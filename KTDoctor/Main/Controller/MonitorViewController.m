@@ -364,11 +364,13 @@ NSMutableArray *patientsArr;
         }
         NSArray *imgUrlArr = [model.headUrl componentsSeparatedByString:@"://"];
         NSString *headUrl = model.headUrl;
-        if (imgUrlArr.count > 0) {
+        if (imgUrlArr.count > 1) {
             NSString *forwardStr = imgUrlArr[0];
             NSString *backwardStr = imgUrlArr[1];
-            backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
-            headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+            if (forwardStr.length > 0 && backwardStr.length > 0) {
+                backwardStr = [backwardStr stringByReplacingOccurrencesOfString:@"//" withString:@"/"];
+                headUrl = [NSString stringWithFormat:@"%@://%@",forwardStr,backwardStr];
+            }
         }
         
         [cell.headImg sd_setImageWithURL:[NSURL URLWithString:model.headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];

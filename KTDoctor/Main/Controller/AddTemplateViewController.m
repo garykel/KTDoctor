@@ -107,6 +107,7 @@ CGSize systemListviewSize;
 @property (nonatomic,assign)NSInteger type;
 @property (nonatomic,strong)ChooseTemplateTypeView *template;
 @property (nonatomic,strong)NSArray *deviceTypeArr;
+@property (nonatomic,assign)NSInteger templateType;
 @end
 
 @implementation AddTemplateViewController
@@ -117,6 +118,7 @@ CGSize systemListviewSize;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCustomTemplates) name:@"UpdateCustomTemplatesNotification" object:nil];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.type = 2;
+    self.templateType = 1;
     self.customTemplateArr = [NSMutableArray array];
     self.customeTemplateCheckArr = [NSMutableArray array];
     self.systemTemplateArr = [NSMutableArray array];
@@ -737,6 +739,11 @@ CGSize systemListviewSize;
             [self showTemplateListWithType:self.type];
         }
     } else if (menu == self.deviceMenu) {
+        if ([string isEqualToString:@"有氧设备"]) {
+            self.templateType = 1;
+        } else if ([string isEqualToString:@"力量设备"]) {
+            self.templateType = 2;
+        }
         if (self.deviceTypeArr.count > 0) {
             NSMutableArray *equipments = [NSMutableArray array];
             for (NSDictionary *dict in self.deviceTypeArr) {
@@ -1013,8 +1020,15 @@ CGSize systemListviewSize;
             NSLog(@"rows is :%@",data);
             if (data.count > 0) {
                 if (weakself.type == 1) {
+                    NSArray *typeList = [data valueForKey:@"typeList"];
+                    NSInteger type = 1;
+                    if (weakself.deviceTypeArr.count > 0) {
+                        NSDictionary *typeDict = typeList[0];
+                        type = [[typeDict valueForKey:@"id"] integerValue];
+                    }
                     CheckTemplateInfoViewController *info = [[CheckTemplateInfoViewController alloc] init];
                     info.templateInfo = data;
+                    info.type = type;
                     [self.navigationController pushViewController:info animated:NO];
                 } else {
                     UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
@@ -1022,9 +1036,11 @@ CGSize systemListviewSize;
                     NSString *jsonStr = [self convertToJSONData:data];
                     NSLog(@"jsonStr is :%@",jsonStr);
                     NSArray *typeList = [data valueForKey:@"typeList"];
+                    NSInteger type = 1;
                     if (weakself.deviceTypeArr.count > 0) {
                         if (typeList.count > 0) {
                             NSDictionary *typeDict = typeList[0];
+                            type = [[typeDict valueForKey:@"id"] integerValue];
                             NSString *typeName = [typeDict valueForKey:@"name"];
                             for (NSDictionary *dict in self.deviceTypeArr) {
                                 NSString *name = [dict valueForKey:@"name"];
@@ -1116,7 +1132,7 @@ CGSize systemListviewSize;
     [parameter setValue:@"" forKey:@"difficulty"];
     [parameter setValue:@"-create_time" forKey:@"sort"];
     [parameter setValue:@(type) forKey:@"type"];
-    [parameter setValue:@1 forKey:@"templateType"];
+    [parameter setValue:@(self.templateType) forKey:@"templateType"];
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];

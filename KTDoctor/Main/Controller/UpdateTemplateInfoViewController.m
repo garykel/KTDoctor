@@ -755,7 +755,7 @@
             [group setValue:@(model.speed) forKey:@"speed"];
             [group setValue:@(model.weight) forKey:@"weight"];
             [group setValue:@(model.times) forKey:@"times"];
-            [group setValue:@(model.rotationAngle) forKey:@"rotationAngle"];
+            [group setValue:model.rotationAngle forKey:@"rotationAngle"];
             [groups addObject:group];
         }
         [parameter setValue:groups forKey:@"sections"];
