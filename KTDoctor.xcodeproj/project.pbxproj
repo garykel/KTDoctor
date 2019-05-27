@@ -51,6 +51,7 @@
 		5B15F365228AA940005DA806 /* PatientQuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B15F364228AA940005DA806 /* PatientQuestionViewController.m */; };
 		5B15F368228AA959005DA806 /* PatientRiskLevelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B15F367228AA959005DA806 /* PatientRiskLevelViewController.m */; };
 		5B1A749F229B85F500DD90B6 /* StrengthTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B1A749E229B85F500DD90B6 /* StrengthTemplateCell.m */; };
+		5B1A74A2229BF6E300DD90B6 /* UpdatePowerTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B1A74A1229BF6E300DD90B6 /* UpdatePowerTemplateViewController.m */; };
 		5B22E0582265C55A00C65B50 /* DateValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E0562265C55A00C65B50 /* DateValueFormatter.m */; };
 		5B22E05D2266CE9D00C65B50 /* PatientManageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E05C2266CE9D00C65B50 /* PatientManageViewController.m */; };
 		5B22E0602266CED500C65B50 /* AddPatientViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E05F2266CED500C65B50 /* AddPatientViewController.m */; };
@@ -263,6 +264,8 @@
 		5B15F367228AA959005DA806 /* PatientRiskLevelViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientRiskLevelViewController.m; sourceTree = "<group>"; };
 		5B1A749D229B85F500DD90B6 /* StrengthTemplateCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StrengthTemplateCell.h; sourceTree = "<group>"; };
 		5B1A749E229B85F500DD90B6 /* StrengthTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StrengthTemplateCell.m; sourceTree = "<group>"; };
+		5B1A74A0229BF6E300DD90B6 /* UpdatePowerTemplateViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UpdatePowerTemplateViewController.h; sourceTree = "<group>"; };
+		5B1A74A1229BF6E300DD90B6 /* UpdatePowerTemplateViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UpdatePowerTemplateViewController.m; sourceTree = "<group>"; };
 		5B22E0532265B9F000C65B50 /* KTDoctor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "KTDoctor-Bridging-Header.h"; sourceTree = "<group>"; };
 		5B22E0562265C55A00C65B50 /* DateValueFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateValueFormatter.m; sourceTree = "<group>"; };
 		5B22E0572265C55A00C65B50 /* DateValueFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateValueFormatter.h; sourceTree = "<group>"; };
@@ -647,6 +650,8 @@
 				5BB3980A229289B900A56A38 /* CheckTemplateInfoViewController.m */,
 				5BB3980C22928AE400A56A38 /* UpdateTemplateInfoViewController.h */,
 				5BB3980D22928AE400A56A38 /* UpdateTemplateInfoViewController.m */,
+				5B1A74A0229BF6E300DD90B6 /* UpdatePowerTemplateViewController.h */,
+				5B1A74A1229BF6E300DD90B6 /* UpdatePowerTemplateViewController.m */,
 				5B110FE222979C3D00471B8D /* CreatePowerTemplateViewController.h */,
 				5B110FE322979C3D00471B8D /* CreatePowerTemplateViewController.m */,
 				5B138768227EC3580017BA57 /* PrescriptionDetailViewController.h */,
@@ -1464,6 +1469,7 @@
 				5B5E2E122270552000DB7534 /* ReportListCell.m in Sources */,
 				5BF8D92A22802708002199E4 /* UIView+Additional.m in Sources */,
 				5B22E0692266CF5F00C65B50 /* IntensionViewController.m in Sources */,
+				5B1A74A2229BF6E300DD90B6 /* UpdatePowerTemplateViewController.m in Sources */,
 				09E47CB62237F97D00B33249 /* GCLoadingView.m in Sources */,
 				5B1A749F229B85F500DD90B6 /* StrengthTemplateCell.m in Sources */,
 				5B02F7962242275300BE8269 /* WHC_Asset.m in Sources */,

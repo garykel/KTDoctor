@@ -51,7 +51,7 @@
 #define kTrainingTimeLbl_Width 80
 #define kTrainingGroupLbl_Width 70
 #define kTrainingGroupLbl_TopMargin 16
-#define kTrainingTimeValLbl_Width 50
+#define kTrainingTimeValLbl_Width 70
 #define kTrainingTimeValLbl_Height 12
 #define kTrainingTimeValLbl_FontSize 15.0
 #define kTemplateButton_BottomMargin 15
@@ -355,7 +355,6 @@
     [self.topBgView addSubview:self.treatmentLbl];
     
     self.treatmentMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.templateMenu.frame.origin.x, CGRectGetMaxY(self.templateMenu.frame) + kDieaseTF_BottomMargin * kYScal, kWeekMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.treatmentMenu setMenuTitles:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
     [self.treatmentMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.treatmentMenu.defualtStr = @"请选择";
     self.treatmentMenu.delegate = self;
@@ -364,7 +363,7 @@
     self.treatmentMenu.tag = 40;
     [self.topBgView addSubview:self.treatmentMenu];
     
-    self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
+    self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width * kXScal + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.weekLbl.text = @"周";
     self.weekLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.weekLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];

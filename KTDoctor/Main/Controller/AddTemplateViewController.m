@@ -15,6 +15,7 @@
 #import "CreateTemplateViewController.h"
 #import "CheckTemplateInfoViewController.h"
 #import "UpdateTemplateInfoViewController.h"
+#import "UpdatePowerTemplateViewController.h"
 #import "CreatePowerTemplateViewController.h"
 
 #define kBackButton_LeftMargin 15
@@ -108,6 +109,8 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)ChooseTemplateTypeView *template;
 @property (nonatomic,strong)NSArray *deviceTypeArr;
 @property (nonatomic,assign)NSInteger templateType;
+@property (nonatomic,strong)UIButton *customTimeBtn;
+@property (nonatomic,strong)UIButton *systemTimeBtn;
 @end
 
 @implementation AddTemplateViewController
@@ -401,15 +404,15 @@ CGSize systemListviewSize;
     line7.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
     [headerView addSubview:line7];
     
-    UIButton *timeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    timeBtn.frame = CGRectMake(CGRectGetMaxX(line7.frame), 0, btnWidth, kHeaderView_Height * kYScal);
-    [timeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
-    timeBtn.backgroundColor = [UIColor whiteColor];
-    [timeBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
-    timeBtn.tag = 80;
-    [timeBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-    [timeBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
-    [headerView addSubview:timeBtn];
+    self.systemTimeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.systemTimeBtn.frame = CGRectMake(CGRectGetMaxX(line7.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [self.systemTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+    self.systemTimeBtn.backgroundColor = [UIColor whiteColor];
+    [self.systemTimeBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    self.systemTimeBtn.tag = 80;
+    [self.systemTimeBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [self.systemTimeBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:self.systemTimeBtn];
     
     self.systemTemplateListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(headerView.frame) + kListview_TopMargin * kYScal, self.customListviewBgView.frame.size.width, self.customListviewBgView.frame.size.height - CGRectGetMaxY(headerView.frame) - kListview_TopMargin * kYScal) style:UITableViewStylePlain];
     self.systemTemplateListView.dataSource = self;
@@ -545,15 +548,15 @@ CGSize systemListviewSize;
     line7.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
     [headerView addSubview:line7];
     
-    UIButton *timeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    timeBtn.frame = CGRectMake(CGRectGetMaxX(line7.frame), 0, btnWidth, kHeaderView_Height * kYScal);
-    [timeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
-    timeBtn.backgroundColor = [UIColor whiteColor];
-    [timeBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
-    timeBtn.tag = 80;
-    [timeBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-    [timeBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
-    [headerView addSubview:timeBtn];
+    self.customTimeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.customTimeBtn.frame = CGRectMake(CGRectGetMaxX(line7.frame), 0, btnWidth, kHeaderView_Height * kYScal);
+    [self.customTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+    self.customTimeBtn.backgroundColor = [UIColor whiteColor];
+    [self.customTimeBtn.titleLabel setFont:[UIFont systemFontOfSize:kHeader_Btn_FontSize * kYScal]];
+    self.customTimeBtn.tag = 80;
+    [self.customTimeBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [self.customTimeBtn addTarget:self action:@selector(customTemplateItemClick:) forControlEvents:UIControlEventTouchUpInside];
+    [headerView addSubview:self.customTimeBtn];
     
     self.customTemplateListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(headerView.frame) + kListview_TopMargin * kYScal, self.customListviewBgView.frame.size.width, self.customListviewBgView.frame.size.height - CGRectGetMaxY(headerView.frame) - kListview_TopMargin * kYScal) style:UITableViewStylePlain];
     self.customTemplateListView.dataSource = self;
@@ -637,8 +640,13 @@ CGSize systemListviewSize;
         }
         cell.weekLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"treatmentPeriod"] integerValue]];
         cell.groupLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"sectionNum"] integerValue]];
-        NSInteger targetDuration = [[dict valueForKey:@"targetDuration"] integerValue];
-        NSString *timeStr = [self getTimeString:targetDuration];
+        CGFloat targetDuration = [[dict valueForKey:@"targetDuration"] floatValue];
+        NSString *timeStr = [self getTimeString:(NSInteger)targetDuration];
+        if (self.templateType == 1) {
+            timeStr = [self getTimeString:(NSInteger)targetDuration];
+        } else {
+            timeStr = [NSString stringWithFormat:@"%.1fkg",targetDuration];
+        }
         cell.timeLbl.text = timeStr;
         if (self.customeTemplateCheckArr.count > 0) {
             BOOL hasSelect = [[self.customeTemplateCheckArr objectAtIndex:indexPath.row] boolValue];
@@ -692,8 +700,13 @@ CGSize systemListviewSize;
         }
         cell.weekLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"treatmentPeriod"] integerValue]];
         cell.groupLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"sectionNum"] integerValue]];
-        NSInteger targetDuration = [[dict valueForKey:@"targetDuration"] integerValue];
+        CGFloat targetDuration = [[dict valueForKey:@"targetDuration"] floatValue];
         NSString *timeStr = [self getTimeString:targetDuration];
+        if (self.templateType == 1) {
+            timeStr = [self getTimeString:(NSInteger)targetDuration];
+        } else {
+            timeStr = [NSString stringWithFormat:@"%.1fkg",targetDuration];
+        }
         cell.timeLbl.text = timeStr;
         [cell.editBtn addTarget:self action:@selector(editTemplate:)
                forControlEvents:UIControlEventTouchUpInside];
@@ -741,8 +754,12 @@ CGSize systemListviewSize;
     } else if (menu == self.deviceMenu) {
         if ([string isEqualToString:@"有氧设备"]) {
             self.templateType = 1;
+            [self.customTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+            [self.systemTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
         } else if ([string isEqualToString:@"力量设备"]) {
             self.templateType = 2;
+            [self.customTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
+            [self.systemTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
         }
         if (self.deviceTypeArr.count > 0) {
             NSMutableArray *equipments = [NSMutableArray array];
@@ -1031,26 +1048,42 @@ CGSize systemListviewSize;
                     info.type = type;
                     [self.navigationController pushViewController:info animated:NO];
                 } else {
-                    UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
-                    update.templateInfo = data;
+//                    UpdatePowerTemplateViewController
+                    
                     NSString *jsonStr = [self convertToJSONData:data];
                     NSLog(@"jsonStr is :%@",jsonStr);
                     NSArray *typeList = [data valueForKey:@"typeList"];
                     NSInteger type = 1;
                     if (weakself.deviceTypeArr.count > 0) {
                         if (typeList.count > 0) {
+                            
                             NSDictionary *typeDict = typeList[0];
                             type = [[typeDict valueForKey:@"id"] integerValue];
-                            NSString *typeName = [typeDict valueForKey:@"name"];
-                            for (NSDictionary *dict in self.deviceTypeArr) {
-                                NSString *name = [dict valueForKey:@"name"];
-                                if ([name isEqualToString:typeName]) {
-                                    update.deviceTypeArr = [dict valueForKey:@"children"];
+                            if (type == 1) {
+                                UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
+                                update.templateInfo = data;
+                                NSString *typeName = [typeDict valueForKey:@"name"];
+                                for (NSDictionary *dict in self.deviceTypeArr) {
+                                    NSString *name = [dict valueForKey:@"name"];
+                                    if ([name isEqualToString:typeName]) {
+                                        update.deviceTypeArr = [dict valueForKey:@"children"];
+                                    }
                                 }
+                                [self.navigationController pushViewController:update animated:NO];
+                            } else {
+                                UpdatePowerTemplateViewController *update = [[UpdatePowerTemplateViewController alloc] init];
+                                update.templateInfo = data;
+                                NSString *typeName = [typeDict valueForKey:@"name"];
+                                for (NSDictionary *dict in self.deviceTypeArr) {
+                                    NSString *name = [dict valueForKey:@"name"];
+                                    if ([name isEqualToString:typeName]) {
+                                        update.deviceTypeArr = [dict valueForKey:@"children"];
+                                    }
+                                }
+                                [self.navigationController pushViewController:update animated:NO];
                             }
                         }
                     }
-                    [self.navigationController pushViewController:update animated:NO];
                 }
             }
         } else if (code == 10011) {
