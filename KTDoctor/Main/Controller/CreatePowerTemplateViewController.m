@@ -445,6 +445,18 @@
     CGFloat weight = [[dict valueForKey:@"weight"] floatValue];
     [cell.weightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
     [cell.weightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%.1f",weight] forState:UIControlStateNormal];
+    NSInteger times = [[dict valueForKey:@"times"] integerValue];
+    [cell.timesMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [cell.timesMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",times] forState:UIControlStateNormal];
+    NSArray *rotationAngleArr = [[dict valueForKey:@"rotationAngle"] componentsSeparatedByString:@"-"];
+    if (rotationAngleArr.count > 0) {
+        NSString *leftAngle = rotationAngleArr[0];
+        NSString *rightAngle = rotationAngleArr[1];
+        [cell.rotationAngleLeftMenu.mainBtn setTitle:leftAngle forState:UIControlStateNormal];
+        [cell.rotationAngleLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        [cell.rotationAngleRightMenu.mainBtn setTitle:rightAngle forState:UIControlStateNormal];
+        [cell.rotationAngleRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    }
     NSArray *rpeRangeArr = [[dict valueForKey:@"rpeRange"] componentsSeparatedByString:@"-"];
     if (rpeRangeArr.count > 0) {
         NSString *leftRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[0] floatValue]];
@@ -467,7 +479,7 @@
     return cell;
 }
 
-- (NSString *)getTtrainingVaolmeString:(CGFloat)weight {
+- (NSString *)getTrainingVolumeString:(CGFloat)weight {
     NSString *result = @"0.00 kg";
     result = [NSString stringWithFormat:@"%.2f kg",weight];
     return result;
@@ -478,11 +490,14 @@
     if (self.groups.count > 0) {
         CGFloat sumWeight = 0;
         for (AerobicriptionModel *dict in self.groups) {
-            sumWeight += [[dict valueForKey:@"weight"] floatValue];
+            CGFloat times = [[dict valueForKey:@"times"] floatValue];
+            CGFloat weight = [[dict valueForKey:@"weight"] floatValue];
+            sumWeight += times * weight;
         }
         self.targetDuration = sumWeight;
-        self.trainingVolumeValLbl.text = [self getTtrainingVaolmeString:sumWeight];
+        self.trainingVolumeValLbl.text = [self getTrainingVolumeString:sumWeight];
     }
+    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
 }
 
 #pragma mark - XXTGDropdownMenuDelegate

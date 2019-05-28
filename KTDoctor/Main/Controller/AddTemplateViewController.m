@@ -613,8 +613,11 @@ CGSize systemListviewSize;
         NSDictionary *dict = [self.customTemplateArr objectAtIndex:indexPath.row];
         cell.nameLbl.text = [dict valueForKey:@"title"];
         cell.dieaseLbl.text = [dict valueForKey:@"disease"];
-        NSInteger trainPart = [[dict valueForKey:@"trainPart"] integerValue];
-        if (trainPart == 0) {
+        NSArray *typeList = [dict valueForKey:@"typeList"];
+        if (typeList.count > 2) {
+            NSDictionary *positionDict = typeList[1];
+            cell.positionLbl.text = [positionDict valueForKey:@"name"];
+        } else {
             cell.positionLbl.text = @"心肺";
         }
         NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
@@ -627,7 +630,6 @@ CGSize systemListviewSize;
             riskLevelStr = @"高";
         }
         cell.riskLevelLbl.text = riskLevelStr;
-        NSArray *typeList = [dict valueForKey:@"typeList"];
         if (typeList.count > 0) {
             NSInteger equipmentType = [[dict valueForKey:@"type"] integerValue];
             for (NSDictionary *typeDict in typeList) {
@@ -673,8 +675,11 @@ CGSize systemListviewSize;
         NSDictionary *dict = [self.systemTemplateArr objectAtIndex:indexPath.row];
         cell.nameLbl.text = [dict valueForKey:@"title"];
         cell.dieaseLbl.text = [dict valueForKey:@"disease"];
-        NSInteger trainPart = [[dict valueForKey:@"trainPart"] integerValue];
-        if (trainPart == 0) {
+        NSArray *typeList = [dict valueForKey:@"typeList"];
+        if (typeList.count > 2) {
+            NSDictionary *positionDict = typeList[1];
+            cell.positionLbl.text = [positionDict valueForKey:@"name"];
+        } else {
             cell.positionLbl.text = @"心肺";
         }
         NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
@@ -687,7 +692,6 @@ CGSize systemListviewSize;
             riskLevelStr = @"高";
         }
         cell.riskLevelLbl.text = riskLevelStr;
-        NSArray *typeList = [dict valueForKey:@"typeList"];
         if (typeList.count > 0) {
             NSInteger equipmentType = [[dict valueForKey:@"type"] integerValue];
             for (NSDictionary *typeDict in typeList) {

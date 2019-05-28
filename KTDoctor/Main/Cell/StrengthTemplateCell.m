@@ -251,6 +251,7 @@
     } else if (menu == self.timesMenu) {
         NSInteger times = [self.timesMenu.mainBtn.titleLabel.text integerValue];
         self.model.times = times;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeWeightNotification" object:nil];
     } else if (menu == self.rotationAngleLeftMenu) {
         NSInteger angle = [string integerValue];
         NSMutableArray *angles = [NSMutableArray array];

@@ -7,8 +7,7 @@
 //
 
 #import "UpdatePowerTemplateViewController.h"
-#import "CreatePrescriptionCell.h"
-#import "PowerTemplateCell.h"
+#import "StrengthTemplateCell.h"
 #import "AerobicriptionModel.h"
 #import "UserModel.h"
 
@@ -45,10 +44,10 @@
 #define kDataView_Height 98
 #define kTrainingTimeLbl_LeftMargin 140
 #define kTrainingTimeLbl_RightMargin 10
-#define kTrainingTimeLbl_Width 80
+#define kTrainingTimeLbl_Width 70
 #define kTrainingGroupLbl_Width 70
 #define kTrainingGroupLbl_TopMargin 16
-#define kTrainingTimeValLbl_Width 60
+#define kTrainingTimeValLbl_Width 100
 #define kTrainingTimeValLbl_Height 15
 #define kTrainingTimeValLbl_FontSize 15.0
 #define kSaveBtn_TopMargin 27
@@ -92,14 +91,12 @@
 @property (nonatomic,strong)UIView *dataView;
 @property (nonatomic,strong)UILabel *trainingGroupLbl;
 @property (nonatomic,strong)UILabel *trainingGroupValLbl;
-@property (nonatomic,strong)UILabel *trainingTimeLbl;
-@property (nonatomic,strong)UILabel *trainingTimeValLbl;
-@property (nonatomic,strong)UILabel *avgDifficultyLbl;
-@property (nonatomic,strong)UILabel *avgDifficultyValLbl;
+@property (nonatomic,strong)UILabel *trainingVolumeLbl;//训练总量
+@property (nonatomic,strong)UILabel *trainingVolumeValLbl;
 @property (nonatomic,strong)UIButton *saveBtn;
 @property (nonatomic,strong)UIButton *giveupBtn;
 @property (nonatomic,assign)NSInteger type2;
-@property (nonatomic,assign)NSInteger targetDuration;
+@property (nonatomic,assign)CGFloat targetDuration;
 @property (nonatomic,strong)NSMutableArray *sections;
 @property (nonatomic,assign)NSInteger treatmentPeriod;
 @property (nonatomic,assign)NSInteger daysPerWeek;
@@ -128,8 +125,7 @@
     }
     self.groups = [templates mutableCopy];
     self.type2 = [[self.templateInfo valueForKey:@"type2"] integerValue];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeWeight) name:@"ComputeWeightNotification" object:nil];
     [self setNavBar];
     [self setupUI];
 }
@@ -188,8 +184,7 @@
     [self configFooterview];
     self.listView.tableHeaderView = self.topView;
     self.listView.tableFooterView = self.bottomView;
-    [self computeAvgDifficulty];
-    [self computeTotalTrainingTime];
+    [self computeWeight];
 }
 
 - (void)configHeaderview {
@@ -265,7 +260,7 @@
     
     self.deviceTypeTF = [[UITextField alloc] initWithFrame:CGRectMake(self.dieaseMenu.frame.origin.x, 0, kDieaseTF_Width * kXScal, kDieaseTF_Height * kYScal)];
     self.deviceTypeTF.textColor = [UIColor colorWithHexString:@"#333333"];
-    self.deviceTypeTF.text = @"有氧设备";
+    self.deviceTypeTF.text = @"力量设备";
     self.deviceTypeTF.backgroundColor = [UIColor whiteColor];
     self.deviceTypeTF.center = CGPointMake(CGRectGetMaxX(self.deviceTypeLbl.frame) + kDieaseLbl_RightMargin * kXScal + kDieaseTF_Width * kXScal/2.0, self.deviceTypeLbl.center.y);
     self.deviceTypeTF.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
@@ -281,11 +276,22 @@
     self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake( self.riskLevelMenu.frame.origin.x,self.deviceTypeTF.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
     [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.trainingPositionMenu.defualtStr = @"请选择";
-    self.trainingPositionMenu.titles = @[@"心肺"];
+    NSMutableArray *positions = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            [positions addObject:[dict valueForKey:@"name"]];
+        }
+    }
+    self.trainingPositionMenu.titles = [positions copy];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.backgroundColor = [UIColor whiteColor];
     self.trainingPositionMenu.tag = 10;
-    [self.trainingPositionMenu.mainBtn setTitle:@"心肺" forState:UIControlStateNormal];
+    NSArray *typeList = [self.templateInfo valueForKey:@"typeList"];
+    if (typeList.count > 2) {
+        NSDictionary *dict = [typeList objectAtIndex:1];
+        NSString *name = [dict valueForKey:@"name"];
+        [self.trainingPositionMenu.mainBtn setTitle:name forState:UIControlStateNormal];
+    }
     [self.topBgView addSubview:self.trainingPositionMenu];
     
     CGFloat trainingDeviceLbl_LeftMargin = self.topBgView.frame.size.width - kRiskLevelLbl_Width * kXScal - kDieaseLbl_RightMargin * kXScal -  kTrainingDeviceMenu_Width * kXScal - kTrainingDeviceLbl_RightMargin * kXScal;
@@ -299,25 +305,12 @@
     [self.traingDeviceMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.traingDeviceMenu.defualtStr = @"请选择";
     self.traingDeviceMenu.delegate = self;
-    NSMutableArray *trainingEquipMentArr = [NSMutableArray array];
-    if (self.deviceTypeArr.count > 0) {
-        for (NSDictionary *dict1 in self.deviceTypeArr) {
-            NSArray *children = [dict1 valueForKey:@"children"];
-            self.equipIds = [children mutableCopy];
-            if (children.count > 0) {
-                for (NSDictionary *child in children) {
-                    [trainingEquipMentArr addObject:[child valueForKey:@"name"]];
-                }
-            }
-        }
-    }
-    self.traingDeviceMenu.titles = [trainingEquipMentArr copy];
     NSInteger type = [[self.templateInfo valueForKey:@"type"] integerValue];
-    NSArray *typeList = [self.templateInfo valueForKey:@"typeList"];
     if (typeList.count > 0) {
         for (NSDictionary *dictonary in typeList) {
             NSInteger id = [[dictonary valueForKey:@"id"] integerValue];
             if (type == id) {
+                self.typeid = id;
                 NSString *name = [dictonary valueForKey:@"name"];
                 [self.traingDeviceMenu.mainBtn setTitle:name forState:UIControlStateNormal];
             }
@@ -422,44 +415,27 @@
     self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
     self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingGroupValLbl.text = @"4";
+    self.trainingGroupValLbl.text = @"1";
     [self.dataView addSubview:self.trainingGroupValLbl];
     
     CGFloat space = (self.dataView.frame.size.width - 2 * kTrainingTimeLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal - 3 * kTrainingTimeLbl_RightMargin - 3 * kTrainingTimeValLbl_Width * kXScal)/2;
     
-    self.trainingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
-    self.trainingTimeLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.trainingTimeLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-    self.trainingTimeLbl.text = @"训练总时长：";
-    [self.dataView addSubview:self.trainingTimeLbl];
+    self.trainingVolumeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
+    self.trainingVolumeLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
+    self.trainingVolumeLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
+    self.trainingVolumeLbl.text = @"训练总量：";
+    [self.dataView addSubview:self.trainingVolumeLbl];
     
-    self.trainingTimeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.trainingTimeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingTimeLbl.center.y);
-    self.trainingTimeValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.trainingTimeValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingTimeValLbl.text = @"00:00";
-    [self.dataView addSubview:self.trainingTimeValLbl];
-    
-    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeValLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingGroupLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
-    self.avgDifficultyLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-    if (self.type2 == 1) {
-        self.avgDifficultyLbl.text = @"平均强度：";
-    } else {
-        self.avgDifficultyLbl.text = @"平均功率：";
-    }
-    [self.dataView addSubview:self.avgDifficultyLbl];
-    
-    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, self.trainingGroupLbl.frame.origin.y, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.avgDifficultyValLbl.center = CGPointMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.avgDifficultyLbl.center.y);
-    self.avgDifficultyValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.avgDifficultyValLbl.text = @"0";
-    [self.dataView addSubview:self.avgDifficultyValLbl];
+    self.trainingVolumeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingVolumeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
+    self.trainingVolumeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingVolumeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingVolumeLbl.center.y);
+    self.trainingVolumeValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
+    self.trainingVolumeValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
+    self.trainingVolumeValLbl.text = @"0.00kg";
+    [self.dataView addSubview:self.trainingVolumeValLbl];
     
     CGFloat btn_LeftMargin = (self.dataView.frame.size.width - 2 * kSaveBtn_Width * kXScal - kSaveBtn_HSpace * kXScal)/2;
     self.saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.saveBtn.frame = CGRectMake(btn_LeftMargin, CGRectGetMaxY(self.trainingTimeLbl.frame) + kSaveBtn_TopMargin * kYScal, kSaveBtn_Width * kXScal, kSaveBtn_Height * kYScal);
+    self.saveBtn.frame = CGRectMake(btn_LeftMargin, CGRectGetMaxY(self.trainingVolumeLbl.frame) + kSaveBtn_TopMargin * kYScal, kSaveBtn_Width * kXScal, kSaveBtn_Height * kYScal);
     [self.saveBtn setTitle:@"保存" forState:UIControlStateNormal];
     [self.saveBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.saveBtn.backgroundColor = [UIColor colorWithHexString:@"#0FAAC9"];
@@ -499,102 +475,50 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.type2 == 1) {
-        NSString *reuseCellIdStr = [NSString stringWithFormat:@"CreatePrescriptionCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
-        CreatePrescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
-        if (cell == nil) {
-            cell = [[CreatePrescriptionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
-            cell.selectionStyle          = UITableViewCellSelectionStyleNone;
-            cell.backgroundColor = [UIColor clearColor];
-        }
-        AerobicriptionModel *dict = [self.groups objectAtIndex:indexPath.section];
-        cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
-        NSArray *hrRangeArr = [[dict valueForKey:@"hrRange"] componentsSeparatedByString:@"-"];
-        if (hrRangeArr.count > 0) {
-            NSString *leftDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[0] integerValue]];
-            NSString *rightDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[1] integerValue]];
-            [cell.difficultyLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.difficultyLeftMenu.mainBtn setTitle:leftDificultyPercent forState:UIControlStateNormal];
-            [cell.difficultyRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.difficultyRightMenu.mainBtn setTitle:rightDificultyPercent forState:UIControlStateNormal];
-            NSInteger duration = [[dict valueForKey:@"duration"] integerValue];
-            [cell.traingingTimeLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",duration/60] forState:UIControlStateNormal];
-            [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.traingingTimeRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",duration%60] forState:UIControlStateNormal];
-            [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            NSInteger difficulty = [[dict valueForKey:@"difficulty"] integerValue];
-            [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",difficulty] forState:UIControlStateNormal];
-            [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-        }
-        NSArray *rpeRangeArr = [[dict valueForKey:@"rpeRange"] componentsSeparatedByString:@"-"];
-        if (rpeRangeArr.count > 0) {
-            NSString *leftRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[0] floatValue]];
-            NSString *rightRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[1] floatValue]];
-            [cell.rpeLeftMenu.mainBtn setTitle:leftRpe forState:UIControlStateNormal];
-            [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.rpeRightMenu.mainBtn setTitle:rightRpe forState:UIControlStateNormal];
-            NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
-            [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration/60] forState:UIControlStateNormal];
-            [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
-        }
-        cell.model = dict;
-        [cell.addBtn addTarget:self action:@selector(addGroup:) forControlEvents:UIControlEventTouchUpInside];
-        cell.addBtn.tag = 10000 + indexPath.section;
-        cell.removeBtn.tag = 20000 + indexPath.section;
-        [cell.removeBtn addTarget:self action:@selector(removeGroup:) forControlEvents:UIControlEventTouchUpInside];
-        return cell;
-    } else {
-        NSString *reuseCellIdStr = [NSString stringWithFormat:@"PowerTemplateCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
-        PowerTemplateCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
-        if (cell == nil) {
-            cell = [[PowerTemplateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
-            cell.selectionStyle          = UITableViewCellSelectionStyleNone;
-            cell.backgroundColor = [UIColor clearColor];
-        }
-        AerobicriptionModel *dict = [self.groups objectAtIndex:indexPath.section];
-        cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
-        NSArray *hrRangeArr = [[dict valueForKey:@"hrRange"] componentsSeparatedByString:@"-"];
-        if (hrRangeArr.count > 0) {
-            NSString *leftDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[0] integerValue]];
-            NSString *rightDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[1] integerValue]];
-            [cell.difficultyLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.difficultyLeftMenu.mainBtn setTitle:leftDificultyPercent forState:UIControlStateNormal];
-            [cell.difficultyRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.difficultyRightMenu.mainBtn setTitle:rightDificultyPercent forState:UIControlStateNormal];
-            NSInteger duration = [[dict valueForKey:@"duration"] integerValue];
-            [cell.traingingTimeLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",duration/60] forState:UIControlStateNormal];
-            [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.traingingTimeRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",duration%60] forState:UIControlStateNormal];
-            [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            NSInteger difficulty = [[dict valueForKey:@"difficulty"] integerValue];
-            [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",difficulty] forState:UIControlStateNormal];
-            [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-        }
-        
-        NSArray *rpeRangeArr = [[dict valueForKey:@"rpeRange"] componentsSeparatedByString:@"-"];
-        if (rpeRangeArr.count > 0) {
-            NSString *leftRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[0] floatValue]];
-            NSString *rightRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[1] floatValue]];
-            [cell.rpeLeftMenu.mainBtn setTitle:leftRpe forState:UIControlStateNormal];
-            [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.rpeRightMenu.mainBtn setTitle:rightRpe forState:UIControlStateNormal];
-            NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
-            [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration/60] forState:UIControlStateNormal];
-            [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-            [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
-        }
-        cell.model = dict;
-        [cell.addBtn addTarget:self action:@selector(addGroup:) forControlEvents:UIControlEventTouchUpInside];
-        cell.addBtn.tag = 10000 + indexPath.section;
-        cell.removeBtn.tag = 20000 + indexPath.section;
-        [cell.removeBtn addTarget:self action:@selector(removeGroup:) forControlEvents:UIControlEventTouchUpInside];
-        return cell;
+    NSString *reuseCellIdStr = [NSString stringWithFormat:@"StrengthTemplateCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
+    StrengthTemplateCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
+    if (cell == nil) {
+        cell = [[StrengthTemplateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
+        cell.selectionStyle          = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor = [UIColor clearColor];
     }
+    AerobicriptionModel *dict = [self.groups objectAtIndex:indexPath.section];
+    cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
+    CGFloat weight = [[dict valueForKey:@"weight"] floatValue];
+    [cell.weightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    [cell.weightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%.1f",weight] forState:UIControlStateNormal];
+    NSInteger times = [[dict valueForKey:@"times"] integerValue];
+    [cell.timesMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",times] forState:UIControlStateNormal];
+    [cell.timesMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    NSArray *rotationAngleArr = [[dict valueForKey:@"rotationAngle"] componentsSeparatedByString:@"-"];
+    if (rotationAngleArr.count > 0) {
+        NSString *leftAngle = rotationAngleArr[0];
+        NSString *rightAngle = rotationAngleArr[1];
+        [cell.rotationAngleLeftMenu.mainBtn setTitle:leftAngle forState:UIControlStateNormal];
+        [cell.rotationAngleLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        [cell.rotationAngleRightMenu.mainBtn setTitle:rightAngle forState:UIControlStateNormal];
+        [cell.rotationAngleRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+    }
+    NSArray *rpeRangeArr = [[dict valueForKey:@"rpeRange"] componentsSeparatedByString:@"-"];
+    if (rpeRangeArr.count > 0) {
+        NSString *leftRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[0] floatValue]];
+        NSString *rightRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[1] floatValue]];
+        [cell.rpeLeftMenu.mainBtn setTitle:leftRpe forState:UIControlStateNormal];
+        [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        [cell.rpeRightMenu.mainBtn setTitle:rightRpe forState:UIControlStateNormal];
+        NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
+        [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration/60] forState:UIControlStateNormal];
+        [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
+    }
+    cell.model = dict;
+    [cell.addBtn addTarget:self action:@selector(addGroup:) forControlEvents:UIControlEventTouchUpInside];
+    cell.addBtn.tag = 10000 + indexPath.section;
+    cell.removeBtn.tag = 20000 + indexPath.section;
+    [cell.removeBtn addTarget:self action:@selector(removeGroup:) forControlEvents:UIControlEventTouchUpInside];
+    return cell;
 }
 
 - (NSString *)getTimeString:(NSInteger)seconds {
@@ -605,28 +529,25 @@
     return timeStr;
 }
 
-//计算总训练时间
-- (void)computeTotalTrainingTime {
+//计算训练总量
+- (void)computeWeight {
     if (self.groups.count > 0) {
-        NSInteger sumTime = 0;
+        CGFloat sumWeight = 0;
         for (AerobicriptionModel *dict in self.groups) {
-            sumTime += [[dict valueForKey:@"duration"] integerValue];
-            sumTime += [[dict valueForKey:@"restDuration"] integerValue];
+            CGFloat times = [[dict valueForKey:@"times"] floatValue];
+            CGFloat weight = [[dict valueForKey:@"weight"] floatValue];
+            sumWeight += times * weight;
         }
-        self.targetDuration = sumTime;
-        self.trainingTimeValLbl.text = [self getTimeString:sumTime];
+        self.targetDuration = sumWeight;
+        self.trainingVolumeValLbl.text = [self getTrainingVolumeString:sumWeight];
     }
+    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
 }
 
-//计算总的平均强度
-- (void)computeAvgDifficulty {
-    if (self.groups.count > 0) {
-        NSInteger sumDifficulty = 0;
-        for (AerobicriptionModel *dict in self.groups) {
-            sumDifficulty += [[dict valueForKey:@"difficulty"] integerValue];
-        }
-        self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",sumDifficulty / self.groups.count];
-    }
+- (NSString *)getTrainingVolumeString:(CGFloat)weight {
+    NSString *result = @"0.00 kg";
+    result = [NSString stringWithFormat:@"%.2f kg",weight];
+    return result;
 }
 
 #pragma mark - XXTGDropdownMenuDelegate
@@ -636,7 +557,25 @@
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    if (menu == self.traingDeviceMenu) {
+    if (menu == self.trainingPositionMenu) {
+        if (self.deviceTypeArr.count > 0) {
+            for (NSDictionary *dict in self.deviceTypeArr) {
+                NSString *name = [dict valueForKey:@"name"];
+                if ([string isEqualToString:name]) {
+                    NSArray *children = [dict valueForKey:@"children"];
+                    self.equipIds = [children mutableCopy];
+                    NSMutableArray *equipments = [NSMutableArray array];
+                    if (children.count > 0) {
+                        for (NSDictionary *dict1 in children) {
+                            [equipments addObject:[dict1 valueForKey:@"name"]];
+                        }
+                    }
+                    self.traingDeviceMenu.titles = [equipments copy];
+                    [self.traingDeviceMenu.mTableView reloadData];
+                }
+            }
+        }
+    } else if (menu == self.traingDeviceMenu) {
         if (self.equipIds.count > 0) {
             for (NSDictionary *dict in self.equipIds) {
                 NSString *name = [dict valueForKey:@"name"];
@@ -657,7 +596,13 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
-    
+    if (menu == self.traingDeviceMenu) {
+        [self.traingDeviceMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+        if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+            [menu hiddenCityList];
+            [STTextHudTool showText:@"请先选择训练部位"];
+        }
+    }
 }
 
 #pragma mark - network functions
@@ -692,6 +637,8 @@
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_UPDATE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
+        NSString *result = [weakSelf convertToJSONData:responseObject];
+        NSLog(@"result is :%@",result);
         if (code == 0) {
             [STTextHudTool showText:@"修改成功"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCustomTemplatesNotification" object:nil];
@@ -720,7 +667,7 @@
     NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
     [parameter setValue:@(self.typeid) forKey:@"type"]; //类型
     [parameter setValue:@(id) forKey:@"id"];
-    [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
+//    [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
     [parameter setValue:self.templateNameTF.text forKey:@"title"];
     NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;
     [parameter setValue:disease forKey:@"disease"];
@@ -736,7 +683,7 @@
         timing = 2;
     }
     [parameter setValue:@(timing) forKey:@"timing"];
-    [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
+//    [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
     NSInteger riskLevel = [[self.templateInfo valueForKey:@"riskLevel"] integerValue];
     [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
     NSInteger targetCalorie = [[self.templateInfo valueForKey:@"targetCalorie"] integerValue];
@@ -798,8 +745,7 @@
     [self.groups insertObject:dict atIndex:index];
     [self.listView insertSection:index withRowAnimation:UITableViewRowAnimationNone];
     [self.listView reloadData];
-    [self computeAvgDifficulty];
-    [self computeTotalTrainingTime];
+    [self computeWeight];
     self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
 }
 
@@ -809,8 +755,7 @@
         [self.groups removeObjectAtIndex:index];
         [self.listView deleteSection:index withRowAnimation:UITableViewRowAnimationNone];
         [self.listView reloadData];
-        [self computeAvgDifficulty];
-        [self computeTotalTrainingTime];
+        [self computeWeight];
     }
     self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
 }
