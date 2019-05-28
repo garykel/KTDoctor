@@ -14,6 +14,7 @@
 #import "ChooseTemplateTypeView.h"
 #import "CreateTemplateViewController.h"
 #import "CheckTemplateInfoViewController.h"
+#import "CheckPowerTemplateViewController.h"
 #import "UpdateTemplateInfoViewController.h"
 #import "UpdatePowerTemplateViewController.h"
 #import "CreatePowerTemplateViewController.h"
@@ -1035,35 +1036,36 @@ CGSize systemListviewSize;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_INFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"*********获取推荐处方模板详细信息*****%@**************",responseObject);
+        NSLog(@"*********获取推荐处方模板详细信息*****%@**************",[self convertToJSONData:responseObject]);
         if (code == 0) {
             NSDictionary *data = [responseObject valueForKey:@"data"];
-            NSLog(@"rows is :%@",data);
+            NSLog(@"rows is :%@",[self convertToJSONData:data]);
             if (data.count > 0) {
-                if (weakself.type == 1) {
+                if (weakself.type == 1) {//系统模板
                     NSArray *typeList = [data valueForKey:@"typeList"];
-                    NSInteger type = 1;
-                    if (weakself.deviceTypeArr.count > 0) {
+                    if (typeList.count > 0) {
                         NSDictionary *typeDict = typeList[0];
-                        type = [[typeDict valueForKey:@"id"] integerValue];
+                        NSString *name = [typeDict valueForKey:@"name"];
+                        if ([name isEqualToString:@"有氧设备"]) {//查看有氧模板
+                            CheckTemplateInfoViewController *info = [[CheckTemplateInfoViewController alloc] init];
+                            info.templateInfo = data;
+                            [self.navigationController pushViewController:info animated:NO];
+                        } else {//查看力量模板
+                            CheckPowerTemplateViewController *info = [[CheckPowerTemplateViewController alloc] init];
+                            info.templateInfo = data;
+                            [self.navigationController pushViewController:info animated:NO];
+                        }
                     }
-                    CheckTemplateInfoViewController *info = [[CheckTemplateInfoViewController alloc] init];
-                    info.templateInfo = data;
-                    info.type = type;
-                    [self.navigationController pushViewController:info animated:NO];
-                } else {
-//                    UpdatePowerTemplateViewController
-                    
+                } else {//自定义模板
                     NSString *jsonStr = [self convertToJSONData:data];
                     NSLog(@"jsonStr is :%@",jsonStr);
                     NSArray *typeList = [data valueForKey:@"typeList"];
                     NSInteger type = 1;
                     if (weakself.deviceTypeArr.count > 0) {
                         if (typeList.count > 0) {
-                            
                             NSDictionary *typeDict = typeList[0];
                             type = [[typeDict valueForKey:@"id"] integerValue];
-                            if (type == 1) {
+                            if (type == 1) {//修改有氧模板
                                 UpdateTemplateInfoViewController *update = [[UpdateTemplateInfoViewController alloc] init];
                                 update.templateInfo = data;
                                 NSString *typeName = [typeDict valueForKey:@"name"];
@@ -1074,7 +1076,7 @@ CGSize systemListviewSize;
                                     }
                                 }
                                 [self.navigationController pushViewController:update animated:NO];
-                            } else {
+                            } else {//修改力量模板
                                 UpdatePowerTemplateViewController *update = [[UpdatePowerTemplateViewController alloc] init];
                                 update.templateInfo = data;
                                 NSString *typeName = [typeDict valueForKey:@"name"];

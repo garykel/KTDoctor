@@ -38,9 +38,6 @@
 #define kTrainingTimeLbl_Right 18
 #define kDifficultyLbl_Width 48
 #define kDifficultyLbl_Height 13
-#define kAddBtn_LeftMargin 15
-#define kAddBtn_Width 18
-#define kAddBtn_BottomMargin 10
 #define kListView_LeftMargin 16
 #define kListBgView_LeftMargin 20
 #define kCell_Height 118
@@ -245,19 +242,6 @@
     self.restSecLbl.font = [UIFont systemFontOfSize:kDifficultyPercentLbl_Fontsize * kYScal];
     self.restSecLbl.text = @"s";
     [self.infoBgView addSubview:self.restSecLbl];
-    
-//    CGFloat topMargin = (self.bgView.frame.size.height - 2 * kAddBtn_Width * kYScal - kAddBtn_BottomMargin * kYScal)/2 + kInfoView_TopMargin * kYScal/2.0;
-//    self.addBtn = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.infoBgView.frame) + kAddBtn_LeftMargin * kXScal, topMargin, kAddBtn_Width * kYScal, kAddBtn_Width * kYScal)];
-//    [self.addBtn setImage:[UIImage imageNamed:@"addGroup"] forState:UIControlStateNormal];
-//    self.addBtn.layer.cornerRadius = kAddBtn_Width * kYScal/2.0;
-//    self.addBtn.layer.masksToBounds = YES;
-//    [self.bgView addSubview:self.addBtn];
-//
-//    self.removeBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.addBtn.frame.origin.x, CGRectGetMaxY(self.addBtn.frame) + kAddBtn_BottomMargin * kYScal, kAddBtn_Width * kYScal, kAddBtn_Width * kYScal)];
-//    [self.removeBtn setImage:[UIImage imageNamed:@"removeGroup"] forState:UIControlStateNormal];
-//    self.removeBtn.layer.cornerRadius = kAddBtn_Width * kYScal/2.0;
-//    self.removeBtn.layer.masksToBounds = YES;
-//    [self.bgView addSubview:self.removeBtn];
 }
 
 #pragma mark - XXTGDropdownMenuDelegate

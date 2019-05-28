@@ -493,10 +493,18 @@
     NSArray *rotationAngleArr = [[dict valueForKey:@"rotationAngle"] componentsSeparatedByString:@"-"];
     if (rotationAngleArr.count > 0) {
         NSString *leftAngle = rotationAngleArr[0];
+        NSArray *leftAngles = [leftAngle componentsSeparatedByString:@"°"];
+        if (leftAngles.count > 0) {
+            leftAngle = leftAngles[0];
+        }
         NSString *rightAngle = rotationAngleArr[1];
-        [cell.rotationAngleLeftMenu.mainBtn setTitle:leftAngle forState:UIControlStateNormal];
+        NSArray *rightAngles = [rightAngle componentsSeparatedByString:@"°"];
+        if (rightAngles.count > 0) {
+            rightAngle = rightAngles[0];
+        }
+        [cell.rotationAngleLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@°",leftAngle] forState:UIControlStateNormal];
         [cell.rotationAngleLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
-        [cell.rotationAngleRightMenu.mainBtn setTitle:rightAngle forState:UIControlStateNormal];
+        [cell.rotationAngleRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@°",rightAngle] forState:UIControlStateNormal];
         [cell.rotationAngleRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
     }
     NSArray *rpeRangeArr = [[dict valueForKey:@"rpeRange"] componentsSeparatedByString:@"-"];

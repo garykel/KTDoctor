@@ -1,16 +1,16 @@
 //
-//  StrengthTemplateCell.m
+//  CheckPowerTemplateCell.m
 //  KTDoctor
 //
-//  Created by duwei on 2019/5/27.
+//  Created by duwei on 2019/5/28.
 //  Copyright © 2019 dz. All rights reserved.
 //
 
-#import "StrengthTemplateCell.h"
+#import "CheckPowerTemplateCell.h"
 #define kBgView_LeftMargin 20
 #define kInfoView_TopMargin 15
 #define kInfoView_LeftMargin 16
-#define kInfoView_RightMargin 48
+#define kInfoView_RightMargin 16
 #define kGroupNameLbl_TopMargin 15
 #define kGroupNameLbl_LeftMargin 15
 #define kGroupNameLbl_Width 70
@@ -43,11 +43,7 @@
 #define kCell_Height 118
 #define kDifficultyMenu_RightMargin 29
 
-@interface StrengthTemplateCell()<XXTGDropdownMenuDelegate>
-
-@end
-
-@implementation StrengthTemplateCell
+@implementation CheckPowerTemplateCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -67,8 +63,6 @@
     [self.contentView addSubview:self.bgView];
     
     self.infoBgView = [[UIView alloc] initWithFrame:CGRectMake(kInfoView_LeftMargin * kXScal, kInfoView_TopMargin * kYScal, kWidth - 2 * kBgView_LeftMargin * kXScal - kInfoView_LeftMargin * kXScal - kInfoView_RightMargin* kXScal, kCell_Height * kYScal)];
-    //    self.infoBgView.layer.cornerRadius = 4;
-    //    self.infoBgView.layer.masksToBounds = YES;
     self.infoBgView.backgroundColor = [UIColor colorWithHexString:@"#F5FDFF"];
     [self.bgView addSubview:self.infoBgView];
     
@@ -91,6 +85,8 @@
     [self.weightMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.weightMenu.delegate = self;
     self.weightMenu.titles = @[@"2.5",@"5.0",@"7.5",@"10.0",@"12.5"];
+    self.weightMenu.dropDownImage.hidden = YES;
+    self.weightMenu.mainBtn.enabled = NO;
     [self.infoBgView addSubview:self.weightMenu];
     
     self.weightUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.weightMenu.frame) + kMenu_RightMargin * kXScal, 0, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -112,6 +108,8 @@
     self.timesMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.timesLbl.frame) + kWeightLbl_RightMargin * kXScal, self.weightMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.timesMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.timesMenu.delegate = self;
+    self.timesMenu.dropDownImage.hidden = YES;
+    self.timesMenu.mainBtn.enabled = NO;
     NSMutableArray *times = [NSMutableArray array];
     for (NSInteger i = 0; i < 20; i++) {
         [times addObject:[NSString stringWithFormat:@"%d",i + 1]];
@@ -136,6 +134,8 @@
     self.rpeLeftMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpeZoneLbl.frame) + kWeightLbl_RightMargin * kXScal, self.timesMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.rpeLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.rpeLeftMenu.delegate = self;
+    self.rpeLeftMenu.dropDownImage.hidden = YES;
+    self.rpeLeftMenu.mainBtn.enabled = NO;
     NSMutableArray *rpes = [NSMutableArray array];
     for (NSInteger i = 0; i <= 100; i++) {
         if (i%5==0) {
@@ -156,6 +156,8 @@
     self.rpeRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rpeTildeLbl.frame) + kWeightLbl_RightMargin, self.rpeLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.rpeRightMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.rpeRightMenu.delegate = self;
+    self.rpeRightMenu.dropDownImage.hidden = YES;
+    self.rpeRightMenu.mainBtn.enabled = NO;
     self.rpeRightMenu.titles = [rpes copy];
     [self.infoBgView addSubview:self.rpeRightMenu];
     
@@ -175,6 +177,8 @@
     }
     self.rotationAngleLeftMenu.delegate = self;
     self.rotationAngleLeftMenu.titles = [angles copy];
+    self.rotationAngleLeftMenu.mainBtn.enabled = NO;
+    self.rotationAngleLeftMenu.dropDownImage.hidden = YES;
     [self.infoBgView addSubview:self.rotationAngleLeftMenu];
     
     self.rotationAngleTildeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.weightUnitLbl.frame.origin.x, 0, kTildeLbl_Width * kXScal, kMinLbl_Height * kYScal)];
@@ -187,6 +191,8 @@
     self.rotationAngleRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.rotationAngleTildeLbl.frame) + kWeightLbl_RightMargin, self.rotationAngleLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.rotationAngleRightMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.rotationAngleRightMenu.delegate = self;
+    self.rotationAngleRightMenu.dropDownImage.hidden = YES;
+    self.rotationAngleRightMenu.mainBtn.enabled = NO;
     self.rotationAngleRightMenu.titles = [angles copy];
     [self.infoBgView addSubview:self.rotationAngleRightMenu];
     
@@ -196,48 +202,39 @@
     self.restLbl.font = [UIFont systemFontOfSize:kWeightLbl_Fontsize * kYScal];
     self.restLbl.text = @"组间休息";
     [self.infoBgView addSubview:self.restLbl];
-
+    
     self.restLeftMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.timesMenu.frame.origin.x, self.rotationAngleLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.restLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.restLeftMenu.delegate = self;
+    self.restLeftMenu.dropDownImage.hidden = YES;
+    self.restLeftMenu.mainBtn.enabled = NO;
     self.restLeftMenu.titles = @[@"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9"];
     [self.infoBgView addSubview:self.restLeftMenu];
-
+    
     self.restMinLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.timesUnitLbl.frame.origin.x, 0, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
     self.restMinLbl.text = @"min";
     self.restMinLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.restMinLbl.font = [UIFont systemFontOfSize:kWeightLbl_Fontsize * kYScal];
     self.restMinLbl.center = CGPointMake(self.timesUnitLbl.frame.origin.x + kMinLbl_Width * kXScal/2.0, self.restLeftMenu.center.y);
     [self.infoBgView addSubview:self.restMinLbl];
-
+    
     self.restRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.restMinLbl.frame) + kWeightLbl_RightMargin * kXScal, self.restLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.restRightMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.restRightMenu.delegate = self;
+    self.restRightMenu.dropDownImage.hidden = YES;
+    self.restRightMenu.mainBtn.enabled = NO;
     NSMutableArray *seconds = [NSMutableArray array];
     for (NSInteger k = 0; k < 60; k++) {
         [seconds addObject:[NSString stringWithFormat:@"%d",k]];
     }
     self.restRightMenu.titles = [seconds copy];
     [self.infoBgView addSubview:self.restRightMenu];
-
+    
     self.restSecLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.restRightMenu.frame) + kWeightLbl_RightMargin * kXScal, self.restMinLbl.frame.origin.y, kMinLbl_Width * kXScal, kMinLbl_Height * kYScal)];
     self.restSecLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.restSecLbl.font = [UIFont systemFontOfSize:kWeightLbl_Fontsize * kYScal];
     self.restSecLbl.text = @"s";
     [self.infoBgView addSubview:self.restSecLbl];
-    
-    CGFloat topMargin = (self.bgView.frame.size.height - 2 * kAddBtn_Width * kYScal - kAddBtn_BottomMargin * kYScal)/2 + kInfoView_TopMargin * kYScal/2.0;
-    self.addBtn = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.infoBgView.frame) + kAddBtn_LeftMargin * kXScal, topMargin, kAddBtn_Width * kYScal, kAddBtn_Width * kYScal)];
-    [self.addBtn setImage:[UIImage imageNamed:@"addGroup"] forState:UIControlStateNormal];
-    self.addBtn.layer.cornerRadius = kAddBtn_Width * kYScal/2.0;
-    self.addBtn.layer.masksToBounds = YES;
-    [self.bgView addSubview:self.addBtn];
-    
-    self.removeBtn = [[UIButton alloc] initWithFrame:CGRectMake(self.addBtn.frame.origin.x, CGRectGetMaxY(self.addBtn.frame) + kAddBtn_BottomMargin * kYScal, kAddBtn_Width * kYScal, kAddBtn_Width * kYScal)];
-    [self.removeBtn setImage:[UIImage imageNamed:@"removeGroup"] forState:UIControlStateNormal];
-    self.removeBtn.layer.cornerRadius = kAddBtn_Width * kYScal/2.0;
-    self.removeBtn.layer.masksToBounds = YES;
-    [self.bgView addSubview:self.removeBtn];
 }
 
 #pragma mark - XXTGDropdownMenuDelegate
@@ -266,14 +263,8 @@
     } else if (menu == self.rotationAngleRightMenu) {
         NSInteger angle = [string integerValue];
         [self.rotationAngleRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d°",angle] forState:UIControlStateNormal];
-        NSString *title = self.rotationAngleLeftMenu.mainBtn.titleLabel.text;
-        NSArray *leftAngles = [title componentsSeparatedByString:@"°"];
-        if (leftAngles.count > 0) {
-            self.model.rotationAngle = [NSString stringWithFormat:@"%@-%@",leftAngles[0],string];
-        } else {
-            self.model.rotationAngle = [NSString stringWithFormat:@"%@-%@",title,string];
-        }
-        
+        NSString *min = self.rotationAngleLeftMenu.mainBtn.titleLabel.text;
+        self.model.rotationAngle = [NSString stringWithFormat:@"%@-%@",min,string];
     } else if (menu == self.rpeLeftMenu) {
         CGFloat rpeLeft = [string floatValue];
         CGFloat rpeRight = [self.rpeRightMenu.mainBtn.titleLabel.text floatValue];
