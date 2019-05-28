@@ -8,11 +8,11 @@
 
 #import "CreatePowerPrescriptionViewController.h"
 #import "UserModel.h"
-#import "LMJDropdownMenu.h"
+#import "KTDropDownMenus.h"
 #import "UnitTextField.h"
 #import "UnitTextView.h"
 #import "AerobicGroupCell.h"
-#import "CreatePrescriptionCell.h"
+#import "StrengthTemplateCell.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -31,6 +31,7 @@
 #define kDieaseLbl_BottomMargin 22
 #define kDieaseTF_Width 211
 #define kDieaseTF_Height 19
+#define kDropdownHeight 30
 #define kDieaseTF_BottomMargin 15
 #define kTemplateMenu_Width 356
 #define kWeekMenu_Width 160
@@ -47,7 +48,7 @@
 #define kTrainingTimeLbl_Width 80
 #define kTrainingGroupLbl_Width 70
 #define kTrainingGroupLbl_TopMargin 16
-#define kTrainingTimeValLbl_Width 60
+#define kTrainingTimeValLbl_Width 100
 #define kTrainingTimeValLbl_Height 15
 #define kTrainingTimeValLbl_FontSize 15.0
 #define kTemplateButton_BottomMargin 15
@@ -73,7 +74,7 @@
 #define kFooterView_Height 368
 #define kCell_Height 118
 
-@interface CreatePowerPrescriptionViewController ()<UIScrollViewDelegate,LMJDropdownMenuDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface CreatePowerPrescriptionViewController ()<UIScrollViewDelegate,XXTGDropdownMenuDelegate,UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -87,28 +88,26 @@
 @property (nonatomic,strong)UILabel *deviceTypeLbl;
 @property (nonatomic,strong)UITextField *deviceTypeTF;
 @property (nonatomic,strong)UILabel *trainingPositionLbl;
-@property (nonatomic,strong)LMJDropdownMenu *trainingPositionMenu;
+@property (nonatomic,strong)KTDropDownMenus *trainingPositionMenu;
 @property (nonatomic,strong)UILabel *trainingDeviceLbl;
-@property (nonatomic,strong)LMJDropdownMenu *traingDeviceMenu;
+@property (nonatomic,strong)KTDropDownMenus *traingDeviceMenu;
 @property (nonatomic,strong)UILabel *templateLbl;
-@property (nonatomic,strong)LMJDropdownMenu *templateMenu;
+@property (nonatomic,strong)KTDropDownMenus *templateMenu;
 @property (nonatomic,strong)UILabel *treatmentLbl;
-@property (nonatomic,strong)LMJDropdownMenu *treatmentMenu;
+@property (nonatomic,strong)KTDropDownMenus *treatmentMenu;
 @property (nonatomic,strong)UILabel *weekLbl;
 @property (nonatomic,strong)UILabel *trainingFrequencyLbl;
-@property (nonatomic,strong)LMJDropdownMenu *trainingFrequencyMenu;
+@property (nonatomic,strong)KTDropDownMenus *trainingFrequencyMenu;
 @property (nonatomic,strong)UILabel *dayLbl;
 @property (nonatomic,strong)UILabel *sportTimePointLbl;
-@property (nonatomic,strong)LMJDropdownMenu *sportTimePointMenu;
+@property (nonatomic,strong)KTDropDownMenus *sportTimePointMenu;
 @property (nonatomic,strong)UIView *listBgView;
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,strong)UIView *dataView;
 @property (nonatomic,strong)UILabel *trainingGroupLbl;
 @property (nonatomic,strong)UILabel *trainingGroupValLbl;
-@property (nonatomic,strong)UILabel *trainingTimeLbl;
-@property (nonatomic,strong)UILabel *trainingTimeValLbl;
-@property (nonatomic,strong)UILabel *avgDifficultyLbl;
-@property (nonatomic,strong)UILabel *avgDifficultyValLbl;
+@property (nonatomic,strong)UILabel *trainingVolumeLbl;//训练总量
+@property (nonatomic,strong)UILabel *trainingVolumeValLbl;
 @property (nonatomic,strong)UIButton *templateBtn;
 @property (nonatomic,strong)UIView *templateView;
 @property (nonatomic,strong)UILabel *prescriptionLbl;
@@ -118,9 +117,12 @@
 @property (nonatomic,strong)UIButton *createBtn;
 @property (nonatomic,strong)UIButton *giveupBtn;
 @property (nonatomic,strong)NSMutableArray *groups;
+@property (nonatomic,strong)NSMutableArray *equipIds;
+@property (nonatomic,assign)CGFloat targetDuration;
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,strong)NSMutableArray *recommendArr;
 @property (nonatomic,copy)NSString *customTemplateName;
+@property (nonatomic,assign)NSInteger typeid;
 @end
 
 @implementation CreatePowerPrescriptionViewController
@@ -129,12 +131,11 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.navigationController.navigationBar.hidden = YES;
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeWeight) name:@"ComputeWeightNotification" object:nil];
     self.recommendArr = [NSMutableArray array];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4", nil];
-    
-    
+    self.equipIds = [NSMutableArray array];
     [self setNavBar];
     [self setupUI];
     
@@ -153,6 +154,10 @@
     [parameter setValue:@1 forKey:@"type"];
     
     [self getRecommendTemplateList:parameter];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setNavBar {
@@ -274,8 +279,16 @@
     self.trainingPositionLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     [self.topBgView addSubview:self.trainingPositionLbl];
     
-    self.trainingPositionMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake( self.riskLevelTF.frame.origin.x,self.deviceTypeTF.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-    [self.trainingPositionMenu setMenuTitles:@[@"胸部",@"背部",@"腿部",@"小腿",@"斯密斯"]  rowHeight:kDieaseTF_Height * kYScal attr:@{@"title":@"请选择",@"titleFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal]}];
+    self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake( self.riskLevelTF.frame.origin.x,self.deviceTypeTF.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.trainingPositionMenu.defualtStr = @"请选择";
+    NSMutableArray *positions = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            [positions addObject:[dict valueForKey:@"name"]];
+        }
+    }
+    self.trainingPositionMenu.titles = [positions copy];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 10;
     [self.topBgView addSubview:self.trainingPositionMenu];
@@ -287,8 +300,22 @@
     self.trainingDeviceLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     [self.topBgView addSubview:self.trainingDeviceLbl];
     
-    self.traingDeviceMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingDeviceLbl.frame) + kTrainingDeviceLbl_RightMargin * kXScal, self.trainingPositionMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-    [self.traingDeviceMenu setMenuTitles:@[@"功率车",@"椭圆机"] rowHeight:kDieaseTF_Height * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    self.traingDeviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingDeviceLbl.frame) + kTrainingDeviceLbl_RightMargin * kXScal, self.trainingPositionMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.traingDeviceMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.traingDeviceMenu.defualtStr = @"请选择";
+    self.traingDeviceMenu.delegate = self;
+    NSMutableArray *trainingEquipMentArr = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict1 in self.deviceTypeArr) {
+            NSArray *children = [dict1 valueForKey:@"children"];
+            if (children.count > 0) {
+                for (NSDictionary *child in children) {
+                    [trainingEquipMentArr addObject:[child valueForKey:@"name"]];
+                }
+            }
+        }
+    }
+    self.traingDeviceMenu.titles = [trainingEquipMentArr copy];
     self.traingDeviceMenu.delegate = self;
     self.traingDeviceMenu.tag = 20;
     [self.topBgView addSubview:self.traingDeviceMenu];
@@ -299,8 +326,11 @@
     self.templateLbl.text = @"推荐模板";
     [self.topBgView addSubview:self.templateLbl];
     
-    self.templateMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal, 0, kTemplateMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-    [self.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    self.templateMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal, 0, kTemplateMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.templateMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.templateMenu.defualtStr = @"请选择";
+    self.templateMenu.delegate = self;
+    self.templateMenu.titles = self.recommendArr;
     self.templateMenu.center = CGPointMake(CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal + kTemplateMenu_Width * kXScal/2.0, self.templateLbl.center.y);
     self.templateMenu.delegate = self;
     self.templateMenu.tag = 30;
@@ -312,8 +342,11 @@
     self.treatmentLbl.text = @"疗程";
     [self.topBgView addSubview:self.treatmentLbl];
     
-    self.treatmentMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(self.templateMenu.frame.origin.x, CGRectGetMaxY(self.templateMenu.frame) + kDieaseTF_BottomMargin * kYScal, kWeekMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-    [self.treatmentMenu setMenuTitles:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    self.treatmentMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.templateMenu.frame.origin.x, CGRectGetMaxY(self.templateMenu.frame) + kDieaseTF_BottomMargin * kYScal, kWeekMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.treatmentMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.treatmentMenu.defualtStr = @"请选择";
+    self.treatmentMenu.delegate = self;
+    self.treatmentMenu.titles = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12"];
     self.treatmentMenu.delegate = self;
     self.treatmentMenu.tag = 40;
     [self.topBgView addSubview:self.treatmentMenu];
@@ -336,8 +369,11 @@
     self.dayLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     [self.topBgView addSubview:self.dayLbl];
     
-    self.trainingFrequencyMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(self.trainingPositionMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-    [self.trainingFrequencyMenu setMenuTitles:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    self.trainingFrequencyMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.trainingPositionMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.trainingFrequencyMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.trainingFrequencyMenu.defualtStr = @"请选择";
+    self.trainingFrequencyMenu.delegate = self;
+    self.trainingFrequencyMenu.titles = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7"];
     self.trainingFrequencyMenu.delegate = self;
     self.trainingFrequencyMenu.tag = 50;
     [self.topBgView addSubview:self.trainingFrequencyMenu];
@@ -348,8 +384,11 @@
     self.sportTimePointLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     [self.topBgView addSubview:self.sportTimePointLbl];
     
-    self.sportTimePointMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(self.traingDeviceMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-    [self.sportTimePointMenu setMenuTitles:@[@"任意",@"三餐前半小时",@"三餐后一小时"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
+    self.sportTimePointMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.traingDeviceMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
+    [self.sportTimePointMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.sportTimePointMenu.defualtStr = @"请选择";
+    self.sportTimePointMenu.delegate = self;
+    self.sportTimePointMenu.titles = @[@"任意",@"三餐前半小时",@"三餐后一小时"];
     self.sportTimePointMenu.delegate = self;
     self.sportTimePointMenu.tag = 60;
     [self.topBgView addSubview:self.sportTimePointMenu];
@@ -373,23 +412,23 @@
     self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
     self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingGroupValLbl.text = @"4";
+    self.trainingGroupValLbl.text = @"1";
     [self.dataView addSubview:self.trainingGroupValLbl];
     
     CGFloat space = (self.dataView.frame.size.width - 2 * kTrainingTimeLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal - 3 * kTrainingTimeLbl_RightMargin - 3 * kTrainingTimeValLbl_Width * kXScal)/2;
     
-    self.trainingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
-    self.trainingTimeLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.trainingTimeLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-    self.trainingTimeLbl.text = @"训练总量：";
-    [self.dataView addSubview:self.trainingTimeLbl];
+    self.trainingVolumeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
+    self.trainingVolumeLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
+    self.trainingVolumeLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
+    self.trainingVolumeLbl.text = @"训练总量：";
+    [self.dataView addSubview:self.trainingVolumeLbl];
     
-    self.trainingTimeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.trainingTimeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingTimeLbl.center.y);
-    self.trainingTimeValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.trainingTimeValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingTimeValLbl.text = @"7.50kg";
-    [self.dataView addSubview:self.trainingTimeValLbl];
+    self.trainingVolumeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingVolumeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
+    self.trainingVolumeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingVolumeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingVolumeLbl.center.y);
+    self.trainingVolumeValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
+    self.trainingVolumeValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
+    self.trainingVolumeValLbl.text = @"0.00 kg";
+    [self.dataView addSubview:self.trainingVolumeValLbl];
     
     self.templateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.templateBtn.frame = CGRectMake((self.dataView.frame.size.width - kTemplateButton_Width * kXScal)/2, self.dataView.frame.size.height - kTemplateButton_Height * kYScal - kTemplateButton_BottomMargin * kYScal, kTemplateButton_Width * kXScal, kTemplateButton_Height * kYScal);
@@ -470,10 +509,10 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *reuseCellIdStr = [NSString stringWithFormat:@"CreatePrescriptionCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
-    CreatePrescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
+    NSString *reuseCellIdStr = [NSString stringWithFormat:@"StrengthTemplateCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
+    StrengthTemplateCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
     if (cell == nil) {
-        cell = [[CreatePrescriptionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
+        cell = [[StrengthTemplateCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
         cell.selectionStyle          = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor clearColor];
     }
@@ -492,46 +531,60 @@
 }
 
 - (void)saveAsCustomTemplate:(UIButton*)sender {
-    kWeakSelf(self);
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"自定义模板名称" preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        if (weakself.customTemplateName.length == 0) {
-            [STTextHudTool showText:@"名字不能为空"];
-            [weakself presentViewController:alertController animated:YES completion:nil];
-        } else {
-            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-            NSDictionary *dict = self.user.organ;
-            NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-            NSString *orgCode = orgCodeArr[0];
-            [parameter setValue:orgCode forKey:@"orgCode"];
-            [parameter setValue:@1 forKey:@"type"]; //类型
-            [parameter setValue:@2 forKey:@"type2"]; //类型2，1=强度，2=功率
-            [parameter setValue:weakself.customTemplateName forKey:@"title"];
-            NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
-            [parameter setValue:disease forKey:@"disease"];
-            [parameter setValue:@3 forKey:@"treatmentPeriod"];
-            [parameter setValue:@4 forKey:@"daysPerWeek"];
-            [parameter setValue:@2 forKey:@"timing"];
-            [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
-            NSInteger riskLevel = [[weakself.prescriptionDict valueForKey:@"riskLevel"] integerValue];
-            [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
-            [parameter setValue:@500 forKey:@"targetCalorie"];
-            [parameter setValue:@300 forKey:@"targetDuration"];
-            NSArray *sections = @[@{@"title":@"第1小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第2小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第3小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"}];
-            [parameter setValue:sections forKey:@"sections"];
-            [weakself createCustomTemplate:parameter];
-        }
-    }]];
-    
-    [alertController addAction:[UIAlertAction actionWithTitle:@"放弃" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    __weak typeof (self)weakself = self;
+    if([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+        [STTextHudTool showText:@"请选择训练部位"];
+    }else if([self.traingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.traingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+        [STTextHudTool showText:@"请选择训练设备"];
+    }else if(self.trainingFrequencyMenu.mainBtn.titleLabel.text.length == 0 ||[self.trainingFrequencyMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+        [STTextHudTool showText:@"请选择每周训练几天"];
+    }else {
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"自定义模板名称" preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            if (weakself.customTemplateName.length == 0) {
+                [STTextHudTool showText:@"名字不能为空"];
+                [weakself presentViewController:alertController animated:YES completion:nil];
+            } else {
+                NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+                NSDictionary *dict = self.user.organ;
+                NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+                NSString *orgCode = orgCodeArr[0];
+                [parameter setValue:orgCode forKey:@"orgCode"];
+                [parameter setValue:@(weakself.typeid) forKey:@"type"]; //类型
+                [parameter setValue:weakself.customTemplateName forKey:@"title"];
+                NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
+                [parameter setValue:disease forKey:@"disease"];
+                [parameter setValue:weakself.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
+                [parameter setValue:weakself.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
+                NSString *timingStr = weakself.sportTimePointMenu.mainBtn.titleLabel.text;
+                NSInteger timing = 0;
+                if ([timingStr isEqualToString:@"任意"]) {
+                    timing = 3;
+                } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
+                    timing = 1;
+                } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
+                    timing = 2;
+                }
+                [parameter setValue:@(timing) forKey:@"timing"];
+                NSInteger riskLevel = [[weakself.prescriptionDict valueForKey:@"riskLevel"] integerValue];
+                [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
+                [parameter setValue:@300 forKey:@"targetDuration"];
+                NSArray *sections = @[@{@"title":@"第1小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第2小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第3小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"}];
+                [parameter setValue:sections forKey:@"sections"];
+                [weakself createCustomTemplate:parameter];
+            }
+        }]];
         
-    }]];
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField*_Nonnull textField) {
-        textField.placeholder=@"请输入名称";
-        textField.secureTextEntry=YES;
-        weakself.customTemplateName = textField.text;
-    }];
-    [self presentViewController:alertController animated:YES completion:nil];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"放弃" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            
+        }]];
+        [alertController addTextFieldWithConfigurationHandler:^(UITextField*_Nonnull textField) {
+            textField.placeholder=@"请输入名称";
+            textField.secureTextEntry=YES;
+            weakself.customTemplateName = textField.text;
+        }];
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
 }
 
 - (void)createPrescription:(UIButton*)sender {
@@ -582,6 +635,72 @@
 
 }
 
+- (NSString *)getTrainingVolumeString:(CGFloat)weight {
+    NSString *result = @"0.00 kg";
+    result = [NSString stringWithFormat:@"%.2f kg",weight];
+    return result;
+}
+
+//计算训练总量
+- (void)computeWeight {
+    if (self.groups.count > 0) {
+        CGFloat sumWeight = 0;
+        for (AerobicriptionModel *dict in self.groups) {
+            CGFloat times = [[dict valueForKey:@"times"] floatValue];
+            CGFloat weight = [[dict valueForKey:@"weight"] floatValue];
+            sumWeight += times * weight;
+        }
+        self.targetDuration = sumWeight;
+        self.trainingVolumeValLbl.text = [self getTrainingVolumeString:sumWeight];
+    }
+    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
+}
+
+#pragma mark - XXTGDropdownMenuDelegate
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellNumber:(NSInteger)number {
+    
+}
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
+{
+    if (menu == self.trainingPositionMenu) {
+        if (self.deviceTypeArr.count > 0) {
+            for (NSDictionary *dict in self.deviceTypeArr) {
+                NSString *name = [dict valueForKey:@"name"];
+                if ([string isEqualToString:name]) {
+                    NSArray *children = [dict valueForKey:@"children"];
+                    self.equipIds = [children mutableCopy];
+                    NSMutableArray *equipments = [NSMutableArray array];
+                    if (children.count > 0) {
+                        for (NSDictionary *dict1 in children) {
+                            [equipments addObject:[dict1 valueForKey:@"name"]];
+                        }
+                    }
+                    self.traingDeviceMenu.titles = [equipments copy];
+                    [self.traingDeviceMenu.mTableView reloadData];
+                }
+            }
+        }
+    } else if (menu == self.traingDeviceMenu) {
+        if (self.equipIds.count > 0) {
+            for (NSDictionary *dict in self.equipIds) {
+                NSString *name = [dict valueForKey:@"name"];
+                if ([string isEqualToString:name]) {
+                    NSInteger id = [[dict valueForKey:@"id"] integerValue];
+                    self.typeid = id;
+                    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+                    NSDictionary *dict = self.user.organ;
+                    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+                    NSString *orgCode = orgCodeArr[0];
+                    [parameter setValue:orgCode forKey:@"orgCode"];
+                    [parameter setValue:@(id) forKey:@"id"];
+                    [self getDeviceTypeInfo:parameter];
+                }
+            }
+        }
+    }
+}
+
 #pragma mark - network functions
 - (void)getTemplateList:(NSMutableDictionary*)parameter {
     
@@ -595,22 +714,22 @@
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSLog(@"*********获取推荐处方模板*****%@**************",responseObject);
         if (code == 0) {
-            NSArray *rows = [responseObject valueForKey:@"rows"];
-            NSLog(@"rows is :%@",rows);
-            if (rows.count > 0) {
-                for (NSDictionary *dict in rows) {
-                    NSArray *typeList = [dict valueForKey:@"typeList"];
-                    if (typeList.count > 0) {
-                        for (NSDictionary *typeDict in typeList) {
-                            NSString *name = [typeDict valueForKey:@"name"];
-                            if ([name isEqualToString:self.traingDeviceMenu.mainBtn.titleLabel.text]) {
-                                [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
-                            }
-                        }
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSLog(@"rows is :%@",data);
+            if (data.count > 0) {
+                NSArray *sections = [data valueForKey:@"sections"];
+                NSMutableArray *templates = [NSMutableArray array];
+                if (sections.count > 0) {
+                    for (NSDictionary *dict in sections) {
+                        AerobicriptionModel *model = [AerobicriptionModel cp_objWithDict:dict];
+                        [templates addObject:model];
                     }
                 }
+                weakself.groups = [templates mutableCopy];
+                [weakself.listView reloadData];
+                weakself.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",weakself.groups.count];
+                [weakself computeWeight];
             }
-            [weakself.templateMenu setMenuTitles:self.recommendArr rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"请选择",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
@@ -664,5 +783,28 @@
     }];
 }
 
-
+- (void)getDeviceTypeInfo:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDEVICE_TYPE_INFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************获取设备类型信息%@**************",responseObject);
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSArray *attr = [data valueForKey:@"attrs"];
+            if (attr.count > 0) {
+                NSDictionary *dict = attr[0];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateDifficultLevelNotification" object:nil userInfo:dict];
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "CreatePowerTemplateViewController.h"
+#import "KTDropDownMenus.h"
 #import "StrengthTemplateCell.h"
 #import "AerobicriptionModel.h"
 #import "UserModel.h"
@@ -218,7 +219,6 @@
     self.dieaseMenu.defualtStr = @"II型糖尿病";
     self.dieaseMenu.delegate = self;
     self.dieaseMenu.titles = @[@"II型糖尿病"];
-    self.dieaseMenu.delegate = self;
     [self.topBgView addSubview:self.dieaseMenu];
     
     self.riskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dieaseMenu.frame) + kRiskLevelLbl_LeftMargin * kXScal, self.dieaseLbl.frame.origin.y, kRiskLevelLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
@@ -232,7 +232,6 @@
     self.riskLevelMenu.defualtStr = @"请选择";
     self.riskLevelMenu.delegate = self;
     self.riskLevelMenu.titles = @[@"高",@"中",@"低"];
-    self.riskLevelMenu.delegate = self;
     self.riskLevelMenu.backgroundColor = [UIColor whiteColor];
     [self.topBgView addSubview:self.riskLevelMenu];
     
@@ -267,9 +266,7 @@
         }
     }
     self.trainingPositionMenu.titles = [self.positions copy];
-    self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.backgroundColor = [UIColor whiteColor];
-    self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 10;
     [self.topBgView addSubview:self.trainingPositionMenu];
     
@@ -300,10 +297,7 @@
     self.treatmentMenu.defualtStr = @"6";
     self.treatmentMenu.delegate = self;
     self.treatmentMenu.titles = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12"];
-    self.treatmentMenu.delegate = self;
     self.treatmentMenu.backgroundColor = [UIColor whiteColor];
-    self.treatmentMenu.delegate = self;
-    self.treatmentMenu.delegate = self;
     self.treatmentMenu.tag = 40;
     [self.topBgView addSubview:self.treatmentMenu];
     
@@ -330,9 +324,7 @@
     self.trainingFrequencyMenu.defualtStr = @"";
     self.trainingFrequencyMenu.delegate = self;
     self.trainingFrequencyMenu.titles = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7"];
-    self.trainingFrequencyMenu.delegate = self;
     self.trainingFrequencyMenu.backgroundColor = [UIColor whiteColor];
-    self.trainingFrequencyMenu.delegate = self;
     self.trainingFrequencyMenu.tag = 50;
     [self.topBgView addSubview:self.trainingFrequencyMenu];
     
@@ -349,8 +341,6 @@
     self.sportTimePointMenu.titles = @[@"任意",@"三餐前半小时",@"三餐后一小时"];
     self.sportTimePointMenu.delegate = self;
     self.sportTimePointMenu.backgroundColor = [UIColor whiteColor];
-    self.sportTimePointMenu.delegate = self;
-    self.sportTimePointMenu.delegate = self;
     self.sportTimePointMenu.tag = 60;
     [self.topBgView addSubview:self.sportTimePointMenu];
 }
