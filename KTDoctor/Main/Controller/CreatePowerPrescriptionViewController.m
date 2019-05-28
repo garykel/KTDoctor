@@ -121,8 +121,17 @@
 @property (nonatomic,assign)CGFloat targetDuration;
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,strong)NSMutableArray *recommendArr;
+@property (nonatomic,assign)NSInteger selectedTemplateIndex;
+@property (nonatomic,assign)NSDictionary *selectedTemplateDict;
 @property (nonatomic,copy)NSString *customTemplateName;
 @property (nonatomic,assign)NSInteger typeid;
+@property (nonatomic,strong)NSArray *totalTemplateArr;//获取到的所有的推荐模板
+@property (nonatomic,strong)NSMutableArray *recommendTemplateArr;//满足条件的推荐模板
+@property (nonatomic,assign)NSInteger type;
+@property (nonatomic,strong)NSMutableArray *sections;
+@property (nonatomic,assign)NSInteger treatmentPeriod;
+@property (nonatomic,assign)NSInteger daysPerWeek;
+@property (nonatomic,assign)NSInteger timing;
 @end
 
 @implementation CreatePowerPrescriptionViewController
@@ -133,6 +142,8 @@
     self.navigationController.navigationBar.hidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeWeight) name:@"ComputeWeightNotification" object:nil];
     self.recommendArr = [NSMutableArray array];
+    self.recommendTemplateArr = [NSMutableArray array];
+    self.selectedTemplateIndex = -1;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4", nil];
     self.equipIds = [NSMutableArray array];
@@ -351,7 +362,7 @@
     self.treatmentMenu.tag = 40;
     [self.topBgView addSubview:self.treatmentMenu];
     
-    self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
+    self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.treatmentLbl.frame) + kDieaseLbl_RightMargin * kXScal + kWeekMenu_Width * kXScal + kWeekMenu_RightMargin * kXScal, self.treatmentLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
     self.weekLbl.text = @"周";
     self.weekLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.weekLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
@@ -364,7 +375,7 @@
     [self.topBgView addSubview:self.trainingFrequencyLbl];
     
     self.dayLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingFrequencyLbl.frame) + kDieaseLbl_RightMargin * kXScal + kTrainingPositionMenu_Width * kXScal + kWeekMenu_RightMargin * kXScal, self.weekLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
-    self.dayLbl.text = @"周";
+    self.dayLbl.text = @"天";
     self.dayLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.dayLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     [self.topBgView addSubview:self.dayLbl];
@@ -658,12 +669,28 @@
 
 #pragma mark - XXTGDropdownMenuDelegate
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellNumber:(NSInteger)number {
-    
+    if (menu == self.trainingPositionMenu) { //训练部位
+        
+    }else if (menu == self.traingDeviceMenu){ //训练设备
+        if (self.totalTemplateArr.count > 0) {
+            
+        }
+    }else if (menu == self.templateMenu){ //推荐模版
+        self.selectedTemplateDict = [self.recommendTemplateArr objectAtIndex:number];
+        NSLog(@"self.selectedTemplateDict is :%@",self.selectedTemplateDict);
+    }else if (menu == self.treatmentMenu){ //疗程
+        
+    }else if (menu == self.trainingFrequencyMenu){ //周训练频次
+        
+        
+    }else if (menu == self.sportTimePointMenu){ //运动时间点
+        
+    }
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    if (menu == self.trainingPositionMenu) {
+    if (menu == self.trainingPositionMenu) { //训练部位
         if (self.deviceTypeArr.count > 0) {
             for (NSDictionary *dict in self.deviceTypeArr) {
                 NSString *name = [dict valueForKey:@"name"];
@@ -681,23 +708,134 @@
                 }
             }
         }
-    } else if (menu == self.traingDeviceMenu) {
-        if (self.equipIds.count > 0) {
-            for (NSDictionary *dict in self.equipIds) {
-                NSString *name = [dict valueForKey:@"name"];
-                if ([string isEqualToString:name]) {
-                    NSInteger id = [[dict valueForKey:@"id"] integerValue];
-                    self.typeid = id;
-                    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-                    NSDictionary *dict = self.user.organ;
-                    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-                    NSString *orgCode = orgCodeArr[0];
-                    [parameter setValue:orgCode forKey:@"orgCode"];
-                    [parameter setValue:@(id) forKey:@"id"];
-                    [self getDeviceTypeInfo:parameter];
+    }else if (menu == self.traingDeviceMenu){ //训练设备
+        if (![self isBlankString:string]) {
+            if (self.recommendTemplateArr.count > 0) {
+                [self.recommendTemplateArr removeAllObjects];
+            }
+            if (self.totalTemplateArr.count > 0) {
+                NSMutableArray *templateNames = [NSMutableArray array];
+                for (NSDictionary *dict in self.totalTemplateArr) {
+                    NSArray *typeList = [dict valueForKey:@"typeList"];
+                    if (typeList.count > 0) {
+                        for (NSDictionary *typeDict in typeList) {
+                            NSString *name = [typeDict valueForKey:@"name"];
+                            if ([string isEqualToString:name]) {
+                                self.type = [[typeDict valueForKey:@"id"] integerValue];
+                                [templateNames addObject:[dict valueForKey:@"title"]];
+                                [self.recommendTemplateArr addObject:dict];
+                            }
+                        }
+                    }
+                }
+                self.recommendArr = [templateNames mutableCopy];
+                self.templateMenu.titles = self.recommendArr;
+                [self.templateMenu.mTableView reloadData];
+            }
+        }
+    }else if (menu == self.templateMenu){ //推荐模版
+        
+        if (![self isBlankString:string]) {
+            for (NSDictionary *dict in self.recommendTemplateArr) {
+                NSString *title = [dict valueForKey:@"title"];
+                if ([string isEqualToString:title]) {
+                    self.selectedTemplateDict = dict;
                 }
             }
         }
+        NSLog(@"当前选择的模板是:%@",self.selectedTemplateDict);
+        NSInteger treatmentPeriod = [[self.selectedTemplateDict valueForKey:@"treatmentPeriod"] integerValue];
+        [self.treatmentMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",treatmentPeriod] forState:UIControlStateNormal];
+        self.treatmentPeriod = treatmentPeriod;
+        [self.treatmentMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        NSInteger daysPerWeek = [[self.selectedTemplateDict valueForKey:@"daysPerWeek"] integerValue];
+        [self.trainingFrequencyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",daysPerWeek] forState:UIControlStateNormal];
+        self.daysPerWeek = daysPerWeek;
+        [self.trainingFrequencyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        NSInteger timing = [[self.selectedTemplateDict valueForKey:@"timing"] integerValue];
+        NSString *timingStr = @"任意";
+        if (timing == 1) {
+            timingStr = @"三餐前半小时";
+        } else if(timing == 2) {
+            timingStr = @"三餐后一小时";
+        }
+        self.timing = timing;
+        [self.sportTimePointMenu.mainBtn setTitle:timingStr forState:UIControlStateNormal];
+        [self.sportTimePointMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        NSInteger id = [[self.selectedTemplateDict valueForKey:@"id"] integerValue];
+        [parameter setValue:@(id) forKey:@"id"];
+        [self getTemplateDetailInfo:parameter];
+    }else if (menu == self.treatmentMenu){ //疗程
+        
+        if (![self isBlankString:string]) {
+            self.treatmentPeriod = [string integerValue];
+        }
+        
+    }else if (menu == self.trainingFrequencyMenu){ //周训练频次
+        
+        if (![self isBlankString:string]) {
+            self.daysPerWeek = [string integerValue];
+        }
+        
+    }else if (menu == self.sportTimePointMenu){ //运动时间点
+        
+        if (![self isBlankString:string]) {
+            if ([string isEqualToString:@"任意"]) {
+                self.timing = 3;
+            } else if ([string isEqualToString:@"三餐前半小时"]) {
+                self.timing = 1;
+            } else if ([string isEqualToString:@"三餐后一小时"]) {
+                self.timing = 2;
+            }
+        }
+    }
+}
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    if (menu == self.trainingPositionMenu) { //训练部位
+        
+    }else if (menu == self.traingDeviceMenu){ //训练设备
+        if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+            [STTextHudTool showText:@"请先选择训练部位"];
+            [menu hiddenCityList];
+        } else {
+            [self.traingDeviceMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+        }
+    }else if (menu == self.templateMenu){ //推荐模版
+        if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+            [STTextHudTool showText:@"请先选择训练部位"];
+            [menu hiddenCityList];
+        } else if ([self.traingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+            [STTextHudTool showText:@"请先选择训练设备"];
+            [menu hiddenCityList];
+        } else {
+            if ([self.recommendTemplateArr count] == 0) {
+                [STTextHudTool showText:@"没有推荐处方"];
+                menu.defualtStr = @"请选择推荐模板";
+                [menu hiddenCityList];
+                menu.titles = nil;
+                if (self.groups.count > 0) {
+                    [self.groups removeAllObjects];
+                }
+                [self.treatmentMenu.mainBtn setTitle:@"6" forState:UIControlStateNormal];
+                [self.trainingFrequencyMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+                [self.sportTimePointMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+                self.trainingGroupValLbl.text = @"0";
+                self.trainingVolumeValLbl.text = @"0.00kg";
+                [self.listView reloadData];
+            }
+        }
+    }else if (menu == self.treatmentMenu){ //疗程
+        
+    }else if (menu == self.trainingFrequencyMenu){ //周训练频次
+        
+    }else if (menu == self.sportTimePointMenu){ //运动时间点
+        
     }
 }
 
@@ -782,6 +920,43 @@
         NSLog(@"error :%@",error);
     }];
 }
+
+//获取处方模板详细信息
+- (void)getTemplateDetailInfo:(NSMutableDictionary*)parameter {
+    kWeakSelf(self);
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_INFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"*********获取推荐处方模板详细信息*****%@**************",responseObject);
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSLog(@"rows is :%@",data);
+            if (data.count > 0) {
+                NSArray *sections = [data valueForKey:@"sections"];
+                NSMutableArray *templates = [NSMutableArray array];
+                if (sections.count > 0) {
+                    for (NSDictionary *dict in sections) {
+                        AerobicriptionModel *model = [AerobicriptionModel cp_objWithDict:dict];
+                        [templates addObject:model];
+                    }
+                }
+                weakself.groups = [templates mutableCopy];
+                [weakself.listView reloadData];
+                weakself.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",weakself.groups.count];
+                [weakself computeWeight];
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakself.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
 
 - (void)getDeviceTypeInfo:(NSMutableDictionary *)parameter {
     __weak typeof (self)weakSelf = self;
