@@ -128,7 +128,7 @@
 #define kBottomLongButton_LeftMargin 52
 #define kBottomButton_Height 28
 #define kBottomLongButton_Width 188
-#define kBottomShortButton_Width 113
+#define kBottomShortButton_Width 120
 #define kBottomButton_FontSize 14.0
 @interface PatientInfoViewController ()<XXTGDropdownMenuDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -412,7 +412,7 @@
 @property (nonatomic,strong)UIButton *powerReportBtn;//查看力量历史处方及报告
 @property (nonatomic,strong)UIButton *createAerobicPrescriptionBtn;//开具有氧处方
 @property (nonatomic,strong)UIButton *createPowerPrescriptionBtn;//开具力量处方
-
+@property (nonatomic,strong)UIButton *checkEvaluateBtn;//查看体能评估结果
 @property (nonatomic,assign)NSInteger offset;
 @property (nonatomic,assign)NSInteger leftOffset;//向左偏移
 @property (nonatomic,assign)BOOL hasEnded;//是否停止获取网络数据
@@ -604,7 +604,7 @@
     [self configLatestInfoView];
     [self configOlderInfoView];
     
-    CGFloat button_space = (self.scrollview.frame.size.width - 2 * kBottomLongButton_LeftMargin * kXScal - 2 * kBottomLongButton_Width * kXScal - 2 * kBottomShortButton_Width * kXScal)/3;
+    CGFloat button_space = (self.scrollview.frame.size.width - 2 * kBottomLongButton_LeftMargin * kXScal - 2 * kBottomLongButton_Width * kXScal - 3 * kBottomShortButton_Width * kXScal)/4;
     self.aerobicReportBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.aerobicReportBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
     self.aerobicReportBtn.frame = CGRectMake(kBottomLongButton_LeftMargin * kXScal, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomLongButton_Width * kXScal, kBottomButton_Height * kYScal);
@@ -647,6 +647,17 @@
     [self.createPowerPrescriptionBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
     [self.createPowerPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.createPowerPrescriptionBtn];
+    
+    self.checkEvaluateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.checkEvaluateBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
+    self.checkEvaluateBtn.frame = CGRectMake(CGRectGetMaxX(self.createPowerPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
+    [self.checkEvaluateBtn setTitle:@"查看体能评估结果" forState:UIControlStateNormal];
+    self.checkEvaluateBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
+    self.checkEvaluateBtn.layer.masksToBounds = YES;
+    [self.checkEvaluateBtn addTarget:self action:@selector(checkEvaluateResult:) forControlEvents:UIControlEventTouchUpInside];
+    [self.checkEvaluateBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
+    [self.checkEvaluateBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.scrollview addSubview:self.checkEvaluateBtn];
 }
 
 - (void)configLatestInfoView {
@@ -2722,6 +2733,11 @@
 //    OpenAerobicPrescriptionVC *vc = [[OpenAerobicPrescriptionVC alloc] init];
 //    vc.prescriptionDict = self.latestInfoDict;
 //    [self.navigationController pushViewController:vc animated:YES];
+}
+
+//查看体能评估结果
+- (void)checkEvaluateResult:(UIButton*)sender {
+    [STTextHudTool showText:@"敬请期待"];
 }
 
 - (void)createPowerPrescription:(UIButton*)sender {

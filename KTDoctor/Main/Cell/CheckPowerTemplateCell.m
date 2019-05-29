@@ -253,7 +253,7 @@
         NSInteger angle = [string integerValue];
         [self.rotationAngleLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d°",angle] forState:UIControlStateNormal];
         NSMutableArray *angles = [NSMutableArray array];
-        for (NSInteger i = angle + 10; i < 180; i++) {
+        for (NSInteger i = angle + 10; i <= 180; i++) {
             if (i%10==0) {
                 [angles addObject:[NSString stringWithFormat:@"%d",i]];
             }
@@ -262,6 +262,14 @@
         [self.rotationAngleRightMenu.mTableView reloadData];
     } else if (menu == self.rotationAngleRightMenu) {
         NSInteger angle = [string integerValue];
+        NSMutableArray *angles = [NSMutableArray array];
+        for (NSInteger i = 0; i <= angle - 10; i++) {
+            if (i%10==0) {
+                [angles addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+        }
+        self.rotationAngleLeftMenu.titles = [angles copy];
+        [self.rotationAngleLeftMenu.mTableView reloadData];
         [self.rotationAngleRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d°",angle] forState:UIControlStateNormal];
         NSString *min = self.rotationAngleLeftMenu.mainBtn.titleLabel.text;
         self.model.rotationAngle = [NSString stringWithFormat:@"%@-%@",min,string];

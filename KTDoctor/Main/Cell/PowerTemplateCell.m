@@ -314,7 +314,7 @@
         NSInteger sec = [self.restRightMenu.mainBtn.titleLabel.text integerValue];
         self.model.restDuration = num * 60 + sec;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];
-    } else if (menu == self.rpeRightMenu) {
+    } else if (menu == self.restRightMenu) {
         NSInteger min = [self.restLeftMenu.mainBtn.titleLabel.text integerValue];
         self.model.restDuration = min * 60 + [string integerValue];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeTotalTrainingTimeNotification" object:nil];

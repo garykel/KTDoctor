@@ -669,56 +669,64 @@
 }
 
 - (void)saveOrCreate:(UIButton*)sender {
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    NSString *orgCode = [self.templateInfo valueForKey:@"orgCode"];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
-    [parameter setValue:@(self.typeid) forKey:@"type"]; //类型
-    [parameter setValue:@(id) forKey:@"id"];
-//    [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
-    [parameter setValue:self.templateNameTF.text forKey:@"title"];
-    NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;
-    [parameter setValue:disease forKey:@"disease"];
-    [parameter setValue:self.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
-    [parameter setValue:self.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
-    NSString *timingStr = self.sportTimePointMenu.mainBtn.titleLabel.text;
-    NSInteger timing = 0;
-    if ([timingStr isEqualToString:@"任意"]) {
-        timing = 3;
-    } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
-        timing = 1;
-    } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
-        timing = 2;
-    }
-    [parameter setValue:@(timing) forKey:@"timing"];
-//    [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
-    NSInteger riskLevel = [[self.templateInfo valueForKey:@"riskLevel"] integerValue];
-    [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
-    NSInteger targetCalorie = [[self.templateInfo valueForKey:@"targetCalorie"] integerValue];
-    [parameter setValue:@(targetCalorie) forKey:@"targetCalorie"];
-    [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
-    if (self.groups.count > 0) {
-        NSMutableArray *groups = [NSMutableArray array];
-        for (AerobicriptionModel *model in self.groups) {
-            NSMutableDictionary *group = [NSMutableDictionary dictionary];
-            [group setValue:model.title forKey:@"title"];
-            [group setValue:model.hrRange forKey:@"hrRange"];
-            [group setValue:model.rpeRange forKey:@"rpeRange"];
-            [group setValue:model.difficulty forKey:@"difficulty"];
-            [group setValue:@(model.calorie) forKey:@"calorie"];
-            [group setValue:@(model.duration) forKey:@"duration"];
-            [group setValue:@(model.restDuration) forKey:@"restDuration"];
-            [group setValue:@(model.speed) forKey:@"speed"];
-            [group setValue:@(model.weight) forKey:@"weight"];
-            [group setValue:@(model.times) forKey:@"times"];
-            [group setValue:model.rotationAngle forKey:@"rotationAngle"];
-            [groups addObject:group];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSString *orgCode = [self.templateInfo valueForKey:@"orgCode"];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
+        [parameter setValue:@(self.typeid) forKey:@"type"]; //类型
+        [parameter setValue:@(id) forKey:@"id"];
+        //    [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
+        [parameter setValue:self.templateNameTF.text forKey:@"title"];
+        NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;
+        [parameter setValue:disease forKey:@"disease"];
+        [parameter setValue:self.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
+        [parameter setValue:self.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
+        NSString *timingStr = self.sportTimePointMenu.mainBtn.titleLabel.text;
+        NSInteger timing = 0;
+        if ([timingStr isEqualToString:@"任意"]) {
+            timing = 3;
+        } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
+            timing = 1;
+        } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
+            timing = 2;
         }
-        [parameter setValue:groups forKey:@"sections"];
-    } else {
-        [parameter setValue:@[] forKey:@"sections"];
-    }
-    [self updateTemplate:parameter];
+        [parameter setValue:@(timing) forKey:@"timing"];
+        //    [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
+        NSInteger riskLevel = [[self.templateInfo valueForKey:@"riskLevel"] integerValue];
+        [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
+        NSInteger targetCalorie = [[self.templateInfo valueForKey:@"targetCalorie"] integerValue];
+        [parameter setValue:@(targetCalorie) forKey:@"targetCalorie"];
+        [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
+        if (self.groups.count > 0) {
+            NSMutableArray *groups = [NSMutableArray array];
+            for (AerobicriptionModel *model in self.groups) {
+                NSMutableDictionary *group = [NSMutableDictionary dictionary];
+                [group setValue:model.title forKey:@"title"];
+                [group setValue:model.hrRange forKey:@"hrRange"];
+                [group setValue:model.rpeRange forKey:@"rpeRange"];
+                [group setValue:model.difficulty forKey:@"difficulty"];
+                [group setValue:@(model.calorie) forKey:@"calorie"];
+                [group setValue:@(model.duration) forKey:@"duration"];
+                [group setValue:@(model.restDuration) forKey:@"restDuration"];
+                [group setValue:@(model.speed) forKey:@"speed"];
+                [group setValue:@(model.weight) forKey:@"weight"];
+                [group setValue:@(model.times) forKey:@"times"];
+                [group setValue:model.rotationAngle forKey:@"rotationAngle"];
+                [groups addObject:group];
+            }
+            [parameter setValue:groups forKey:@"sections"];
+        } else {
+            [parameter setValue:@[] forKey:@"sections"];
+        }
+        [self updateTemplate:parameter];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:okAction];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:NO completion:nil];
 }
 
 - (void)giveup:(UIButton*)sender {

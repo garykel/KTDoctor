@@ -996,7 +996,7 @@
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_CREATE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"**************新建模板%@**************",responseObject);
+        NSLog(@"**************新建模板%@**************",[weakSelf convertToJSONData:responseObject]);
         if (code == 0) {
             [STTextHudTool showText:@"保存成功请到自定义模板查看"];
         } else if (code == 10011) {

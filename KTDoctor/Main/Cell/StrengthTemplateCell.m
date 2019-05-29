@@ -256,7 +256,7 @@
         NSInteger angle = [string integerValue];
         [self.rotationAngleLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d°",angle] forState:UIControlStateNormal];
         NSMutableArray *angles = [NSMutableArray array];
-        for (NSInteger i = angle + 10; i < 180; i++) {
+        for (NSInteger i = angle + 10; i <= 180; i++) {
             if (i%10==0) {
                 [angles addObject:[NSString stringWithFormat:@"%d",i]];
             }
@@ -273,7 +273,14 @@
         } else {
             self.model.rotationAngle = [NSString stringWithFormat:@"%@-%@",title,string];
         }
-        
+        NSMutableArray *angles = [NSMutableArray array];
+        for (NSInteger i = 0; i <= angle - 10; i++) {
+            if (i%10==0) {
+                [angles addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+        }
+        self.rotationAngleLeftMenu.titles = [angles copy];
+        [self.rotationAngleLeftMenu.mTableView reloadData];
     } else if (menu == self.rpeLeftMenu) {
         CGFloat rpeLeft = [string floatValue];
         CGFloat rpeRight = [self.rpeRightMenu.mainBtn.titleLabel.text floatValue];
@@ -290,6 +297,15 @@
     } else if (menu == self.rpeRightMenu) {
         CGFloat rpeLeft = [self.rpeLeftMenu.mainBtn.titleLabel.text floatValue];
         CGFloat rpeRight = [string floatValue];
+        NSMutableArray *rpes = [NSMutableArray array];
+        NSInteger rpe = (NSInteger)(rpeRight * 10);
+        for (NSInteger i = 0; i <= rpe - 5; i++) {
+            if (i%5==0) {
+                [rpes addObject:[NSString stringWithFormat:@"%.1f",i/10.0]];
+            }
+        }
+        self.rpeLeftMenu.titles = [rpes copy];
+        [self.rpeLeftMenu.mTableView reloadData];
         self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.restLeftMenu) {
         NSInteger num = [string integerValue];

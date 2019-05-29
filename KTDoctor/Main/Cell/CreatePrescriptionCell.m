@@ -299,10 +299,28 @@
     } else if (menu == self.rpeLeftMenu) {
         CGFloat rpeLeft = [string floatValue];
         CGFloat rpeRight = [self.rpeRightMenu.mainBtn.titleLabel.text floatValue];
+        NSMutableArray *rpes = [NSMutableArray array];
+        NSInteger rpe = (NSInteger)(rpeLeft * 10);
+        for (NSInteger i = rpe + 5; i <= 100; i++) {
+            if (i%5==0) {
+                [rpes addObject:[NSString stringWithFormat:@"%.1f",i/10.0]];
+            }
+        }
+        self.rpeRightMenu.titles = [rpes copy];
+        [self.rpeRightMenu.mTableView reloadData];
         self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.rpeRightMenu) {
         CGFloat rpeLeft = [self.rpeLeftMenu.mainBtn.titleLabel.text floatValue];
         CGFloat rpeRight = [string floatValue];
+        NSMutableArray *rpes = [NSMutableArray array];
+        NSInteger rpe = (NSInteger)(rpeRight * 10);
+        for (NSInteger i = 0; i <= rpe - 5; i++) {
+            if (i%5==0) {
+                [rpes addObject:[NSString stringWithFormat:@"%.1f",i/10.0]];
+            }
+        }
+        self.rpeLeftMenu.titles = [rpes copy];
+        [self.rpeLeftMenu.mTableView reloadData];
         self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.restLeftMenu) {
         NSInteger num = [string integerValue];

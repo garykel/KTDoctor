@@ -123,8 +123,6 @@
 @property (nonatomic,strong)NSMutableArray *recommendArr;
 @property (nonatomic,assign)NSInteger selectedTemplateIndex;
 @property (nonatomic,assign)NSDictionary *selectedTemplateDict;
-@property (nonatomic,copy)NSString *customTemplateName;
-@property (nonatomic,assign)NSInteger typeid;
 @property (nonatomic,strong)NSArray *totalTemplateArr;//获取到的所有的推荐模板
 @property (nonatomic,strong)NSMutableArray *recommendTemplateArr;//满足条件的推荐模板
 @property (nonatomic,assign)NSInteger type;
@@ -145,7 +143,7 @@
     self.recommendTemplateArr = [NSMutableArray array];
     self.selectedTemplateIndex = -1;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
-    self.groups = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4", nil];
+    self.groups = [NSMutableArray array];
     self.equipIds = [NSMutableArray array];
     [self setNavBar];
     [self setupUI];
@@ -423,7 +421,7 @@
     self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
     self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingGroupValLbl.text = @"1";
+    self.trainingGroupValLbl.text = @"0";
     [self.dataView addSubview:self.trainingGroupValLbl];
     
     CGFloat space = (self.dataView.frame.size.width - 2 * kTrainingTimeLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal - 3 * kTrainingTimeLbl_RightMargin - 3 * kTrainingTimeValLbl_Width * kXScal)/2;
@@ -552,7 +550,8 @@
     }else {
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:@"自定义模板名称" preferredStyle:UIAlertControllerStyleAlert];
         [alertController addAction:[UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            if (weakself.customTemplateName.length == 0) {
+            UITextField *nameTF = alertController.textFields.firstObject;
+            if (nameTF.text.length == 0) {
                 [STTextHudTool showText:@"名字不能为空"];
                 [weakself presentViewController:alertController animated:YES completion:nil];
             } else {
@@ -561,8 +560,8 @@
                 NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
                 NSString *orgCode = orgCodeArr[0];
                 [parameter setValue:orgCode forKey:@"orgCode"];
-                [parameter setValue:@(weakself.typeid) forKey:@"type"]; //类型
-                [parameter setValue:weakself.customTemplateName forKey:@"title"];
+                [parameter setValue:@(weakself.type) forKey:@"type"]; //类型
+                [parameter setValue:nameTF.text forKey:@"title"];
                 NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
                 [parameter setValue:disease forKey:@"disease"];
                 [parameter setValue:weakself.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
@@ -579,9 +578,28 @@
                 [parameter setValue:@(timing) forKey:@"timing"];
                 NSInteger riskLevel = [[weakself.prescriptionDict valueForKey:@"riskLevel"] integerValue];
                 [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
-                [parameter setValue:@300 forKey:@"targetDuration"];
-                NSArray *sections = @[@{@"title":@"第1小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第2小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"},@{@"title":@"第3小节",@"hrRange":@"60-80",@"rpeRange":@"10-25",@"difficulty":@"06",@"calorie":@50,@"duration":@130,@"restDuration":@60,@"speed":@20,@"weight":@60,@"times":@0,@"rotationAngle":@"0-180"}];
-                [parameter setValue:sections forKey:@"sections"];
+                [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
+                if (self.groups.count > 0) {
+                    NSMutableArray *groups = [NSMutableArray array];
+                    for (AerobicriptionModel *model in self.groups) {
+                        NSMutableDictionary *group = [NSMutableDictionary dictionary];
+                        [group setValue:model.title forKey:@"title"];
+                        [group setValue:model.hrRange forKey:@"hrRange"];
+                        [group setValue:model.rpeRange forKey:@"rpeRange"];
+                        [group setValue:model.difficulty forKey:@"difficulty"];
+                        [group setValue:@(model.calorie) forKey:@"calorie"];
+                        [group setValue:@(model.duration) forKey:@"duration"];
+                        [group setValue:@(model.restDuration) forKey:@"restDuration"];
+                        [group setValue:@(model.speed) forKey:@"speed"];
+                        [group setValue:@(model.weight) forKey:@"weight"];
+                        [group setValue:@(model.times) forKey:@"times"];
+                        [group setValue:model.rotationAngle forKey:@"rotationAngle"];
+                        [groups addObject:group];
+                    }
+                    [parameter setValue:groups forKey:@"sections"];
+                } else {
+                    [parameter setValue:@[] forKey:@"sections"];
+                }
                 [weakself createCustomTemplate:parameter];
             }
         }]];
@@ -591,8 +609,6 @@
         }]];
         [alertController addTextFieldWithConfigurationHandler:^(UITextField*_Nonnull textField) {
             textField.placeholder=@"请输入名称";
-            textField.secureTextEntry=YES;
-            weakself.customTemplateName = textField.text;
         }];
         [self presentViewController:alertController animated:YES completion:nil];
     }
@@ -885,7 +901,7 @@
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_CREATE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"**************新建模板%@**************",responseObject);
+        NSLog(@"**************新建模板%@**************",[weakSelf convertToJSONData:responseObject]);
         if (code == 0) {
             
         } else if (code == 10011) {

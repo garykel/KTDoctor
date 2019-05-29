@@ -508,13 +508,37 @@
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
         }
+        NSInteger difficulty = [[dict valueForKey:@"difficulty"] integerValue];
+        if (difficulty > 0) {
+            [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]] forState:UIControlStateNormal];
+            [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        }
+        
+        NSInteger duration = [[dict valueForKey:@"duration"] integerValue];
+        if (duration > 0) {
+            NSInteger min = duration / 60;
+            NSInteger sec = duration % 60;
+            [cell.traingingTimeLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
+            [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        }
+        NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
+        if (restDuration > 0) {
+            NSInteger min = duration / 60;
+            NSInteger sec = duration % 60;
+            [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
+            [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        }
         cell.model = dict;
         [cell.addBtn addTarget:self action:@selector(addGroup:) forControlEvents:UIControlEventTouchUpInside];
         cell.addBtn.tag = 10000 + indexPath.section;
         cell.removeBtn.tag = 20000 + indexPath.section;
         [cell.removeBtn addTarget:self action:@selector(removeGroup:) forControlEvents:UIControlEventTouchUpInside];
         return cell;
-    } else {
+    } else {//功率模板
         NSString *reuseCellIdStr = [NSString stringWithFormat:@"PowerTemplateCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
         PowerTemplateCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
         if (cell == nil) {
@@ -556,6 +580,30 @@
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
         }
+        NSInteger difficulty = [[dict valueForKey:@"difficulty"] integerValue];
+        if (difficulty > 0) {
+            [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%dw",[[dict valueForKey:@"difficulty"] integerValue]] forState:UIControlStateNormal];
+            [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        }
+        
+        NSInteger duration = [[dict valueForKey:@"duration"] integerValue];
+        if (duration > 0) {
+            NSInteger min = duration / 60;
+            NSInteger sec = duration % 60;
+            [cell.traingingTimeLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
+            [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        }
+        NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
+        if (restDuration > 0) {
+            NSInteger min = duration / 60;
+            NSInteger sec = duration % 60;
+            [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
+            [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        }
         cell.model = dict;
         [cell.addBtn addTarget:self action:@selector(addGroup:) forControlEvents:UIControlEventTouchUpInside];
         cell.addBtn.tag = 10000 + indexPath.section;
@@ -593,7 +641,16 @@
         for (AerobicriptionModel *dict in self.groups) {
             sumDifficulty += [[dict valueForKey:@"difficulty"] integerValue];
         }
-        self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",sumDifficulty / self.groups.count];
+        if (self.type == 1) {
+            self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",sumDifficulty / self.groups.count];
+        } else {
+            NSInteger avgPower = sumDifficulty / self.groups.count;
+            if (avgPower > 0) {
+                self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%dw",sumDifficulty / self.groups.count];
+            } else {
+                self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",sumDifficulty / self.groups.count];
+            }
+        }
     }
 }
 
