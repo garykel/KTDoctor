@@ -115,7 +115,7 @@
     self.difficultyRightMenu.titles = @[@"10",@"15",@"20",@"25",@"30",@"35",@"40",@"45",@"50",@"55",@"60",@"65",@"70",@"75",@"80",@"85",@"90",@"95",@"100"];
     [self.infoBgView addSubview:self.difficultyRightMenu];
     
-    CGFloat space = (self.infoBgView.frame.size.width - kDifficultyPercentLbl_LeftMargin * kXScal - kDifficultyPercentLbl_Width * kXScal - kDifficultyPercentLbl_RightMargin * kXScal - kDifficultyPercentImg_Widht * kXScal -kDifficultyPercentImg_Right * kXScal - 2 * kMenu_Width * kXScal - kMenu_RightMargin * kXScal - kTildeLbl_Width * kXScal - kMenu_RightMargin * kXScal - kTrainingTimeLbl_Width * kXScal - kTrainingTimeLbl_Right * kXScal - 2 * kMenu_Width * kXScal - 2 * kMinLbl_Width * kXScal - 3 * kMenu_RightMargin * kXScal - kDifficultyLbl_Width * kXScal - kTrainingTimeLbl_Right - kMenu_Width * kXScal)/2;
+    CGFloat space = (self.infoBgView.frame.size.width - 2 * kDifficultyPercentLbl_LeftMargin * kXScal - kDifficultyPercentLbl_Width * kXScal - kDifficultyPercentLbl_RightMargin * kXScal - kDifficultyPercentImg_Widht * kXScal -kDifficultyPercentImg_Right * kXScal - 2 * kMenu_Width * kXScal - kMenu_RightMargin * kXScal - kTildeLbl_Width * kXScal - kMenu_RightMargin * kXScal - kTrainingTimeLbl_Width * kXScal - kTrainingTimeLbl_Right * kXScal - 2 * kMenu_Width * kXScal - 2 * kMinLbl_Width * kXScal - 3 * kMenu_RightMargin * kXScal - kDifficultyLbl_Width * kXScal - kTrainingTimeLbl_Right * kXScal - kMenu_Width * kXScal)/2;
     self.traingingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyRightMenu.frame) + space, self.difficultyPercentLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeLbl_Height * kYScal)];
     self.traingingTimeLbl.font = [UIFont systemFontOfSize:kDifficultyPercentLbl_Fontsize * kYScal];
     self.traingingTimeLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
@@ -288,11 +288,29 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ComputeAvgDifficultyNotification" object:nil];
     } else if (menu == self.rpeLeftMenu) {
         CGFloat rpeLeft = [string floatValue];
+        NSMutableArray *arr = [NSMutableArray array];
+        NSInteger left = (NSInteger)(rpeLeft * 10);
+        for (NSInteger i = left + 5; i <=100; i++) {
+            if (i%5==0) {
+                [arr addObject:[NSString stringWithFormat:@"%.1f",i/10.0]];
+            }
+        }
+        self.rpeRightMenu.titles = [arr copy];
+        [self.rpeRightMenu.mTableView reloadData];
         CGFloat rpeRight = [self.rpeRightMenu.mainBtn.titleLabel.text floatValue];
         self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.rpeRightMenu) {
         CGFloat rpeLeft = [self.rpeLeftMenu.mainBtn.titleLabel.text floatValue];
         CGFloat rpeRight = [string floatValue];
+        NSMutableArray *arr = [NSMutableArray array];
+        NSInteger right = (NSInteger)(rpeRight * 10);
+        for (NSInteger i = 0; i <= right - 5; i++) {
+            if (i%5==0) {
+                [arr addObject:[NSString stringWithFormat:@"%.1f",i/10.0]];
+            }
+        }
+        self.rpeLeftMenu.titles = [arr copy];
+        [self.rpeLeftMenu.mTableView reloadData];
         self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.restLeftMenu) {
         NSInteger num = [string integerValue];

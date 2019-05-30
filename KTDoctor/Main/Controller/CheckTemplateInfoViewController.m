@@ -627,7 +627,11 @@
         for (AerobicriptionModel *dict in self.groups) {
             sumDifficulty += [[dict valueForKey:@"difficulty"] integerValue];
         }
-        self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",sumDifficulty / self.groups.count];
+        if (self.type2 == 1) {
+            self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",sumDifficulty / self.groups.count];
+        } else {
+            self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%dw",sumDifficulty / self.groups.count];
+        }
     }
 }
 

@@ -106,12 +106,13 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)NSMutableArray *systemTemplateArr;
 @property (nonatomic,strong)NSMutableArray *customTemplateIdArr;
 @property (nonatomic,strong)UserModel *user;
-@property (nonatomic,assign)NSInteger type;
+@property (nonatomic,assign)NSInteger type;//模板类型 1 系统模板 2 自定义模板
 @property (nonatomic,strong)ChooseTemplateTypeView *template;
 @property (nonatomic,strong)NSArray *deviceTypeArr;
-@property (nonatomic,assign)NSInteger templateType;
+@property (nonatomic,assign)NSInteger templateType;//模板设备类型 1 有氧设备 2 力量设备
 @property (nonatomic,strong)UIButton *customTimeBtn;
 @property (nonatomic,strong)UIButton *systemTimeBtn;
+@property (nonatomic,assign)BOOL needCleanArr;
 @end
 
 @implementation AddTemplateViewController
@@ -123,6 +124,7 @@ CGSize systemListviewSize;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.type = 2;
     self.templateType = 1;
+    self.needCleanArr = NO;
     self.customTemplateArr = [NSMutableArray array];
     self.customeTemplateCheckArr = [NSMutableArray array];
     self.systemTemplateArr = [NSMutableArray array];
@@ -785,6 +787,7 @@ CGSize systemListviewSize;
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
     if (menu == self.templateMenu) {
+        self.needCleanArr = YES;
         if ([string isEqualToString:@"自定义模板"]) {
             self.systemListviewBgView.hidden = YES;
             self.customListviewBgView.hidden = NO;
@@ -1229,32 +1232,46 @@ CGSize systemListviewSize;
             } else {
                 if (rows.count > 0) {
                     if (type == 1) {//系统模板
-                        if (weakSelf.systemTemplateArr.count > 0) {
-                            //替换前n个数据
-                            NSMutableArray *tempArr = [NSMutableArray array];
-                            [tempArr addObjectsFromArray:rows];
-                            if (weakSelf.systemTemplateArr.count > rows.count) {
-                                NSArray *afterArr = [weakSelf.systemTemplateArr subarrayWithRange:NSMakeRange(rows.count, weakSelf.systemTemplateArr.count - rows.count)];
-                                [tempArr addObjectsFromArray:afterArr];
+                        if (weakSelf.needCleanArr) {
+                            if (weakSelf.systemTemplateArr.count > 0) {
+                                [weakSelf.systemTemplateArr removeAllObjects];
                             }
-                            weakSelf.systemTemplateArr = [tempArr mutableCopy];
-                        } else {
                             [weakSelf.systemTemplateArr addObjectsFromArray:rows];
+                        } else {
+                            if (weakSelf.systemTemplateArr.count > 0) {
+                                //替换前n个数据
+                                NSMutableArray *tempArr = [NSMutableArray array];
+                                [tempArr addObjectsFromArray:rows];
+                                if (weakSelf.systemTemplateArr.count > rows.count) {
+                                    NSArray *afterArr = [weakSelf.systemTemplateArr subarrayWithRange:NSMakeRange(rows.count, weakSelf.systemTemplateArr.count - rows.count)];
+                                    [tempArr addObjectsFromArray:afterArr];
+                                }
+                                weakSelf.systemTemplateArr = [tempArr mutableCopy];
+                            } else {
+                                [weakSelf.systemTemplateArr addObjectsFromArray:rows];
+                            }
                         }
                         [weakSelf.systemTemplateListView.mj_header endRefreshing];
                         [weakSelf.systemTemplateListView reloadData];
                     } else {//自定义模板
-                        if (weakSelf.customTemplateArr.count > 0) {
-                            //替换前n个数据
-                            NSMutableArray *tempArr = [NSMutableArray array];
-                            [tempArr addObjectsFromArray:rows];
-                            if (weakSelf.customTemplateArr.count > rows.count) {
-                                NSArray *afterArr = [weakSelf.customTemplateArr subarrayWithRange:NSMakeRange(rows.count, weakSelf.customTemplateArr.count - rows.count)];
-                                [tempArr addObjectsFromArray:afterArr];
+                        if (weakSelf.needCleanArr) {
+                            if (weakSelf.customTemplateArr.count > 0) {
+                                [weakSelf.customTemplateArr removeAllObjects];
                             }
-                            weakSelf.customTemplateArr = [tempArr mutableCopy];
-                        } else {
                             [weakSelf.customTemplateArr addObjectsFromArray:rows];
+                        } else {
+                            if (weakSelf.customTemplateArr.count > 0) {
+                                //替换前n个数据
+                                NSMutableArray *tempArr = [NSMutableArray array];
+                                [tempArr addObjectsFromArray:rows];
+                                if (weakSelf.customTemplateArr.count > rows.count) {
+                                    NSArray *afterArr = [weakSelf.customTemplateArr subarrayWithRange:NSMakeRange(rows.count, weakSelf.customTemplateArr.count - rows.count)];
+                                    [tempArr addObjectsFromArray:afterArr];
+                                }
+                                weakSelf.customTemplateArr = [tempArr mutableCopy];
+                            } else {
+                                [weakSelf.customTemplateArr addObjectsFromArray:rows];
+                            }
                         }
                         [weakSelf.customTemplateListView.mj_header endRefreshing];
                         [weakSelf.customTemplateListView reloadData];
