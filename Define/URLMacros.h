@@ -48,4 +48,5 @@
 #define kDOCTOR_TEMPLATE_INFO_URL @"/doctor/template/info" //处方模板详细信息
 #define kDEVICE_TYPE_LIST_URL @"/device_type/list" //设备类型列表
 #define kDEVICE_TYPE_INFO_URL @"/device_type/info" //设备类型信息
+#define kDOCTOR_USER_STAMINA_TEST_URL @"/doctor/user_stamina_test" //查看用户体能测试列表
 #endif /* URLMacros_h */

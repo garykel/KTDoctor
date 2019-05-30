@@ -11,6 +11,7 @@
 #import "CreateAerobicPrescriptionViewController.h"
 #import "AerobicPrescriptionAndReportViewController.h"
 #import "CreatePowerPrescriptionViewController.h"
+#import "CheckEvaluateReportViewController.h"
 #import "OpenAerobicPrescriptionVC.h"
 
 #import "KTDropDownMenus.h"
@@ -2737,7 +2738,9 @@
 
 //查看体能评估结果
 - (void)checkEvaluateResult:(UIButton*)sender {
-    [STTextHudTool showText:@"敬请期待"];
+    CheckEvaluateReportViewController *report = [[CheckEvaluateReportViewController alloc] init];
+    report.userInfo = self.latestInfoDict;
+    [self.navigationController pushViewController:report animated:NO];
 }
 
 - (void)createPowerPrescription:(UIButton*)sender {
