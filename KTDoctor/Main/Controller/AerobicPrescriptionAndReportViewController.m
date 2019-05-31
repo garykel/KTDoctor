@@ -340,8 +340,8 @@
     NSDictionary *dict = [self.precriptionsArr objectAtIndex:index];
     NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
     if (reportNum > 0) {
-        BOOL close = [[self.closeArr objectAtIndex:index] boolValue];
-        [self.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
+//        BOOL close = [[self.closeArr objectAtIndex:index] boolValue];
+//        [self.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
         [parameter setValue:@0 forKey:@"offset"];
         [parameter setValue:@(reportNum) forKey:@"rows"];
@@ -408,12 +408,15 @@
             if (datas.count > 0) {
                 NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:NO];
                 datas = [[datas sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] mutableCopy];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
                 cell.reportsArr = [datas mutableCopy];
+                BOOL close = [[self.closeArr objectAtIndex:index] boolValue];
+                [weakSelf.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
                 [cell.reportListview reloadData];
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:index];
                 [weakSelf.listView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
             });
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];

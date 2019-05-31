@@ -126,14 +126,16 @@
 @property (nonatomic,strong)NSMutableArray *recommendArr;
 @property (nonatomic,assign)NSInteger selectedTemplateIndex;
 @property (nonatomic,assign)NSDictionary *selectedTemplateDict;
-@property (nonatomic,strong)NSArray *totalTemplateArr;//获取到的所有的推荐模板
+@property (nonatomic,strong)NSMutableArray *totalTemplateArr;//获取到的所有的推荐模板
 @property (nonatomic,strong)NSMutableArray *recommendTemplateArr;//满足条件的推荐模板
 @property (nonatomic,assign)NSInteger type;
+@property (nonatomic,strong)NSMutableArray *equipmentsArr;
 @property (nonatomic,assign)NSInteger targetDuration;
 @property (nonatomic,strong)NSMutableArray *sections;
 @property (nonatomic,assign)NSInteger treatmentPeriod;
 @property (nonatomic,assign)NSInteger daysPerWeek;
 @property (nonatomic,assign)NSInteger timing;
+@property (nonatomic,assign)NSInteger offset;
 @end
 
 @implementation CreateAerobicPrescriptionViewController
@@ -143,9 +145,12 @@
     self.navigationController.navigationBar.hidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
+    self.totalTemplateArr = [NSMutableArray array];
     self.recommendArr = [NSMutableArray array];
     self.recommendTemplateArr = [NSMutableArray array];
+    self.equipmentsArr = [NSMutableArray array];
     self.selectedTemplateIndex = -1;
+    self.offset = 0;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray array];
     [self setNavBar];
@@ -156,7 +161,7 @@
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
     [parameter setValue:@10 forKey:@"rows"];
     NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
     [parameter setValue:disease forKey:@"disease"];
@@ -320,6 +325,7 @@
     if (self.deviceTypeArr.count > 0) {
         for (NSDictionary *dict1 in self.deviceTypeArr) {
             NSArray *children = [dict1 valueForKey:@"children"];
+            self.equipmentsArr = [children mutableCopy];
             if (children.count > 0) {
                 for (NSDictionary *child in children) {
                     [trainingEquipMentArr addObject:[child valueForKey:@"name"]];
@@ -789,9 +795,11 @@
             }
             if (self.totalTemplateArr.count > 0) {
                 NSMutableArray *templateNames = [NSMutableArray array];
+                NSLog(@"equipmentsArr is :%@",[self convertToJSONData:self.equipmentsArr]);
+                NSLog(@"totalTemplateArr is :%@",[self convertToJSONData:self.totalTemplateArr]);
                 for (NSDictionary *dict in self.totalTemplateArr) {
                     NSArray *typeList = [dict valueForKey:@"typeList"];
-                    if (typeList.count > 0) {
+                    if (typeList.count > 2) {
                         for (NSDictionary *typeDict in typeList) {
                             NSString *name = [typeDict valueForKey:@"name"];
                             if ([string isEqualToString:name]) {
@@ -960,25 +968,32 @@
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_RECOMMEND_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"*********获取推荐处方模板*****%@**************",responseObject);
+        NSLog(@"*********获取推荐处方模板*****%@**************",[self convertToJSONData:responseObject]);
         if (code == 0) {
             NSArray *rows = [responseObject valueForKey:@"rows"];
-            weakself.totalTemplateArr = [rows copy];
-            NSLog(@"rows is :%@",rows);
             if (rows.count > 0) {
+                [weakself.totalTemplateArr addObjectsFromArray:rows];
                 for (NSDictionary *dict in rows) {
-//                    NSArray *typeList = [dict valueForKey:@"typeList"];
-//                    if (typeList.count > 0) {
-//                        for (NSDictionary *typeDict in typeList) {
-//                            NSString *name = [typeDict valueForKey:@"name"];
-//                            if ([name isEqualToString:self.traingDeviceMenu.mainBtn.titleLabel.text]) {
-//                                [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
-//                            }
-//                        }
-//                    }
                     [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
                 }
+                weakself.offset += 10;
+                NSMutableDictionary *para = [NSMutableDictionary dictionary];
+                NSDictionary *dict = weakself.user.organ;
+                NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+                NSString *orgCode = orgCodeArr[0];
+                [para setValue:orgCode forKey:@"orgCode"];
+                [para setValue:@(weakself.offset) forKey:@"offset"];
+                [para setValue:@20 forKey:@"rows"];
+                NSString *disease = [weakself.prescriptionDict valueForKey:@"disease"];
+                [para setValue:disease forKey:@"disease"];
+                [para setValue:@"" forKey:@"difficulty"];
+                NSInteger riskLevel = [[weakself.prescriptionDict valueForKey:@"riskLevel"] integerValue];
+                [para setValue:@(riskLevel) forKey:@"risk"];
+                [para setValue:@1 forKey:@"type"];
+                [weakself getRecommendTemplateList:para];
             }
+            NSLog(@"totalTemplateArr count is :%d",weakself.totalTemplateArr.count);
+            NSLog(@"recommendArr count is :%d",weakself.recommendArr.count);
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];

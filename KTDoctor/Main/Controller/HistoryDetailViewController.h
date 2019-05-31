@@ -10,4 +10,5 @@
 
 @interface HistoryDetailViewController : UIViewController
 @property (nonatomic,strong)NSDictionary *sportDict;
+@property (nonatomic,assign)BOOL isFromReport;
 @end

@@ -8,7 +8,7 @@
 
 #import "AerobicReportCell.h"
 #import "ReportListCell.h"
-
+#import "HistoryDetailViewController.h"
 #define kView_LeftMargin 20
 #define kListView_LeftMargin 15
 #define kInfoView_TopMargin 15
@@ -232,6 +232,31 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    NSDictionary *dict = [self.reportsArr objectAtIndex:indexPath.section];
+    HistoryDetailViewController *history = [[HistoryDetailViewController alloc] init];
+    history.sportDict = dict;
+    history.isFromReport = YES;
+    [[self currentViewController] presentViewController:history animated:NO completion:nil];
+}
+
+- (UIViewController *)currentViewController
+{
+    UIWindow *keyWindow  = [UIApplication sharedApplication].keyWindow;
+    UIViewController *vc = keyWindow.rootViewController;
+    while (vc.presentedViewController)
+    {
+        vc = vc.presentedViewController;
+        
+        if ([vc isKindOfClass:[UINavigationController class]])
+        {
+            vc = [(UINavigationController *)vc visibleViewController];
+        }
+        else if ([vc isKindOfClass:[UITabBarController class]])
+        {
+            vc = [(UITabBarController *)vc selectedViewController];
+        }
+    }
+    return vc;
 }
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

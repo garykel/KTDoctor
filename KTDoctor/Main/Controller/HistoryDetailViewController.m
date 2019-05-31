@@ -505,7 +505,11 @@
 
 #pragma mark - button click events
 - (void)back:(UIButton*)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    if (self.isFromReport) {
+        [self dismissViewControllerAnimated:NO completion:nil];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 @end

@@ -130,6 +130,7 @@
 @property (nonatomic,assign)NSInteger treatmentPeriod;
 @property (nonatomic,assign)NSInteger daysPerWeek;
 @property (nonatomic,assign)NSInteger timing;
+@property (nonatomic,assign)NSInteger offset;
 @end
 
 @implementation CreatePowerPrescriptionViewController
@@ -142,6 +143,7 @@
     self.recommendArr = [NSMutableArray array];
     self.recommendTemplateArr = [NSMutableArray array];
     self.selectedTemplateIndex = -1;
+    self.offset = 0;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray array];
     self.equipIds = [NSMutableArray array];
