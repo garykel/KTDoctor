@@ -56,7 +56,7 @@
     self.infoView.backgroundColor = [UIColor whiteColor];
     [self.contentView addSubview:self.infoView];
     
-    CGFloat itemWidth = (self.infoView.frame.size.width - 6)/7;
+    CGFloat itemWidth = (self.infoView.frame.size.width - 7)/8;
     CGFloat itemHeight = (kInfoView_Height - 1)/2;
     self.prescriptionLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, itemWidth, itemHeight)];
     self.prescriptionLbl.textColor = [UIColor colorWithHexString:@"#666666"];
@@ -79,7 +79,24 @@
     self.seperateLine1.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.infoView addSubview:self.seperateLine1];
     
-    self.trainingEquipmentLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine1.frame), 0, itemWidth, itemHeight)];
+    self.typeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine1.frame), 0, itemWidth, itemHeight)];
+    self.typeLbl.textAlignment = NSTextAlignmentCenter;
+    self.typeLbl.textColor = [UIColor colorWithHexString:@"#666666"];
+    self.typeLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
+    self.typeLbl.text = @"类型";
+    [self.infoView addSubview:self.typeLbl];
+    
+    self.typeNameLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.typeLbl.frame.origin.x, CGRectGetMaxY(self.middleLine.frame), itemWidth, itemHeight)];
+    self.typeNameLbl.textColor = [UIColor colorWithHexString:@"#333333"];
+    self.typeNameLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
+    self.typeNameLbl.textAlignment = NSTextAlignmentCenter;
+    [self.infoView addSubview:self.typeNameLbl];
+    
+    self.seperateLine2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.typeNameLbl.frame), 0, 1, kInfoView_Height * kYScal)];
+    self.seperateLine2.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.infoView addSubview:self.seperateLine2];
+    
+    self.trainingEquipmentLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine2.frame), 0, itemWidth, itemHeight)];
     self.trainingEquipmentLbl.textAlignment = NSTextAlignmentCenter;
     self.trainingEquipmentLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.trainingEquipmentLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
@@ -92,11 +109,11 @@
     self.trainingEquipmentNameLbl.textAlignment = NSTextAlignmentCenter;
     [self.infoView addSubview:self.trainingEquipmentNameLbl];
     
-    self.seperateLine2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingEquipmentNameLbl.frame), 0, 1, kInfoView_Height * kYScal)];
-    self.seperateLine2.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
-    [self.infoView addSubview:self.seperateLine2];
+    self.seperateLine3 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingEquipmentNameLbl.frame), 0, 1, kInfoView_Height * kYScal)];
+    self.seperateLine3.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.infoView addSubview:self.seperateLine3];
     
-    self.riskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine2.frame), 0, itemWidth, itemHeight)];
+    self.riskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine3.frame), 0, itemWidth, itemHeight)];
     self.riskLevelLbl.textAlignment = NSTextAlignmentCenter;
     self.riskLevelLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.riskLevelLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
@@ -109,11 +126,11 @@
     self.riskLevelValLbl.textAlignment = NSTextAlignmentCenter;
     [self.infoView addSubview:self.riskLevelValLbl];
     
-    self.seperateLine3 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelLbl.frame), 0, 1, kInfoView_Height * kYScal)];
-    self.seperateLine3.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
-    [self.infoView addSubview:self.seperateLine3];
+    self.seperateLine4 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelLbl.frame), 0, 1, kInfoView_Height * kYScal)];
+    self.seperateLine4.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.infoView addSubview:self.seperateLine4];
     
-    self.createTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine3.frame), 0, itemWidth, itemHeight)];
+    self.createTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine4.frame), 0, itemWidth, itemHeight)];
     self.createTimeLbl.textAlignment = NSTextAlignmentCenter;
     self.createTimeLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.createTimeLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
@@ -126,11 +143,11 @@
     self.createTimeValLbl.textAlignment = NSTextAlignmentCenter;
     [self.infoView addSubview:self.createTimeValLbl];
     
-    self.seperateLine4 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.createTimeLbl.frame), 0, 1, kInfoView_Height * kYScal)];
-    self.seperateLine4.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
-    [self.infoView addSubview:self.seperateLine4];
+    self.seperateLine5 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.createTimeLbl.frame), 0, 1, kInfoView_Height * kYScal)];
+    self.seperateLine5.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.infoView addSubview:self.seperateLine5];
     
-    self.doctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine4.frame), 0, itemWidth, itemHeight)];
+    self.doctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine5.frame), 0, itemWidth, itemHeight)];
     self.doctorLbl.textAlignment = NSTextAlignmentCenter;
     self.doctorLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.doctorLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
@@ -143,11 +160,11 @@
     self.doctorNameLbl.textAlignment = NSTextAlignmentCenter;
     [self.infoView addSubview:self.doctorNameLbl];
     
-    self.seperateLine5 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.doctorLbl.frame), 0, 1, kInfoView_Height * kYScal)];
-    self.seperateLine5.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
-    [self.infoView addSubview:self.seperateLine5];
+    self.seperateLine6 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.doctorLbl.frame), 0, 1, kInfoView_Height * kYScal)];
+    self.seperateLine6.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.infoView addSubview:self.seperateLine6];
     
-    self.sportDaysLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine5.frame), 0, itemWidth, itemHeight)];
+    self.sportDaysLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.seperateLine6.frame), 0, itemWidth, itemHeight)];
     self.sportDaysLbl.textAlignment = NSTextAlignmentCenter;
     self.sportDaysLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.sportDaysLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
@@ -160,13 +177,13 @@
     self.sportDaysValLbl.textAlignment = NSTextAlignmentCenter;
     [self.infoView addSubview:self.sportDaysValLbl];
     
-    self.seperateLine6 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sportDaysLbl.frame), 0, 1, kInfoView_Height * kYScal)];
-    self.seperateLine6.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
-    [self.infoView addSubview:self.seperateLine6];
+    self.seperateLine7 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sportDaysLbl.frame), 0, 1, kInfoView_Height * kYScal)];
+    self.seperateLine7.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.infoView addSubview:self.seperateLine7];
     
     self.reportsBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.reportsBtn.backgroundColor = [UIColor whiteColor];
-    self.reportsBtn.frame = CGRectMake(CGRectGetMaxX(self.seperateLine6.frame), 0, itemWidth, itemHeight);
+    self.reportsBtn.frame = CGRectMake(CGRectGetMaxX(self.seperateLine7.frame), 0, itemWidth, itemHeight);
     [self.reportsBtn setTitle:@"报告数" forState:UIControlStateNormal];
     [self.reportsBtn setTitleColor:[UIColor colorWithHexString:@"#666666"] forState:UIControlStateNormal];
     [self.reportsBtn setImage:[UIImage imageNamed:@"showReport"] forState:UIControlStateNormal];
@@ -244,7 +261,14 @@
     CGFloat speed = [[reportDict valueForKey:@"speed"] floatValue];
     cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
     NSInteger avgDifficulty = [[reportDict valueForKey:@"avgDifficulty"] integerValue];
-    cell.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",avgDifficulty];
+    NSInteger type2 = [[reportDict valueForKey:@"type2"] integerValue];
+    if (type2 == 2) {
+        cell.avgDifficultyLbl.text = @"平均功率";
+        cell.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%dw",avgDifficulty];
+    } else {
+        cell.avgDifficultyLbl.text = @"平均强度";
+        cell.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",avgDifficulty];
+    }
     NSString *rpeSample = [reportDict valueForKey:@"rpeSample"];
     NSLog(@"rpeSample is :%@",rpeSample);
     NSMutableArray *results = [NSMutableArray array];

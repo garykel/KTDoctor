@@ -22,6 +22,8 @@
 @property (nonatomic,strong)UIButton *prescriptionDetailBtn;
 @property (nonatomic,strong)UILabel *prescriptionLbl;
 @property (nonatomic,strong)UILabel *prescriptionNameLbl;
+@property (nonatomic,strong)UILabel *typeLbl;
+@property (nonatomic,strong)UILabel *typeNameLbl;
 @property (nonatomic,strong)UILabel *trainingEquipmentLbl;
 @property (nonatomic,strong)UILabel *trainingEquipmentNameLbl;
 @property (nonatomic,strong)UILabel *riskLevelLbl;

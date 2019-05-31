@@ -287,11 +287,17 @@
         }
         cell.riskLevelValLbl.text = riskLevelStr;
         NSArray *typeList = [dict valueForKey:@"typeList"];
-        if (typeList.count > 0) {
+        if (typeList.count > 2) {
             NSDictionary *equipmentDict = [typeList objectAtIndex:2];
             cell.trainingEquipmentNameLbl.text = [equipmentDict valueForKey:@"name"];
         }
         cell.prescriptionNameLbl.text = [dict valueForKey:@"title"];
+        NSInteger type2 = [[dict valueForKey:@"type2"] integerValue];
+        if (type2 == 1) {
+            cell.typeNameLbl.text = @"强度";
+        } else {
+            cell.typeNameLbl.text = @"功率";
+        }
         cell.createTimeValLbl.text = [dict valueForKey:@"createTime"];
         cell.doctorNameLbl.text = [dict valueForKey:@"doctorName"];
         NSInteger sportDays = [[dict valueForKey:@"sportDays"] integerValue];
