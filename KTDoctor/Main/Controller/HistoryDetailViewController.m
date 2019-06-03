@@ -8,6 +8,7 @@
 
 #import "HistoryDetailViewController.h"
 #import "DateValueFormatter.h"
+#import "SymbolsValueFormatter.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -53,6 +54,10 @@
 #define kSeperateLine_Height 2
 #define kCellLbl_LeftMargin 6
 #define kCellLbl_Space 10
+#define kMarkBgView_Width 125
+#define kMarkBgView_Height 115
+#define kMarkLbl_TopMargin 12
+#define kMarkLbl_LeftMargin 18
 @interface HistoryDetailViewController ()<ChartViewDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
@@ -94,8 +99,16 @@
 @property (nonatomic,strong)UIImageView *leftUnitImg;
 @property (nonatomic,strong)UIImageView *rightUnitImg;
 @property (nonatomic,strong)LineChartView *lineChartView;
+@property (nonatomic,strong)UILabel *markY;
+@property (nonatomic,strong)UIImageView *markBgView;
 @property (nonatomic,strong)LineChartDataSet *set1;
 @property (nonatomic,strong)LineChartDataSet *set2;
+@property (nonatomic,strong)UILabel *markTimeLbl;
+@property (nonatomic,strong)UILabel *markHRLbl;
+@property (nonatomic,strong)UILabel *markSpeedLbl;
+@property (nonatomic,strong)UILabel *markPowerLbl;
+@property (nonatomic,strong)UILabel *markCalorieLbl;
+@property (nonatomic,strong)UILabel *markRpeLbl;
 @end
 
 @implementation HistoryDetailViewController
@@ -397,7 +410,8 @@
             [_set1 setColor:[UIColor redColor]];
             _set1.drawCirclesEnabled = NO;
             _set1.drawFilledEnabled = NO;
-            _set1.highlightEnabled = NO;
+            _set1.highlightEnabled = YES;//选中拐点开启高亮效果
+            _set1.highlightColor = [UIColor clearColor];
             [dataSets addObject:_set1];
         }
         if (speedSample.length > 0) {
@@ -416,7 +430,8 @@
             [_set2 setColor:[UIColor greenColor]];
             _set2.drawCirclesEnabled = NO;
             _set2.drawFilledEnabled = NO;
-            _set2.highlightEnabled = NO;
+            _set2.highlightEnabled = YES;
+            _set2.highlightColor = [UIColor clearColor];
             [dataSets addObject:_set2];
         }
     }
@@ -433,8 +448,14 @@
         _lineChartView.chartDescription.enabled = NO;
         _lineChartView.scaleYEnabled = NO;
         _lineChartView.doubleTapToZoomEnabled = NO;
-        _lineChartView.rightAxis.enabled = YES;
+        ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
+        markerY.offset = CGPointMake(-100, 0);
+        markerY.chartView = _lineChartView;
+        _lineChartView.marker = markerY;
+        [self.markBgView addSubview:self.markY];
+        [markerY addSubview:self.markBgView];
         
+        _lineChartView.rightAxis.enabled = NO;//不绘制右轴
         ChartXAxis *xAxis = _lineChartView.xAxis;
         xAxis.granularityEnabled = YES;
         xAxis.labelPosition = XAxisLabelPositionBottom;
@@ -477,6 +498,28 @@
     return _lineChartView;
 }
 
+- (UILabel *)markY{
+    if (!_markY) {
+        _markY = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 100, 30)];
+        _markY.font = [UIFont systemFontOfSize:10.0];
+        _markY.textAlignment = NSTextAlignmentCenter;
+        _markY.numberOfLines = 2;
+        _markY.text =@"";
+        _markY.textColor = [UIColor whiteColor];
+//        _markY.backgroundColor = [UIColor colorWithHexString:@"#b4b4b4"];
+    }
+    return _markY;
+}
+
+- (UIImageView*)markBgView {
+    if (!_markBgView) {
+        _markBgView = [[UIImageView alloc] init];
+        _markBgView.backgroundColor = [UIColor colorWithHexString:@"#e4f7f8"];
+        _markBgView.frame = CGRectMake(0, 0, kMarkBgView_Width * kXScal, kMarkBgView_Height * kYScal);
+    }
+    return _markBgView;
+}
+
 - (NSString *)getLongtimeString:(NSInteger)seconds {
     NSString *timeStr = @"";
     NSInteger hour = seconds / 3600;
@@ -503,6 +546,15 @@
     return newImage;
 }
 
+#pragma mark - ChartViewDelegate
+
+- (void)chartValueSelected:(ChartViewBase *)chartView entry:(ChartDataEntry *)entry highlight:(ChartHighlight *)highlight {
+    NSLog(@"selected is %d",(NSInteger)entry.x + 1);
+}
+
+- (void)chartScaled:(ChartViewBase *)chartView scaleX:(CGFloat)scaleX scaleY:(CGFloat)scaleY {
+    NSLog(@"scaleX :%.1f scaleY :%.1f",scaleX,scaleY);
+}
 #pragma mark - button click events
 - (void)back:(UIButton*)sender {
     if (self.isFromReport) {

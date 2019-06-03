@@ -27,7 +27,7 @@
 #define kNameLbl_FontSize 13.0
 #define kNameLbl_Width 55
 #define kNameLbl_Height 13
-#define kDoctorLbl_Width 65
+#define kDoctorLbl_Width 70
 #define kDoctorLbl_Height 12
 #define kDoctorLbl_RightMargin 16
 #define kDoctorLbl_FontSize 13.0
@@ -47,7 +47,7 @@
 #define kTrainingGroupLbl_LeftMargin 140
 #define kTrainingGroupLbl_RightMargin 9
 #define kTrainingGroupLbl_TopMargin 16
-#define kTrainingGroupLbl_Width 65
+#define kTrainingGroupLbl_Width 70
 #define kTrainingGroupLbl_Height 13
 #define kTrainingGroupLbl_FontSize 13.0
 #define kTrainingGroupValLbl_FontSize 15.0
@@ -55,7 +55,7 @@
 #define kTrainingGroupValLbl_Height 12
 #define kTrainingTimeLbl_RightMargin 10
 #define kTrainingTimeLbl_Width 80
-#define kTrainingTimeValLbl_Width 45
+#define kTrainingTimeValLbl_Width 55
 #define kDoctorAdviceLbl_TopMargin 19
 #define kDoctorAdviceView_Height 22
 #define kCell_Height 118

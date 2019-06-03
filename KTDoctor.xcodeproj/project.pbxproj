@@ -61,6 +61,7 @@
 		5B22E0692266CF5F00C65B50 /* IntensionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E0682266CF5F00C65B50 /* IntensionViewController.m */; };
 		5B22E06C2267027600C65B50 /* LMJDropdownMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E06B2267027600C65B50 /* LMJDropdownMenu.m */; };
 		5B22E06F2267192A00C65B50 /* CustomTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B22E06E2267192A00C65B50 /* CustomTextField.m */; };
+		5B2889FE22A4FAAF00607F7D /* SymbolsValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2889FD22A4FAAF00607F7D /* SymbolsValueFormatter.m */; };
 		5B35692022801DED001BD84C /* PrescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B35691F22801DED001BD84C /* PrescriptionCell.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
 		5B3E7B722278488C00A564CC /* SGQRCode.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5B3E7B6A2278488A00A564CC /* SGQRCode.bundle */; };
@@ -289,6 +290,8 @@
 		5B22E06B2267027600C65B50 /* LMJDropdownMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LMJDropdownMenu.m; sourceTree = "<group>"; };
 		5B22E06D2267192A00C65B50 /* CustomTextField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomTextField.h; sourceTree = "<group>"; };
 		5B22E06E2267192A00C65B50 /* CustomTextField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomTextField.m; sourceTree = "<group>"; };
+		5B2889FC22A4FAAF00607F7D /* SymbolsValueFormatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SymbolsValueFormatter.h; sourceTree = "<group>"; };
+		5B2889FD22A4FAAF00607F7D /* SymbolsValueFormatter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SymbolsValueFormatter.m; sourceTree = "<group>"; };
 		5B35691E22801DEC001BD84C /* PrescriptionCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrescriptionCell.h; sourceTree = "<group>"; };
 		5B35691F22801DED001BD84C /* PrescriptionCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrescriptionCell.m; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
@@ -714,6 +717,8 @@
 				5BEC2E432269BD8800CDDF09 /* UnitTextField.m */,
 				5BB39800228E91ED00A56A38 /* ChooseTemplateTypeView.h */,
 				5BB39801228E91ED00A56A38 /* ChooseTemplateTypeView.m */,
+				5B2889FC22A4FAAF00607F7D /* SymbolsValueFormatter.h */,
+				5B2889FD22A4FAAF00607F7D /* SymbolsValueFormatter.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1526,6 +1531,7 @@
 				5BF8D90E22802689002199E4 /* NSString+Base64.m in Sources */,
 				5B22E0582265C55A00C65B50 /* DateValueFormatter.m in Sources */,
 				5BF8D92922802708002199E4 /* UILabel+Init.m in Sources */,
+				5B2889FE22A4FAAF00607F7D /* SymbolsValueFormatter.m in Sources */,
 				5BF8D933228027D7002199E4 /* CustomBtn.m in Sources */,
 				09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */,
 				5B02F7762240E7F600BE8269 /* DropdownMenu.m in Sources */,

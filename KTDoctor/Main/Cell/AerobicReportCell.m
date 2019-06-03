@@ -50,14 +50,14 @@
 - (void)setUI {
     self.layer.cornerRadius = 4;
     self.layer.masksToBounds = YES;
-    self.infoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,self.frame.size.width - kPrescriptionDetailBtn_LeftMargin - kPrescriptionDetailBtn_Width,kInfoView_Height * kYScal)];
+    self.infoView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,self.frame.size.width - kInfoView_LeftMargin * kXScal - kPrescriptionDetailBtn_LeftMargin * kXScal - kPrescriptionDetailBtn_Width * kXScal - kPrescriptionDetailBtn_RightMargin * kXScal,kInfoView_Height * kYScal)];
     self.infoView.layer.cornerRadius = 4;
     self.infoView.layer.masksToBounds = YES;
     self.infoView.backgroundColor = [UIColor whiteColor];
     [self.contentView addSubview:self.infoView];
     
     CGFloat itemWidth = (self.infoView.frame.size.width - 7)/8;
-    CGFloat itemHeight = (kInfoView_Height - 1)/2;
+    CGFloat itemHeight = (kInfoView_Height * kYScal - 1)/2;
     self.prescriptionLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, itemWidth, itemHeight)];
     self.prescriptionLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.prescriptionLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
@@ -187,8 +187,8 @@
     [self.reportsBtn setTitle:@"报告数" forState:UIControlStateNormal];
     [self.reportsBtn setTitleColor:[UIColor colorWithHexString:@"#666666"] forState:UIControlStateNormal];
     [self.reportsBtn setImage:[UIImage imageNamed:@"showReport"] forState:UIControlStateNormal];
-    [self.reportsBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.reportsBtn.imageView.frame.size.width, 0, self.reportsBtn.imageView.frame.size.width)];
-    [self.reportsBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.reportsBtn.titleLabel.bounds.size.width, 0, -self.reportsBtn.titleLabel.bounds.size.width)];
+    [self.reportsBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.reportsBtn.frame.size.width - 20, 0, 0)];
+    [self.reportsBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.reportsBtn.imageView.frame.size.width - 20, 0, self.reportsBtn.imageView.frame.size.width)];
     [self.reportsBtn.titleLabel setFont:[UIFont systemFontOfSize:kItemLbl_FontSize * kYScal]];
     [self.infoView addSubview:self.reportsBtn];
     
