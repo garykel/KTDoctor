@@ -427,7 +427,10 @@
             NSDictionary *data = [responseObject valueForKey:@"data"];
             NSLog(@"data is :%@",data);
             HistoryDetailViewController *detail = [[HistoryDetailViewController alloc] init];
-            detail.sportDict = data;
+            detail.sportDict = [data valueForKey:@"sportData"];
+            NSDictionary *prescription = [data valueForKey:@"prescription"];
+            NSInteger type2 = [[prescription valueForKey:@"type2"] integerValue];
+            detail.type2 = type2;
             [weakSelf.navigationController pushViewController:detail animated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];

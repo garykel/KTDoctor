@@ -355,7 +355,9 @@
         NSInteger prescriptionId = [[prescriptionDict valueForKey:@"id"] integerValue];
         [parameter setValue:@(prescriptionId) forKey:@"prescriptionId"];
         [parameter setValue:@"-create_time" forKey:@"sort"];
-        [self showReportList:parameter index:index];
+        NSDictionary *precriptionDict = [self.precriptionsArr objectAtIndex:index];
+        NSInteger type2 = [[precriptionDict valueForKey:@"type2"] integerValue];
+        [self showReportList:parameter index:index type2:type2];
     }
 }
 
@@ -396,7 +398,7 @@
     }];
 }
 
-- (void)showReportList:(NSMutableDictionary*)parameter index:(NSInteger)index{
+- (void)showReportList:(NSMutableDictionary*)parameter index:(NSInteger)index type2:(NSInteger)type2{
     __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_REPORTLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
@@ -409,6 +411,8 @@
                 NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:NO];
                 datas = [[datas sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] mutableCopy];
                 cell.reportsArr = [datas mutableCopy];
+                cell.type2 = type2;
+                cell.patientInfo = self.patientInfo;
                 BOOL close = [[self.closeArr objectAtIndex:index] boolValue];
                 [weakSelf.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
                 [cell.reportListview reloadData];

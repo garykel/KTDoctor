@@ -235,6 +235,9 @@
     NSDictionary *dict = [self.reportsArr objectAtIndex:indexPath.section];
     HistoryDetailViewController *history = [[HistoryDetailViewController alloc] init];
     history.sportDict = dict;
+    history.patientInfo = self.patientInfo;
+    history.type2 = self.type2;
+    
     history.isFromReport = YES;
     [[self currentViewController] presentViewController:history animated:NO completion:nil];
 }
