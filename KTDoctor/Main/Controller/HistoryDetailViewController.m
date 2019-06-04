@@ -85,6 +85,7 @@
 @property (nonatomic,strong)UILabel *avgSpeedUnitLbl;
 @property (nonatomic,strong)UILabel *avgDifficultyLbl;
 @property (nonatomic,strong)UILabel *avgDifficultyValLbl;
+@property (nonatomic,strong)UILabel *avgDifficultyUnitLbl;
 @property (nonatomic,strong)UILabel *calorieLbl;
 @property (nonatomic,strong)UILabel *calorieValLbl;
 @property (nonatomic,strong)UILabel *calorieUnitLbl;
@@ -112,6 +113,11 @@
 @property (nonatomic,strong)UILabel *markPowerLbl;
 @property (nonatomic,strong)UILabel *markCalorieLbl;
 @property (nonatomic,strong)UILabel *markRpeLbl;
+@property (nonatomic,strong)NSMutableArray *speedArr;
+@property (nonatomic,strong)NSMutableArray *powerArr;
+@property (nonatomic,strong)NSMutableArray *rpeArr;
+@property (nonatomic,strong)NSMutableArray *calorieArr;
+@property (nonatomic,strong)NSMutableArray *difficultyArr;
 @end
 
 @implementation HistoryDetailViewController
@@ -119,6 +125,75 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    NSDictionary *prescription = [self.sportDict valueForKey:@"prescription"];
+    self.type2 = [[prescription valueForKey:@"type2"] integerValue];
+    NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+    NSInteger totalTime = [[sportData valueForKey:@"totalTime"] integerValue];
+    self.speedArr = [NSMutableArray array];
+    self.powerArr = [NSMutableArray array];
+    self.rpeArr = [NSMutableArray array];
+    self.calorieArr = [NSMutableArray array];
+    self.difficultyArr = [NSMutableArray array];
+    NSString *calorieSample = [sportData valueForKey:@"calorieSample"];
+    if (calorieSample.length > 0) {
+        NSArray *calorieSampleArr = [calorieSample componentsSeparatedByString:@","];
+        if (calorieSampleArr.count > 0) {
+            [self.calorieArr addObjectsFromArray:calorieSampleArr];
+        } else {
+            
+        }
+    } else {
+        if (totalTime > 0) {
+            for (NSInteger i = 0; i < totalTime; i++) {
+                [self.calorieArr addObject:[NSString stringWithFormat:@"%.1f",0.0]];
+            }
+        }
+    }
+    NSString *difficultySample = [sportData valueForKey:@"difficultySample"];
+    if (difficultySample.length > 0) {
+        NSArray *difficultySampleArr = [difficultySample componentsSeparatedByString:@","];
+        if (difficultySampleArr.count > 0) {
+            [self.difficultyArr addObjectsFromArray:difficultySampleArr];
+        } else {
+            
+        }
+    } else {
+        if (totalTime > 0) {
+            for (NSInteger i = 0; i < totalTime; i++) {
+                [self.difficultyArr addObject:[NSString stringWithFormat:@"%d",0]];
+            }
+        }
+    }
+    NSString *powerSample = [sportData valueForKey:@"powerSample"];
+    if (powerSample.length > 0) {
+        NSArray *powerSampleArr = [powerSample componentsSeparatedByString:@","];
+        if (powerSampleArr.count > 0) {
+            [self.powerArr addObjectsFromArray:powerSampleArr];
+        } else {
+            
+        }
+    } else {
+        if (totalTime > 0) {
+            for (NSInteger i = 0; i < totalTime; i++) {
+                [self.powerArr addObject:[NSString stringWithFormat:@"%d",0]];
+            }
+        }
+    }
+    NSString *speedSample = [sportData valueForKey:@"speedSample"];
+    if (speedSample.length > 0) {
+        NSArray *speedSampleArr = [speedSample componentsSeparatedByString:@","];
+        if (speedSampleArr.count > 0) {
+            [self.speedArr addObjectsFromArray:speedSampleArr];
+        } else {
+            
+        }
+    } else {
+        if (totalTime > 0) {
+            for (NSInteger i = 0; i < totalTime; i++) {
+                [self.speedArr addObject:[NSString stringWithFormat:@"%.1f",0.0]];
+            }
+        }
+    }
     [self setNavBar];
     [self setupUI];
 }
@@ -177,7 +252,8 @@
     self.finishValLbl.textAlignment = NSTextAlignmentCenter;
     self.finishValLbl.textColor = [UIColor blackColor];
     self.finishValLbl.text = @"100%";
-    NSInteger completePercent = [[self.sportDict valueForKey:@"completePercent"] integerValue];
+    NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+    NSInteger completePercent = [[sportData valueForKey:@"completePercent"] integerValue];
     self.finishValLbl.text = [NSString stringWithFormat:@"%ld%%",(long)completePercent];
     self.finishValLbl.font = [UIFont systemFontOfSize:kFinishLbl_FontSize * kYScal];
     [self.finishBgImg addSubview:self.finishValLbl];
@@ -216,7 +292,7 @@
     
     self.avgHRValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgHRLbl.frame) + kCellLbl_Space * kXScal, 0, lblWidth, cellHeight)];
     self.avgHRValLbl.textColor = [UIColor blackColor];    
-    NSInteger avgHr = [[self.sportDict valueForKey:@"avgHr"] integerValue];
+    NSInteger avgHr = [[sportData valueForKey:@"avgHr"] integerValue];
     self.avgHRValLbl.text = [NSString stringWithFormat:@"%d",avgHr];
     self.avgHRValLbl.textAlignment = NSTextAlignmentCenter;
     self.avgHRValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
@@ -240,7 +316,7 @@
     
     self.maxHRValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.maxHRLbl.frame) + kCellLbl_Space * kXScal, self.maxHRLbl.frame.origin.y, lblWidth, cellHeight)];
     self.maxHRValLbl.textColor = [UIColor blackColor];
-    NSInteger maxHr = [[self.sportDict valueForKey:@"maxHr"] integerValue];
+    NSInteger maxHr = [[sportData valueForKey:@"maxHr"] integerValue];
     self.maxHRValLbl.text = [NSString stringWithFormat:@"%d",maxHr];
     self.maxHRValLbl.textAlignment = NSTextAlignmentCenter;
     self.maxHRValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
@@ -265,7 +341,7 @@
     self.avgSpeedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame) + kCellLbl_Space * kXScal, self.avgSpeedLbl.frame.origin.y, lblWidth, cellHeight)];
     self.avgSpeedValLbl.textColor = [UIColor blackColor];
     self.avgSpeedValLbl.textAlignment = NSTextAlignmentCenter;
-    CGFloat speed = [[self.sportDict valueForKey:@"speed"] floatValue];
+    CGFloat speed = [[sportData valueForKey:@"speed"] floatValue];
     self.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f",speed];
     self.avgSpeedValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
     [self.sportView addSubview:self.avgSpeedValLbl];
@@ -281,7 +357,11 @@
     [self.sportView addSubview:self.seperateLine3];
     
     self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.avgHRLbl.frame.origin.x, CGRectGetMaxY(self.seperateLine3.frame), lblWidth, cellHeight)];
-    self.avgDifficultyLbl.text = @"平均强度";
+    if (self.type2 == 2) {
+        self.avgDifficultyLbl.text = @"平均功率";
+    } else {
+        self.avgDifficultyLbl.text = @"平均强度";
+    }
     self.avgDifficultyLbl.textColor = [UIColor blackColor];
     self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
     [self.sportView addSubview:self.avgDifficultyLbl];
@@ -289,13 +369,23 @@
     self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kCellLbl_Space * kXScal, self.avgDifficultyLbl.frame.origin.y, lblWidth, cellHeight)];
     self.avgDifficultyValLbl.textColor = [UIColor blackColor];
     self.avgDifficultyValLbl.textAlignment = NSTextAlignmentCenter;
-    NSString *avgDifficulty = [self.sportDict valueForKey:@"avgDifficulty"];
+    NSString *avgDifficulty = [sportData valueForKey:@"avgDifficulty"];
     if ([avgDifficulty class] == [NSNull class]) {
         avgDifficulty = @"0";
     }
     self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%@",avgDifficulty];
     self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
     [self.sportView addSubview:self.avgDifficultyValLbl];
+    
+    self.avgDifficultyUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyValLbl.frame) + kCellLbl_Space * kXScal, self.avgDifficultyValLbl.frame.origin.y, lblWidth, cellHeight)];
+    self.avgDifficultyUnitLbl.textColor = [UIColor blackColor];
+    if (self.type2 == 2) {
+        self.avgDifficultyUnitLbl.text = @"w";
+    } else {
+        self.avgDifficultyUnitLbl.text = @"";
+    }
+    self.avgDifficultyUnitLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+    [self.sportView addSubview:self.avgDifficultyUnitLbl];
     
     self.seperateLine4 = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.avgDifficultyLbl.frame), self.sportView.frame.size.width, kSeperateLine_Height * kYScal)];
     self.seperateLine4.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
@@ -310,7 +400,7 @@
     self.calorieValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.calorieLbl.frame) + kCellLbl_Space * kXScal, self.calorieLbl.frame.origin.y, lblWidth, cellHeight)];
     self.calorieValLbl.textColor = [UIColor blackColor];
     self.calorieValLbl.textAlignment = NSTextAlignmentCenter;
-    CGFloat calorie = [[self.sportDict valueForKey:@"calorie"] floatValue];
+    CGFloat calorie = [[sportData valueForKey:@"calorie"] floatValue];
     self.calorieValLbl.text = [NSString stringWithFormat:@"%.1f",calorie];
     self.calorieValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
     [self.sportView addSubview:self.calorieValLbl];
@@ -334,7 +424,7 @@
     self.mileValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame) + kCellLbl_Space * kXScal, self.mileLbl.frame.origin.y, lblWidth, cellHeight)];
     self.mileValLbl.textColor = [UIColor blackColor];
     self.mileValLbl.textAlignment = NSTextAlignmentCenter;
-    CGFloat totalMileage = [[self.sportDict valueForKey:@"totalMileage"] floatValue];
+    CGFloat totalMileage = [[sportData valueForKey:@"totalMileage"] floatValue];
     self.mileValLbl.text = [NSString stringWithFormat:@"%.1f",totalMileage];
     self.mileValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
     [self.sportView addSubview:self.mileValLbl];
@@ -359,7 +449,7 @@
     self.timeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame) + kCellLbl_Space * kXScal, self.timeLbl.frame.origin.y, 2 * lblWidth, cellHeight)];
     self.timeValLbl.textColor = [UIColor blackColor];
     self.timeValLbl.textAlignment = NSTextAlignmentCenter;
-    NSInteger totalTime = [[self.sportDict valueForKey:@"totalTime"] integerValue];
+    NSInteger totalTime = [[sportData valueForKey:@"totalTime"] integerValue];
     NSString *timeStr = [self getLongtimeString:totalTime];
     self.timeValLbl.text = [NSString stringWithFormat:@"%@",timeStr];
     self.timeValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
@@ -373,7 +463,7 @@
     CGFloat lineChartView_Width = self.bgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
     CGFloat lineChartView_Height = self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
     self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
-    [self setLineChartDataWithSportData:self.sportDict];
+    [self setLineChartDataWithSportData:sportData];
     [self.bgImg addSubview:self.lineChartView];
     
     CGFloat righUnitImg_TopMargin = (self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kRightUnitImg_Height * kYScal)/2;
@@ -396,46 +486,59 @@
     NSMutableArray *dataSets = [[NSMutableArray alloc] init];
     if (xVals.count > 0) {
         _lineChartView.xAxis.valueFormatter = [[DateValueFormatter alloc] initWithArr:xVals];
+        NSMutableArray *leftVals = [NSMutableArray array];
         if (hrSample.length > 0) {
             NSArray *hrArr = [hrSample componentsSeparatedByString:@","];
-            NSMutableArray *leftVals = [NSMutableArray array];
             for (NSInteger j = 0; j < xVals.count; j++) {
                 NSInteger hr = 0;
                 hr = [[hrArr objectAtIndex:j] integerValue];
                 ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:j y:hr];
                 [leftVals addObject:entry];
             }
-            _set1 = [[LineChartDataSet alloc] initWithValues:leftVals label:@"心率"];
-            _set1.axisDependency = AxisDependencyLeft;
-            _set1.lineWidth = 2.0;
-            _set1.drawValuesEnabled = YES;
-            [_set1 setColor:[UIColor redColor]];
-            _set1.drawCirclesEnabled = NO;
-            _set1.drawFilledEnabled = NO;
-            _set1.highlightEnabled = YES;//选中拐点开启高亮效果
-            _set1.highlightColor = [UIColor clearColor];
-            [dataSets addObject:_set1];
+        } else {
+            for (NSInteger j = 0; j < xVals.count; j++) {
+                NSInteger hr = 0;
+                ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:j y:hr];
+                [leftVals addObject:entry];
+            }
         }
+        _set1 = [[LineChartDataSet alloc] initWithValues:leftVals label:@"心率"];
+        _set1.axisDependency = AxisDependencyLeft;
+        _set1.lineWidth = 2.0;
+        _set1.drawValuesEnabled = YES;
+        [_set1 setColor:[UIColor redColor]];
+        _set1.drawCirclesEnabled = NO;
+        _set1.drawFilledEnabled = NO;
+        _set1.highlightEnabled = YES;//选中拐点开启高亮效果
+        _set1.highlightColor = [UIColor clearColor];
+        [dataSets addObject:_set1];
+        
+        NSMutableArray *rightVals = [NSMutableArray array];
         if (speedSample.length > 0) {
             NSArray *speedArr = [speedSample componentsSeparatedByString:@","];
-            NSMutableArray *rightVals = [NSMutableArray array];
             for (NSInteger k = 0; k < xVals.count; k++) {
                 NSInteger speed = 0;
                 speed = [[speedArr objectAtIndex:k] integerValue];
                 ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:k y:speed];
                 [rightVals addObject:entry];
             }
-            _set2 = [[LineChartDataSet alloc] initWithValues:rightVals label:@"速度"];
-            _set2.axisDependency = AxisDependencyRight;
-            _set2.lineWidth = 2.0;
-            _set2.drawValuesEnabled = YES;
-            [_set2 setColor:[UIColor greenColor]];
-            _set2.drawCirclesEnabled = NO;
-            _set2.drawFilledEnabled = NO;
-            _set2.highlightEnabled = YES;
-            _set2.highlightColor = [UIColor clearColor];
-            [dataSets addObject:_set2];
+        } else {
+            for (NSInteger k = 0; k < xVals.count; k++) {
+                NSInteger speed = 0;
+                ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:k y:speed];
+                [rightVals addObject:entry];
+            }
         }
+        _set2 = [[LineChartDataSet alloc] initWithValues:rightVals label:@"速度"];
+        _set2.axisDependency = AxisDependencyRight;
+        _set2.lineWidth = 2.0;
+        _set2.drawValuesEnabled = YES;
+        [_set2 setColor:[UIColor greenColor]];
+        _set2.drawCirclesEnabled = NO;
+        _set2.drawFilledEnabled = NO;
+        _set2.highlightEnabled = YES;
+        _set2.highlightColor = [UIColor clearColor];
+        [dataSets addObject:_set2];
     }
     LineChartData *data = [[LineChartData alloc] initWithDataSets:dataSets];
     [data setValueFont:[UIFont systemFontOfSize:11.0]];
@@ -589,6 +692,18 @@
 - (void)chartValueSelected:(ChartViewBase *)chartView entry:(ChartDataEntry *)entry highlight:(ChartHighlight *)highlight {
     NSString *timeStr = [self getShortTimeString:(NSInteger)entry.x + 1];
     self.markTimeLbl.text = [NSString stringWithFormat:@"时间：%@",timeStr];
+    self.markHRLbl.text = [NSString stringWithFormat:@"心率：%d bpm",(NSInteger)entry.y];
+    CGFloat speed = [[self.speedArr objectAtIndex:(NSInteger)entry.x ] floatValue];
+    self.markSpeedLbl.text = [NSString stringWithFormat:@"速度：%.1f km/h",speed];
+    if (self.type2 == 2) {
+        NSInteger power = [[self.difficultyArr objectAtIndex:(NSInteger)entry.x] integerValue];
+        self.markPowerLbl.text = [NSString stringWithFormat:@"功率：%d w",power];
+    } else {
+        NSInteger power = [[self.difficultyArr objectAtIndex:(NSInteger)entry.x] integerValue];
+        self.markPowerLbl.text = [NSString stringWithFormat:@"强度：%d ",power];
+    }
+    CGFloat calorie = [[self.calorieArr objectAtIndex:(NSInteger)entry.x] floatValue];
+    self.markCalorieLbl.text = [NSString stringWithFormat:@"消耗：%.1f kcal",calorie];
     [self.lineChartView centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.lineChartView.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
 }
 

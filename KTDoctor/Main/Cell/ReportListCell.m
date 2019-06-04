@@ -95,7 +95,7 @@
     self.startTimeLbl.center = CGPointMake(timeLbl_CenterX, self.timeImg.center.y);
     [self.contentView addSubview:self.startTimeLbl];
     
-    CGFloat titleView_Width = kListView_Width - self.timeImg.frame.origin.x - kTitleView_RightMargin * kXScal;
+    CGFloat titleView_Width = kListView_Width * kXScal - (CGRectGetMaxX(self.accomplishImg.frame) + kAccomplishImg_RightMargin * kXScal) - kTitleView_RightMargin * kXScal;
     [self configTitleViewWithWidth:titleView_Width];
     [self configRpeViewWithWidth:titleView_Width];
 }

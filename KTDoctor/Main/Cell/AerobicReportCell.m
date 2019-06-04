@@ -209,10 +209,27 @@
     self.prescriptionDetailBtn.layer.masksToBounds = YES;
     [self.contentView addSubview:self.prescriptionDetailBtn];
     
-    self.reportListview = [[UITableView alloc] initWithFrame:CGRectMake(self.infoView.frame.origin.x, CGRectGetMaxY(self.infoView.frame) + kReportList_TopMargin * kYScal, CGRectGetMaxX(self.prescriptionDetailBtn.frame), 400) style:UITableViewStylePlain];
+    self.reportListview = [[UITableView alloc] initWithFrame:CGRectMake(self.infoView.frame.origin.x, CGRectGetMaxY(self.infoView.frame) + kReportList_TopMargin * kYScal, CGRectGetMaxX(self.prescriptionDetailBtn.frame),200) style:UITableViewStylePlain];
 //    self.reportListview.hidden = YES;
     self.reportListview.delegate = self;
     self.reportListview.dataSource = self;
+    self.reportListview.backgroundColor = [UIColor clearColor];
+    self.reportListview.showsVerticalScrollIndicator = NO;
+    [self.contentView addSubview:self.reportListview];
+    
+    self.reportListview.estimatedRowHeight = 0;
+    self.reportListview.estimatedSectionHeaderHeight = 0;
+    self.reportListview.estimatedSectionFooterHeight = 0;
+    
+    if (@available(iOS 11.0, *)) {
+        self.reportListview.contentInsetAdjustmentBehavior= UIScrollViewContentInsetAdjustmentNever;
+    } else {
+        // Fallback on earlier versions
+    }if (@available(iOS 11.0, *)) {
+        self.reportListview.contentInsetAdjustmentBehavior= UIScrollViewContentInsetAdjustmentNever;
+    } else {
+        // Fallback on earlier versions
+    }
     self.reportListview.tableFooterView = [[UIView alloc] init];
     [self.contentView addSubview:self.reportListview];
 }

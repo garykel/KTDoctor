@@ -252,7 +252,7 @@
     if (close) {
         return 67 * kYScal;
     } else {
-        return (67 + 400)* kYScal;
+        return (67 + 200)* kYScal;
     }
 }
 
