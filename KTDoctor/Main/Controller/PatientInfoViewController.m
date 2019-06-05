@@ -163,6 +163,7 @@
 @property (nonatomic,strong)NSString *hrMenuTitle;
 @property (nonatomic,strong)NSMutableArray *allHrDevices;
 @property (nonatomic,strong)UserModel *user;
+@property (nonatomic,strong)NSMutableArray *testResults;
 //最新信息视图************************************************
 @property (nonatomic,strong)UILabel *latestLbl;
 @property (nonatomic,strong)UIImageView *latestPatientImg;
@@ -437,6 +438,7 @@
         }
     }
     self.allHrDevices = [NSMutableArray array];
+    self.testResults = [NSMutableArray array];
     self.privateDeviceArr = [NSMutableArray arrayWithObjects:@"无", nil];
     self.selectedDeviceCode = @"";
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -448,6 +450,11 @@
     NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
     [parameter setValue:@(userId) forKey:@"userId"];
     [self getPrivateHrDevice:parameter];
+    
+    NSMutableDictionary *testPara = [NSMutableDictionary dictionary];
+    [testPara setValue:orgCode forKey:@"orgCode"];
+    [testPara setValue:@(userId) forKey:@"userId"];
+    [self getUserDeviceMeasure:testPara];
     
     NSMutableDictionary *para = [NSMutableDictionary dictionary];
     [para setValue:orgCode forKey:@"orgCode"];
@@ -2994,6 +3001,29 @@
         if (code == 0) {
             NSArray *data = [responseObject valueForKey:@"data"];
             weakSelf.deviceTypeArr = data;
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+//医生查看用户设备测试结果
+- (void)getUserDeviceMeasure:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_DEVICE_MEASURE_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"*************医生查看用户设备测试结果 %@**************",[weakSelf convertToJSONData:responseObject]);
+        if (code == 0) {
+            NSArray *data = [responseObject valueForKey:@"data"];
+            weakSelf.testResults = [data mutableCopy];
+            NSLog(@"testResults is :%@",[weakSelf convertToJSONData:weakSelf.testResults]);
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];

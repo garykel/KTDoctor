@@ -8,6 +8,7 @@
 
 #import "HistoryViewController.h"
 #import "HistoryDetailViewController.h"
+#import "PGDatePickManager.h"
 #import "HistoryCell.h"
 #import "UserModel.h"
 
@@ -38,7 +39,7 @@
 #define kNoDataLbl_FontSize 20
 #define kNoDataLbl_Height 18
 
-@interface HistoryViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface HistoryViewController ()<UITableViewDelegate,UITableViewDataSource,PGDatePickerDelegate,PGDatePickManagerDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *timeLbl;
@@ -55,6 +56,9 @@
 @property (nonatomic,copy)NSString *startTimeStr;
 @property (nonatomic,assign)NSInteger offset;
 @property (nonatomic,assign)BOOL isFooterClick;
+@property (nonatomic,strong)PGDatePickManager *datePickManager;
+@property (nonatomic,assign)BOOL isSearch;
+@property (nonatomic,strong)NSMutableArray *searchResults;
 @end
 
 @implementation HistoryViewController
@@ -63,6 +67,8 @@
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     self.isFooterClick = NO;
+    self.isSearch = NO;
+    self.searchResults = [NSMutableArray array];
     [self setNavBar];
     [self setupUI];
 }
@@ -119,7 +125,7 @@
     [self.startTimeTF setTitle:@"开始时间" forState:UIControlStateNormal];
     [self.startTimeTF setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     [self.startTimeTF setImageEdgeInsets:UIEdgeInsetsMake(0, self.startTimeTF.frame.size.width - 20, 0, 0)];
-    [self.startTimeTF setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 35)];
+    [self.startTimeTF setTitleEdgeInsets:UIEdgeInsetsMake(0, -TF_Width * kXScal/2.0 - 20, 0, 0)];
     [self.startTimeTF addTarget:self action:@selector(chooseStartTime:) forControlEvents:UIControlEventTouchUpInside];
     [self.searchBgView addSubview:self.startTimeTF];
     
@@ -212,16 +218,28 @@
 }
 
 - (void)chooseStartTime:(UIButton *)sender {
-    __weak typeof (self)weakSelf = self;
-    WSDatePickerView *datepicker = [[WSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDay CompleteBlock:^(NSDate *selectDate) {        
-        NSString *date = [selectDate stringWithFormat:@"yyyy-MM-dd"];
-        [weakSelf.startTimeTF setTitle:date forState:UIControlStateNormal];
-        weakSelf.startTimeStr = date;
-    }];
-    datepicker.dateLabelColor = [UIColor orangeColor];//年-月-日-时-分 颜色
-    datepicker.datePickerColor = [UIColor blackColor];//滚轮日期颜色
-    datepicker.doneButtonColor = [UIColor grayColor];//确定按钮的颜色
-    [datepicker show];
+//    __weak typeof (self)weakSelf = self;
+//    WSDatePickerView *datepicker = [[WSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDay CompleteBlock:^(NSDate *selectDate) {
+//        NSString *date = [selectDate stringWithFormat:@"yyyy-MM-dd"];
+//        [weakSelf.startTimeTF setTitle:date forState:UIControlStateNormal];
+//        weakSelf.startTimeStr = date;
+//    }];
+//    datepicker.dateLabelColor = [UIColor orangeColor];//年-月-日-时-分 颜色
+//    datepicker.datePickerColor = [UIColor blackColor];//滚轮日期颜色
+//    datepicker.doneButtonColor = [UIColor grayColor];//确定按钮的颜色
+//    [datepicker show];
+    self.datePickManager = [[PGDatePickManager alloc]init];
+    self.datePickManager.isShadeBackground = true;
+    self.datePickManager.style = PGDatePickManagerStyleAlertBottomButton;
+    self.datePickManager.delegate = self;
+    PGDatePicker *datePicker = self.datePickManager.datePicker;
+    datePicker.delegate = self;
+    //    datePicker.datePickerType = PGDatePickerTypeVertical;
+    datePicker.isHiddenMiddleText = false;
+    //    datePicker.isCycleScroll = true;
+    datePicker.datePickerType = PGDatePickerTypeSegment;
+    datePicker.datePickerMode = PGDatePickerModeDate;
+    [self presentViewController:self.datePickManager animated:false completion:nil];
 }
 
 - (NSString *)getCurrentTimeString{
@@ -252,7 +270,11 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.sportlists.count;
+    if (self.isSearch) {
+        return self.searchResults.count;
+    } else {
+        return self.sportlists.count;
+    }
 }
 
 - (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
@@ -277,78 +299,149 @@
         cell.selectionStyle          = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     }
-    if (self.sportlists.count > 0) {
-        NSDictionary *sportDict = [self.sportlists objectAtIndex:indexPath.section];
-        cell.idLbl.text = [NSString stringWithFormat:@"ID:%@",[sportDict valueForKey:@"userId"]];
-        cell.nameLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"doctorName"]];
-        [cell.headImg sd_setImageWithURL:[NSURL URLWithString:[sportDict valueForKey:@"headUrl"]] placeholderImage:[UIImage imageNamed:@"default_head"]];
-        [cell.patientTypeBtn setTitle:[sportDict valueForKey:@"title"] forState:UIControlStateNormal];
-        cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[sportDict valueForKey:@"startTime"]];
-        NSInteger completePercent = [[sportDict valueForKey:@"completePercent"] integerValue];
-        cell.accomplishValLbl.text = [NSString stringWithFormat:@"%ld %%",completePercent];
-        cell.maxHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"maxHr"]];
-        cell.avgHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"avgHr"]];
-        CGFloat calorie = [[sportDict valueForKey:@"calorie"] floatValue];
-        cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f kcal",calorie];
-        CGFloat totalMileage = [[sportDict valueForKey:@"totalMileage"] floatValue];
-        cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
-        CGFloat speed = [[sportDict valueForKey:@"speed"] floatValue];
-        cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
-        cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"avgDifficulty"]];
-        NSInteger totalTime = [[sportDict valueForKey:@"totalTime"] integerValue];
-        NSString *totalTimeStr = [self getTimeString:totalTime];
-        cell.totalTimeValLbl.text = totalTimeStr;
-        NSString *rpeSample = [sportDict valueForKey:@"rpeSample"];
-        NSMutableArray *results = [NSMutableArray array];
-        if (rpeSample.length > 0) {
-            NSArray *arr = [rpeSample componentsSeparatedByString:@","];
-            if (arr.count > 0) {
-                for (NSString *str in arr) {
-                    NSArray *rpeArr = [str componentsSeparatedByString:@"|"];
-                    if (rpeArr.count > 0) {
-                        [results addObject:rpeArr[0]];
+    if (self.isSearch) {
+        if (self.searchResults.count > 0) {
+            NSDictionary *sportDict = [self.searchResults objectAtIndex:indexPath.section];
+            cell.idLbl.text = [NSString stringWithFormat:@"ID:%@",[sportDict valueForKey:@"userId"]];
+            cell.nameLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"doctorName"]];
+            [cell.headImg sd_setImageWithURL:[NSURL URLWithString:[sportDict valueForKey:@"headUrl"]] placeholderImage:[UIImage imageNamed:@"default_head"]];
+            [cell.patientTypeBtn setTitle:[sportDict valueForKey:@"title"] forState:UIControlStateNormal];
+            cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[sportDict valueForKey:@"startTime"]];
+            NSInteger completePercent = [[sportDict valueForKey:@"completePercent"] integerValue];
+            cell.accomplishValLbl.text = [NSString stringWithFormat:@"%ld %%",completePercent];
+            cell.maxHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"maxHr"]];
+            cell.avgHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"avgHr"]];
+            CGFloat calorie = [[sportDict valueForKey:@"calorie"] floatValue];
+            cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f kcal",calorie];
+            CGFloat totalMileage = [[sportDict valueForKey:@"totalMileage"] floatValue];
+            cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
+            CGFloat speed = [[sportDict valueForKey:@"speed"] floatValue];
+            cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
+            cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"avgDifficulty"]];
+            NSInteger totalTime = [[sportDict valueForKey:@"totalTime"] integerValue];
+            NSString *totalTimeStr = [self getTimeString:totalTime];
+            cell.totalTimeValLbl.text = totalTimeStr;
+            NSString *rpeSample = [sportDict valueForKey:@"rpeSample"];
+            NSMutableArray *results = [NSMutableArray array];
+            if (rpeSample.length > 0) {
+                NSArray *arr = [rpeSample componentsSeparatedByString:@","];
+                if (arr.count > 0) {
+                    for (NSString *str in arr) {
+                        NSArray *rpeArr = [str componentsSeparatedByString:@"|"];
+                        if (rpeArr.count > 0) {
+                            [results addObject:rpeArr[0]];
+                        }
                     }
-                }
-                if (arr.count < 12) {
-                    for (NSInteger i = 0; i< 12 - arr.count; i++) {
+                    if (arr.count < 12) {
+                        for (NSInteger i = 0; i< 12 - arr.count; i++) {
+                            [results addObject:@""];
+                        }
+                    }
+                } else {
+                    for (NSInteger j = 0; j< 12; j++) {
                         [results addObject:@""];
                     }
                 }
+                NSLog(@"results is :%@",results);
+                
             } else {
                 for (NSInteger j = 0; j< 12; j++) {
                     [results addObject:@""];
                 }
             }
-            NSLog(@"results is :%@",results);
-            
-        } else {
-            for (NSInteger j = 0; j< 12; j++) {
-                [results addObject:@""];
+            if (results.count > 0) {
+                cell.preValLbl1.text = results[0];
+                cell.preValLbl2.text = results[1];
+                cell.preValLbl3.text = results[2];
+                cell.preValLbl4.text = results[3];
+                cell.preValLbl5.text = results[4];
+                cell.preValLbl6.text = results[5];
+                cell.preValLbl7.text = results[6];
+                cell.preValLbl8.text = results[7];
+                cell.preValLbl9.text = results[8];
+                cell.preValLbl10.text = results[9];
+                cell.preValLbl11.text = results[10];
+                cell.preValLbl12.text = results[11];
             }
         }
-        if (results.count > 0) {
-            cell.preValLbl1.text = results[0];
-            cell.preValLbl2.text = results[1];
-            cell.preValLbl3.text = results[2];
-            cell.preValLbl4.text = results[3];
-            cell.preValLbl5.text = results[4];
-            cell.preValLbl6.text = results[5];
-            cell.preValLbl7.text = results[6];
-            cell.preValLbl8.text = results[7];
-            cell.preValLbl9.text = results[8];
-            cell.preValLbl10.text = results[9];
-            cell.preValLbl11.text = results[10];
-            cell.preValLbl12.text = results[11];
+    } else {
+        if (self.sportlists.count > 0) {
+            NSDictionary *sportDict = [self.sportlists objectAtIndex:indexPath.section];
+            cell.idLbl.text = [NSString stringWithFormat:@"ID:%@",[sportDict valueForKey:@"userId"]];
+            cell.nameLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"doctorName"]];
+            [cell.headImg sd_setImageWithURL:[NSURL URLWithString:[sportDict valueForKey:@"headUrl"]] placeholderImage:[UIImage imageNamed:@"default_head"]];
+            [cell.patientTypeBtn setTitle:[sportDict valueForKey:@"title"] forState:UIControlStateNormal];
+            cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[sportDict valueForKey:@"startTime"]];
+            NSInteger completePercent = [[sportDict valueForKey:@"completePercent"] integerValue];
+            cell.accomplishValLbl.text = [NSString stringWithFormat:@"%ld %%",completePercent];
+            cell.maxHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"maxHr"]];
+            cell.avgHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"avgHr"]];
+            CGFloat calorie = [[sportDict valueForKey:@"calorie"] floatValue];
+            cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f kcal",calorie];
+            CGFloat totalMileage = [[sportDict valueForKey:@"totalMileage"] floatValue];
+            cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
+            CGFloat speed = [[sportDict valueForKey:@"speed"] floatValue];
+            cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
+            cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"avgDifficulty"]];
+            NSInteger totalTime = [[sportDict valueForKey:@"totalTime"] integerValue];
+            NSString *totalTimeStr = [self getTimeString:totalTime];
+            cell.totalTimeValLbl.text = totalTimeStr;
+            NSString *rpeSample = [sportDict valueForKey:@"rpeSample"];
+            NSMutableArray *results = [NSMutableArray array];
+            if (rpeSample.length > 0) {
+                NSArray *arr = [rpeSample componentsSeparatedByString:@","];
+                if (arr.count > 0) {
+                    for (NSString *str in arr) {
+                        NSArray *rpeArr = [str componentsSeparatedByString:@"|"];
+                        if (rpeArr.count > 0) {
+                            [results addObject:rpeArr[0]];
+                        }
+                    }
+                    if (arr.count < 12) {
+                        for (NSInteger i = 0; i< 12 - arr.count; i++) {
+                            [results addObject:@""];
+                        }
+                    }
+                } else {
+                    for (NSInteger j = 0; j< 12; j++) {
+                        [results addObject:@""];
+                    }
+                }
+                NSLog(@"results is :%@",results);
+                
+            } else {
+                for (NSInteger j = 0; j< 12; j++) {
+                    [results addObject:@""];
+                }
+            }
+            if (results.count > 0) {
+                cell.preValLbl1.text = results[0];
+                cell.preValLbl2.text = results[1];
+                cell.preValLbl3.text = results[2];
+                cell.preValLbl4.text = results[3];
+                cell.preValLbl5.text = results[4];
+                cell.preValLbl6.text = results[5];
+                cell.preValLbl7.text = results[6];
+                cell.preValLbl8.text = results[7];
+                cell.preValLbl9.text = results[8];
+                cell.preValLbl10.text = results[9];
+                cell.preValLbl11.text = results[10];
+                cell.preValLbl12.text = results[11];
+            }
         }
     }
-    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    NSDictionary *sportDict = [self.sportlists objectAtIndex:indexPath.section];
+    NSDictionary *sportDict;
+    if (self.isSearch) {
+        sportDict = [self.sportlists objectAtIndex:indexPath.section];
+    } else {
+        sportDict = [self.searchResults objectAtIndex:indexPath.section];
+    }
     NSInteger sid = [[sportDict valueForKey:@"id"] integerValue];
     UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
     NSDictionary *dict = user.organ;
@@ -379,31 +472,58 @@
         if (code == 0) {
             NSArray *rows = [responseObject valueForKey:@"rows"];
             if (weakSelf.isFooterClick) {
-                [weakSelf.sportlists addObjectsFromArray:rows];
+                if (weakSelf.isSearch) {
+                    [weakSelf.searchResults addObjectsFromArray:rows];
+                } else {
+                    [weakSelf.sportlists addObjectsFromArray:rows];
+                }
                 [weakSelf.listView.mj_footer endRefreshing];
             } else {
                 if (rows.count > 0) {
-                    if (weakSelf.sportlists.count > 0) {//之前有数据
-                        //替换前n个数据
-                        NSMutableArray *tempArr = [NSMutableArray array];
-                        [tempArr addObjectsFromArray:rows];
-                        if (weakSelf.sportlists.count > rows.count) {//除去n个数据还有数据剩下
-                            NSArray *afterArr = [weakSelf.sportlists subarrayWithRange:NSMakeRange(rows.count, weakSelf.sportlists.count - rows.count)];
-                            [tempArr addObjectsFromArray:afterArr];
+                    if (weakSelf.isSearch) {
+                        if (weakSelf.searchResults.count > 0) {//之前有数据
+                            //替换前n个数据
+                            NSMutableArray *tempArr = [NSMutableArray array];
+                            [tempArr addObjectsFromArray:rows];
+                            if (weakSelf.sportlists.count > rows.count) {//除去n个数据还有数据剩下
+                                NSArray *afterArr = [weakSelf.sportlists subarrayWithRange:NSMakeRange(rows.count, weakSelf.sportlists.count - rows.count)];
+                                [tempArr addObjectsFromArray:afterArr];
+                            }
+                            weakSelf.searchResults = [tempArr mutableCopy];
+                        } else {
+                            [weakSelf.searchResults addObjectsFromArray:rows];
                         }
-                        weakSelf.sportlists = [tempArr mutableCopy];
                     } else {
-                        [weakSelf.sportlists addObjectsFromArray:rows];
+                        if (weakSelf.sportlists.count > 0) {//之前有数据
+                            //替换前n个数据
+                            NSMutableArray *tempArr = [NSMutableArray array];
+                            [tempArr addObjectsFromArray:rows];
+                            if (weakSelf.sportlists.count > rows.count) {//除去n个数据还有数据剩下
+                                NSArray *afterArr = [weakSelf.sportlists subarrayWithRange:NSMakeRange(rows.count, weakSelf.sportlists.count - rows.count)];
+                                [tempArr addObjectsFromArray:afterArr];
+                            }
+                            weakSelf.sportlists = [tempArr mutableCopy];
+                        } else {
+                            [weakSelf.sportlists addObjectsFromArray:rows];
+                        }
                     }
                 }
                 [weakSelf.listView.mj_header endRefreshing];
             }
             
             [weakSelf.listView reloadData];
-            if (weakSelf.sportlists.count == 0) {
-                weakSelf.noDataLbl.hidden = NO;
+            if (weakSelf.isSearch) {
+                if (weakSelf.searchResults.count == 0) {
+                    weakSelf.noDataLbl.hidden = NO;
+                } else {
+                    weakSelf.noDataLbl.hidden = YES;
+                }
             } else {
-                weakSelf.noDataLbl.hidden = YES;
+                if (weakSelf.sportlists.count == 0) {
+                    weakSelf.noDataLbl.hidden = NO;
+                } else {
+                    weakSelf.noDataLbl.hidden = YES;
+                }
             }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
@@ -441,6 +561,23 @@
     }];
 }
 
+#pragma mark - PGDatePickerDelegate
+
+- (void)datePicker:(PGDatePicker *)datePicker didSelectDate:(NSDateComponents *)dateComponents {
+    self.startTimeStr = [NSString stringWithFormat:@"%d-%d-%d",dateComponents.year,dateComponents.month,dateComponents.day];
+    [self.startTimeTF setTitle:self.startTimeStr forState:UIControlStateNormal];
+    [self.startTimeTF setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+}
+
+#pragma mark - PGDatePickManagerDelegate
+
+- (void)resetDatePicker{
+    [self.datePickManager dismiss];
+    [self.startTimeTF setTitle:@"开始时间" forState:UIControlStateNormal];
+    [self.startTimeTF setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    self.startTimeStr = @"";
+}
+
 #pragma mark - button click events
 
 - (void)back:(UIButton*)sender {
@@ -454,18 +591,24 @@
         [self.sportlists removeAllObjects];
     }
     self.isFooterClick = NO;
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
-    NSDictionary *dict = user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@0 forKey:@"offset"];
-    [parameter setValue:@10 forKey:@"rows"];
-    [parameter setValue:self.startTimeStr forKey:@"startTime"];
-    [parameter setValue:self.nameTF.text forKey:@"userKeyword"];
-    [parameter setValue:self.prescriptionTF.text forKey:@"title"];
-    [self getUsersSportList:parameter];
+    if (self.startTimeStr.length == 0 && self.nameTF.text.length == 0 && self.prescriptionTF.text.length == 0) {
+        self.isSearch = NO;
+        [self.listView reloadData];
+    } else {
+        self.isSearch = YES;
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+        NSDictionary *dict = user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [parameter setValue:@0 forKey:@"offset"];
+        [parameter setValue:@10 forKey:@"rows"];
+        [parameter setValue:self.startTimeStr forKey:@"startTime"];
+        [parameter setValue:self.nameTF.text forKey:@"userKeyword"];
+        [parameter setValue:self.prescriptionTF.text forKey:@"title"];
+        [self getUsersSportList:parameter];
+    }
 }
 
 /*

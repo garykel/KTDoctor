@@ -8,5 +8,6 @@ target 'KTDoctor' do
    pod 'MJRefresh'
    pod 'Charts'
    pod 'YYKit'
+   pod 'PGPickerView'
    use_frameworks!
 end
