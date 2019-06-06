@@ -565,8 +565,29 @@
     [self.testResultBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.testResultBtn.imageView.frame.size.width - 20, 0, self.testResultBtn.imageView.frame.size.width)];
     [self.testResultBtn setImageEdgeInsets:UIEdgeInsetsMake(0, self.testResultBtn.titleLabel.bounds.size.width, 0, -self.testResultBtn.titleLabel.bounds.size.width)];
     self.testResultBtn.backgroundColor = [UIColor colorWithHexString:@"#CFEEF4"];
+    [self.testResultBtn addTarget:self action:@selector(showTestResults:) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollview addSubview:self.testResultBtn];
     
+    self.testResultListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navView.frame), kWidth, kHeight - CGRectGetMaxY(self.navView.frame)) style:UITableViewStylePlain];
+    self.testResultListView.backgroundColor = [UIColor clearColor];
+    self.testResultListView.delegate = self;
+    self.testResultListView.dataSource = self;
+    self.testResultListView.showsVerticalScrollIndicator = NO;
+    [self.scrollview addSubview:self.testResultListView];
+    
+    self.testResultListView.estimatedRowHeight = 0;
+    self.testResultListView.estimatedSectionHeaderHeight = 0;
+    self.testResultListView.estimatedSectionFooterHeight = 0;
+    
+    if (@available(iOS 11.0, *)) {
+        self.testResultListView.contentInsetAdjustmentBehavior= UIScrollViewContentInsetAdjustmentNever;
+    } else {
+        // Fallback on earlier versions
+    }if (@available(iOS 11.0, *)) {
+        self.testResultListView.contentInsetAdjustmentBehavior= UIScrollViewContentInsetAdjustmentNever;
+    } else {
+        // Fallback on earlier versions
+    }
     CGFloat hrLbl_LeftMargin = CGRectGetMaxX(self.testResultBtn.frame) + kMiddle_Space * kXScal;
     self.hrLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, kHRDeviceLbl_Width * kXScal, kHRDeviceLbl_Height * kYScal)];
     self.hrLbl.center = CGPointMake(hrLbl_LeftMargin + kHRDeviceLbl_Width * kXScal / 2.0, self.testResultBtn.center.y);
@@ -2713,6 +2734,18 @@
             [STTextHudTool showText:@"已经到头了"];
         }
     }
+}
+
+//现实测试结果
+- (void)showTestResults:(UIButton*)sender {
+    NSMutableDictionary *para = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [para setValue:orgCode forKey:@"orgCode"];
+    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
+    [para setValue:@(userId) forKey:@"userId"];
+    [self getUserDeviceMeasure:para];
 }
 
 - (void)updateInfoBtnClick:(UIButton*)sender {
