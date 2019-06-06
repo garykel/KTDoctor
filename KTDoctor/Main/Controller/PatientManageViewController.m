@@ -60,10 +60,10 @@
 @property (nonatomic,strong)UIImageView *bgImg;
 @property (nonatomic,strong)UIView *searchBgView;
 @property (nonatomic,strong)UIView *bottomView;
-@property (nonatomic,strong)CustomTextField *nameTF;
+@property (nonatomic,strong)UITextField *nameTF;
 @property (nonatomic,strong)LMJDropdownMenu *diseaseDropMenu;
 @property (nonatomic,strong)LMJDropdownMenu *riskLevelDropMenu;
-@property (nonatomic,strong)CustomTextField *ageTF;
+@property (nonatomic,strong)UITextField *ageTF;
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)UIView *listBgView;
 @property (nonatomic,strong)LMJDropdownMenu *prescriptionMenu;
@@ -152,14 +152,14 @@
     
     CGFloat tfWidth = (self.searchBgView.frame.size.width - 2 * kNameTF_LeftMargin * kXScal - 4 * KSearchContent_Space * kXScal - kSearch_Button_Width * kXScal)/4;
     CGFloat TF_TopMargin = (self.searchBgView.frame.size.height - kSearch_TF_Height * kYScal)/2;
-    self.nameTF = [[CustomTextField alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal, TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
+    self.nameTF = [[UITextField alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal, TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
     self.nameTF.layer.borderWidth = 1;
     self.nameTF.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.nameTF.backgroundColor = [UIColor whiteColor];
-    self.nameTF.placeholderLbl.text = @"输入姓名/ID/手机号码";
-    self.nameTF.placeholderLbl.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
-    self.nameTF.placeholderLbl.textColor = [UIColor colorWithHexString:@"#999999"];
-    self.nameTF.delegate = self;
+    self.nameTF.placeholder = @"输入姓名/ID/手机号码";
+//    self.nameTF.placeholderLbl.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
+//    self.nameTF.placeholderLbl.textColor = [UIColor colorWithHexString:@"#999999"];
+//    self.nameTF.delegate = self;
     [self.searchBgView addSubview:self.nameTF];
     
     self.diseaseDropMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal + CGRectGetMaxX(self.nameTF.frame) + KSearchContent_Space * kXScal, self.searchBgView.frame.origin.y + TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
@@ -174,14 +174,11 @@
     self.riskLevelDropMenu.tag = 20;
     [self.bgImg addSubview:self.riskLevelDropMenu];
     
-    self.ageTF = [[CustomTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelDropMenu.frame) + KSearchContent_Space * kXScal - kNameTF_LeftMargin * kXScal, TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
+    self.ageTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelDropMenu.frame) + KSearchContent_Space * kXScal - kNameTF_LeftMargin * kXScal, TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
     self.ageTF.layer.borderWidth = 1;
     self.ageTF.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.ageTF.backgroundColor = [UIColor whiteColor];
-    self.ageTF.placeholderLbl.text = @"年龄";
-    self.ageTF.placeholderLbl.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
-    self.ageTF.placeholderLbl.textColor = [UIColor colorWithHexString:@"#999999"];
-    self.ageTF.delegate = self;
+    self.ageTF.placeholder = @"年龄";
     [self.searchBgView addSubview:self.ageTF];
     
     self.searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -345,13 +342,39 @@
 - (void)headerClick {
     self.isFooterClick = NO;
     self.offset = 0;
-    [self showUserListWithKeyword:@""];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@"" forKey:@"keyword"];
+    [parameter setValue:@"" forKey:@"disease"];
+    [parameter setValue:@0 forKey:@"risk"];
+    [parameter setValue:@0 forKey:@"age"];
+    [parameter setValue:@(self.type) forKey:@"type"];
+    [self showUserList:parameter];
 }
 
 - (void)footerClick {
     self.isFooterClick = YES;
     self.offset += 10;
-    [self showUserListWithKeyword:@""];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@"" forKey:@"keyword"];
+    [parameter setValue:@"" forKey:@"disease"];
+    [parameter setValue:@0 forKey:@"risk"];
+    [parameter setValue:@0 forKey:@"age"];
+    [parameter setValue:@(self.type) forKey:@"type"];
+    [self showUserList:parameter];
 }
 
 - (UIImage*)imageCompressWithSimple:(UIImage*)image scaledToSize:(CGSize)size
@@ -436,7 +459,20 @@
         } else if (number == 1) {
             self.type = 2;
         }
-        [self showUserListWithKeyword:@""];
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+        NSDictionary *dict = user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [parameter setValue:@(self.offset) forKey:@"offset"];
+        [parameter setValue:@10 forKey:@"rows"];
+        [parameter setValue:@"" forKey:@"keyword"];
+        [parameter setValue:@"" forKey:@"disease"];
+        [parameter setValue:@0 forKey:@"risk"];
+        [parameter setValue:@0 forKey:@"age"];
+        [parameter setValue:@(self.type) forKey:@"type"];
+        [self showUserList:parameter];
     }
 }
 
@@ -479,6 +515,42 @@
 
 - (void)search:(UIButton*)sender {
     NSLog(@"搜索");
+    if (self.datas.count > 0) {
+        [self.datas removeAllObjects];
+    }
+    self.isFooterClick = NO;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:self.nameTF.text forKey:@"keyword"];
+//    NSString *diseaseTitle = self.diseaseDropMenu.mainBtn.titleLabel.text;
+//    if (![diseaseTitle isEqualToString:@"病症"]) {
+//        [parameter setValue:diseaseTitle forKey:@"disease"];
+//    }
+    NSInteger riskLevel = 0;
+    NSString *riskLevelStr = self.riskLevelDropMenu.mainBtn.titleLabel.text;
+    if ([riskLevelStr isEqualToString:@"低"]) {
+        riskLevel = 1;
+    } else if ([riskLevelStr isEqualToString:@"中"]) {
+        riskLevel = 2;
+    } else if ([riskLevelStr isEqualToString:@"高"]) {
+        riskLevel = 3;
+    }
+    [parameter setValue:@(riskLevel) forKey:@"risk"];
+    NSInteger age = 0;
+    if (self.ageTF.text.length == 0) {
+        age = 0;
+    } else {
+        age = [self.ageTF.text integerValue];
+    }
+    [parameter setValue:@(age) forKey:@"age"];
+    [parameter setValue:@(self.type) forKey:@"type"];
+    [self showUserList:parameter];
 }
 
 - (void)sort:(UIButton*)sender {
@@ -561,21 +633,8 @@
     }];
 }
 
-- (void)showUserListWithKeyword:(NSString *)keyword{
+- (void)showUserList:(NSMutableDictionary *)parameter{
     __weak typeof (self)weakSelf = self;
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
-    NSDictionary *dict = user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@(self.offset) forKey:@"offset"];
-    [parameter setValue:@10 forKey:@"rows"];
-    [parameter setValue:@"" forKey:@"keyword"];
-    [parameter setValue:@"" forKey:@"disease"];
-    [parameter setValue:@0 forKey:@"risk"];
-    [parameter setValue:@0 forKey:@"age"];
-    [parameter setValue:@(self.type) forKey:@"type"];
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USERLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];

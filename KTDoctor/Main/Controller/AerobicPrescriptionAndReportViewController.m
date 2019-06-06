@@ -55,7 +55,7 @@
 @property (nonatomic,strong)UILabel *titleLbl;
 @property (nonatomic,strong)UIView *searchBgView;
 @property (nonatomic,strong)UIView *bottomView;
-@property (nonatomic,strong)CustomTextField *prescriptionTF;
+@property (nonatomic,strong)UITextField *prescriptionTF;
 @property (nonatomic,strong)UIButton *startTimeTF;
 @property (nonatomic,strong)NSString *startTimeStr;
 @property (nonatomic,strong)CustomTextField *deviceTF;
@@ -67,6 +67,8 @@
 @property (nonatomic,strong)UILabel *noDataLbl;
 @property (nonatomic,strong)NSMutableArray *closeArr;
 @property (nonatomic,strong)UserModel *user;
+@property (nonatomic,assign)BOOL isSearch;
+@property (nonatomic,strong)NSMutableArray *searchResults;
 @end
 
 @implementation AerobicPrescriptionAndReportViewController
@@ -74,6 +76,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.isSearch = NO;
+    self.searchResults = [NSMutableArray array];
     self.closeArr = [NSMutableArray array];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     for (NSInteger i = 0; i < self.precriptionsArr.count; i++) {
@@ -131,14 +135,11 @@
     
     CGFloat tfWidth = (self.searchBgView.frame.size.width - 2 * kNameTF_LeftMargin * kXScal - 5 * KSearchContent_Space * kXScal - kSearch_Button_Width * kXScal)/5;
     CGFloat TF_TopMargin = (self.searchBgView.frame.size.height - kSearch_TF_Height * kYScal)/2;
-    self.prescriptionTF = [[CustomTextField alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal, TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
+    self.prescriptionTF = [[UITextField alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal, TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
 //    self.prescriptionTF.layer.borderWidth = 1;
 //    self.prescriptionTF.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.prescriptionTF.backgroundColor = [UIColor whiteColor];
-    self.prescriptionTF.placeholderLbl.text = @"处方名称";
-    self.prescriptionTF.placeholderLbl.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
-    self.prescriptionTF.placeholderLbl.textColor = [UIColor colorWithHexString:@"#999999"];
-    self.prescriptionTF.delegate = self;
+    self.prescriptionTF.placeholder = @"处方名称";
     [self.searchBgView addSubview:self.prescriptionTF];
     
     self.startTimeTF = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.prescriptionTF.frame) + KSearchContent_Space * kXScal, self.prescriptionTF.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
@@ -319,7 +320,27 @@
 }
 
 - (void)search:(UIButton*)sender {
-    
+    NSString *positionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
+    NSString *equipmentStr = self.trainingEquipmentMenu.mainBtn.titleLabel.text;
+    if (self.prescriptionTF.text.length == 0 && self.startTimeStr.length == 0 && ![positionStr isEqualToString:@"训练部位"] && ![equipmentStr isEqualToString:@"训练设备"]) {
+        self.isSearch = NO;
+        self.noDataLbl.hidden = YES;
+        [self.listView reloadData];
+    } else {
+        self.isSearch = YES;
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        [parameter setValue:@0 forKey:@"offset"];
+        [parameter setValue:@10 forKey:@"rows"];
+        [parameter setValue:@1 forKey:@"type"];
+        NSInteger userId = [[self.patientInfo valueForKey:@"userId"] integerValue];
+        [parameter setValue:@(userId) forKey:@"userId"];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [parameter setValue:@"-create_time" forKey:@"sort"];
+        [self getUserPrescriptionList:parameter];
+    }
 }
 
 - (void)chooseStartTime:(UIButton *)sender {
@@ -426,6 +447,26 @@
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)getUserPrescriptionList:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRESCRIPTION_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }

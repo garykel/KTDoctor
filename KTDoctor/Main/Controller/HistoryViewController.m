@@ -284,10 +284,18 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == self.sportlists.count - 1) {
-        return 0;
+    if (self.isSearch) {
+        if (section == self.searchResults.count - 1) {
+            return 0;
+        } else {
+            return kListView_FooterView_Height * kYScal;
+        }
     } else {
-        return kListView_FooterView_Height * kYScal;
+        if (section == self.sportlists.count - 1) {
+            return 0;
+        } else {
+            return kListView_FooterView_Height * kYScal;
+        }
     }
 }
 
@@ -438,9 +446,9 @@
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *sportDict;
     if (self.isSearch) {
-        sportDict = [self.sportlists objectAtIndex:indexPath.section];
-    } else {
         sportDict = [self.searchResults objectAtIndex:indexPath.section];
+    } else {
+        sportDict = [self.sportlists objectAtIndex:indexPath.section];
     }
     NSInteger sid = [[sportDict valueForKey:@"id"] integerValue];
     UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
@@ -467,8 +475,7 @@
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_SPORTLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSString *error = [responseObject valueForKey:@"error"];
-        NSLog(@"sport lists :%@ :%@",responseObject,error);
+        NSLog(@"user sport lists :%@",[weakSelf convertToJSONData:responseObject]);
         if (code == 0) {
             NSArray *rows = [responseObject valueForKey:@"rows"];
             if (weakSelf.isFooterClick) {
@@ -485,8 +492,8 @@
                             //替换前n个数据
                             NSMutableArray *tempArr = [NSMutableArray array];
                             [tempArr addObjectsFromArray:rows];
-                            if (weakSelf.sportlists.count > rows.count) {//除去n个数据还有数据剩下
-                                NSArray *afterArr = [weakSelf.sportlists subarrayWithRange:NSMakeRange(rows.count, weakSelf.sportlists.count - rows.count)];
+                            if (weakSelf.searchResults.count > rows.count) {//除去n个数据还有数据剩下
+                                NSArray *afterArr = [weakSelf.searchResults subarrayWithRange:NSMakeRange(rows.count, weakSelf.searchResults.count - rows.count)];
                                 [tempArr addObjectsFromArray:afterArr];
                             }
                             weakSelf.searchResults = [tempArr mutableCopy];
@@ -564,7 +571,7 @@
 #pragma mark - PGDatePickerDelegate
 
 - (void)datePicker:(PGDatePicker *)datePicker didSelectDate:(NSDateComponents *)dateComponents {
-    self.startTimeStr = [NSString stringWithFormat:@"%d-%d-%d",dateComponents.year,dateComponents.month,dateComponents.day];
+    self.startTimeStr = [NSString stringWithFormat:@"%d-%02d-%02d",dateComponents.year,dateComponents.month,dateComponents.day];
     [self.startTimeTF setTitle:self.startTimeStr forState:UIControlStateNormal];
     [self.startTimeTF setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
@@ -587,13 +594,15 @@
 - (void)search:(UIButton*)sender {
     [self.nameTF resignFirstResponder];
     [self.prescriptionTF resignFirstResponder];
-    if (self.sportlists.count > 0) {
-        [self.sportlists removeAllObjects];
+    if (self.searchResults.count > 0) {
+        [self.searchResults removeAllObjects];
     }
     self.isFooterClick = NO;
     if (self.startTimeStr.length == 0 && self.nameTF.text.length == 0 && self.prescriptionTF.text.length == 0) {
         self.isSearch = NO;
+        self.noDataLbl.hidden = YES;
         [self.listView reloadData];
+        NSLog(@"list datasource :%@",self.sportlists);
     } else {
         self.isSearch = YES;
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
