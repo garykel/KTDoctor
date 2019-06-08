@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		09062671225CE621009A182D /* BindHRBandView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09062670225CE621009A182D /* BindHRBandView.m */; };
 		09062674225CE8B2009A182D /* SearchAndSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09062673225CE8B2009A182D /* SearchAndSelectView.m */; };
+		0937BABD22AB66CC001C3545 /* TestResultsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0937BABC22AB66CC001C3545 /* TestResultsCell.m */; };
 		0962F89E227D8C0B00611E27 /* CustomTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */; };
 		0962F8A4227DDDA300611E27 /* SystemTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */; };
 		09B681172288602900255F5D /* AerobicriptionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B681162288602900255F5D /* AerobicriptionModel.m */; };
@@ -215,6 +216,8 @@
 		09062670225CE621009A182D /* BindHRBandView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BindHRBandView.m; sourceTree = "<group>"; };
 		09062672225CE8B2009A182D /* SearchAndSelectView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SearchAndSelectView.h; sourceTree = "<group>"; };
 		09062673225CE8B2009A182D /* SearchAndSelectView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SearchAndSelectView.m; sourceTree = "<group>"; };
+		0937BABB22AB66CC001C3545 /* TestResultsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestResultsCell.h; sourceTree = "<group>"; };
+		0937BABC22AB66CC001C3545 /* TestResultsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestResultsCell.m; sourceTree = "<group>"; };
 		0962F89C227D8C0B00611E27 /* CustomTemplateCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomTemplateCell.h; sourceTree = "<group>"; };
 		0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomTemplateCell.m; sourceTree = "<group>"; };
 		0962F8A2227DDDA300611E27 /* SystemTemplateCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemTemplateCell.h; sourceTree = "<group>"; };
@@ -709,6 +712,8 @@
 				5B1A74A7229D0E6400DD90B6 /* CheckPowerTemplateCell.m */,
 				5B6DCD08229FDEA0007299D2 /* EvaluateReportCell.h */,
 				5B6DCD09229FDEA0007299D2 /* EvaluateReportCell.m */,
+				0937BABB22AB66CC001C3545 /* TestResultsCell.h */,
+				0937BABC22AB66CC001C3545 /* TestResultsCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1722,6 +1727,7 @@
 				5BF95288226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
 				5BB9D3DB2284025A00EACDE2 /* CreatePrescriptionCell.m in Sources */,
+				0937BABD22AB66CC001C3545 /* TestResultsCell.m in Sources */,
 				5B875B8A224CAE3E00736FC2 /* PatientCell1.m in Sources */,
 				5BF44CD92256097D006C3405 /* HistoryDetailViewController.m in Sources */,
 				5B126726225B3EFD00894CCF /* HistoryCell.m in Sources */,

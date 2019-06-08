@@ -13,7 +13,7 @@
 #import "CreatePowerPrescriptionViewController.h"
 #import "CheckEvaluateReportViewController.h"
 #import "OpenAerobicPrescriptionVC.h"
-
+#import "TestResultsCell.h"
 #import "KTDropDownMenus.h"
 #import "UnitTextField.h"
 #import "UserModel.h"
@@ -131,7 +131,10 @@
 #define kBottomLongButton_Width 188
 #define kBottomShortButton_Width 120
 #define kBottomButton_FontSize 14.0
-@interface PatientInfoViewController ()<XXTGDropdownMenuDelegate>
+
+CGSize testResultsListViewSize;
+
+@interface PatientInfoViewController ()<XXTGDropdownMenuDelegate,UITableViewDelegate,UITableViewDataSource>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -568,16 +571,20 @@
     [self.testResultBtn addTarget:self action:@selector(showTestResults:) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollview addSubview:self.testResultBtn];
     
-    self.testResultListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navView.frame), kWidth, kHeight - CGRectGetMaxY(self.navView.frame)) style:UITableViewStylePlain];
+    self.testResultListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navView.frame), leftView_Width, kTopLbl_Height * kYScal) style:UITableViewStylePlain];
     self.testResultListView.backgroundColor = [UIColor clearColor];
     self.testResultListView.delegate = self;
     self.testResultListView.dataSource = self;
     self.testResultListView.showsVerticalScrollIndicator = NO;
+    self.testResultListView.separatorColor = [UIColor clearColor];
+    self.testResultListView.hidden = YES;
     [self.scrollview addSubview:self.testResultListView];
     
     self.testResultListView.estimatedRowHeight = 0;
     self.testResultListView.estimatedSectionHeaderHeight = 0;
     self.testResultListView.estimatedSectionFooterHeight = 0;
+    
+    testResultsListViewSize = self.testResultListView.frame.size;
     
     if (@available(iOS 11.0, *)) {
         self.testResultListView.contentInsetAdjustmentBehavior= UIScrollViewContentInsetAdjustmentNever;
@@ -691,7 +698,7 @@
 
 - (void)configLatestInfoView {
     CGFloat leftView_Width = (self.scrollview.frame.size.width - kMiddle_Space * kXScal)/2.0;
-    self.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.deviceLbl.frame) + kLeftView_TopMargin * kYScal, leftView_Width, self.scrollview.contentSize.height - CGRectGetMaxY(self.deviceLbl.frame) - kLeftView_TopMargin * kYScal - kBottomButton_TopMargin * kYScal - kBottomButton_BottomMargin * kYScal - kBottomButton_Height * kYScal)];
+    self.leftView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.testResultListView.frame) + kLeftView_TopMargin * kYScal, leftView_Width, self.scrollview.contentSize.height - CGRectGetMaxY(self.testResultListView.frame) - kLeftView_TopMargin * kYScal - kBottomButton_TopMargin * kYScal - kBottomButton_BottomMargin * kYScal - kBottomButton_Height * kYScal)];
     self.leftView.backgroundColor = [UIColor whiteColor];
     [self.scrollview addSubview:self.leftView];
     
@@ -1661,7 +1668,7 @@
 
 - (void)configOlderInfoView {
     CGFloat rightView_Width = (self.scrollview.frame.size.width - kMiddle_Space * kXScal)/2.0;
-    self.rightView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.leftView.frame) + kMiddle_Space * kXScal, CGRectGetMaxY(self.deviceLbl.frame) + kLeftView_TopMargin * kYScal, rightView_Width, self.scrollview.contentSize.height - CGRectGetMaxY(self.deviceLbl.frame) - kLeftView_TopMargin * kYScal - kBottomButton_TopMargin * kYScal - kBottomButton_BottomMargin * kYScal - kBottomButton_Height * kYScal)];
+    self.rightView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.leftView.frame) + kMiddle_Space * kXScal, CGRectGetMaxY(self.testResultListView.frame) + kLeftView_TopMargin * kYScal, rightView_Width, self.scrollview.contentSize.height - CGRectGetMaxY(self.testResultListView.frame) - kLeftView_TopMargin * kYScal - kBottomButton_TopMargin * kYScal - kBottomButton_BottomMargin * kYScal - kBottomButton_Height * kYScal)];
     self.rightView.backgroundColor = [UIColor whiteColor];
     [self.scrollview addSubview:self.rightView];
     
@@ -2563,6 +2570,11 @@
     NSString *headUrl = [dict valueForKey:@"headUrl"];
     [self.olderPatientImg sd_setImageWithURL:[NSURL URLWithString:headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
     self.olderNameTF.text = [dict valueForKey:@"name"];
+    if (![self.latestNameTF.text isEqualToString:self.olderNameTF.text]) {
+        self.latestNameTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestNameTF.textColor = [UIColor blackColor];
+    }
     NSInteger olderSex = [[dict valueForKey:@"sex"] integerValue];
     NSString *sex = @"男";
     if (olderSex == 1) {
@@ -2570,30 +2582,114 @@
     } else if (olderSex == 2) {
         sex = @"女";
     }
+    if (![self.latestSexTF.text isEqualToString:self.olderSexTF.text]) {
+        self.latestSexTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestSexTF.textColor = [UIColor blackColor];
+    }
     self.olderSexTF.text = sex;
+    
     self.olderPhoneTF.text = [dict valueForKey:@"mobile"];
+    if (![self.latestPhoneTF.text isEqualToString:self.olderPhoneTF.text]) {
+        self.latestPhoneTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestPhoneTF.textColor = [UIColor blackColor];
+    }
+    
     self.olderBirthTF.text = [dict valueForKey:@"birthdate"];
+    if (![self.latestBirthTF.text isEqualToString:self.olderBirthTF.text]) {
+        self.latestBirthTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestBirthTF.textColor = [UIColor blackColor];
+    }
+    
     CGFloat height = [[dict valueForKey:@"height"] floatValue];
     self.olderHeightTF.text = [NSString stringWithFormat:@"%.1f",height];
+    if (![self.latestHeightTF.text isEqualToString:self.olderHeightTF.text]) {
+        self.latestHeightTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestHeightTF.textColor = [UIColor blackColor];
+    }
+    
     CGFloat weight = [[dict valueForKey:@"weight"] floatValue];
     self.olderWeightTF.text = [NSString stringWithFormat:@"%.1f",weight];
+    if (![self.latestWeightTF.text isEqualToString:self.olderWeightTF.text]) {
+        self.latestWeightTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestWeightTF.textColor = [UIColor blackColor];
+    }
+    
     CGFloat waistline = [[dict valueForKey:@"waistline"] floatValue];
     self.olderWaistTF.text = [NSString stringWithFormat:@"%.1f",waistline];
+    if (![self.latestWaistTF.text isEqualToString:self.olderWaistTF.text]) {
+        self.latestWaistTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestWaistTF.textColor = [UIColor blackColor];
+    }
+    
     CGFloat fbg = [[dict valueForKey:@"fbg"] floatValue];
     self.olderKFXTHRTF.text = [NSString stringWithFormat:@"%.1f",fbg];
+    if (![self.latestKFXTHRTF.text isEqualToString:self.olderKFXTHRTF.text]) {
+        self.latestKFXTHRTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestKFXTHRTF.textColor = [UIColor blackColor];
+    }
+    
     self.olderQuietHRTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"restHr"] integerValue]];
+    if (![self.latestQuietHRTF.text isEqualToString:self.olderQuietHRTF.text]) {
+        self.latestQuietHRTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestQuietHRTF.textColor = [UIColor blackColor];
+    }
+    
     CGFloat hrv = [[dict valueForKey:@"hrv"] floatValue];
     self.olderXLBYTF.text = [NSString stringWithFormat:@"%.1f",hrv];
+    if (![self.latestXLBYTF.text isEqualToString:self.olderXLBYTF.text]) {
+        self.latestXLBYTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestXLBYTF.textColor = [UIColor blackColor];
+    }
+    
     NSInteger sbp = [[dict valueForKey:@"sbp"] integerValue];
     self.olderSSYTF.text = [NSString stringWithFormat:@"%d",sbp];
+    if (![self.latestSSYTF.text isEqualToString:self.olderSSYTF.text]) {
+        self.latestSSYTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestSSYTF.textColor = [UIColor blackColor];
+    }
+    
     NSInteger dbp = [[dict valueForKey:@"dbp"] integerValue];
     self.olderSZYTF.text = [NSString stringWithFormat:@"%d",dbp];
+    if (![self.latestSZYTF.text isEqualToString:self.olderSZYTF.text]) {
+        self.latestSZYTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestSZYTF.textColor = [UIColor blackColor];
+    }
+    
     CGFloat hdl = [[dict valueForKey:@"hdl"] floatValue];
     self.olderGMDZDBTF.text = [NSString stringWithFormat:@"%.1f",hdl];
+    if (![self.latestGMDZDBTF.text isEqualToString:self.olderGMDZDBTF.text]) {
+        self.latestGMDZDBTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestGMDZDBTF.textColor = [UIColor blackColor];
+    }
+    
     CGFloat bmi = [[dict valueForKey:@"bmi"] floatValue];
     self.olderSTZLZSTF.text = [NSString stringWithFormat:@"%.1f",bmi];
+    if (![self.latestSTZLZSTF.text isEqualToString:self.olderSTZLZSTF.text]) {
+        self.latestSTZLZSTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestSTZLZSTF.textColor = [UIColor blackColor];
+    }
+    
     NSInteger olderMaxAlarmHr = [[dict valueForKey:@"maxAlarmHr"] integerValue];
     self.olderMaxAlertTF.text = [NSString stringWithFormat:@"%d",olderMaxAlarmHr];
+    if (![self.latestMaxAlertTF.text isEqualToString:self.olderMaxAlertTF.text]) {
+        self.latestMaxAlertTF.textColor = [UIColor colorWithHexString:@"#E85403"];
+    } else {
+        self.latestMaxAlertTF.textColor = [UIColor blackColor];
+    }
+    
     NSInteger sportFrequency = [[dict valueForKey:@"sportFrequency"] integerValue];
     if (sportFrequency == 2) {
         self.olderAnswer1NoImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"radio_selected"]];
@@ -2705,6 +2801,7 @@
         if (self.infoArr.count > 2) {
             NSDictionary *dict = [self.infoArr objectAtIndex:(self.leftOffset - 2)];
             [self configOlderInfoViewData:dict];
+            
             self.leftOffset --;
         }
     } else {
@@ -2738,14 +2835,25 @@
 
 //现实测试结果
 - (void)showTestResults:(UIButton*)sender {
-    NSMutableDictionary *para = [NSMutableDictionary dictionary];
-    NSDictionary *dict = self.user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [para setValue:orgCode forKey:@"orgCode"];
-    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
-    [para setValue:@(userId) forKey:@"userId"];
-    [self getUserDeviceMeasure:para];
+    if (self.testResults.count == 0) {
+        NSMutableDictionary *para = [NSMutableDictionary dictionary];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [para setValue:orgCode forKey:@"orgCode"];
+        NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
+        [para setValue:@(userId) forKey:@"userId"];
+        [self getUserDeviceMeasure:para];
+    }
+    sender.selected = !sender.selected;
+    CGFloat leftView_Width = (self.scrollview.frame.size.width - kMiddle_Space * kXScal)/2.0;
+    if (sender.selected) {
+        self.testResultListView.hidden = NO;
+        self.testResultListView.frame = CGRectMake(0, CGRectGetMaxY(self.navView.frame), leftView_Width, kTopLbl_Height * kYScal);
+    } else {
+        self.testResultListView.hidden = YES;
+        self.testResultListView.frame = CGRectMake(0, CGRectGetMaxY(self.navView.frame), leftView_Width, 0);
+    }
 }
 
 - (void)updateInfoBtnClick:(UIButton*)sender {
@@ -2810,6 +2918,36 @@
     [parameter setValue:orgCode forKey:@"orgCode"];
     [parameter setValue:@"-create_time" forKey:@"sort"];
     [self getUserPrescriptionList:parameter];
+}
+
+#pragma mark - UITableViewDelegate && UITableViewDateSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.testResults.count;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return kTopLbl_Height * kYScal;
+}
+
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *reuseCellId = [NSString stringWithFormat:@"TestResultsCell%d%d",indexPath.section,indexPath.row];
+    TestResultsCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellId];
+    if (cell == nil) {
+        cell = [[TestResultsCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellId];
+        cell.selectionStyle          = UITableViewCellSelectionStyleNone;
+        cell.backgroundColor = [UIColor clearColor];
+    }
+    NSDictionary *dict = [self.testResults objectAtIndex:indexPath.row];
+    cell.deviceNameLbl.text = [dict valueForKey:@"deviceName"];
+    cell.attributeNameLbl.text = [dict valueForKey:@"attrName"];
+    NSInteger value = [[dict valueForKey:@"value"] integerValue];
+    cell.attributeValLbl.text = [NSString stringWithFormat:@"%d",value];
+    return cell;
 }
 
 #pragma mark - XXTGDropdownMenuDelegate
@@ -3056,6 +3194,7 @@
         if (code == 0) {
             NSArray *data = [responseObject valueForKey:@"data"];
             weakSelf.testResults = [data mutableCopy];
+            [weakSelf.testResultListView reloadData];
             NSLog(@"testResults is :%@",[weakSelf convertToJSONData:weakSelf.testResults]);
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
