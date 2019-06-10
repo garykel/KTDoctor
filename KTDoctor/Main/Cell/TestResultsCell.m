@@ -14,6 +14,8 @@
 extern CGSize testResultsListViewSize;
 
 @interface TestResultsCell()
+@property (nonatomic,strong)UIView *middleLine1;
+@property (nonatomic,strong)UIView *middleLine2;
 @property (nonatomic,strong)UIView *seperateLine;
 @end
 
@@ -45,20 +47,28 @@ extern CGSize testResultsListViewSize;
     self.deviceNameLbl.font = [UIFont systemFontOfSize:kLbl_FontSize * kYScal];
     [self.contentView addSubview:self.deviceNameLbl];
     
-    self.attributeNameLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceNameLbl.frame) + 1, 0, lbl_width, kLbl_Height * kYScal)];
+    self.middleLine1 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceNameLbl.frame), 0, 1, kLbl_Height * kYScal)];
+    self.middleLine1.backgroundColor = [UIColor colorWithHexString:@"#CFEEF4"];
+    [self.contentView addSubview:self.middleLine1];
+    
+    self.attributeNameLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.middleLine1.frame), 0, lbl_width, kLbl_Height * kYScal)];
     self.attributeNameLbl.textColor = [UIColor blackColor];
     self.attributeNameLbl.textAlignment = NSTextAlignmentCenter;
     self.attributeNameLbl.font = [UIFont systemFontOfSize:kLbl_FontSize * kYScal];
     [self.contentView addSubview:self.attributeNameLbl];
     
-    self.attributeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.attributeNameLbl.frame) + 1, 0, lbl_width, kLbl_Height * kYScal)];
+    self.middleLine2 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.attributeNameLbl.frame), 0, 1, kLbl_Height * kYScal)];
+    self.middleLine2.backgroundColor = [UIColor colorWithHexString:@"#CFEEF4"];
+    [self.contentView addSubview:self.middleLine2];
+    
+    self.attributeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.middleLine2.frame), 0, lbl_width, kLbl_Height * kYScal)];
     self.attributeValLbl.textColor = [UIColor blackColor];
     self.attributeValLbl.textAlignment = NSTextAlignmentCenter;
     self.attributeValLbl.font = [UIFont systemFontOfSize:kLbl_FontSize * kYScal];
     [self.contentView addSubview:self.attributeValLbl];
     
     self.seperateLine = [[UIView alloc] initWithFrame:CGRectMake(0, kLbl_Height * kYScal - kSeperateLine_Height, testResultsListViewSize.width, kSeperateLine_Height)];
-    self.seperateLine.backgroundColor = [UIColor lightGrayColor];
+    self.seperateLine.backgroundColor = [UIColor colorWithHexString:@"#CFEEF4"];
     [self.contentView addSubview:self.seperateLine];
 }
 

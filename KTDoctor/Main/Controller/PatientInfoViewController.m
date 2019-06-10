@@ -571,8 +571,8 @@ CGSize testResultsListViewSize;
     [self.testResultBtn addTarget:self action:@selector(showTestResults:) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollview addSubview:self.testResultBtn];
     
-    self.testResultListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navView.frame), leftView_Width, kTopLbl_Height * kYScal) style:UITableViewStylePlain];
-    self.testResultListView.backgroundColor = [UIColor clearColor];
+    self.testResultListView = [[UITableView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.testResultBtn.frame), leftView_Width, kTopLbl_Height * kYScal) style:UITableViewStylePlain];
+    self.testResultListView.backgroundColor = [UIColor whiteColor];
     self.testResultListView.delegate = self;
     self.testResultListView.dataSource = self;
     self.testResultListView.showsVerticalScrollIndicator = NO;
@@ -2582,12 +2582,12 @@ CGSize testResultsListViewSize;
     } else if (olderSex == 2) {
         sex = @"女";
     }
+    self.olderSexTF.text = sex;
     if (![self.latestSexTF.text isEqualToString:self.olderSexTF.text]) {
         self.latestSexTF.textColor = [UIColor colorWithHexString:@"#E85403"];
     } else {
         self.latestSexTF.textColor = [UIColor blackColor];
     }
-    self.olderSexTF.text = sex;
     
     self.olderPhoneTF.text = [dict valueForKey:@"mobile"];
     if (![self.latestPhoneTF.text isEqualToString:self.olderPhoneTF.text]) {
@@ -2849,7 +2849,7 @@ CGSize testResultsListViewSize;
     CGFloat leftView_Width = (self.scrollview.frame.size.width - kMiddle_Space * kXScal)/2.0;
     if (sender.selected) {
         self.testResultListView.hidden = NO;
-        self.testResultListView.frame = CGRectMake(0, CGRectGetMaxY(self.navView.frame), leftView_Width, kTopLbl_Height * kYScal);
+        self.testResultListView.frame = CGRectMake(0, CGRectGetMaxY(self.testResultBtn.frame), leftView_Width, kTopLbl_Height * kYScal);
     } else {
         self.testResultListView.hidden = YES;
         self.testResultListView.frame = CGRectMake(0, CGRectGetMaxY(self.navView.frame), leftView_Width, 0);
