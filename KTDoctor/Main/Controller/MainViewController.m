@@ -21,6 +21,8 @@
 
 #define kMain_NavView_LogoutBtn_LeftMargin 15
 #define kMain_NavView_LogoutBtn_Height 30
+#define kMain_Organ_LogoView_Width 150
+#define kMain_Organ_LogoView_Height 25
 #define kMain_NavView_LogoutBtn_Width 150
 #define kMain_NavView_LogoutBtn_FontSize 18.0
 #define kMain_NavView_LogoutBtn_ImgLeftMargin 15
@@ -36,6 +38,7 @@
 @interface MainViewController ()<IndexPopoverDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *logoutBtn;
+@property (nonatomic,strong)UIImageView *organLogo;
 @property (nonatomic,strong)UIImageView *bgImg;
 @property (nonatomic,strong)UIImageView *monitorBtn;
 @property (nonatomic,strong)UIImageView *historyBtn;
@@ -79,6 +82,20 @@
     [self.logoutBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.logoutBtn addTarget:self action:@selector(logoutBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.navView addSubview:self.logoutBtn];
+    
+    NSArray *organArr = (NSArray*)user.organ;
+    NSString *logo = @"";
+    if (organArr.count > 0) {
+        NSDictionary *organDict = [organArr objectAtIndex:0];
+        logo = [organDict valueForKey:@"logo"];
+    }
+    self.organLogo = [[UIImageView alloc] initWithFrame:CGRectMake(kWidth - kMain_NavView_LogoutBtn_LeftMargin * kXScal - kMain_Organ_LogoView_Width * kXScal, (kNavView_Height * kYScal - kMain_Organ_LogoView_Height * kYScal)/2.0 , kMain_Organ_LogoView_Width * kXScal, kMain_Organ_LogoView_Height * kYScal)];
+    [self.organLogo sd_setImageWithURL:[NSURL URLWithString:logo]];
+    UIImage *orgLogo = self.organLogo.image;
+    orgLogo = [self imageCompressWithSimple:orgLogo scaledToSize:CGSizeMake(kMain_Organ_LogoView_Width * kXScal, kMain_Organ_LogoView_Height * kYScal)];
+    self.organLogo.image = orgLogo;
+    self.organLogo.center = CGPointMake(kWidth - kMain_NavView_LogoutBtn_LeftMargin * kXScal - kMain_Organ_LogoView_Width * kXScal + kMain_Organ_LogoView_Width * kXScal / 2.0, self.logoutBtn.center.y);
+    [self.navView addSubview:self.organLogo];
 }
 
 - (void)setUpContentView {
@@ -274,7 +291,8 @@
         [self.pop dismissViewControllerAnimated:NO completion:nil];
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"是否确认退出登录？" preferredStyle:UIAlertControllerStyleAlert];
         UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self.navigationController popViewControllerAnimated:NO];
+            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            [self docotorLogOut:parameter];
         }];
         
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -284,5 +302,25 @@
         [alert addAction:cancelAction];
         [self presentViewController:alert animated:NO completion:nil];
     }
+}
+
+- (void)docotorLogOut:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_LOGOUT_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"%@",[weakSelf convertToJSONData:responseObject]);
+        if (code == 0) {
+            [weakSelf.navigationController popViewControllerAnimated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 @end
