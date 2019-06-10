@@ -66,9 +66,12 @@
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,strong)UILabel *noDataLbl;
 @property (nonatomic,strong)NSMutableArray *closeArr;
+@property (nonatomic,strong)NSMutableArray *searchCloseArr;
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,assign)BOOL isSearch;
+@property (nonatomic,assign)NSInteger offset;
 @property (nonatomic,strong)NSMutableArray *searchResults;
+@property (nonatomic,assign)BOOL isFooterClick;
 @end
 
 @implementation AerobicPrescriptionAndReportViewController
@@ -77,8 +80,10 @@
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     self.isSearch = NO;
+    self.isFooterClick = NO;
     self.searchResults = [NSMutableArray array];
     self.closeArr = [NSMutableArray array];
+    self.searchCloseArr = [NSMutableArray array];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     for (NSInteger i = 0; i < self.precriptionsArr.count; i++) {
         [self.closeArr addObject:[NSNumber numberWithBool:YES]];
@@ -205,6 +210,16 @@
     self.listView.delegate = self;
     [self.bottomView addSubview:self.listView];
     
+    //添加头部的下拉刷新
+    MJRefreshNormalHeader *header = [[MJRefreshNormalHeader alloc] init];
+    [header setRefreshingTarget:self refreshingAction:@selector(headerClick)];
+    self.listView.mj_header = header;
+    
+    //添加底部的上拉加载
+    MJRefreshBackNormalFooter *footer = [[MJRefreshBackNormalFooter alloc] init];
+    [footer setRefreshingTarget:self refreshingAction:@selector(footerClick)];
+    self.listView.mj_footer = footer;
+    
     CGFloat noDataLbl_LeftMargin = (self.bottomView.frame.size.width - kNoDatLbl_Width * kXScal)/2.0;
     CGFloat noDataLbl_TopMargin = (self.bottomView.frame.size.height - kNoDataLbl_Height * kYScal)/2.0;
     self.noDataLbl = [[UILabel alloc] initWithFrame:CGRectMake(noDataLbl_LeftMargin, noDataLbl_TopMargin, kNoDatLbl_Width * kXScal, kNoDataLbl_Height * kYScal)];
@@ -220,6 +235,39 @@
     } else {
         self.noDataLbl.hidden = YES;
     }
+}
+
+- (void)headerClick {
+    self.isFooterClick = NO;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@1 forKey:@"type"];
+    NSInteger userId = [[self.patientInfo valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@"-create_time" forKey:@"sort"];
+    [self getUserPrescriptionList:parameter];
+}
+
+- (void)footerClick {
+    self.isFooterClick = YES;
+    self.offset += 10;
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    [parameter setValue:@(self.offset) forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@1 forKey:@"type"];
+    NSInteger userId = [[self.patientInfo valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@"-create_time" forKey:@"sort"];
+    [self getUserPrescriptionList:parameter];
 }
 
 - (NSDictionary *)getReportSummary {
@@ -240,7 +288,11 @@
 #pragma mark - UITableViewDelegate && UITableViewDatasource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.precriptionsArr.count;
+    if (self.isSearch) {
+        return self.searchResults.count;
+    } else {
+        return self.precriptionsArr.count;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -249,11 +301,20 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 //    return 67 * kYScal;
-    BOOL close = [[self.closeArr objectAtIndex:indexPath.section] boolValue];
-    if (close) {
-        return 67 * kYScal;
+    if (self.isSearch) {
+        BOOL close = [[self.searchCloseArr objectAtIndex:indexPath.section] boolValue];
+        if (close) {
+            return 67 * kYScal;
+        } else {
+            return (67 + 200)* kYScal;
+        }
     } else {
-        return (67 + 200)* kYScal;
+        BOOL close = [[self.closeArr objectAtIndex:indexPath.section] boolValue];
+        if (close) {
+            return 67 * kYScal;
+        } else {
+            return (67 + 200)* kYScal;
+        }
     }
 }
 
@@ -275,40 +336,78 @@
         cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    if (self.precriptionsArr.count > 0) {
-        NSDictionary *dict = [self.precriptionsArr objectAtIndex:indexPath.section];
-        NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
-        NSString *riskLevelStr = @"低";
-        if (riskLevel == 1) {
-            riskLevelStr = @"低";
-        } else if (riskLevel == 2) {
-            riskLevelStr = @"中";
-        } else if (riskLevel == 3) {
-            riskLevelStr = @"高";
+    if (self.isSearch) {
+        if (self.searchResults.count > 0) {
+            NSDictionary *dict = [self.searchResults objectAtIndex:indexPath.section];
+            NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
+            NSString *riskLevelStr = @"低";
+            if (riskLevel == 1) {
+                riskLevelStr = @"低";
+            } else if (riskLevel == 2) {
+                riskLevelStr = @"中";
+            } else if (riskLevel == 3) {
+                riskLevelStr = @"高";
+            }
+            cell.riskLevelValLbl.text = riskLevelStr;
+            NSArray *typeList = [dict valueForKey:@"typeList"];
+            if (typeList.count > 2) {
+                NSDictionary *equipmentDict = [typeList objectAtIndex:2];
+                cell.trainingEquipmentNameLbl.text = [equipmentDict valueForKey:@"name"];
+            }
+            cell.prescriptionNameLbl.text = [dict valueForKey:@"title"];
+            NSInteger type2 = [[dict valueForKey:@"type2"] integerValue];
+            if (type2 == 1) {
+                cell.typeNameLbl.text = @"强度";
+            } else {
+                cell.typeNameLbl.text = @"功率";
+            }
+            cell.createTimeValLbl.text = [dict valueForKey:@"createTime"];
+            cell.doctorNameLbl.text = [dict valueForKey:@"doctorName"];
+            NSInteger sportDays = [[dict valueForKey:@"sportDays"] integerValue];
+            cell.sportDaysValLbl.text = [NSString stringWithFormat:@"%d",sportDays];
+            NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
+            cell.reportsValLbl.text = [NSString stringWithFormat:@"%d",reportNum];
+            cell.reportsBtn.tag = 1000 + indexPath.section;
+            [cell.reportsBtn addTarget:self action:@selector(showReport:) forControlEvents:UIControlEventTouchUpInside];
+            cell.prescriptionDetailBtn.tag = 2000+ indexPath.section;
+            [cell.prescriptionDetailBtn addTarget:self action:@selector(prescriptionDetail:) forControlEvents:UIControlEventTouchUpInside];
         }
-        cell.riskLevelValLbl.text = riskLevelStr;
-        NSArray *typeList = [dict valueForKey:@"typeList"];
-        if (typeList.count > 2) {
-            NSDictionary *equipmentDict = [typeList objectAtIndex:2];
-            cell.trainingEquipmentNameLbl.text = [equipmentDict valueForKey:@"name"];
+    } else {
+        if (self.precriptionsArr.count > 0) {
+            NSDictionary *dict = [self.precriptionsArr objectAtIndex:indexPath.section];
+            NSInteger riskLevel = [[dict valueForKey:@"riskLevel"] integerValue];
+            NSString *riskLevelStr = @"低";
+            if (riskLevel == 1) {
+                riskLevelStr = @"低";
+            } else if (riskLevel == 2) {
+                riskLevelStr = @"中";
+            } else if (riskLevel == 3) {
+                riskLevelStr = @"高";
+            }
+            cell.riskLevelValLbl.text = riskLevelStr;
+            NSArray *typeList = [dict valueForKey:@"typeList"];
+            if (typeList.count > 2) {
+                NSDictionary *equipmentDict = [typeList objectAtIndex:2];
+                cell.trainingEquipmentNameLbl.text = [equipmentDict valueForKey:@"name"];
+            }
+            cell.prescriptionNameLbl.text = [dict valueForKey:@"title"];
+            NSInteger type2 = [[dict valueForKey:@"type2"] integerValue];
+            if (type2 == 1) {
+                cell.typeNameLbl.text = @"强度";
+            } else {
+                cell.typeNameLbl.text = @"功率";
+            }
+            cell.createTimeValLbl.text = [dict valueForKey:@"createTime"];
+            cell.doctorNameLbl.text = [dict valueForKey:@"doctorName"];
+            NSInteger sportDays = [[dict valueForKey:@"sportDays"] integerValue];
+            cell.sportDaysValLbl.text = [NSString stringWithFormat:@"%d",sportDays];
+            NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
+            cell.reportsValLbl.text = [NSString stringWithFormat:@"%d",reportNum];
+            cell.reportsBtn.tag = 1000 + indexPath.section;
+            [cell.reportsBtn addTarget:self action:@selector(showReport:) forControlEvents:UIControlEventTouchUpInside];
+            cell.prescriptionDetailBtn.tag = 2000+ indexPath.section;
+            [cell.prescriptionDetailBtn addTarget:self action:@selector(prescriptionDetail:) forControlEvents:UIControlEventTouchUpInside];
         }
-        cell.prescriptionNameLbl.text = [dict valueForKey:@"title"];
-        NSInteger type2 = [[dict valueForKey:@"type2"] integerValue];
-        if (type2 == 1) {
-            cell.typeNameLbl.text = @"强度";
-        } else {
-            cell.typeNameLbl.text = @"功率";
-        }
-        cell.createTimeValLbl.text = [dict valueForKey:@"createTime"];
-        cell.doctorNameLbl.text = [dict valueForKey:@"doctorName"];
-        NSInteger sportDays = [[dict valueForKey:@"sportDays"] integerValue];
-        cell.sportDaysValLbl.text = [NSString stringWithFormat:@"%d",sportDays];
-        NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
-        cell.reportsValLbl.text = [NSString stringWithFormat:@"%d",reportNum];
-        cell.reportsBtn.tag = 1000 + indexPath.section;
-        [cell.reportsBtn addTarget:self action:@selector(showReport:) forControlEvents:UIControlEventTouchUpInside];
-        cell.prescriptionDetailBtn.tag = 2000+ indexPath.section;
-        [cell.prescriptionDetailBtn addTarget:self action:@selector(prescriptionDetail:) forControlEvents:UIControlEventTouchUpInside];
     }
     return cell;
 }
@@ -320,26 +419,27 @@
 }
 
 - (void)search:(UIButton*)sender {
+    NSString *prescriptionName = self.prescriptionTF.text;
     NSString *positionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
     NSString *equipmentStr = self.trainingEquipmentMenu.mainBtn.titleLabel.text;
-    if (self.prescriptionTF.text.length == 0 && self.startTimeStr.length == 0 && ![positionStr isEqualToString:@"训练部位"] && ![equipmentStr isEqualToString:@"训练设备"]) {
+    if (prescriptionName.length == 0 && self.startTimeStr.length == 0 && ![positionStr isEqualToString:@"训练部位"] && ![equipmentStr isEqualToString:@"训练设备"]) {
         self.isSearch = NO;
         self.noDataLbl.hidden = YES;
         [self.listView reloadData];
     } else {
         self.isSearch = YES;
-        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        [parameter setValue:@0 forKey:@"offset"];
-        [parameter setValue:@10 forKey:@"rows"];
-        [parameter setValue:@1 forKey:@"type"];
-        NSInteger userId = [[self.patientInfo valueForKey:@"userId"] integerValue];
-        [parameter setValue:@(userId) forKey:@"userId"];
-        NSDictionary *dict = self.user.organ;
-        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-        NSString *orgCode = orgCodeArr[0];
-        [parameter setValue:orgCode forKey:@"orgCode"];
-        [parameter setValue:@"-create_time" forKey:@"sort"];
-        [self getUserPrescriptionList:parameter];
+        if (self.searchResults.count > 0) {
+            [self.searchResults removeAllObjects];
+        }
+        if (self.searchCloseArr.count > 0) {
+            [self.searchCloseArr removeAllObjects];
+        }
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || self.createTime = %@",prescriptionName,self.startTimeStr];
+        self.searchResults = [NSMutableArray arrayWithArray:[self.precriptionsArr filteredArrayUsingPredicate:predicate]];
+        for (NSInteger i = 0; i < self.searchResults.count; i++) {
+            [self.searchCloseArr addObject:[NSNumber numberWithBool:YES]];
+        }
+        [self.listView reloadData];
     }
 }
 
@@ -434,8 +534,14 @@
                 cell.reportsArr = [datas mutableCopy];
                 cell.type2 = type2;
                 cell.patientInfo = self.patientInfo;
-                BOOL close = [[self.closeArr objectAtIndex:index] boolValue];
-                [weakSelf.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
+                BOOL close = NO;
+                if (weakSelf.isSearch) {
+                    close = [[self.searchCloseArr objectAtIndex:index] boolValue];
+                    [weakSelf.searchCloseArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
+                } else {
+                    close = [[self.closeArr objectAtIndex:index] boolValue];
+                    [weakSelf.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
+                }
                 [cell.reportListview reloadData];
                 NSIndexSet *indexSet = [NSIndexSet indexSetWithIndex:index];
                 [weakSelf.listView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -460,9 +566,87 @@
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRESCRIPTION_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"**************%@**************",responseObject);
+        NSLog(@"******用户处方列表********%@**************",responseObject);
         if (code == 0) {
             NSArray *rows = [responseObject valueForKey:@"rows"];
+            if (weakSelf.isFooterClick) {
+                if (weakSelf.isSearch) {
+                    [weakSelf.searchResults addObjectsFromArray:rows];
+                    if (weakSelf.searchCloseArr.count > 0) {
+                        [weakSelf.searchCloseArr removeAllObjects];
+                    }
+                    for (NSInteger i = 0; i < weakSelf.searchResults.count; i++) {
+                        [weakSelf.searchCloseArr addObject:[NSNumber numberWithBool:YES]];
+                    }
+                } else {
+                    [weakSelf.precriptionsArr addObjectsFromArray:rows];
+                    if (weakSelf.closeArr.count > 0) {
+                        [weakSelf.closeArr removeAllObjects];
+                    }
+                    for (NSInteger i = 0; i < weakSelf.precriptionsArr.count; i++) {
+                        [weakSelf.closeArr addObject:[NSNumber numberWithBool:YES]];
+                    }
+                }
+                [weakSelf.listView.mj_footer endRefreshing];
+            } else {
+                if (rows.count > 0) {
+                    if (weakSelf.isSearch) {
+                        if (weakSelf.searchResults.count > 0) {//之前有数据
+                            //替换前n个数据
+                            NSMutableArray *tempArr = [NSMutableArray array];
+                            [tempArr addObjectsFromArray:rows];
+                            if (weakSelf.searchResults.count > rows.count) {//除去n个数据还有数据剩下
+                                NSArray *afterArr = [weakSelf.searchResults subarrayWithRange:NSMakeRange(rows.count, weakSelf.searchResults.count - rows.count)];
+                                [tempArr addObjectsFromArray:afterArr];
+                            }
+                            weakSelf.searchResults = [tempArr mutableCopy];
+                        } else {
+                            [weakSelf.searchResults addObjectsFromArray:rows];
+                        }
+                        if (weakSelf.searchCloseArr.count > 0) {
+                            [weakSelf.searchCloseArr removeAllObjects];
+                        }
+                        for (NSInteger i = 0; i < self.searchResults.count; i++) {
+                            [self.searchCloseArr addObject:[NSNumber numberWithBool:YES]];
+                        }
+                    } else {
+                        if (weakSelf.precriptionsArr.count > 0) {//之前有数据
+                            //替换前n个数据
+                            NSMutableArray *tempArr = [NSMutableArray array];
+                            [tempArr addObjectsFromArray:rows];
+                            if (weakSelf.precriptionsArr.count > rows.count) {//除去n个数据还有数据剩下
+                                NSArray *afterArr = [weakSelf.precriptionsArr subarrayWithRange:NSMakeRange(rows.count, weakSelf.precriptionsArr.count - rows.count)];
+                                [tempArr addObjectsFromArray:afterArr];
+                            }
+                            weakSelf.precriptionsArr = [tempArr mutableCopy];
+                        } else {
+                            [weakSelf.precriptionsArr addObjectsFromArray:rows];
+                        }
+                        [weakSelf.precriptionsArr addObjectsFromArray:rows];
+                        if (weakSelf.closeArr.count > 0) {
+                            [weakSelf.closeArr removeAllObjects];
+                        }
+                        for (NSInteger i = 0; i < weakSelf.precriptionsArr.count; i++) {
+                            [weakSelf.closeArr addObject:[NSNumber numberWithBool:YES]];
+                        }
+                    }
+                }
+                [weakSelf.listView.mj_header endRefreshing];
+            }
+            [weakSelf.listView reloadData];
+            if (weakSelf.isSearch) {
+                if (weakSelf.searchResults.count == 0) {
+                    weakSelf.noDataLbl.hidden = NO;
+                } else {
+                    weakSelf.noDataLbl.hidden = YES;
+                }
+            } else {
+                if (weakSelf.precriptionsArr.count == 0) {
+                    weakSelf.noDataLbl.hidden = NO;
+                } else {
+                    weakSelf.noDataLbl.hidden = YES;
+                }
+            }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
