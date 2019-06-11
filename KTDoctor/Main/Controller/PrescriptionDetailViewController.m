@@ -59,6 +59,7 @@
 #define kDoctorAdviceLbl_TopMargin 19
 #define kDoctorAdviceView_Height 22
 #define kCell_Height 118
+#define kWeekMenu_RightMargin 15
 
 CGSize prescriptionListviewSize;
 
@@ -86,8 +87,10 @@ CGSize prescriptionListviewSize;
 @property (nonatomic,strong)UITextField *equipmentTF;
 @property (nonatomic,strong)UILabel *weekLbl;
 @property (nonatomic,strong)UITextField *weekTF;
+@property (nonatomic,strong)UILabel *weekUnitLbl;
 @property (nonatomic,strong)UILabel *dayLbl;
 @property (nonatomic,strong)UITextField *dayTF;
+@property (nonatomic,strong)UILabel *dayUnitLbl;
 @property (nonatomic,strong)UILabel *sportTimeLbl;
 @property (nonatomic,strong)UITextField *sportTimeTF;
 @property (nonatomic,strong)UIView *listBgView;
@@ -181,6 +184,7 @@ CGSize prescriptionListviewSize;
     self.dieaseTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.dieaseTF.backgroundColor = [UIColor whiteColor];
     self.dieaseTF.text = [self.prescriptionDict valueForKey:@"disease"];
+    self.dieaseTF.enabled = NO;
     [self.topView addSubview:self.dieaseTF];
     
     self.createTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.prescriptionLbl.frame.origin.x, CGRectGetMaxY(self.prescriptionLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -196,6 +200,7 @@ CGSize prescriptionListviewSize;
     self.createTimeTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.createTimeTF.backgroundColor = [UIColor whiteColor];
     self.createTimeTF.center = CGPointMake(CGRectGetMaxX(self.createTimeLbl.frame) + kNameLbl_RightMargin * kXScal + kNorMarlTF_Width * kXScal/2.0, self.createTimeLbl.center.y);
+    self.createTimeTF.enabled = NO;
     [self.topView addSubview:self.createTimeTF];
     
     self.doctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.createTimeTF.frame) + space, self.createTimeLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -209,6 +214,7 @@ CGSize prescriptionListviewSize;
     self.doctorTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.doctorTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.doctorTF.backgroundColor = [UIColor whiteColor];
+    self.doctorTF.enabled = NO;
     [self.topView addSubview:self.doctorTF];
     
     self.riskLevelLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.doctorTF.frame) + space, self.createTimeLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -231,6 +237,7 @@ CGSize prescriptionListviewSize;
     self.riskLevelTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.riskLevelTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.riskLevelTF.backgroundColor = [UIColor whiteColor];
+    self.riskLevelTF.enabled = NO;
     [self.topView addSubview:self.riskLevelTF];
     
     /////////////
@@ -250,6 +257,7 @@ CGSize prescriptionListviewSize;
     self.deviceTypeTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.deviceTypeTF.backgroundColor = [UIColor whiteColor];
     self.deviceTypeTF.center = CGPointMake(CGRectGetMaxX(self.deviceTypeLbl.frame) + kNameLbl_RightMargin * kXScal + kNorMarlTF_Width * kXScal/2.0, self.deviceTypeLbl.center.y);
+    self.deviceTypeTF.enabled = NO;
     [self.topView addSubview:self.deviceTypeTF];
     
     self.positionLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTypeTF.frame) + space, self.deviceTypeLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -263,6 +271,7 @@ CGSize prescriptionListviewSize;
     self.positionTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.positionTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.positionTF.backgroundColor = [UIColor whiteColor];
+    self.positionTF.enabled = NO;
     [self.topView addSubview:self.positionTF];
     
     self.equipmentLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.positionTF.frame) + space, self.deviceTypeLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -276,6 +285,7 @@ CGSize prescriptionListviewSize;
     self.equipmentTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.equipmentTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.equipmentTF.backgroundColor = [UIColor whiteColor];
+    self.equipmentTF.enabled = NO;
     [self.topView addSubview:self.equipmentTF];
     
     self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.prescriptionLbl.frame.origin.x, CGRectGetMaxY(self.deviceTypeLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -289,6 +299,7 @@ CGSize prescriptionListviewSize;
     self.weekTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.weekTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.weekTF.backgroundColor = [UIColor whiteColor];
+    self.weekTF.enabled = NO;
     self.weekTF.center = CGPointMake(CGRectGetMaxX(self.weekLbl.frame) + kNameLbl_RightMargin * kXScal + kNorMarlTF_Width * kXScal/2.0, self.weekLbl.center.y);
     [self.topView addSubview:self.weekTF];
     
@@ -303,6 +314,7 @@ CGSize prescriptionListviewSize;
     self.dayTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.dayTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.dayTF.backgroundColor = [UIColor whiteColor];
+    self.dayTF.enabled = NO;
     [self.topView addSubview:self.dayTF];
     
     self.sportTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dayTF.frame) + space, self.weekLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -323,6 +335,7 @@ CGSize prescriptionListviewSize;
     self.sportTimeTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.sportTimeTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.sportTimeTF.backgroundColor = [UIColor whiteColor];
+    self.sportTimeTF.enabled = NO;
     [self.topView addSubview:self.sportTimeTF];
     
     self.listBgView = [[UIView alloc] initWithFrame:CGRectMake(self.topView.frame.origin.x, CGRectGetMaxY(self.topView.frame) + kTopView_BottomMargin * kYScal, self.topView.frame.size.width, self.scrollview.contentSize.height - CGRectGetMaxY(self.topView.frame) - kTopView_BottomMargin * kYScal - kBottomHeight * kYScal)];

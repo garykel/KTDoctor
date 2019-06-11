@@ -198,6 +198,7 @@
     [parameter setValue:@0 forKey:@"offset"];
     [parameter setValue:@10 forKey:@"rows"];
     [parameter setValue:@"-create_time" forKey:@"sort"];
+    [parameter setValue:self.nameTF.text forKey:@"userKeyword"];
     [self getUsersSportList:parameter];
 }
 
@@ -213,6 +214,7 @@
     [parameter setValue:@(self.offset) forKey:@"offset"];
     [parameter setValue:@10 forKey:@"rows"];
     [parameter setValue:@"-create_time" forKey:@"sort"];
+    [parameter setValue:self.nameTF.text forKey:@"userKeyword"];
     [self getUsersSportList:parameter];
     [self.listView.mj_footer endRefreshing];
 }
@@ -311,7 +313,7 @@
         if (self.searchResults.count > 0) {
             NSDictionary *sportDict = [self.searchResults objectAtIndex:indexPath.section];
             cell.idLbl.text = [NSString stringWithFormat:@"ID:%@",[sportDict valueForKey:@"userId"]];
-            cell.nameLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"doctorName"]];
+            cell.nameLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"userName"]];
             [cell.headImg sd_setImageWithURL:[NSURL URLWithString:[sportDict valueForKey:@"headUrl"]] placeholderImage:[UIImage imageNamed:@"default_head"]];
             [cell.patientTypeBtn setTitle:[sportDict valueForKey:@"title"] forState:UIControlStateNormal];
             cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[sportDict valueForKey:@"startTime"]];
@@ -325,6 +327,12 @@
             cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
             CGFloat speed = [[sportDict valueForKey:@"speed"] floatValue];
             cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
+            NSInteger type2 = [[sportDict valueForKey:@"type2"] integerValue];
+            if (type2 == 1) {
+                cell.avgIntensityLbl.text = @"平均强度";
+            } else {
+                cell.avgIntensityLbl.text = @"平均功率";
+            }
             cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"avgDifficulty"]];
             NSInteger totalTime = [[sportDict valueForKey:@"totalTime"] integerValue];
             NSString *totalTimeStr = [self getTimeString:totalTime];
@@ -376,7 +384,7 @@
         if (self.sportlists.count > 0) {
             NSDictionary *sportDict = [self.sportlists objectAtIndex:indexPath.section];
             cell.idLbl.text = [NSString stringWithFormat:@"ID:%@",[sportDict valueForKey:@"userId"]];
-            cell.nameLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"doctorName"]];
+            cell.nameLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"userName"]];
             [cell.headImg sd_setImageWithURL:[NSURL URLWithString:[sportDict valueForKey:@"headUrl"]] placeholderImage:[UIImage imageNamed:@"default_head"]];
             [cell.patientTypeBtn setTitle:[sportDict valueForKey:@"title"] forState:UIControlStateNormal];
             cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[sportDict valueForKey:@"startTime"]];
@@ -390,7 +398,14 @@
             cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
             CGFloat speed = [[sportDict valueForKey:@"speed"] floatValue];
             cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
-            cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"avgDifficulty"]];
+            NSInteger type2 = [[sportDict valueForKey:@"type2"] integerValue];
+            if (type2 == 1) {
+                cell.avgIntensityLbl.text = @"平均强度";
+                cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"avgDifficulty"]];
+            } else {
+                cell.avgIntensityLbl.text = @"平均功率";
+                cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@ w",[sportDict valueForKey:@"avgDifficulty"]];
+            }
             NSInteger totalTime = [[sportDict valueForKey:@"totalTime"] integerValue];
             NSString *totalTimeStr = [self getTimeString:totalTime];
             cell.totalTimeValLbl.text = totalTimeStr;
@@ -481,6 +496,16 @@
             if (weakSelf.isFooterClick) {
                 if (weakSelf.isSearch) {
                     [weakSelf.searchResults addObjectsFromArray:rows];
+                    NSPredicate *titlePredicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.prescriptionTF.text];
+                    self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:titlePredicate]];
+                    if (self.startTimeStr.length > 0) {
+                        NSPredicate *startTimePredicate = [NSPredicate predicateWithFormat:@"SELF.startTime CONTAINS[c] %@",self.startTimeStr];
+                        self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:startTimePredicate]];
+                    }
+                    if (self.nameTF.text > 0) {
+                        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"SELF.id = %d || self.userName CONTAINS[c] %@",[self.nameTF.text integerValue],self.nameTF.text];
+                        self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:namePredicate]];
+                    }
                 } else {
                     [weakSelf.sportlists addObjectsFromArray:rows];
                 }
@@ -499,6 +524,16 @@
                             weakSelf.searchResults = [tempArr mutableCopy];
                         } else {
                             [weakSelf.searchResults addObjectsFromArray:rows];
+                        }
+                        NSPredicate *titlePredicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.prescriptionTF.text];
+                        self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:titlePredicate]];
+                        if (self.startTimeStr.length > 0) {
+                            NSPredicate *startTimePredicate = [NSPredicate predicateWithFormat:@"SELF.startTime CONTAINS[c] %@",self.startTimeStr];
+                            self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:startTimePredicate]];
+                        }
+                        if (self.nameTF.text > 0) {
+                            NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"SELF.id = %d || self.userName CONTAINS[c] %@",[self.nameTF.text integerValue],self.nameTF.text];
+                            self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:namePredicate]];
                         }
                     } else {
                         if (weakSelf.sportlists.count > 0) {//之前有数据

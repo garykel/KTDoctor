@@ -381,7 +381,7 @@
     [self.topBgView addSubview:self.trainingFrequencyLbl];
     
     self.dayLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingFrequencyLbl.frame) + kDieaseLbl_RightMargin * kXScal + kTrainingPositionMenu_Width * kXScal + kWeekMenu_RightMargin * kXScal, self.weekLbl.frame.origin.y, kWeekLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
-    self.dayLbl.text = @"周";
+    self.dayLbl.text = @"天";
     self.dayLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.dayLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     [self.topBgView addSubview:self.dayLbl];

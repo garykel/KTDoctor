@@ -20,6 +20,7 @@
 @property (nonatomic,strong)UILabel *calorieValLbl;
 @property (nonatomic,strong)UILabel *mileValLbl;
 @property (nonatomic,strong)UILabel *avgSpeedValLbl;
+@property (nonatomic,strong)UILabel *avgIntensityLbl;
 @property (nonatomic,strong)UILabel *avgIntensityValLbl;
 @property (nonatomic,strong)UILabel *totalTimeValLbl;
 @property (nonatomic,strong)UILabel *preValLbl1;

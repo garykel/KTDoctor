@@ -53,7 +53,6 @@
 @property (nonatomic,strong)UILabel *avgSpeedLbl;
 @property (nonatomic,strong)UIView *avgSpeedSeperateView;
 @property (nonatomic,strong)UIView *avgSpeedValSeperateView;
-@property (nonatomic,strong)UILabel *avgIntensityLbl;
 @property (nonatomic,strong)UIView *avgIntensitySeperateView;
 @property (nonatomic,strong)UIView *avgIntensityValSeperateView;
 @property (nonatomic,strong)UILabel *totalTimeLbl;
