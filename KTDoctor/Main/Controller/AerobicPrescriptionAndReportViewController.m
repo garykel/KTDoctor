@@ -8,7 +8,7 @@
 
 #import "AerobicPrescriptionAndReportViewController.h"
 #import "PrescriptionDetailViewController.h"
-#import "LMJDropdownMenu.h"
+#import "KTDropDownMenus.h"
 #import "CustomTextField.h"
 #import "AerobicReportCell.h"
 #import "UserModel.h"
@@ -36,6 +36,7 @@
 #define kSearch_Button_Font 11.0
 #define kSearch_TF_Height 22
 #define kSearch_TF_Font 12.0
+#define kDropdownHeight 30
 #define kSearch_DropView_Font 12.0
 #define kSummaryLbl_FontSize 13.0
 #define kSummaryLbl_Height 13
@@ -48,7 +49,7 @@
 #define kNoDataLbl_FontSize 20
 #define kNoDataLbl_Height 18
 
-@interface AerobicPrescriptionAndReportViewController ()<UITableViewDelegate,UITableViewDataSource,LMJDropdownMenuDelegate,CustomTextFieldDelegate>
+@interface AerobicPrescriptionAndReportViewController ()<UITableViewDelegate,UITableViewDataSource,XXTGDropdownMenuDelegate,CustomTextFieldDelegate,PGDatePickerDelegate,PGDatePickManagerDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *timeLbl;
@@ -59,8 +60,10 @@
 @property (nonatomic,strong)UIButton *startTimeTF;
 @property (nonatomic,strong)NSString *startTimeStr;
 @property (nonatomic,strong)CustomTextField *deviceTF;
-@property (nonatomic,strong)LMJDropdownMenu *trainingPositionMenu;
-@property (nonatomic,strong)LMJDropdownMenu *trainingEquipmentMenu;
+@property (nonatomic,strong)KTDropDownMenus *trainingPositionMenu;
+@property (nonatomic,strong)KTDropDownMenus *trainingEquipmentMenu;
+@property (nonatomic,copy)NSString *trainingEquipmentStr;
+@property (nonatomic,strong)NSMutableArray *equipmentsArr;
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)UILabel *summaryLbl;
 @property (nonatomic,strong)UITableView *listView;
@@ -70,6 +73,7 @@
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,assign)BOOL isSearch;
 @property (nonatomic,assign)NSInteger offset;
+@property (nonatomic,strong)PGDatePickManager *datePickManager;
 @property (nonatomic,strong)NSMutableArray *searchResults;
 @property (nonatomic,assign)BOOL isFooterClick;
 @end
@@ -84,6 +88,7 @@
     self.searchResults = [NSMutableArray array];
     self.closeArr = [NSMutableArray array];
     self.searchCloseArr = [NSMutableArray array];
+    self.equipmentsArr = [NSMutableArray array];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     for (NSInteger i = 0; i < self.precriptionsArr.count; i++) {
         [self.closeArr addObject:[NSNumber numberWithBool:YES]];
@@ -155,7 +160,7 @@
     [self.startTimeTF.titleLabel setFont:[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]];
     [self.startTimeTF setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     [self.startTimeTF setImageEdgeInsets:UIEdgeInsetsMake(0, self.startTimeTF.frame.size.width - 20, 0, 0)];
-    [self.startTimeTF setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 35)];
+    [self.startTimeTF setTitleEdgeInsets:UIEdgeInsetsMake(0, -tfWidth * kXScal/2.0 - 20, 0, 0)];
     [self.startTimeTF addTarget:self action:@selector(chooseStartTime:) forControlEvents:UIControlEventTouchUpInside];
     [self.searchBgView addSubview:self.startTimeTF];
     
@@ -167,15 +172,37 @@
     self.deviceTF.placeholderLbl.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
     [self.searchBgView addSubview:self.deviceTF];
     
-    self.trainingPositionMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTF.frame) + KSearchContent_Space * kXScal + kView_LeftMargin  * kXScal, self.prescriptionTF.frame.origin.y  + self.searchBgView.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
-    [self.trainingPositionMenu setMenuTitles:@[@"心肺"] rowHeight:kSearch_TF_Height attr:@{@"title":@"训练部位",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+    self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTF.frame) + KSearchContent_Space * kXScal + kView_LeftMargin  * kXScal, self.prescriptionTF.frame.origin.y  + self.searchBgView.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
+    [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.trainingPositionMenu.defualtStr = @"训练部位";
     self.trainingPositionMenu.delegate = self;
+    NSMutableArray *positionArr = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            [positionArr addObject:[dict valueForKey:@"name"]];
+        }
+    }
+    self.trainingPositionMenu.titles = [positionArr copy];
     self.trainingPositionMenu.tag = 10;
     [self.view addSubview:self.trainingPositionMenu];
     
-    self.trainingEquipmentMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingPositionMenu.frame) + KSearchContent_Space * kXScal, self.trainingPositionMenu.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
-    [self.trainingEquipmentMenu setMenuTitles:@[@"功率车",@"椭圆机"] rowHeight:kSearch_TF_Height attr:@{@"title":@"训练设备",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#2e2e2e"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+    self.trainingEquipmentMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingPositionMenu.frame) + KSearchContent_Space * kXScal, self.trainingPositionMenu.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
+    [self.trainingEquipmentMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.trainingEquipmentMenu.defualtStr = @"训练设备";
     self.trainingEquipmentMenu.delegate = self;
+    NSMutableArray *trainingEquipMentArr = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict1 in self.deviceTypeArr) {
+            NSArray *children = [dict1 valueForKey:@"children"];
+            self.equipmentsArr = [children mutableCopy];
+            if (children.count > 0) {
+                for (NSDictionary *child in children) {
+                    [trainingEquipMentArr addObject:[child valueForKey:@"name"]];
+                }
+            }
+        }
+    }
+    self.trainingEquipmentMenu.titles = [trainingEquipMentArr copy];
     [self.view addSubview:self.trainingEquipmentMenu];
     
     self.searchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -275,11 +302,21 @@
     NSInteger sumPrescriptionCount = 0;
     NSInteger sumSportDays = 0;
     NSInteger sumReportCount = 0;
-    if (self.precriptionsArr.count > 0) {
-        for (NSDictionary *prescription in self.precriptionsArr) {
-            sumPrescriptionCount += 1;
-            sumSportDays += [[prescription valueForKey:@"sportDays"] integerValue];
-            sumReportCount += [[prescription valueForKey:@"reportNum"] integerValue];
+    if (self.isSearch) {
+        if (self.searchResults.count > 0) {
+            for (NSDictionary *prescription in self.searchResults) {
+                sumPrescriptionCount += 1;
+                sumSportDays += [[prescription valueForKey:@"sportDays"] integerValue];
+                sumReportCount += [[prescription valueForKey:@"reportNum"] integerValue];
+            }
+        }
+    } else {
+        if (self.precriptionsArr.count > 0) {
+            for (NSDictionary *prescription in self.precriptionsArr) {
+                sumPrescriptionCount += 1;
+                sumSportDays += [[prescription valueForKey:@"sportDays"] integerValue];
+                sumReportCount += [[prescription valueForKey:@"reportNum"] integerValue];
+            }
         }
     }
     return @{@"sumPrescriptionCount":@(sumPrescriptionCount),@"sumSportDays":@(sumSportDays),@"sumReportCount":@(sumReportCount)};
@@ -420,12 +457,14 @@
 
 - (void)search:(UIButton*)sender {
     NSString *prescriptionName = self.prescriptionTF.text;
-    NSString *positionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
-    NSString *equipmentStr = self.trainingEquipmentMenu.mainBtn.titleLabel.text;
-    if (prescriptionName.length == 0 && self.startTimeStr.length == 0 && ![positionStr isEqualToString:@"训练部位"] && ![equipmentStr isEqualToString:@"训练设备"]) {
+    NSString *trainingPositionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
+    NSString *trainingDeviceStr = self.trainingEquipmentMenu.mainBtn.titleLabel.text;
+    if (prescriptionName.length == 0 && self.startTimeStr.length == 0 && [trainingPositionStr isEqualToString:@"训练部位"] && [trainingDeviceStr isEqualToString:@"训练设备"]) {
         self.isSearch = NO;
         self.noDataLbl.hidden = YES;
         [self.listView reloadData];
+        NSDictionary *summarydict = [self getReportSummary];
+        self.summaryLbl.text = [NSString stringWithFormat:@"累积处方数：%d  累积运动天数：%d  累积报告数：%d",[[summarydict valueForKey:@"sumPrescriptionCount"] integerValue],[[summarydict valueForKey:@"sumSportDays"] integerValue],[[summarydict valueForKey:@"sumReportCount"] integerValue]];
     } else {
         self.isSearch = YES;
         if (self.searchResults.count > 0) {
@@ -436,24 +475,57 @@
         }
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || self.createTime = %@",prescriptionName,self.startTimeStr];
         self.searchResults = [NSMutableArray arrayWithArray:[self.precriptionsArr filteredArrayUsingPredicate:predicate]];
+        if (self.trainingEquipmentStr.length > 0) {
+            NSMutableArray *tempArr = [NSMutableArray array];
+            if (self.searchResults.count > 0) {
+                for (NSDictionary *dict in self.searchResults) {
+                    NSArray *typeList = [dict valueForKey:@"typeList"];
+                    if (typeList.count > 0) {
+                        for (NSString *typeDict in typeList) {
+                            NSString *name = [typeDict valueForKey:@"name"];
+                            if ([name isEqualToString:self.trainingEquipmentStr]) {
+                                [tempArr addObject:dict];
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (self.precriptionsArr.count > 0) {
+                    for (NSDictionary *dict in self.precriptionsArr) {
+                        NSArray *typeList = [dict valueForKey:@"typeList"];
+                        if (typeList.count > 0) {
+                            for (NSString *typeDict in typeList) {
+                                NSString *name = [typeDict valueForKey:@"name"];
+                                if ([name isEqualToString:self.trainingEquipmentStr]) {
+                                    [tempArr addObject:dict];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            self.searchResults = [tempArr mutableCopy];
+        }
         for (NSInteger i = 0; i < self.searchResults.count; i++) {
             [self.searchCloseArr addObject:[NSNumber numberWithBool:YES]];
         }
         [self.listView reloadData];
+        NSDictionary *summarydict = [self getReportSummary];
+        self.summaryLbl.text = [NSString stringWithFormat:@"累积处方数：%d  累积运动天数：%d  累积报告数：%d",[[summarydict valueForKey:@"sumPrescriptionCount"] integerValue],[[summarydict valueForKey:@"sumSportDays"] integerValue],[[summarydict valueForKey:@"sumReportCount"] integerValue]];
     }
 }
 
 - (void)chooseStartTime:(UIButton *)sender {
-    __weak typeof (self)weakSelf = self;
-    WSDatePickerView *datepicker = [[WSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDay CompleteBlock:^(NSDate *selectDate) {
-        NSString *date = [selectDate stringWithFormat:@"yyyy-MM-dd"];
-        [weakSelf.startTimeTF setTitle:date forState:UIControlStateNormal];
-        weakSelf.startTimeStr = date;
-    }];
-    datepicker.dateLabelColor = [UIColor orangeColor];//年-月-日-时-分 颜色
-    datepicker.datePickerColor = [UIColor blackColor];//滚轮日期颜色
-    datepicker.doneButtonColor = [UIColor grayColor];//确定按钮的颜色
-    [datepicker show];
+    self.datePickManager = [[PGDatePickManager alloc]init];
+    self.datePickManager.isShadeBackground = true;
+    self.datePickManager.style = PGDatePickManagerStyleAlertBottomButton;
+    self.datePickManager.delegate = self;
+    PGDatePicker *datePicker = self.datePickManager.datePicker;
+    datePicker.delegate = self;
+    datePicker.isHiddenMiddleText = false;
+    datePicker.datePickerType = PGDatePickerTypeSegment;
+    datePicker.datePickerMode = PGDatePickerModeDate;
+    [self presentViewController:self.datePickManager animated:false completion:nil];
 }
 
 - (void)showReport:(UIButton*)sender {
@@ -495,6 +567,59 @@
     [parameter setValue:@(id) forKey:@"id"];
     [self checkPrescriptionDetail:parameter];
 }
+
+#pragma mark - PGDatePickerDelegate
+
+- (void)datePicker:(PGDatePicker *)datePicker didSelectDate:(NSDateComponents *)dateComponents {
+    self.startTimeStr = [NSString stringWithFormat:@"%d-%02d-%02d",dateComponents.year,dateComponents.month,dateComponents.day];
+    [self.startTimeTF setTitle:self.startTimeStr forState:UIControlStateNormal];
+    [self.startTimeTF setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+}
+
+#pragma mark - PGDatePickManagerDelegate
+
+- (void)resetDatePicker{
+    [self.datePickManager dismiss];
+    [self.startTimeTF setTitle:@"开始时间" forState:UIControlStateNormal];
+    [self.startTimeTF setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+    self.startTimeStr = @"";
+}
+
+#pragma mark - XXTGDropdownMenuDelegate
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellNumber:(NSInteger)number {
+    if (menu == self.trainingPositionMenu) { //训练部位
+        
+    }else if (menu == self.trainingEquipmentMenu){ //训练设备
+        
+    }
+}
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
+{
+    
+    if (menu == self.trainingPositionMenu) { //训练部位
+        if (![self isBlankString:string]) {
+
+        }
+        
+    }else if (menu == self.trainingEquipmentMenu){ //训练设备
+        self.trainingEquipmentStr = string;
+    }
+}
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    if (menu == self.trainingPositionMenu) { //训练部位
+        [self.trainingEquipmentMenu hiddenCityList];
+    }else if (menu == self.trainingEquipmentMenu){ //训练设备
+        [self.trainingPositionMenu hiddenCityList];
+        if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
+            [STTextHudTool showText:@"请先选择训练部位"];
+            [menu hiddenCityList];
+        }
+    }
+}
+
+#pragma mark - netFunctions
 
 - (void)checkPrescriptionDetail:(NSMutableDictionary*)parameter {
     __weak typeof (self)weakSelf = self;
@@ -572,6 +697,8 @@
             if (weakSelf.isFooterClick) {
                 if (weakSelf.isSearch) {
                     [weakSelf.searchResults addObjectsFromArray:rows];
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || self.createTime = %@",self.prescriptionTF.text,self.startTimeStr];
+                    self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
                     if (weakSelf.searchCloseArr.count > 0) {
                         [weakSelf.searchCloseArr removeAllObjects];
                     }
@@ -603,6 +730,8 @@
                         } else {
                             [weakSelf.searchResults addObjectsFromArray:rows];
                         }
+                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || self.createTime = %@",self.prescriptionTF.text,self.startTimeStr];
+                        self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
                         if (weakSelf.searchCloseArr.count > 0) {
                             [weakSelf.searchCloseArr removeAllObjects];
                         }
@@ -634,6 +763,8 @@
                 [weakSelf.listView.mj_header endRefreshing];
             }
             [weakSelf.listView reloadData];
+            NSDictionary *summarydict = [self getReportSummary];
+            self.summaryLbl.text = [NSString stringWithFormat:@"累积处方数：%d  累积运动天数：%d  累积报告数：%d",[[summarydict valueForKey:@"sumPrescriptionCount"] integerValue],[[summarydict valueForKey:@"sumSportDays"] integerValue],[[summarydict valueForKey:@"sumReportCount"] integerValue]];
             if (weakSelf.isSearch) {
                 if (weakSelf.searchResults.count == 0) {
                     weakSelf.noDataLbl.hidden = NO;

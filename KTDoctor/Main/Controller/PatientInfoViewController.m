@@ -3058,6 +3058,14 @@ CGSize testResultsListViewSize;
             AerobicPrescriptionAndReportViewController *report = [[AerobicPrescriptionAndReportViewController alloc] init];
             report.precriptionsArr = [rows mutableCopy];
             report.patientInfo = self.latestInfoDict;
+            if (self.deviceTypeArr.count > 0) {
+                for (NSDictionary *dict in self.deviceTypeArr) {
+                    NSString *name = [dict valueForKey:@"name"];
+                    if ([name isEqualToString:@"有氧设备"]) {
+                        report.deviceTypeArr = [dict valueForKey:@"children"];
+                    }
+                }
+            }
             [weakSelf.navigationController pushViewController:report animated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
