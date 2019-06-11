@@ -311,6 +311,7 @@
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSLog(@"%@",[weakSelf convertToJSONData:responseObject]);
         if (code == 0) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [weakSelf.navigationController popViewControllerAnimated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
