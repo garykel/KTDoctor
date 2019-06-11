@@ -235,6 +235,7 @@
     self.listView.tableFooterView = [[UIView alloc] init];
     self.listView.dataSource = self;
     self.listView.delegate = self;
+    self.listView.separatorColor = [UIColor clearColor];
     [self.bottomView addSubview:self.listView];
     
     //添加头部的下拉刷新

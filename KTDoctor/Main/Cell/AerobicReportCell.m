@@ -251,7 +251,10 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSDictionary *dict = [self.reportsArr objectAtIndex:indexPath.section];
     HistoryDetailViewController *history = [[HistoryDetailViewController alloc] init];
-    history.sportDict = dict;
+    history.sportDict = @{@"sportData":dict};
+    NSMutableDictionary *historyDict = [NSMutableDictionary dictionary];
+    NSDictionary *prescription = @{@"type2":[NSNumber numberWithInteger:self.type2]};
+    NSString *headUrl = [dict valueForKey:@"headUrl"];
     history.patientInfo = self.patientInfo;
     history.type2 = self.type2;
     
