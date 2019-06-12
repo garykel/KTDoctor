@@ -60,6 +60,7 @@
 #define kDoctorAdviceView_Height 22
 #define kCell_Height 118
 #define kWeekMenu_RightMargin 15
+#define kWeekLbl_Width 15
 
 CGSize prescriptionListviewSize;
 
@@ -106,6 +107,7 @@ CGSize prescriptionListviewSize;
 @property (nonatomic,strong)UIView *doctorAdviceView;
 @property (nonatomic,strong)UILabel *doctorAdviceValLbl;
 @property (nonatomic,strong)NSMutableArray *groups;
+@property (nonatomic,assign)NSInteger type2;
 @end
 
 @implementation PrescriptionDetailViewController
@@ -114,6 +116,7 @@ CGSize prescriptionListviewSize;
     [super viewDidLoad];
     self.groups = [NSMutableArray array];
     self.groups = [NSMutableArray arrayWithArray:[self.prescriptionDict valueForKey:@"sections"]];
+    self.type2 = [[self.prescriptionDict valueForKey:@"type2"] integerValue];
     [self setNavBar];
     [self setupUI];
 }
@@ -241,10 +244,8 @@ CGSize prescriptionListviewSize;
     [self.topView addSubview:self.riskLevelTF];
     
     /////////////
-    NSArray *typeList = [self.prescriptionDict valueForKey:@"typeList"];
-    NSString *deviceTypeName = [typeList[0] valueForKey:@"name"];
-    NSString *positionName = [typeList[1] valueForKey:@"name"];
-    NSString *equipmentName = [typeList[2] valueForKey:@"name"];
+    
+    
     self.deviceTypeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.prescriptionLbl.frame.origin.x, CGRectGetMaxY(self.createTimeLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.deviceTypeLbl.text = @"设备类型";
     self.deviceTypeLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
@@ -252,7 +253,6 @@ CGSize prescriptionListviewSize;
     [self.topView addSubview:self.deviceTypeLbl];
     
     self.deviceTypeTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTypeLbl.frame) + kNameLbl_RightMargin * kXScal, 0, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.deviceTypeTF.text = deviceTypeName;
     self.deviceTypeTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.deviceTypeTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.deviceTypeTF.backgroundColor = [UIColor whiteColor];
@@ -267,7 +267,6 @@ CGSize prescriptionListviewSize;
     [self.topView addSubview:self.positionLbl];
     
     self.positionTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.positionLbl.frame) + kNameLbl_RightMargin *kXScal, self.deviceTypeTF.frame.origin.y, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.positionTF.text = positionName;
     self.positionTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.positionTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.positionTF.backgroundColor = [UIColor whiteColor];
@@ -281,12 +280,21 @@ CGSize prescriptionListviewSize;
     [self.topView addSubview:self.equipmentLbl];
     
     self.equipmentTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelLbl.frame) + kNameLbl_RightMargin *kXScal, self.deviceTypeTF.frame.origin.y, kNorMarlTF_Width * kXScal, kNameTF_Height * kYScal)];
-    self.equipmentTF.text = equipmentName;
     self.equipmentTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.equipmentTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.equipmentTF.backgroundColor = [UIColor whiteColor];
     self.equipmentTF.enabled = NO;
     [self.topView addSubview:self.equipmentTF];
+    
+    NSArray *typeList = [self.prescriptionDict valueForKey:@"typeList"];
+    if (typeList.count > 2) {
+        NSString *deviceTypeName = [typeList[0] valueForKey:@"name"];
+        NSString *positionName = [typeList[1] valueForKey:@"name"];
+        NSString *equipmentName = [typeList[2] valueForKey:@"name"];
+        self.deviceTypeTF.text = deviceTypeName;
+        self.positionTF.text = positionName;
+        self.equipmentTF.text = equipmentName;
+    }
     
     self.weekLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.prescriptionLbl.frame.origin.x, CGRectGetMaxY(self.deviceTypeLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.weekLbl.text = @"疗       程";
@@ -303,6 +311,12 @@ CGSize prescriptionListviewSize;
     self.weekTF.center = CGPointMake(CGRectGetMaxX(self.weekLbl.frame) + kNameLbl_RightMargin * kXScal + kNorMarlTF_Width * kXScal/2.0, self.weekLbl.center.y);
     [self.topView addSubview:self.weekTF];
     
+    self.weekUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.weekTF.frame) + kWeekMenu_RightMargin * kXScal, self.weekLbl.frame.origin.y, kWeekLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.weekUnitLbl.text = @"周";
+    self.weekUnitLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
+    self.weekUnitLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+    [self.topView addSubview:self.weekUnitLbl];
+    
     self.dayLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.weekTF.frame) + space, self.weekLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.dayLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     self.dayLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
@@ -316,6 +330,12 @@ CGSize prescriptionListviewSize;
     self.dayTF.backgroundColor = [UIColor whiteColor];
     self.dayTF.enabled = NO;
     [self.topView addSubview:self.dayTF];
+    
+    self.dayUnitLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dayTF.frame) + kWeekMenu_RightMargin * kXScal, self.dayLbl.frame.origin.y, kWeekLbl_Width * kXScal, kNameLbl_Height * kYScal)];
+    self.dayUnitLbl.text = @"天";
+    self.dayUnitLbl.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
+    self.dayUnitLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
+    [self.topView addSubview:self.dayUnitLbl];
     
     self.sportTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.dayTF.frame) + space, self.weekLbl.frame.origin.y, kDoctorLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.sportTimeLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
@@ -513,7 +533,11 @@ CGSize prescriptionListviewSize;
     NSInteger restSec = restDuration % 60;
     cell.restLeftTF.text = [NSString stringWithFormat:@"%d",restMin];
     cell.restRightTF.text = [NSString stringWithFormat:@"%d",restSec];
-    cell.difficultyTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]];
+    if (self.type2 == 1) {
+        cell.difficultyTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]];
+    } else {
+        cell.difficultyTF.text = [NSString stringWithFormat:@"%d w",[[dict valueForKey:@"difficulty"] integerValue]];
+    }
     return cell;
 }
 
