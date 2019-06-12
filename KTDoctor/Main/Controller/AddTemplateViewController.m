@@ -98,7 +98,8 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)UITableView *systemTemplateListView;
 @property (nonatomic,strong)UILabel *noDataLbl;
 @property (nonatomic,copy)NSString *startTimeStr;
-@property (nonatomic,assign)NSInteger offset;
+@property (nonatomic,assign)NSInteger systemOffset;
+@property (nonatomic,assign)NSInteger customOffset;
 @property (nonatomic,assign)BOOL isFooterClick;
 @property (nonatomic,strong)UIButton *checkAllBtn;
 @property (nonatomic,strong)NSMutableArray *customTemplateArr;
@@ -113,6 +114,8 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)UIButton *customTimeBtn;
 @property (nonatomic,strong)UIButton *systemTimeBtn;
 @property (nonatomic,assign)BOOL needCleanArr;
+@property (nonatomic,assign)BOOL isSearch;
+@property (nonatomic,strong)NSMutableArray *searchResults;
 @end
 
 @implementation AddTemplateViewController
@@ -125,6 +128,8 @@ CGSize systemListviewSize;
     self.type = 2;
     self.templateType = 1;
     self.needCleanArr = NO;
+    self.isSearch = NO;
+    self.searchResults = [NSMutableArray array];
     self.customTemplateArr = [NSMutableArray array];
     self.customeTemplateCheckArr = [NSMutableArray array];
     self.systemTemplateArr = [NSMutableArray array];
@@ -137,7 +142,7 @@ CGSize systemListviewSize;
     [parameter setValue:orgCode forKey:@"orgCode"];
     [self getDeviceTypeList:parameter];
     
-    [self showTemplateListWithType:self.type];
+    [self showTemplateListWithType:self.type offset:0];
     [self setNavBar];
     [self setupUI];
 }
@@ -617,10 +622,14 @@ CGSize systemListviewSize;
 
 #pragma mark - UITableViewDataSource && UITableViewDelegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (tableView == self.customTemplateListView) {
-        return self.customTemplateArr.count;
+    if (self.isSearch) {
+        return self.searchResults.count;
     } else {
-        return self.systemTemplateArr.count;
+        if (tableView == self.customTemplateListView) {
+            return self.customTemplateArr.count;
+        } else {
+            return self.systemTemplateArr.count;
+        }
     }
 }
 
@@ -641,7 +650,12 @@ CGSize systemListviewSize;
             cell.selectionStyle          = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
         }
-        NSDictionary *dict = [self.customTemplateArr objectAtIndex:indexPath.row];
+        NSDictionary *dict = nil;
+        if (self.isSearch) {
+            dict = [self.searchResults objectAtIndex:indexPath.row];
+        } else {
+            dict = [self.customTemplateArr objectAtIndex:indexPath.row];
+        }
         cell.nameLbl.text = [dict valueForKey:@"title"];
         NSInteger type2 = [[dict valueForKey:@"type2"] integerValue];
         if (type2 == 1) {
@@ -709,7 +723,12 @@ CGSize systemListviewSize;
             cell.selectionStyle          = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor colorWithHexString:@"#A2E2EF"];
         }
-        NSDictionary *dict = [self.systemTemplateArr objectAtIndex:indexPath.row];
+        NSDictionary *dict = nil;
+        if (self.isSearch) {
+            dict = [self.searchResults objectAtIndex:indexPath.row];
+        } else {
+            dict = [self.systemTemplateArr objectAtIndex:indexPath.row];
+        }
         cell.nameLbl.text = [dict valueForKey:@"title"];
         NSInteger type2 = [[dict valueForKey:@"type2"] integerValue];
         if (type2 == 1) {
@@ -772,14 +791,23 @@ CGSize systemListviewSize;
 
 - (void)headerClick {
     self.isFooterClick = NO;
-    self.offset = 0;
-    [self showTemplateListWithType:self.type];
+    if (self.type == 1) {
+        self.systemOffset = 0;
+    } else {
+        self.customOffset = 0;
+    }
+    [self showTemplateListWithType:self.type offset:0];
 }
 
 - (void)footerClick {
     self.isFooterClick = YES;
-    self.offset += 10;
-    [self showTemplateListWithType:self.type];
+    if (self.type == 1) {
+        self.systemOffset+= 10;
+        [self showTemplateListWithType:self.type offset:self.systemOffset];
+    } else {
+        self.customOffset+= 10;
+        [self showTemplateListWithType:self.type offset:self.customOffset];
+    }
 }
 
 #pragma mark - XXTGDropdownMenuDelegate
@@ -792,12 +820,16 @@ CGSize systemListviewSize;
             self.systemListviewBgView.hidden = YES;
             self.customListviewBgView.hidden = NO;
             self.type = 2;
-            [self showTemplateListWithType:self.type];
+            if (self.customTemplateArr.count == 0) {
+                [self showTemplateListWithType:self.type offset:self.customOffset];
+            }
         } else if ([string isEqualToString:@"系统模板"]) {
             self.systemListviewBgView.hidden = NO;
             self.customListviewBgView.hidden = YES;
             self.type = 1;
-            [self showTemplateListWithType:self.type];
+            if (self.systemTemplateArr.count == 0) {
+                [self showTemplateListWithType:self.type offset:self.systemOffset];
+            }
         }
     } else if (menu == self.deviceMenu) {
         if ([string isEqualToString:@"有氧设备"]) {
@@ -845,40 +877,79 @@ CGSize systemListviewSize;
 
 //搜索
 - (void)searchBtnClick:(UIButton*)sender {
-    NSInteger riskLevel = 0;
-    NSString *riskLevelStr = self.riskLevelMenu.mainBtn.titleLabel.text;
-    if (self.type == 1) {
-        if (![riskLevelStr isEqualToString:@"风险等级"]) {
-            if ([riskLevelStr isEqualToString:@"高"]) {
-                riskLevel = 3;
-            } else if ([riskLevelStr isEqualToString:@"中"]) {
-                riskLevel = 2;
-            } else if ([riskLevelStr isEqualToString:@"低"]) {
-                riskLevel = 1;
-            }
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || SELF.riskLevel = %d",self.nameTf.text,riskLevel];
-            self.systemTemplateArr = [NSMutableArray arrayWithArray:[self.systemTemplateArr filteredArrayUsingPredicate:predicate]];
+    if (self.nameTf.text.length == 0 && [self.dieaseMenu.mainBtn.titleLabel.text isEqualToString:@"适应病症"] && [self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"风险等级"] && [self.deviceMenu.mainBtn.titleLabel.text isEqualToString:@"有氧设备"] && [self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"] && [self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
+        self.isSearch = NO;
+        if (self.type == 1) {
             [self.systemTemplateListView reloadData];
         } else {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.nameTf.text];
-            self.systemTemplateArr = [NSMutableArray arrayWithArray:[self.systemTemplateArr filteredArrayUsingPredicate:predicate]];
-            [self.systemTemplateListView reloadData];
+            [self.customTemplateListView reloadData];
         }
     } else {
-        if (![riskLevelStr isEqualToString:@"风险等级"]) {
-            if ([riskLevelStr isEqualToString:@"高"]) {
-                riskLevel = 3;
-            } else if ([riskLevelStr isEqualToString:@"中"]) {
-                riskLevel = 2;
-            } else if ([riskLevelStr isEqualToString:@"低"]) {
-                riskLevel = 1;
+        self.isSearch = YES;
+        if (self.searchResults.count > 0) {
+            [self.searchResults removeAllObjects];
+        }
+        NSInteger riskLevel = 0;
+        NSString *riskLevelStr = self.riskLevelMenu.mainBtn.titleLabel.text;
+        if (self.type == 1) {
+            self.searchResults = [self.systemTemplateArr mutableCopy];
+            if (self.nameTf.text.length > 0) {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.nameTf.text];
+                self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
             }
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || SELF.riskLevel = %d",self.nameTf.text,riskLevel];
-            self.customTemplateArr = [NSMutableArray arrayWithArray:[self.customTemplateArr filteredArrayUsingPredicate:predicate]];
-            [self.customTemplateListView reloadData];
+            if (![riskLevelStr isEqualToString:@"风险等级"]) {
+                if ([riskLevelStr isEqualToString:@"高"]) {
+                    riskLevel = 3;
+                } else if ([riskLevelStr isEqualToString:@"中"]) {
+                    riskLevel = 2;
+                } else if ([riskLevelStr isEqualToString:@"低"]) {
+                    riskLevel = 1;
+                }
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.riskLevel = %d",riskLevel];
+                if (self.searchResults.count > 0) {
+                    self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
+                }
+            }
+            if (![self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
+                NSString *positionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
+                if (self.searchResults.count > 0) {
+                    for (NSDictionary *dict in self.searchResults) {
+                        NSArray *typeList = [dict valueForKey:@"typeList"];
+                        
+                    }
+                }
+                
+            }
+            if (![self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
+                
+            }
+            [self.systemTemplateListView reloadData];
         } else {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.nameTf.text];
-            self.customTemplateArr = [NSMutableArray arrayWithArray:[self.customTemplateArr filteredArrayUsingPredicate:predicate]];
+            self.searchResults = [self.customTemplateArr mutableCopy];
+            if (self.nameTf.text.length > 0) {
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.nameTf.text];
+                self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
+                [self.customTemplateListView reloadData];
+            }
+            if (![riskLevelStr isEqualToString:@"风险等级"]) {
+                if ([riskLevelStr isEqualToString:@"高"]) {
+                    riskLevel = 3;
+                } else if ([riskLevelStr isEqualToString:@"中"]) {
+                    riskLevel = 2;
+                } else if ([riskLevelStr isEqualToString:@"低"]) {
+                    riskLevel = 1;
+                }
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.riskLevel = %d",riskLevel];
+                if (self.searchResults.count > 0) {
+                    self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
+                }
+            }
+            if (![self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
+                
+            }
+            if (![self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
+                
+            }
             [self.customTemplateListView reloadData];
         }
     }
@@ -1200,14 +1271,14 @@ CGSize systemListviewSize;
     }];
 }
 
-- (void)showTemplateListWithType:(NSInteger)type{
+- (void)showTemplateListWithType:(NSInteger)type offset:(NSInteger)offset{
     __weak typeof (self)weakSelf = self;
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@(self.offset) forKey:@"offset"];
+    [parameter setValue:@(offset) forKey:@"offset"];
     [parameter setValue:@10 forKey:@"rows"];
     [parameter setValue:@"" forKey:@"title"];
     [parameter setValue:@"" forKey:@"diease"];
@@ -1289,6 +1360,11 @@ CGSize systemListviewSize;
             for (NSInteger i = 0; i < weakSelf.customTemplateArr.count; i++) {
                 [weakSelf.customeTemplateCheckArr addObject:[NSNumber numberWithBool:NO]];
             }
+            if (self.type == 1) {
+                [self.systemTemplateListView reloadData];
+            } else {
+                [self.customTemplateListView reloadData];
+            }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
@@ -1304,8 +1380,12 @@ CGSize systemListviewSize;
 #pragma mark - UpdateCustomTemplatesNotification
 
 - (void)refreshCustomTemplates{
-    self.offset = 0;
-    [self showTemplateListWithType:self.type];
+    if (self.type == 1) {
+        self.systemOffset = 0;
+    } else {
+        self.customOffset = 0;
+    }
+    [self showTemplateListWithType:self.type offset:0];
 }
 
 @end
