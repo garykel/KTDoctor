@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface AddTemplateViewController : UIViewController
-
+@property (nonatomic,strong)NSMutableArray *deviceTypeArr;
 @end

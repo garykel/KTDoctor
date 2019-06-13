@@ -109,7 +109,6 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,assign)NSInteger type;//模板类型 1 系统模板 2 自定义模板
 @property (nonatomic,strong)ChooseTemplateTypeView *template;
-@property (nonatomic,strong)NSArray *deviceTypeArr;
 @property (nonatomic,assign)NSInteger templateType;//模板设备类型 1 有氧设备 2 力量设备
 @property (nonatomic,strong)UIButton *customTimeBtn;
 @property (nonatomic,strong)UIButton *systemTimeBtn;
@@ -134,14 +133,6 @@ CGSize systemListviewSize;
     self.customeTemplateCheckArr = [NSMutableArray array];
     self.systemTemplateArr = [NSMutableArray array];
     self.customTemplateIdArr = [NSMutableArray array];
-    
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    NSDictionary *dict = self.user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    [self getDeviceTypeList:parameter];
-    
     [self showTemplateListWithType:self.type offset:0];
     [self setNavBar];
     [self setupUI];
@@ -211,7 +202,13 @@ CGSize systemListviewSize;
     self.deviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kDeviceMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
     [self.deviceMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.deviceMenu.defualtStr = @"有氧设备";
-    self.deviceMenu.titles = @[@"有氧设备",@"力量设备"];
+    NSMutableArray *devicesArr = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            [devicesArr addObject:[dict valueForKey:@"name"]];
+        }
+    }
+    self.deviceMenu.titles = [devicesArr copy];
     self.deviceMenu.delegate = self;
     self.deviceMenu.tag = 30;
     [self.searchBgView addSubview:self.deviceMenu];
@@ -219,7 +216,7 @@ CGSize systemListviewSize;
     self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
     [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.trainingPositionMenu.defualtStr = @"训练部位";
-    self.trainingPositionMenu.titles = @[@"心肺"];
+    self.trainingPositionMenu.titles = @[@"胸部"];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 40;
     [self.searchBgView addSubview:self.trainingPositionMenu];
@@ -831,6 +828,35 @@ CGSize systemListviewSize;
                 [self showTemplateListWithType:self.type offset:self.systemOffset];
             }
         }
+    } else if (menu == self.trainingPositionMenu) {
+        NSMutableArray *equipmentsArr = [NSMutableArray array];
+        if (self.deviceTypeArr.count > 0) {
+            for (NSDictionary *dict in self.deviceTypeArr) {
+                NSString *name = [dict valueForKey:@"name"];
+                NSString *deviceTypeName = self.deviceMenu.mainBtn.titleLabel.text;
+                if ([name isEqualToString:deviceTypeName]) {
+                    NSArray *children = [dict valueForKey:@"children"];
+                    if (children.count > 0) {
+                        for (NSDictionary *positionDict in children) {
+                            NSString *positionName = [positionDict valueForKey:@"name"];
+                            if ([positionName isEqualToString:string]) {
+                                NSArray *positionChildren = [positionDict valueForKey:@"children"];
+                                if (positionChildren.count > 0) {
+                                    for (NSDictionary *equipDict in positionChildren) {
+                                        NSString *equipmentName = [equipDict valueForKey:@"name"];
+                                        [equipmentsArr addObject:equipmentName];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        [self.trainingDeviceMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+        [self.trainingDeviceMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        self.trainingDeviceMenu.titles = [equipmentsArr copy];
+        [self.trainingDeviceMenu.mTableView reloadData];
     } else if (menu == self.deviceMenu) {
         if ([string isEqualToString:@"有氧设备"]) {
             self.templateType = 1;
@@ -842,31 +868,36 @@ CGSize systemListviewSize;
             [self.systemTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
         }
         if (self.deviceTypeArr.count > 0) {
-            NSMutableArray *equipments = [NSMutableArray array];
+            NSMutableArray *positions = [NSMutableArray array];
             for (NSDictionary *dict in self.deviceTypeArr) {
                 NSString *name = [dict valueForKey:@"name"];
                 if ([name isEqualToString:string]) {
                     NSArray *deviceTypeArr = [dict valueForKey:@"children"];
                     if (deviceTypeArr.count > 0) {
                         for (NSDictionary *dict1 in deviceTypeArr) {
-                            NSArray *children = [dict1 valueForKey:@"children"];
-                            if (children.count > 0) {
-                                for (NSDictionary *child in children) {
-                                    [equipments addObject:[child valueForKey:@"name"]];
-                                }
-                            }
+                            NSString *name = [dict1 valueForKey:@"name"];
+                            [positions addObject:name];
                         }
                     }
                 }
             }
-            self.trainingDeviceMenu.titles = [equipments copy];
-            [self.trainingDeviceMenu.mTableView reloadData];
+            [self.trainingDeviceMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [self.trainingDeviceMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            [self.trainingPositionMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [self.trainingPositionMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            self.trainingPositionMenu.titles = [positions copy];
+            [self.trainingPositionMenu.mTableView reloadData];
         }
     }
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
-    
+    if (menu == self.trainingDeviceMenu) {
+        if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
+            [menu hiddenCityList];
+            [STTextHudTool showText:@"请选择训练部位"];
+        }
+    }
 }
 
 #pragma mark - button click events
@@ -910,18 +941,54 @@ CGSize systemListviewSize;
                     self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
                 }
             }
+            if (self.searchResults.count > 0) {
+                NSString *trainingTypeStr = self.deviceMenu.mainBtn.titleLabel.text;
+                NSMutableArray *tempArr = [NSMutableArray array];
+                for (NSDictionary *dict in self.searchResults) {
+                    NSArray *typeList = [dict valueForKey:@"typeList"];
+                    if (typeList.count > 2) {
+                        NSDictionary *typeDict = [typeList objectAtIndex:0];
+                        NSString *typeStr = [typeDict valueForKey:@"name"];
+                        if ([trainingTypeStr isEqualToString:typeStr]) {
+                            [tempArr addObject:dict];
+                        }
+                    }
+                }
+                self.searchResults = [tempArr mutableCopy];
+            }
             if (![self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
                 NSString *positionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
                 if (self.searchResults.count > 0) {
+                    NSMutableArray *tempArr = [NSMutableArray array];
                     for (NSDictionary *dict in self.searchResults) {
                         NSArray *typeList = [dict valueForKey:@"typeList"];
-                        
+                        if (typeList.count > 2) {
+                            NSDictionary *positionDict = [typeList objectAtIndex:1];
+                            NSString *position = [positionDict valueForKey:@"name"];
+                            if ([positionStr isEqualToString:position]) {
+                                [tempArr addObject:dict];
+                            }
+                        }
                     }
+                    self.searchResults = [tempArr mutableCopy];
                 }
-                
             }
             if (![self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
-                
+                NSString *deviceStr = self.trainingDeviceMenu.mainBtn.titleLabel.text;
+                if (self.searchResults.count > 0) {
+                    NSMutableArray *tempArr = [NSMutableArray array];
+                    for (NSDictionary *dict in self.searchResults) {
+                        NSArray *typeList = [dict valueForKey:@"typeList"];
+                        if (typeList.count > 2) {
+                            NSDictionary *deviceDict = [typeList objectAtIndex:2];
+                            NSString *device = [deviceDict valueForKey:@"name"];
+                            if ([deviceStr isEqualToString:device]) {
+                                [tempArr addObject:dict];
+                            }
+                        }
+                    }
+                    self.searchResults = [tempArr mutableCopy];
+                }
             }
             [self.systemTemplateListView reloadData];
         } else {
@@ -944,11 +1011,54 @@ CGSize systemListviewSize;
                     self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
                 }
             }
+            if (self.searchResults.count > 0) {
+                NSString *trainingTypeStr = self.deviceMenu.mainBtn.titleLabel.text;
+                NSMutableArray *tempArr = [NSMutableArray array];
+                for (NSDictionary *dict in self.searchResults) {
+                    NSArray *typeList = [dict valueForKey:@"typeList"];
+                    if (typeList.count > 2) {
+                        NSDictionary *typeDict = [typeList objectAtIndex:0];
+                        NSString *typeStr = [typeDict valueForKey:@"name"];
+                        if ([trainingTypeStr isEqualToString:typeStr]) {
+                            [tempArr addObject:dict];
+                        }
+                    }
+                }
+                self.searchResults = [tempArr mutableCopy];
+            }
             if (![self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
-                
+                NSString *positionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
+                if (self.searchResults.count > 0) {
+                    NSMutableArray *tempArr = [NSMutableArray array];
+                    for (NSDictionary *dict in self.searchResults) {
+                        NSArray *typeList = [dict valueForKey:@"typeList"];
+                        if (typeList.count > 2) {
+                            NSDictionary *positionDict = [typeList objectAtIndex:1];
+                            NSString *position = [positionDict valueForKey:@"name"];
+                            if ([positionStr isEqualToString:position]) {
+                                [tempArr addObject:dict];
+                            }
+                        }
+                    }
+                    self.searchResults = [tempArr mutableCopy];
+                }
             }
             if (![self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
-                
+                NSString *deviceStr = self.trainingDeviceMenu.mainBtn.titleLabel.text;
+                if (self.searchResults.count > 0) {
+                    NSMutableArray *tempArr = [NSMutableArray array];
+                    for (NSDictionary *dict in self.searchResults) {
+                        NSArray *typeList = [dict valueForKey:@"typeList"];
+                        if (typeList.count > 2) {
+                            NSDictionary *deviceDict = [typeList objectAtIndex:2];
+                            NSString *device = [deviceDict valueForKey:@"name"];
+                            if ([deviceStr isEqualToString:device]) {
+                                [tempArr addObject:dict];
+                            }
+                        }
+                    }
+                    self.searchResults = [tempArr mutableCopy];
+                }
             }
             [self.customTemplateListView reloadData];
         }
@@ -1211,28 +1321,6 @@ CGSize systemListviewSize;
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [weakself.navigationController popToRootViewControllerAnimated:NO];
         } else {
-            [STTextHudTool showText:msg];
-        }
-    } andFaild:^(NSError *error) {
-        NSLog(@"error :%@",error);
-    }];
-}
-
-//获取设备类型列表
-- (void)getDeviceTypeList:(NSMutableDictionary *)parameter {
-    __weak typeof (self)weakSelf = self;
-    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDEVICE_TYPE_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
-        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
-        NSString *msg = [responseObject valueForKey:@"msg"];
-        NSLog(@"**************%@**************",responseObject);
-        if (code == 0) {
-            NSArray *data = [responseObject valueForKey:@"data"];
-            weakSelf.deviceTypeArr = data;
-        } else if (code == 10011) {
-            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
-            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
-        }  else {
             [STTextHudTool showText:msg];
         }
     } andFaild:^(NSError *error) {

@@ -46,6 +46,7 @@
 @property (nonatomic,strong)UIImageView *addPatientBtn;
 @property (nonatomic,strong)UIImageView *customTemplateBtn;
 @property (nonatomic,strong)UIImageView *intensionBtn;
+@property (nonatomic,strong)UserModel *user;
 @property (nonatomic,strong)IndexPopoverViewController *pop;
 @property (nonatomic,strong)UIPopoverPresentationController *popController;
 @end
@@ -56,6 +57,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationController.navigationBar.hidden = YES;
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
     [self setNavBar];
     [self setUpContentView];
 }
@@ -66,8 +68,7 @@
     [self.view addSubview:self.navView];
     
     self.logoutBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
-    NSString *username = [user valueForKey:@"name"];
+    NSString *username = [self.user valueForKey:@"name"];
     [self.logoutBtn setTitle:username forState:UIControlStateNormal];
     self.logoutBtn.adjustsImageWhenHighlighted = NO;//取消图片的高亮状态
     CGFloat logoutBtnY = (self.navView.frame.size.height - kMain_NavView_LogoutBtn_Height) / 2;
@@ -83,7 +84,7 @@
     [self.logoutBtn addTarget:self action:@selector(logoutBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.navView addSubview:self.logoutBtn];
     
-    NSArray *organArr = (NSArray*)user.organ;
+    NSArray *organArr = (NSArray*)self.user.organ;
     NSString *logo = @"";
     if (organArr.count > 0) {
         NSDictionary *organDict = [organArr objectAtIndex:0];
@@ -173,8 +174,7 @@
 
 - (void)history:(UITapGestureRecognizer*)sender {
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
-    NSDictionary *dict = user.organ;
+    NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
@@ -186,8 +186,7 @@
 
 - (void)patientManage:(UITapGestureRecognizer*)sender {
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
-    NSDictionary *dict = user.organ;
+    NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
@@ -207,8 +206,12 @@
 }
 
 - (void)customTemplateTap:(UITapGestureRecognizer*)sender {
-    AddTemplateViewController *template = [[AddTemplateViewController alloc] init];
-    [self.navigationController pushViewController:template animated:NO];
+    NSMutableDictionary *para = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [para setValue:orgCode forKey:@"orgCode"];
+    [self getDeviceTypeList:para];
 }
 
 - (void)intensionTest:(UITapGestureRecognizer*)sender {
@@ -226,6 +229,30 @@
 }
 
 #pragma mark - netFunctions
+
+//获取设备类型列表
+- (void)getDeviceTypeList:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDEVICE_TYPE_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *data = [responseObject valueForKey:@"data"];
+            AddTemplateViewController *template = [[AddTemplateViewController alloc] init];
+            template.deviceTypeArr = [data mutableCopy];
+            [self.navigationController pushViewController:template animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 
 - (void)getUserSportList:(NSMutableDictionary*)parameter {
     __weak typeof (self)weakSelf = self;
