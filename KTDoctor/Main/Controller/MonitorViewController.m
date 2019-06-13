@@ -257,6 +257,11 @@ NSMutableArray *patientsArr;
     format.dateFormat = @"aaa HH:mm";
     NSDate *currentDate = [NSDate date];
     NSString *currentDateStr = [format stringFromDate:currentDate];
+    NSString *hourStr = [currentDateStr substringWithRange:NSMakeRange(3, 2)];
+    NSInteger hour = [hourStr integerValue];
+    if (hour > 12) {
+        currentDateStr = [currentDateStr stringByReplacingCharactersInRange:NSMakeRange(3, 2) withString:[NSString stringWithFormat:@"%d",hour - 12]];
+    }
     return currentDateStr;
 }
 
