@@ -123,6 +123,7 @@
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,strong)NSMutableArray *privateDeviceArr;
 @property (nonatomic,copy)NSString *selectedDeviceCode;
+@property (nonatomic,assign)BOOL isHaveDian;
 @end
 
 @implementation PatientBaseInfoViewController
@@ -133,6 +134,7 @@
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.privateDeviceArr = [NSMutableArray arrayWithObjects:@"无", nil];
     self.selectedDeviceCode = @"";
+    self.isHaveDian = NO;
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
@@ -621,46 +623,50 @@
 }
 
 - (void)next:(UIButton*)sender {
-    NSMutableDictionary *dict = [self.userInfo mutableCopy];
-    [dict setValue:self.nameTF.text forKey:@"name"];
-    NSString *sexStr = self.sexMenu.mainBtn.titleLabel.text;
-    NSInteger sex = 1;
-    if ([sexStr isEqualToString:@"男"]) {
-        sex = 1;
-    } else if ([sexStr isEqualToString:@"女"]) {
-        sex = 2;
-    }
-    [dict setValue:@(sex) forKey:@"sex"];
-    [dict setValue:self.phoneTF.text forKey:@"mobile"];
-    [dict setValue:self.birthday forKey:@"birthdate"];
-    CGFloat height = [self.heightTF.text floatValue];
-    [dict setValue:[NSString stringWithFormat:@"%.1f",height] forKey:@"height"];
-    CGFloat weight = [self.weightTF.text floatValue];
-    [dict setValue:[NSString stringWithFormat:@"%.1f",weight] forKey:@"weight"];
-    CGFloat waistline = [self.waistlineTF.text floatValue];
-    [dict setValue:[NSString stringWithFormat:@"%.1f",waistline] forKey:@"waistline"];
-    CGFloat fbg = [self.kfxtTF.text floatValue];
-    [dict setValue:[NSString stringWithFormat:@"%.1f",fbg] forKey:@"fbg"];
-    NSInteger restHr = [self.quietHRTF.text integerValue];
-    [dict setValue:@(restHr) forKey:@"restHr"];
-    CGFloat hrv = [self.xlbyTF.text floatValue];
-    [dict setValue:[NSString stringWithFormat:@"%.1f",hrv] forKey:@"hrv"];
-    CGFloat  sbp = [self.ssyTF.text integerValue];
-    [dict setValue:@(sbp) forKey:@"sbp"];
-    NSInteger dbp = [self.szyTF.text integerValue];
-    [dict setValue:@(dbp) forKey:@"dbp"];
-    CGFloat hdl = [self.gmdzdbTF.text floatValue];
-    [dict setValue:[NSString stringWithFormat:@"%.1f",hdl] forKey:@"hdl"];
-    NSInteger maxAlarmHr = [self.maxAlertHrTF.text integerValue];
-    [dict setValue:@(maxAlarmHr) forKey:@"maxAlarmHr"];
-    self.userInfo = [dict copy];
-    NSLog(@"下一页");
-    if (self.needUploadImg) {
-        [self upLoadImage];
+    if (self.nameTF.text.length > 0 && self.phoneTF.text.length > 0 && self.heightTF.text.length > 0 && self.weightTF.text.length > 0 && self.waistlineTF.text.length > 0 && self.kfxtTF.text.length > 0 && self.quietHRTF.text.length > 0 && self.xlbyTF.text.length > 0 && self.ssyTF.text.length > 0 && self.szyTF.text.length > 0 && self.gmdzdbTF.text.length > 0 && self.maxAlertHrTF.text.length > 0) {
+        NSMutableDictionary *dict = [self.userInfo mutableCopy];
+        [dict setValue:self.nameTF.text forKey:@"name"];
+        NSString *sexStr = self.sexMenu.mainBtn.titleLabel.text;
+        NSInteger sex = 1;
+        if ([sexStr isEqualToString:@"男"]) {
+            sex = 1;
+        } else if ([sexStr isEqualToString:@"女"]) {
+            sex = 2;
+        }
+        [dict setValue:@(sex) forKey:@"sex"];
+        [dict setValue:self.phoneTF.text forKey:@"mobile"];
+        [dict setValue:self.birthday forKey:@"birthdate"];
+        CGFloat height = [self.heightTF.text floatValue];
+        [dict setValue:[NSString stringWithFormat:@"%.1f",height] forKey:@"height"];
+        CGFloat weight = [self.weightTF.text floatValue];
+        [dict setValue:[NSString stringWithFormat:@"%.1f",weight] forKey:@"weight"];
+        CGFloat waistline = [self.waistlineTF.text floatValue];
+        [dict setValue:[NSString stringWithFormat:@"%.1f",waistline] forKey:@"waistline"];
+        CGFloat fbg = [self.kfxtTF.text floatValue];
+        [dict setValue:[NSString stringWithFormat:@"%.1f",fbg] forKey:@"fbg"];
+        NSInteger restHr = [self.quietHRTF.text integerValue];
+        [dict setValue:@(restHr) forKey:@"restHr"];
+        CGFloat hrv = [self.xlbyTF.text floatValue];
+        [dict setValue:[NSString stringWithFormat:@"%.1f",hrv] forKey:@"hrv"];
+        CGFloat  sbp = [self.ssyTF.text integerValue];
+        [dict setValue:@(sbp) forKey:@"sbp"];
+        NSInteger dbp = [self.szyTF.text integerValue];
+        [dict setValue:@(dbp) forKey:@"dbp"];
+        CGFloat hdl = [self.gmdzdbTF.text floatValue];
+        [dict setValue:[NSString stringWithFormat:@"%.1f",hdl] forKey:@"hdl"];
+        NSInteger maxAlarmHr = [self.maxAlertHrTF.text integerValue];
+        [dict setValue:@(maxAlarmHr) forKey:@"maxAlarmHr"];
+        self.userInfo = [dict copy];
+        NSLog(@"下一页");
+        if (self.needUploadImg) {
+            [self upLoadImage];
+        } else {
+            PatientQuestionViewController *question = [[PatientQuestionViewController alloc] init];
+            question.userInfo = [self.userInfo mutableCopy];
+            [self.navigationController pushViewController:question animated:NO];
+        }
     } else {
-        PatientQuestionViewController *question = [[PatientQuestionViewController alloc] init];
-        question.userInfo = [self.userInfo mutableCopy];
-        [self.navigationController pushViewController:question animated:NO];
+        [STTextHudTool showText:@"请补齐未填项"];
     }
 }
 
@@ -848,21 +854,55 @@
     }];
 }
 
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if ([textField.text isEqualToString:@"0.0"] || [textField.text isEqualToString:@"0"]) {
+        textField.text = @"";
+        [STTextHudTool showText:@"输入数字需要大于0"];
+    }
+}
+
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField == self.quietHRTF || textField == self.ssyTF || textField == self.szyTF || textField == self.maxAlertHrTF) {
         return [self validateInteger:string];
     } else if (textField == self.heightTF || textField == self.weightTF || textField == self.waistlineTF || textField == self.kfxtTF || textField == self.xlbyTF || textField == self.gmdzdbTF) {
-        return [self isFloat:string];
+        if ([textField.text containsString:@"."]) {
+            self.isHaveDian = YES;
+        }else{
+            self.isHaveDian = NO;
+        }
+        if (string.length > 0) {
+            //当前输入的字符
+            unichar single = [string characterAtIndex:0];
+            // 不能输入.0-9以外的字符
+            if (!((single >= '0' && single <= '9') || single == '.')) return NO;
+            // 只能有一个小数点
+            if (self.isHaveDian && single == '.') return NO;
+            // 如果第一位是.则前面加上0.
+            if ((textField.text.length == 0) && (single == '.')) {
+                textField.text = @"0";
+            }
+            // 如果第一位是0则后面必须输入点，否则不能输入。
+            if ([textField.text hasPrefix:@"0"]) {
+                if (textField.text.length > 1) {
+                    NSString *secondStr = [textField.text substringWithRange:NSMakeRange(1, 1)];
+                    if (![secondStr isEqualToString:@"."]) return NO;
+                }else{
+                    if (![string isEqualToString:@"."]) return NO;
+                }
+            }
+            // 小数点后最多能输入两位
+            if (self.isHaveDian) {
+                NSRange ran = [textField.text rangeOfString:@"."];
+                // 由于range.location是NSUInteger类型的，所以这里不能通过(range.location - ran.location)>2来判断
+                if (range.location > ran.location) {
+                    if ([textField.text pathExtension].length > 1) return NO;
+                }
+            }
+        }
+        return YES;
     } else {
         return YES;
     }
-}
-
-///判断是否为浮点型
-- (BOOL)isFloat:(NSString *)str {
-    NSString* number=@"^([1-9][0-9]*)+(.[0-9]{1,2})?$";
-    NSPredicate *numberPre = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",number];
-    return [numberPre evaluateWithObject:str];
 }
 
 - (BOOL)validateFloatNumber:(NSString*)number {
