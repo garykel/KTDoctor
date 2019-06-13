@@ -61,7 +61,7 @@
 #define kChangeBtn_LeftMargin 5
 #define kMaxAlertHrTF_LeftMargin 24
 
-@interface PatientBaseInfoViewController ()<WHC_CameraVCDelegate,WHC_ChoicePictureVCDelegate,UIImagePickerControllerDelegate,XXTGDropdownMenuDelegate>
+@interface PatientBaseInfoViewController ()<WHC_CameraVCDelegate,WHC_ChoicePictureVCDelegate,UIImagePickerControllerDelegate,XXTGDropdownMenuDelegate,UITextFieldDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -295,6 +295,7 @@
     self.phoneTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.phoneTF.text = [self.userInfo valueForKey:@"mobile"];
     self.phoneTF.backgroundColor = [UIColor whiteColor];
+    self.phoneTF.enabled = NO;
     self.phoneTF.center = CGPointMake(CGRectGetMaxX(self.phoneStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.phoneLbl.center.y);
     [self.infoView addSubview:self.phoneTF];
     
@@ -334,6 +335,7 @@
     self.heightTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.heightTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"height"] floatValue]];
     self.heightTF.backgroundColor = [UIColor whiteColor];
+    self.heightTF.delegate = self;
     self.heightTF.center = CGPointMake(CGRectGetMaxX(self.heightStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.heightLbl.center.y);
     [self.infoView addSubview:self.heightTF];
     
@@ -352,6 +354,7 @@
     self.weightTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"weight"] floatValue]];
     self.weightTF.backgroundColor = [UIColor whiteColor];
     self.weightTF.unitLbl.text = @"kg";
+    self.weightTF.delegate = self;
     [self.infoView addSubview:self.weightTF];
     
     self.waistlineLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLbl.frame.origin.x,CGRectGetMaxY(self.heightLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -370,6 +373,7 @@
     self.waistlineTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"waistline"] floatValue]];
     self.waistlineTF.backgroundColor = [UIColor whiteColor];
     self.waistlineTF.unitLbl.text = @"cm";
+    self.waistlineTF.delegate = self;
     self.waistlineTF.center = CGPointMake(CGRectGetMaxX(self.nameStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.waistlineLbl.center.y);
     [self.infoView addSubview:self.waistlineTF];
     
@@ -387,6 +391,7 @@
     self.kfxtTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.kfxtTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"fbg"] floatValue]];
     self.kfxtTF.unitLbl.text = @"mmlo/L";
+    self.kfxtTF.delegate = self;
     self.kfxtTF.backgroundColor = [UIColor whiteColor];
     [self.infoView addSubview:self.kfxtTF];
     
@@ -406,6 +411,7 @@
     self.quietHRTF.text = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"restHr"] integerValue]];
     self.quietHRTF.backgroundColor = [UIColor whiteColor];
     self.quietHRTF.unitLbl.text = @"bpm";
+    self.quietHRTF.delegate = self;
     self.quietHRTF.center = CGPointMake(CGRectGetMaxX(self.quietHRStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.quietHRLbl.center.y);
     [self.infoView addSubview:self.quietHRTF];
     
@@ -423,6 +429,7 @@
     self.xlbyTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.xlbyTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"hrv"] floatValue]];
     self.xlbyTF.backgroundColor = [UIColor whiteColor];
+    self.xlbyTF.delegate = self;
     [self.infoView addSubview:self.xlbyTF];
     
     self.ssyLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLbl.frame.origin.x,CGRectGetMaxY(self.quietHRLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -441,6 +448,7 @@
     self.ssyTF.text = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"sbp"] integerValue]];
     self.ssyTF.unitLbl.text = @"mmHg";
     self.ssyTF.backgroundColor = [UIColor whiteColor];
+    self.ssyTF.delegate = self;
     self.ssyTF.center = CGPointMake(CGRectGetMaxX(self.ssyStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.ssyLbl.center.y);
     [self.infoView addSubview:self.ssyTF];
     
@@ -458,6 +466,7 @@
     self.szyTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.szyTF.text = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"dbp"] integerValue]];
     self.szyTF.unitLbl.text = @"mmHg";
+    self.szyTF.delegate = self;
     self.szyTF.backgroundColor = [UIColor whiteColor];
     [self.infoView addSubview:self.szyTF];
     
@@ -477,6 +486,7 @@
     self.gmdzdbTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"hdl"] floatValue]];
     self.gmdzdbTF.backgroundColor = [UIColor whiteColor];
     self.gmdzdbTF.unitLbl.text = @"mmlo/L";
+    self.gmdzdbTF.delegate = self;
     self.gmdzdbTF.center = CGPointMake(CGRectGetMaxX(self.gmdzdbStar.frame) + kLongLbl_TF_LeftMargin * kXScal + kMaxAlertHr_TF_Width * kXScal/2.0, self.gmdzdbLbl.center.y);
     [self.infoView addSubview:self.gmdzdbTF];
     
@@ -496,7 +506,6 @@
     [self.hrDeviceTF.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.hrDeviceTF.delegate = self;
     self.hrDeviceTF.titles = [self.privateDeviceArr copy];
-    self.hrDeviceTF.delegate = self;
     self.hrDeviceTF.backgroundColor = [UIColor whiteColor];
     [self.infoView addSubview:self.hrDeviceTF];
     
@@ -523,6 +532,7 @@
     self.maxAlertHrTF.center = CGPointMake(CGRectGetMaxX(self.maxAlertHrLbl.frame) + kMaxAlertHrTF_LeftMargin * kXScal + kMaxAlertHr_TF_Width * kXScal/2.0, self.maxAlertHrLbl.center.y);
     self.maxAlertHrTF.placeholder = @"心率范围50-240";
     self.maxAlertHrTF.unitLbl.text = @"bpm";
+    self.maxAlertHrTF.delegate = self;
     self.maxAlertHrTF.text = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"maxAlarmHr"] integerValue]];
     [self.infoView addSubview:self.maxAlertHrTF];
     
@@ -838,4 +848,52 @@
     }];
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (textField == self.quietHRTF || textField == self.ssyTF || textField == self.szyTF || textField == self.maxAlertHrTF) {
+        return [self validateInteger:string];
+    } else if (textField == self.heightTF || textField == self.weightTF || textField == self.waistlineTF || textField == self.kfxtTF || textField == self.xlbyTF || textField == self.gmdzdbTF) {
+        return [self isFloat:string];
+    } else {
+        return YES;
+    }
+}
+
+///判断是否为浮点型
+- (BOOL)isFloat:(NSString *)str {
+    NSString* number=@"^([1-9][0-9]*)+(.[0-9]{1,2})?$";
+    NSPredicate *numberPre = [NSPredicate predicateWithFormat:@"SELF MATCHES %@",number];
+    return [numberPre evaluateWithObject:str];
+}
+
+- (BOOL)validateFloatNumber:(NSString*)number {
+    BOOL res = YES;
+    NSCharacterSet* tmpSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789."];
+    int i = 0;
+    while (i < number.length) {
+        NSString * string = [number substringWithRange:NSMakeRange(i, 1)];
+        NSRange range = [string rangeOfCharacterFromSet:tmpSet];
+        if (range.length == 0) {
+            res = NO;
+            break;
+        }
+        i++;
+    }
+    return res;
+}
+
+- (BOOL)validateInteger:(NSString*)number {
+    BOOL res = YES;
+    NSCharacterSet* tmpSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789"];
+    int i = 0;
+    while (i < number.length) {
+        NSString * string = [number substringWithRange:NSMakeRange(i, 1)];
+        NSRange range = [string rangeOfCharacterFromSet:tmpSet];
+        if (range.length == 0) {
+            res = NO;
+            break;
+        }
+        i++;
+    }
+    return res;
+}
 @end
