@@ -100,7 +100,13 @@
     self.difficultyLeftMenu.center = CGPointMake(CGRectGetMaxX(self.difficultyImg.frame) + kDifficultyPercentImg_Right * kXScal + kMenu_Width * kXScal/2.0, self.difficultyPercentLbl.center.y);
     [self.difficultyLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.difficultyLeftMenu.delegate = self;
-    self.difficultyLeftMenu.titles = @[@"5",@"10",@"15",@"20",@"25",@"30",@"35",@"40",@"45",@"50",@"55",@"60",@"65",@"70",@"75",@"80",@"85",@"90",@"95",@"100"];
+    NSMutableArray *difficultLefts = [NSMutableArray array];
+    for (NSInteger i = 0; i <=100; i++) {
+        if (i%5==0) {
+            [difficultLefts addObject:[NSString stringWithFormat:@"%d",i]];
+        }
+    }
+    self.difficultyLeftMenu.titles = [difficultLefts copy];
     [self.infoBgView addSubview:self.difficultyLeftMenu];
     
     self.difficultyTildeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyLeftMenu.frame) + kMenu_RightMargin * kXScal, 0, kTildeLbl_Width * kXScal, kTildeLbl_Height * kYScal)];
@@ -113,7 +119,7 @@
     self.difficultyRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.difficultyTildeLbl.frame) + kMenu_RightMargin * kXScal, self.difficultyLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.difficultyRightMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.difficultyRightMenu.delegate = self;
-    self.difficultyRightMenu.titles = @[@"10",@"15",@"20",@"25",@"30",@"35",@"40",@"45",@"50",@"55",@"60",@"65",@"70",@"75",@"80",@"85",@"90",@"95",@"100"];
+    self.difficultyRightMenu.titles = [difficultLefts copy];
     [self.infoBgView addSubview:self.difficultyRightMenu];
     
     CGFloat space = (self.infoBgView.frame.size.width - 2 * kDifficultyPercentLbl_LeftMargin * kXScal - kDifficultyPercentLbl_Width * kXScal - kDifficultyPercentLbl_RightMargin * kXScal - kDifficultyPercentImg_Widht * kXScal -kDifficultyPercentImg_Right * kXScal - 2 * kMenu_Width * kXScal - kMenu_RightMargin * kXScal - kTildeLbl_Width * kXScal - kMenu_RightMargin * kXScal - kTrainingTimeLbl_Width * kXScal - kTrainingTimeLbl_Right * kXScal - 2 * kMenu_Width * kXScal - 2 * kMinLbl_Width * kXScal - 3 * kMenu_RightMargin * kXScal - kDifficultyLbl_Width * kXScal - kTrainingTimeLbl_Right * kXScal - kMenu_Width * kXScal)/2;
@@ -178,7 +184,14 @@
     self.rpeLeftMenu.center = CGPointMake(self.difficultyLeftMenu.frame.origin.x + kMenu_Width * kXScal/2.0, self.rpeZoneLbl.center.y);
     [self.rpeLeftMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.rpeLeftMenu.delegate = self;
-    self.rpeLeftMenu.titles = @[@"0.0",@"0.5",@"1.0"];
+    NSMutableArray *rpes = [NSMutableArray array];
+    for (NSInteger i = 0; i <= 100; i++) {
+        if (i%5==0) {
+            CGFloat rpe = i /10.0;
+            [rpes addObject:[NSString stringWithFormat:@"%.1f",rpe]];
+        }
+    }
+    self.rpeLeftMenu.titles = [rpes copy];
     [self.infoBgView addSubview:self.rpeLeftMenu];
     
     self.rpeTildeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.difficultyTildeLbl.frame.origin.x, 0, kTildeLbl_Width * kXScal, kTildeLbl_Height * kYScal)];
@@ -191,7 +204,14 @@
     self.rpeRightMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.difficultyRightMenu.frame.origin.x, self.rpeLeftMenu.frame.origin.y, kMenu_Width * kXScal, kMenu_Height * kYScal)];
     [self.rpeRightMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.rpeRightMenu.delegate = self;
-    self.rpeRightMenu.titles = @[@"0.0",@"0.5",@"1.0",@"1.5",@"2.0",@"2.5",@"3.0",@"3.5",@"4.0",@"4.5",@"5.0",@"5.5",@"6.0",@"6.5",@"7.0",@"7.5",@"8.0",@"8.5",@"9.0",@"9.5",@"10.0"];
+    NSMutableArray *rightRpes = [NSMutableArray array];
+    for (NSInteger i = 5; i <= 100; i++) {
+        if (i%5==0) {
+            CGFloat rpe = i /10.0;
+            [rightRpes addObject:[NSString stringWithFormat:@"%.1f",rpe]];
+        }
+    }
+    self.rpeRightMenu.titles = [rightRpes copy];
     [self.infoBgView addSubview:self.rpeRightMenu];
     
     self.restLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.traingingTimeLbl.frame.origin.x, self.rpeZoneLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeLbl_Height * kYScal)];
@@ -306,7 +326,14 @@
                 [rpes addObject:[NSString stringWithFormat:@"%.1f",i/10.0]];
             }
         }
-        self.rpeRightMenu.titles = [rpes copy];
+        NSMutableArray *rightRpes = [NSMutableArray array];
+        for (NSInteger i = 5; i <= 100; i++) {
+            if (i%5==0) {
+                CGFloat rpe = i /10.0;
+                [rightRpes addObject:[NSString stringWithFormat:@"%.1f",rpe]];
+            }
+        }
+        self.rpeRightMenu.titles = [rightRpes copy];
         [self.rpeRightMenu.mTableView reloadData];
         self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.rpeRightMenu) {
@@ -363,6 +390,10 @@
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
     if (menu == self.difficultyRightMenu) {
         self.difficultyRightMenu.mainBtn.titleLabel.text = @"";
+    } else if (menu == self.difficultyMenu) {
+        if (menu.titles.count == 0) {
+            [STTextHudTool showText:@"请先选择训练设备"];
+        }
     }
 }
 
