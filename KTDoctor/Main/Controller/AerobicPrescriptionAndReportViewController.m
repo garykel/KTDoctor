@@ -89,12 +89,26 @@
     self.closeArr = [NSMutableArray array];
     self.searchCloseArr = [NSMutableArray array];
     self.equipmentsArr = [NSMutableArray array];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllDropDownMenu) name:kHideDropDownNotification object:nil];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     for (NSInteger i = 0; i < self.precriptionsArr.count; i++) {
         [self.closeArr addObject:[NSNumber numberWithBool:YES]];
     }
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)hideAllDropDownMenu {
+    for (UIView *view in self.view.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *menu = (KTDropDownMenus*)view;
+            [menu hiddenCityList];
+        }
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setNavBar {
@@ -453,6 +467,7 @@
 #pragma mark - button click events
 
 - (void)back:(UIButton*)sender {
+    [self hideAllDropDownMenu];
     [self.navigationController popViewControllerAnimated:NO];
 }
 
@@ -609,6 +624,7 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
     if (menu == self.trainingPositionMenu) { //训练部位
         [self.trainingEquipmentMenu hiddenCityList];
     }else if (menu == self.trainingEquipmentMenu){ //训练设备
@@ -616,6 +632,17 @@
         if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
             [STTextHudTool showText:@"请先选择训练部位"];
             [menu hiddenCityList];
+        }
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.view.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
         }
     }
 }

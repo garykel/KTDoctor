@@ -123,6 +123,7 @@ CGSize systemListviewSize;
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshCustomTemplates) name:@"UpdateCustomTemplatesNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllMenus) name:kHideDropDownNotification object:nil];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.type = 2;
     self.templateType = 1;
@@ -136,6 +137,11 @@ CGSize systemListviewSize;
     [self showTemplateListWithType:self.type offset:0];
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self hideAllMenus];
 }
 
 - (void)setNavBar {
@@ -216,7 +222,7 @@ CGSize systemListviewSize;
     self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
     [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.trainingPositionMenu.defualtStr = @"训练部位";
-    self.trainingPositionMenu.titles = @[@"胸部"];
+//    self.trainingPositionMenu.titles = @[@"胸部"];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 40;
     [self.searchBgView addSubview:self.trainingPositionMenu];
@@ -892,10 +898,45 @@ CGSize systemListviewSize;
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
     if (menu == self.trainingDeviceMenu) {
         if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
             [menu hiddenCityList];
             [STTextHudTool showText:@"请选择训练部位"];
+        }
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.searchBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
+    }
+    for (UIView *view in self.bottomView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
+    }
+}
+
+- (void)hideAllMenus {
+    for (UIView *view in self.searchBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
+        }
+    }
+    for (UIView *view in self.bottomView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
         }
     }
 }
@@ -908,6 +949,8 @@ CGSize systemListviewSize;
 
 //搜索
 - (void)searchBtnClick:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (self.nameTf.text.length == 0 && [self.dieaseMenu.mainBtn.titleLabel.text isEqualToString:@"适应病症"] && [self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"风险等级"] && [self.deviceMenu.mainBtn.titleLabel.text isEqualToString:@"有氧设备"] && [self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"] && [self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
         self.isSearch = NO;
         if (self.type == 1) {
@@ -1068,6 +1111,8 @@ CGSize systemListviewSize;
 //新建有氧模板
 - (void)createAerobicTemplateBtnClick:(UIButton*)sender {
     NSLog(@"新建有氧模板");
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     self.template = [[ChooseTemplateTypeView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kView_LeftMargin * kXScal, kView_Height * kYScal)];
     [self.template.intensiteBtn addTarget:self action:@selector(createIntensiteTemplate:) forControlEvents:UIControlEventTouchUpInside];
     [self.template.powerBtn addTarget:self action:@selector(createPowerTemplate:) forControlEvents:UIControlEventTouchUpInside];
@@ -1077,6 +1122,8 @@ CGSize systemListviewSize;
 //新建强度模板
 - (void)createIntensiteTemplate:(UIButton*)sender {
     [self.template dismiss];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     CreateTemplateViewController *template = [[CreateTemplateViewController alloc] init];
     template.type = 1;
     if (self.deviceTypeArr.count > 0) {
@@ -1093,6 +1140,8 @@ CGSize systemListviewSize;
 //新建功率模板
 - (void)createPowerTemplate:(UIButton*)sender {
     [self.template dismiss];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     CreateTemplateViewController *template = [[CreateTemplateViewController alloc] init];
     template.type = 2;
     if (self.deviceTypeArr.count > 0) {
@@ -1109,6 +1158,8 @@ CGSize systemListviewSize;
 //新建力量模板
 - (void)createPowerTemplateBtnClick:(UIButton*)sender {
     [self.template dismiss];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     CreatePowerTemplateViewController *template = [[CreatePowerTemplateViewController alloc] init];
     template.type = 2;
     if (self.deviceTypeArr.count > 0) {
@@ -1126,6 +1177,8 @@ CGSize systemListviewSize;
 
 //删除模板
 - (void)deleteBtnClick:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
@@ -1230,6 +1283,8 @@ CGSize systemListviewSize;
 
 //编辑模板
 - (void)editTemplate:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     NSInteger index = sender.tag - 20000;
     NSDictionary *templateDict;
     if (self.type == 1) {

@@ -249,6 +249,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     HistoryDetailViewController *history = [[HistoryDetailViewController alloc] init];
     NSDictionary *dict = [self.reportsArr objectAtIndex:indexPath.section];
     NSMutableDictionary *sportDict = [NSMutableDictionary dictionary];

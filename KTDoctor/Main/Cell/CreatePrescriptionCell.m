@@ -60,6 +60,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDifficultLevel:) name:@"UpdateDifficultLevelNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllMenus) name:kHideCellDropDownNotification object:nil];
         [self setUI];
     }
     return self;
@@ -381,6 +382,8 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     if (menu == self.difficultyRightMenu) {
         self.difficultyRightMenu.mainBtn.titleLabel.text = @"";
     } else if (menu == self.difficultyMenu) {
@@ -406,6 +409,26 @@
             }
             self.traingingTimeRightMenu.titles = [rights copy];
             [self.traingingTimeRightMenu.mTableView reloadData];
+        }
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.infoBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
+    }
+}
+
+- (void)hideAllMenus {
+    for (UIView *view in self.infoBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
         }
     }
 }

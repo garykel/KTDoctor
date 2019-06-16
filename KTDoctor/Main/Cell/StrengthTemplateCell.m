@@ -340,6 +340,7 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
     if (menu == self.restRightMenu) {
         NSString *leftRest = self.restLeftMenu.mainBtn.titleLabel.text;
         if (leftRest.length == 0 || [leftRest isEqualToString:@"0"]) {
@@ -349,6 +350,17 @@
             }
             self.restRightMenu.titles = [rightRests copy];
             [self.restRightMenu.mTableView reloadData];
+        }
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.infoBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
         }
     }
 }

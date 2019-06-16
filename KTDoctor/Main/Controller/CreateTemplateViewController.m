@@ -122,6 +122,7 @@
     [self.groups addObject:model];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllmenus) name:kHideDropDownNotification object:nil];
     [self setNavBar];
     [self setupUI];
 }
@@ -707,6 +708,8 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (menu == self.traingDeviceMenu) {
         if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
             [menu hiddenCityList];
@@ -715,6 +718,25 @@
     }
 }
 
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
+    }
+}
+
+- (void)hideAllmenus {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
+        }
+    }
+}
 
 #pragma mark - button click events
 - (void)back:(UIButton*)sender {
@@ -723,6 +745,8 @@
 
 - (void)saveOrCreate:(UIButton*)sender {
     __weak typeof (self)weakSelf = self;
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (self.templateNameTF.text.length == 0) {
         [STTextHudTool showText:@"请填写模板名称"];
     } else if([self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
@@ -809,6 +833,8 @@
 }
 
 - (void)giveup:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定放弃吗？" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.navigationController popViewControllerAnimated:NO];
@@ -823,6 +849,8 @@
 
 - (void)addGroup:(UIButton*)sender {
     NSLog(@"增加行");
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     NSInteger index = sender.tag - 10000;
     AerobicriptionModel *model = [self.groups objectAtIndex:index];
     AerobicriptionModel *dict = [[AerobicriptionModel alloc] init];
@@ -846,6 +874,8 @@
 }
 
 - (void)removeGroup:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (self.groups.count > 1) {
         NSInteger index = sender.tag - 20000;
         [self.groups removeObjectAtIndex:index];

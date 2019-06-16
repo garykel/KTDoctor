@@ -143,6 +143,7 @@
     self.navigationController.navigationBar.hidden = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllMenus) name:kHideDropDownNotification object:nil];
     self.totalTemplateArr = [NSMutableArray array];
     self.recommendArr = [NSMutableArray array];
     self.recommendTemplateArr = [NSMutableArray array];
@@ -411,6 +412,15 @@
     [self.topBgView addSubview:self.sportTimePointMenu];
 }
 
+- (void)hideAllMenus {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *menu = (KTDropDownMenus *)view;
+            [menu hiddenCityList];
+        }
+    }
+}
+
 - (void)configFooterview {
     self.bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kWidth, kFooterView_Height * kYScal)];
     self.bottomView.backgroundColor = [UIColor whiteColor];
@@ -589,6 +599,8 @@
 #pragma mark - button click events
 
 - (void)back:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     [self.navigationController popViewControllerAnimated:NO];
 }
 
@@ -877,6 +889,8 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (menu == self.trainingPositionMenu) { //训练部位
         
     }else if (menu == self.traingDeviceMenu){ //训练设备
@@ -915,6 +929,17 @@
         
     }else if (menu == self.sportTimePointMenu){ //运动时间点
         
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
     }
 }
 

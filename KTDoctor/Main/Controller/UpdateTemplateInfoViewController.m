@@ -129,8 +129,16 @@
     self.type2 = [[self.templateInfo valueForKey:@"type2"] integerValue];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidelAllMenus) name:kHideDropDownNotification object:nil];
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+    [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (void)dealloc {
@@ -662,7 +670,28 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
-    
+    [self hideOtherMenuExcept:menu];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
+    }
+}
+
+- (void)hidelAllMenus {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
+        }
+    }
 }
 
 #pragma mark - network functions
@@ -719,6 +748,8 @@
 }
 
 - (void)saveOrCreate:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -780,6 +811,8 @@
 }
 
 - (void)giveup:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定放弃吗？" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.navigationController popViewControllerAnimated:NO];

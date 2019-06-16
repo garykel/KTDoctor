@@ -815,6 +815,7 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
     if (menu == self.trainingPositionMenu) { //训练部位
         
     }else if (menu == self.traingDeviceMenu){ //训练设备
@@ -854,6 +855,17 @@
         
     }else if (menu == self.sportTimePointMenu){ //运动时间点
         
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
     }
 }
 

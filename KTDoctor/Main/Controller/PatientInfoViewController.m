@@ -2793,6 +2793,7 @@ CGSize testResultsListViewSize;
 #pragma mark - button click events
 
 - (void)back:(UIButton*)sender {
+    [self.hrMenu hiddenCityList];
     [self.navigationController popViewControllerAnimated:NO];
 }
 
@@ -2950,6 +2951,11 @@ CGSize testResultsListViewSize;
     return cell;
 }
 
+#pragma mark - scrolview.delegate
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    [self.hrMenu hiddenCityList];
+}
+
 #pragma mark - XXTGDropdownMenuDelegate
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
@@ -2964,6 +2970,7 @@ CGSize testResultsListViewSize;
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
     if (menu == self.hrMenu) {
         [self.hrMenu.mTableView reloadData];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -2973,6 +2980,17 @@ CGSize testResultsListViewSize;
         [parameter setValue:orgCode forKey:@"orgCode"];
         [parameter setValue:@14 forKey:@"deviceType"];
         [self showAllHrDevices:parameter];
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.scrollview.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
     }
 }
 

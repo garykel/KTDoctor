@@ -77,5 +77,5 @@
 #define kLogoutSuccessNotification  @"xxtgLogoutSuccessNotification"    //退出登录通知
 #define kHideDropDownNotification   @"ktHideDropDownNotification"       //隐藏下拉菜单通知
 
-
+#define kHideCellDropDownNotification   @"ktHideCellDropDownNotification"       //隐藏Cell中下拉菜单通知
 #endif /* CommonMacros_h */

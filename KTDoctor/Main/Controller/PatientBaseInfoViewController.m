@@ -684,6 +684,7 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
     if (menu == self.hrDeviceTF) {
         [self.hrDeviceTF.mTableView reloadData];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -693,6 +694,17 @@
         [parameter setValue:orgCode forKey:@"orgCode"];
         [parameter setValue:@14 forKey:@"deviceType"];
         [self getAvailableHrDevice:parameter];
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.infoView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
+        }
     }
 }
 

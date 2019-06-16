@@ -604,11 +604,23 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideOtherMenuExcept:menu];
     if (menu == self.traingDeviceMenu) {
         [self.traingDeviceMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
         if ([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
             [menu hiddenCityList];
             [STTextHudTool showText:@"请先选择训练部位"];
+        }
+    }
+}
+
+- (void)hideOtherMenuExcept:(KTDropDownMenus*)menu {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            if (ktMenu != menu) {
+                [ktMenu hiddenCityList];
+            }
         }
     }
 }
