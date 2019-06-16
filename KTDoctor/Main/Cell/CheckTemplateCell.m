@@ -343,7 +343,27 @@
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
-    
+    if (menu == self.restRightMenu) {
+        NSString *leftRest = self.restLeftMenu.mainBtn.titleLabel.text;
+        if (leftRest.length == 0 || [leftRest isEqualToString:@"0"]) {
+            NSMutableArray *rightRests = [NSMutableArray array];
+            for (NSInteger i = 20; i< 60; i++) {
+                [rightRests addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+            self.restRightMenu.titles = [rightRests copy];
+            [self.restRightMenu.mTableView reloadData];
+        }
+    } else if(menu == self.traingingTimeRightMenu) {
+        NSString *leftTime = self.traingingTimeLeftMenu.mainBtn.titleLabel.text;
+        if (leftTime.length == 0 || [leftTime isEqualToString:@"0"]) {
+            NSMutableArray *rights = [NSMutableArray array];
+            for (NSInteger i = 20;i<60;i++) {
+                [rights addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+            self.traingingTimeRightMenu.titles = [rights copy];
+            [self.traingingTimeRightMenu.mTableView reloadData];
+        }
+    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

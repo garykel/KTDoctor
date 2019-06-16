@@ -326,14 +326,7 @@
                 [rpes addObject:[NSString stringWithFormat:@"%.1f",i/10.0]];
             }
         }
-        NSMutableArray *rightRpes = [NSMutableArray array];
-        for (NSInteger i = 5; i <= 100; i++) {
-            if (i%5==0) {
-                CGFloat rpe = i /10.0;
-                [rightRpes addObject:[NSString stringWithFormat:@"%.1f",rpe]];
-            }
-        }
-        self.rpeRightMenu.titles = [rightRpes copy];
+        self.rpeRightMenu.titles = [rpes copy];
         [self.rpeRightMenu.mTableView reloadData];
         self.model.rpeRange = [NSString stringWithFormat:@"%.1f-%.1f",rpeLeft,rpeRight];
     } else if (menu == self.rpeRightMenu) {
@@ -393,6 +386,26 @@
     } else if (menu == self.difficultyMenu) {
         if (menu.titles.count == 0) {
             [STTextHudTool showText:@"请先选择训练设备"];
+        }
+    } else if (menu == self.restRightMenu) {
+        NSString *leftRest = self.restLeftMenu.mainBtn.titleLabel.text;
+        if (leftRest.length == 0 || [leftRest isEqualToString:@"0"]) {
+            NSMutableArray *rightRests = [NSMutableArray array];
+            for (NSInteger i = 20; i< 60; i++) {
+                [rightRests addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+            self.restRightMenu.titles = [rightRests copy];
+            [self.restRightMenu.mTableView reloadData];
+        }
+    } else if(menu == self.traingingTimeRightMenu) {
+        NSString *leftTime = self.traingingTimeLeftMenu.mainBtn.titleLabel.text;
+        if (leftTime.length == 0 || [leftTime isEqualToString:@"0"]) {
+            NSMutableArray *rights = [NSMutableArray array];
+            for (NSInteger i = 20;i<60;i++) {
+                [rights addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+            self.traingingTimeRightMenu.titles = [rights copy];
+            [self.traingingTimeRightMenu.mTableView reloadData];
         }
     }
 }
