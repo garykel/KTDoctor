@@ -249,15 +249,18 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    NSDictionary *dict = [self.reportsArr objectAtIndex:indexPath.section];
     HistoryDetailViewController *history = [[HistoryDetailViewController alloc] init];
-    history.sportDict = @{@"sportData":dict};
-    NSMutableDictionary *historyDict = [NSMutableDictionary dictionary];
-    NSDictionary *prescription = @{@"type2":[NSNumber numberWithInteger:self.type2]};
+    NSDictionary *dict = [self.reportsArr objectAtIndex:indexPath.section];
+    NSMutableDictionary *sportDict = [NSMutableDictionary dictionary];
+    [sportDict setValue:dict forKey:@"sportData"];
     NSString *headUrl = [dict valueForKey:@"headUrl"];
+    [sportDict setValue:headUrl forKey:@"headUrl"];
+    NSDictionary *prescription = @{@"type2":[NSNumber numberWithInteger:self.type2]};
+    [sportDict setValue:prescription forKey:@"prescription"];
+    [sportDict setValue:[dict valueForKey:@"userName"] forKey:@"name"];
+    [sportDict setValue:[dict valueForKey:@"userId"] forKey:@"userId"];
     history.patientInfo = self.patientInfo;
-    history.type2 = self.type2;
-    
+    history.sportDict = sportDict;
     history.isFromReport = YES;
     [[self currentViewController] presentViewController:history animated:NO completion:nil];
 }
