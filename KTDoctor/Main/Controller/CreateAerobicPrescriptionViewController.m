@@ -226,6 +226,7 @@
     
     self.listView.tableHeaderView = self.topView;
     self.listView.tableFooterView = self.bottomView;
+    self.listView.tableFooterView.hidden = YES;
 }
 
 - (void)configHeaderview {
@@ -345,7 +346,7 @@
     
     self.templateMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal, 0, kTemplateMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
     [self.templateMenu setDropdownHeight:kDropdownHeight * kYScal];
-    self.templateMenu.defualtStr = @"请选择";
+    self.templateMenu.defualtStr = @"请选择推荐模板";
     self.templateMenu.delegate = self;
     self.templateMenu.titles = self.recommendArr;
     self.templateMenu.center = CGPointMake(CGRectGetMaxX(self.templateLbl.frame) + kDieaseLbl_RightMargin * kXScal + kTemplateMenu_Width * kXScal/2.0, self.templateLbl.center.y);
@@ -806,6 +807,12 @@
         
     }else if (menu == self.traingDeviceMenu){ //训练设备
         if (![self isBlankString:string]) {
+            if (self.groups.count > 0) {
+                [self.groups removeAllObjects];
+            }
+            [self.listView reloadData];
+            self.listView.tableFooterView.hidden = YES;
+            self.templateMenu.mainBtn.titleLabel.text = @"";
             if (self.recommendTemplateArr.count > 0) {
                 [self.recommendTemplateArr removeAllObjects];
             }
@@ -974,6 +981,7 @@
                     }
                 }
                 weakself.groups = [templates mutableCopy];
+                weakself.listView.tableFooterView.hidden = NO;
                 [weakself.listView reloadData];
                 weakself.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",weakself.groups.count];
                 [weakself computeTotalTrainingTime];

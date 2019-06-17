@@ -504,6 +504,17 @@
             NSInteger difficulty = [[dict valueForKey:@"difficulty"] integerValue];
             [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",difficulty] forState:UIControlStateNormal];
             [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        } else {
+            [cell.difficultyLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.difficultyLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.difficultyRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.difficultyRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.difficultyMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         }
         NSArray *rpeRangeArr = [[dict valueForKey:@"rpeRange"] componentsSeparatedByString:@"-"];
         if (rpeRangeArr.count > 0) {
@@ -518,10 +529,22 @@
             [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration/60] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
+        } else {
+            [cell.rpeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.rpeRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.restLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
         }
         NSInteger difficulty = [[dict valueForKey:@"difficulty"] integerValue];
         if (difficulty > 0) {
             [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]] forState:UIControlStateNormal];
+            [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        } else {
+            [cell.difficultyMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         }
         
@@ -533,6 +556,11 @@
             [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        } else {
+            [cell.traingingTimeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         }
         NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
         if (restDuration > 0) {
@@ -541,6 +569,11 @@
             [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
             [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        } else {
+            [cell.restLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         }
         cell.model = dict;
@@ -575,6 +608,17 @@
             NSInteger difficulty = [[dict valueForKey:@"difficulty"] integerValue];
             [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",difficulty] forState:UIControlStateNormal];
             [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        } else {
+            [cell.difficultyLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.difficultyLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.difficultyRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.difficultyRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.difficultyMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         }
         
         NSArray *rpeRangeArr = [[dict valueForKey:@"rpeRange"] componentsSeparatedByString:@"-"];
@@ -590,10 +634,22 @@
             [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration/60] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
+        } else {
+            [cell.rpeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.rpeRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.restLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
         }
         NSInteger difficulty = [[dict valueForKey:@"difficulty"] integerValue];
         if (difficulty > 0) {
             [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%dw",[[dict valueForKey:@"difficulty"] integerValue]] forState:UIControlStateNormal];
+            [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        } else {
+            [cell.difficultyMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         }
         
@@ -605,6 +661,11 @@
             [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        } else {
+            [cell.traingingTimeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         }
         NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
         if (restDuration > 0) {
@@ -613,6 +674,11 @@
             [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
             [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+        } else {
+            [cell.restLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+            [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
+            [cell.restRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         }
         cell.model = dict;
@@ -679,6 +745,16 @@
 {
     if (menu == self.traingDeviceMenu) {
         if (self.equipIds.count > 0) {
+            if (self.groups.count > 0) {
+                [self.groups removeAllObjects];
+            }
+            [self.listView reloadData];
+            AerobicriptionModel *model = [[AerobicriptionModel alloc] init];
+            [self.groups addObject:model];
+            [self.listView reloadData];
+            self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
+            [self computeAvgDifficulty];
+            [self computeTotalTrainingTime];
             for (NSDictionary *dict in self.equipIds) {
                 NSString *name = [dict valueForKey:@"name"];
                 if ([string isEqualToString:name]) {
