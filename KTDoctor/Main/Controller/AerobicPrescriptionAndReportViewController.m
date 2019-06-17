@@ -464,6 +464,11 @@
     return cell;
 }
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    [self hideAllDropDownMenu];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+}
+
 #pragma mark - button click events
 
 - (void)back:(UIButton*)sender {

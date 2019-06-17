@@ -904,6 +904,9 @@ CGSize systemListviewSize;
             [menu hiddenCityList];
             [STTextHudTool showText:@"请选择训练部位"];
         }
+    } else if(menu == self.trainingPositionMenu) {
+        [menu hiddenCityList];
+        [STTextHudTool showText:@"请选择训练类型"];
     }
 }
 
@@ -1305,6 +1308,10 @@ CGSize systemListviewSize;
 //自定义模板列表头视图标签选中
 - (void)customTemplateItemClick:(UIButton*)sender {
     
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    [self hideAllMenus];
 }
 
 #pragma mark - network functions

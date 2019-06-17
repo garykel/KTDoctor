@@ -642,6 +642,11 @@
     }
 }
 
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+}
+
 #pragma mark - XXTGDropdownMenuDelegate
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellNumber:(NSInteger)number {
     

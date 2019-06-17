@@ -560,6 +560,7 @@
 #pragma mark - button click events
 
 - (void)chooseBirthDay:(UIButton*)sender {
+    [self hideAllMenus];
     NSLog(@"选择出生日期");
     //    self.hidden = YES;
     __weak typeof (self)weakSelf = self;
@@ -578,6 +579,7 @@
 }
 
 - (void)changePhoto:(UITapGestureRecognizer*)gesture {
+    [self hideAllMenus];
     BOOL useable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     if (useable) {
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"获取头像"
@@ -607,6 +609,7 @@
 }
 
 - (void)changePrivateHRDevice:(UIButton*)sender {
+    [self hideAllMenus];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     NSDictionary *dict = self.user.organ;
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
@@ -706,6 +709,19 @@
             }
         }
     }
+}
+
+- (void)hideAllMenus {
+    for (UIView *view in self.infoView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
+        }
+    }
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField {
+    [self hideAllMenus];
 }
 
 #pragma mark - WHC_ChoicePictureVCDelegate
