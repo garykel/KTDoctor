@@ -61,9 +61,14 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDifficultLevel:) name:@"UpdateDifficultLevelNotification" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllMenus) name:kHideCellDropDownNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkHasNullData) name:@"CheckPrescriptionCellHasNullDataNotification" object:nil];
         [self setUI];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setUI {
@@ -430,6 +435,31 @@
             KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
             [ktMenu hiddenCityList];
         }
+    }
+}
+
+- (void)checkHasNullData {
+    NSString *difficultLeft = self.difficultyLeftMenu.mainBtn.titleLabel.text;
+    NSString *difficultRight = self.difficultyRightMenu.mainBtn.titleLabel.text;
+    NSString *trainingTimeLeft = self.traingingTimeLeftMenu.mainBtn.titleLabel.text;
+    NSString *trainingTimeRight = self.traingingTimeRightMenu.mainBtn.titleLabel.text;
+    NSString *difficulty = self.difficultyMenu.mainBtn.titleLabel.text;
+    NSString *rpeLeft = self.rpeLeftMenu.mainBtn.titleLabel.text;
+    NSString *rpeRight = self.rpeRightMenu.mainBtn.titleLabel.text;
+    NSString *restTimeLeft = self.restLeftMenu.mainBtn.titleLabel.text;
+    NSString *restTimeRight = self.restRightMenu.mainBtn.titleLabel.text;
+    if (difficultLeft.length > 0 && difficultRight.length > 0 && trainingTimeLeft.length > 0 && trainingTimeRight.length > 0 && difficulty.length > 0 && rpeLeft.length > 0 && rpeRight.length > 0 && restTimeLeft.length > 0 && restTimeRight.length > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil];
+    } else if (difficultLeft.length == 0 || difficultRight.length == 0) {
+        [STTextHudTool showText:@"请选择心率区间"];
+    } else if (trainingTimeLeft.length == 0 || trainingTimeRight.length == 0) {
+        [STTextHudTool showText:@"训练时长不能为空"];
+    } else if (difficulty.length == 0) {
+        [STTextHudTool showText:@"请选择功率"];
+    } else if (rpeLeft.length == 0 || rpeRight.length == 0) {
+        [STTextHudTool showText:@"请选择RPE"];
+    } else {
+        [STTextHudTool showText:@"请选择组间休息时间"];
     }
 }
 

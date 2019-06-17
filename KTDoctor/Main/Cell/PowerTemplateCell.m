@@ -61,6 +61,7 @@
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         [self setUI];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllMenus) name:kHideCellDropDownNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkHasNullData) name:@"CheckPowerCellHasNullDataNotification" object:nil];
     }
     return self;
 }
@@ -282,6 +283,15 @@
         if (difficultyRight.length > 0) {
             self.model.hrRange = [NSString stringWithFormat:@"%@-%@",string,[difficultyRight substringToIndex:(difficultyRight.length - 1)]];
         }
+        NSInteger start = [string integerValue];
+        NSMutableArray *titles =  [NSMutableArray array];
+        for (NSInteger i = start + 5; i<=100; i++) {
+            if (i%5==0) {
+                [titles addObject:[NSString stringWithFormat:@"%d",i]];
+            }
+        }
+        self.difficultyRightMenu.titles = [titles copy];
+        [self.difficultyRightMenu.mTableView reloadData];
     } else if (menu == self.difficultyRightMenu) {
         [self.difficultyRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%@%%",string] forState:UIControlStateNormal];
         NSString *difficultyLeft = self.difficultyLeftMenu.mainBtn.titleLabel.text;
@@ -404,6 +414,31 @@
                 [ktMenu hiddenCityList];
             }
         }
+    }
+}
+
+- (void)checkHasNullData {
+    NSString *difficultLeft = self.difficultyLeftMenu.mainBtn.titleLabel.text;
+    NSString *difficultRight = self.difficultyRightMenu.mainBtn.titleLabel.text;
+    NSString *trainingTimeLeft = self.traingingTimeLeftMenu.mainBtn.titleLabel.text;
+    NSString *trainingTimeRight = self.traingingTimeRightMenu.mainBtn.titleLabel.text;
+    NSString *difficulty = self.difficultyMenu.mainBtn.titleLabel.text;
+    NSString *rpeLeft = self.rpeLeftMenu.mainBtn.titleLabel.text;
+    NSString *rpeRight = self.rpeRightMenu.mainBtn.titleLabel.text;
+    NSString *restTimeLeft = self.restLeftMenu.mainBtn.titleLabel.text;
+    NSString *restTimeRight = self.restRightMenu.mainBtn.titleLabel.text;
+    if (difficultLeft.length > 0 && difficultRight.length > 0 && trainingTimeLeft.length > 0 && trainingTimeRight.length > 0 && difficulty.length > 0 && rpeLeft.length > 0 && rpeRight.length > 0 && restTimeLeft.length > 0 && restTimeRight.length > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil];
+    } else if (difficultLeft.length == 0 || difficultRight.length == 0) {
+        [STTextHudTool showText:@"请选择心率区间"];
+    } else if (trainingTimeLeft.length == 0 || trainingTimeRight.length == 0) {
+        [STTextHudTool showText:@"训练时长不能为空"];
+    } else if (difficulty.length == 0) {
+        [STTextHudTool showText:@"请选择功率"];
+    } else if (rpeLeft.length == 0 || rpeRight.length == 0) {
+        [STTextHudTool showText:@"请选择RPE"];
+    } else {
+        [STTextHudTool showText:@"请选择组间休息时间"];
     }
 }
 

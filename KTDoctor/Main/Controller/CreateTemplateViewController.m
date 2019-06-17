@@ -108,6 +108,7 @@
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,strong)NSMutableArray *equipIds;
 @property (nonatomic,assign)NSInteger typeid;
+@property (nonatomic,assign)BOOL cellHasNullData;
 @end
 
 @implementation CreateTemplateViewController
@@ -115,6 +116,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.cellHasNullData = YES;
     self.groups = [NSMutableArray array];
     self.equipIds = [NSMutableArray array];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
@@ -123,8 +125,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllmenus) name:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCellHasNullData) name:@"PrescriptionCellDataIsOKNotification" object:nil];
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.cellHasNullData = YES;
 }
 
 - (void)dealloc {
@@ -738,6 +746,10 @@
     }
 }
 
+- (void)checkCellHasNullData {
+    self.cellHasNullData = NO;
+}
+
 #pragma mark - button click events
 - (void)back:(UIButton*)sender {
     [self.navigationController popViewControllerAnimated:NO];
@@ -747,6 +759,11 @@
     __weak typeof (self)weakSelf = self;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+    if (self.type == 1) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPrescriptionCellHasNullDataNotification" object:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPowerCellHasNullDataNotification" object:nil];
+    }
     if (self.templateNameTF.text.length == 0) {
         [STTextHudTool showText:@"请填写模板名称"];
     } else if([self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
@@ -758,77 +775,79 @@
     }else if(self.trainingFrequencyMenu.mainBtn.titleLabel.text.length == 0 ||[self.trainingFrequencyMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
         [STTextHudTool showText:@"请选择每周训练几天"];
     }else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-            NSDictionary *dict = weakSelf.user.organ;
-            NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-            NSString *orgCode = orgCodeArr[0];
-            [parameter setValue:orgCode forKey:@"orgCode"];
-            [parameter setValue:@(weakSelf.typeid) forKey:@"type"]; //类型
-            [parameter setValue:@(weakSelf.type) forKey:@"type2"]; //类型2，1=强度，2=功率
-            [parameter setValue:weakSelf.templateNameTF.text forKey:@"title"];
-            NSString *disease = weakSelf.dieaseMenu.mainBtn.titleLabel.text;
-            [parameter setValue:disease forKey:@"disease"];
-            [parameter setValue:weakSelf.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
-            [parameter setValue:weakSelf.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
-            NSString *timingStr = weakSelf.sportTimePointMenu.mainBtn.titleLabel.text;
-            NSInteger timing = 0;
-            if ([timingStr isEqualToString:@"任意"]) {
-                timing = 3;
-            } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
-                timing = 1;
-            } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
-                timing = 2;
-            }
-            [parameter setValue:@(timing) forKey:@"timing"];
-            NSString *riskLevelStr = weakSelf.riskLevelMenu.mainBtn.titleLabel.text;
-            NSInteger riskLevel = 1;
-            if ([riskLevelStr isEqualToString:@"低"]) {
-                riskLevel = 1;
-            } else if ([riskLevelStr isEqualToString:@"中"]) {
-                riskLevel = 2;
-            } else if ([riskLevelStr isEqualToString:@"高"]) {
-                riskLevel = 3;
-            }
-            [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
-            [parameter setValue:@(weakSelf.targetDuration) forKey:@"targetDuration"];
-            if (self.groups.count > 0) {
-                NSMutableArray *groups = [NSMutableArray array];
-                for (NSInteger i = 0; i < weakSelf.groups.count; i++) {
-                    AerobicriptionModel *model = (AerobicriptionModel*)[weakSelf.groups objectAtIndex:i];
-                    NSMutableDictionary *group = [NSMutableDictionary dictionary];
-                    [group setValue:[NSString stringWithFormat:@"第%ld组",i] forKey:@"title"];
-                    [group setValue:model.hrRange forKey:@"hrRange"];
-                    [group setValue:model.rpeRange forKey:@"rpeRange"];
-                    NSString *difficultyStr = @"";
-                    if ([model.difficulty integerValue] > 9) {
-                        difficultyStr = model.difficulty;
-                    } else {
-                        difficultyStr = [NSString stringWithFormat:@"0%@",model.difficulty];
-                    }
-                    [group setValue:difficultyStr forKey:@"difficulty"];
-                    [group setValue:@(model.calorie) forKey:@"calorie"];
-                    [group setValue:@(model.duration) forKey:@"duration"];
-                    [group setValue:@(model.restDuration) forKey:@"restDuration"];
-                    [group setValue:@(model.speed) forKey:@"speed"];
-                    [group setValue:@(model.weight) forKey:@"weight"];
-                    [group setValue:@(model.times) forKey:@"times"];
-                    [group setValue:model.rotationAngle forKey:@"rotationAngle"];
-                    [groups addObject:group];
+        if (!self.cellHasNullData) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+                NSDictionary *dict = weakSelf.user.organ;
+                NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+                NSString *orgCode = orgCodeArr[0];
+                [parameter setValue:orgCode forKey:@"orgCode"];
+                [parameter setValue:@(weakSelf.typeid) forKey:@"type"]; //类型
+                [parameter setValue:@(weakSelf.type) forKey:@"type2"]; //类型2，1=强度，2=功率
+                [parameter setValue:weakSelf.templateNameTF.text forKey:@"title"];
+                NSString *disease = weakSelf.dieaseMenu.mainBtn.titleLabel.text;
+                [parameter setValue:disease forKey:@"disease"];
+                [parameter setValue:weakSelf.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
+                [parameter setValue:weakSelf.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
+                NSString *timingStr = weakSelf.sportTimePointMenu.mainBtn.titleLabel.text;
+                NSInteger timing = 0;
+                if ([timingStr isEqualToString:@"任意"]) {
+                    timing = 3;
+                } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
+                    timing = 1;
+                } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
+                    timing = 2;
                 }
-                [parameter setValue:groups forKey:@"sections"];
-            } else {
-                [parameter setValue:@[] forKey:@"sections"];
-            }
-            [self createCustomTemplate:parameter];
-        }];
-        
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        }];
-        [alert addAction:okAction];
-        [alert addAction:cancelAction];
-        [self presentViewController:alert animated:NO completion:nil];
+                [parameter setValue:@(timing) forKey:@"timing"];
+                NSString *riskLevelStr = weakSelf.riskLevelMenu.mainBtn.titleLabel.text;
+                NSInteger riskLevel = 1;
+                if ([riskLevelStr isEqualToString:@"低"]) {
+                    riskLevel = 1;
+                } else if ([riskLevelStr isEqualToString:@"中"]) {
+                    riskLevel = 2;
+                } else if ([riskLevelStr isEqualToString:@"高"]) {
+                    riskLevel = 3;
+                }
+                [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
+                [parameter setValue:@(weakSelf.targetDuration) forKey:@"targetDuration"];
+                if (self.groups.count > 0) {
+                    NSMutableArray *groups = [NSMutableArray array];
+                    for (NSInteger i = 0; i < weakSelf.groups.count; i++) {
+                        AerobicriptionModel *model = (AerobicriptionModel*)[weakSelf.groups objectAtIndex:i];
+                        NSMutableDictionary *group = [NSMutableDictionary dictionary];
+                        [group setValue:[NSString stringWithFormat:@"第%ld组",i] forKey:@"title"];
+                        [group setValue:model.hrRange forKey:@"hrRange"];
+                        [group setValue:model.rpeRange forKey:@"rpeRange"];
+                        NSString *difficultyStr = @"";
+                        if ([model.difficulty integerValue] > 9) {
+                            difficultyStr = model.difficulty;
+                        } else {
+                            difficultyStr = [NSString stringWithFormat:@"0%@",model.difficulty];
+                        }
+                        [group setValue:difficultyStr forKey:@"difficulty"];
+                        [group setValue:@(model.calorie) forKey:@"calorie"];
+                        [group setValue:@(model.duration) forKey:@"duration"];
+                        [group setValue:@(model.restDuration) forKey:@"restDuration"];
+                        [group setValue:@(model.speed) forKey:@"speed"];
+                        [group setValue:@(model.weight) forKey:@"weight"];
+                        [group setValue:@(model.times) forKey:@"times"];
+                        [group setValue:model.rotationAngle forKey:@"rotationAngle"];
+                        [groups addObject:group];
+                    }
+                    [parameter setValue:groups forKey:@"sections"];
+                } else {
+                    [parameter setValue:@[] forKey:@"sections"];
+                }
+                [self createCustomTemplate:parameter];
+            }];
+            
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            }];
+            [alert addAction:okAction];
+            [alert addAction:cancelAction];
+            [self presentViewController:alert animated:NO completion:nil];
+        }
     }
 }
 
