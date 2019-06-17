@@ -1528,6 +1528,7 @@ CGSize systemListviewSize;
     } else {
         self.customOffset = 0;
     }
+    self.needCleanArr = YES;
     [self showTemplateListWithType:self.type offset:0];
 }
 

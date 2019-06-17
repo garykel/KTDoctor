@@ -428,16 +428,27 @@
     NSString *restTimeLeft = self.restLeftMenu.mainBtn.titleLabel.text;
     NSString *restTimeRight = self.restRightMenu.mainBtn.titleLabel.text;
     if (difficultLeft.length > 0 && difficultRight.length > 0 && trainingTimeLeft.length > 0 && trainingTimeRight.length > 0 && difficulty.length > 0 && rpeLeft.length > 0 && rpeRight.length > 0 && restTimeLeft.length > 0 && restTimeRight.length > 0) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil];
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"hasNullData"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil userInfo:userInfo];
     } else if (difficultLeft.length == 0 || difficultRight.length == 0) {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"hasNullData"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil userInfo:userInfo];
         [STTextHudTool showText:@"请选择心率区间"];
     } else if (trainingTimeLeft.length == 0 || trainingTimeRight.length == 0) {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"hasNullData"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil userInfo:userInfo];
         [STTextHudTool showText:@"训练时长不能为空"];
     } else if (difficulty.length == 0) {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"hasNullData"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil userInfo:userInfo];
         [STTextHudTool showText:@"请选择功率"];
     } else if (rpeLeft.length == 0 || rpeRight.length == 0) {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"hasNullData"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil userInfo:userInfo];
         [STTextHudTool showText:@"请选择RPE"];
     } else {
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"hasNullData"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil userInfo:userInfo];
         [STTextHudTool showText:@"请选择组间休息时间"];
     }
 }

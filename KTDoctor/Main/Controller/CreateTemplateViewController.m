@@ -109,6 +109,7 @@
 @property (nonatomic,strong)NSMutableArray *equipIds;
 @property (nonatomic,assign)NSInteger typeid;
 @property (nonatomic,assign)BOOL cellHasNullData;
+@property (nonatomic,assign)BOOL hasClickAddBtn;
 @end
 
 @implementation CreateTemplateViewController
@@ -117,6 +118,7 @@
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
     self.cellHasNullData = YES;
+    self.hasClickAddBtn = NO;
     self.groups = [NSMutableArray array];
     self.equipIds = [NSMutableArray array];
     self.user = [[UserModel sharedUserModel] getCurrentUser];
@@ -125,7 +127,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllmenus) name:kHideDropDownNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCellHasNullData) name:@"PrescriptionCellDataIsOKNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCellHasNullData:) name:@"PrescriptionCellDataIsOKNotification" object:nil];
     [self setNavBar];
     [self setupUI];
 }
@@ -534,8 +536,8 @@
         }
         NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
         if (restDuration > 0) {
-            NSInteger min = duration / 60;
-            NSInteger sec = duration % 60;
+            NSInteger min = restDuration / 60;
+            NSInteger sec = restDuration % 60;
             [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
             [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
@@ -606,8 +608,8 @@
         }
         NSInteger restDuration = [[dict valueForKey:@"restDuration"] integerValue];
         if (restDuration > 0) {
-            NSInteger min = duration / 60;
-            NSInteger sec = duration % 60;
+            NSInteger min = restDuration / 60;
+            NSInteger sec = restDuration % 60;
             [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
             [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
@@ -746,8 +748,10 @@
     }
 }
 
-- (void)checkCellHasNullData {
-    self.cellHasNullData = NO;
+- (void)checkCellHasNullData:(NSNotification*)noti {
+    NSDictionary *userInfo = [noti valueForKey:@"userInfo"];
+    BOOL hasNullData = [[userInfo valueForKey:@"hasNullData"] boolValue];
+    self.cellHasNullData = hasNullData;
 }
 
 #pragma mark - button click events
@@ -759,10 +763,12 @@
     __weak typeof (self)weakSelf = self;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
-    if (self.type == 1) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPrescriptionCellHasNullDataNotification" object:nil];
-    } else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPowerCellHasNullDataNotification" object:nil];
+    if (!self.hasClickAddBtn) {
+        if (self.type == 1) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPrescriptionCellHasNullDataNotification" object:nil];
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPowerCellHasNullDataNotification" object:nil];
+        }
     }
     if (self.templateNameTF.text.length == 0) {
         [STTextHudTool showText:@"请填写模板名称"];
@@ -868,6 +874,8 @@
 
 - (void)addGroup:(UIButton*)sender {
     NSLog(@"增加行");
+    self.hasClickAddBtn = YES;
+    self.cellHasNullData = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     NSInteger index = sender.tag - 10000;
@@ -886,9 +894,9 @@
     dict.rotationAngle = model.rotationAngle;
     [self.groups insertObject:dict atIndex:index];
     [self.listView insertSection:index withRowAnimation:UITableViewRowAnimationNone];
-    [self.listView reloadData];
     [self computeAvgDifficulty];
     [self computeTotalTrainingTime];
+    [self.listView reloadData];
     self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
 }
 
