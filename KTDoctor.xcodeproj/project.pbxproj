@@ -86,6 +86,7 @@
 		5B875B9F224CAEFB00736FC2 /* PatientCell16.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B875B9E224CAEFB00736FC2 /* PatientCell16.m */; };
 		5BAE45E22289561800902EA3 /* PatientBaseInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAE45E12289561800902EA3 /* PatientBaseInfoViewController.m */; };
 		5BAEB8932275B8470087CA76 /* UnitTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BAEB8922275B8470087CA76 /* UnitTextView.m */; };
+		5BB32D5422B8D8A60085891B /* SortCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB32D5322B8D8A60085891B /* SortCell.m */; };
 		5BB39802228E91EE00A56A38 /* ChooseTemplateTypeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB39801228E91ED00A56A38 /* ChooseTemplateTypeView.m */; };
 		5BB39805228EAD1F00A56A38 /* CreateTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB39804228EAD1F00A56A38 /* CreateTemplateViewController.m */; };
 		5BB398082292594B00A56A38 /* PowerTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BB398072292594B00A56A38 /* PowerTemplateCell.m */; };
@@ -365,6 +366,8 @@
 		5BAE45E12289561800902EA3 /* PatientBaseInfoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientBaseInfoViewController.m; sourceTree = "<group>"; };
 		5BAEB8912275B8470087CA76 /* UnitTextView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnitTextView.h; sourceTree = "<group>"; };
 		5BAEB8922275B8470087CA76 /* UnitTextView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnitTextView.m; sourceTree = "<group>"; };
+		5BB32D5222B8D8A60085891B /* SortCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SortCell.h; sourceTree = "<group>"; };
+		5BB32D5322B8D8A60085891B /* SortCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SortCell.m; sourceTree = "<group>"; };
 		5BB39800228E91ED00A56A38 /* ChooseTemplateTypeView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChooseTemplateTypeView.h; sourceTree = "<group>"; };
 		5BB39801228E91ED00A56A38 /* ChooseTemplateTypeView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChooseTemplateTypeView.m; sourceTree = "<group>"; };
 		5BB39803228EAD1F00A56A38 /* CreateTemplateViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreateTemplateViewController.h; sourceTree = "<group>"; };
@@ -714,6 +717,8 @@
 				5B6DCD09229FDEA0007299D2 /* EvaluateReportCell.m */,
 				0937BABB22AB66CC001C3545 /* TestResultsCell.h */,
 				0937BABC22AB66CC001C3545 /* TestResultsCell.m */,
+				5BB32D5222B8D8A60085891B /* SortCell.h */,
+				5BB32D5322B8D8A60085891B /* SortCell.m */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -1590,6 +1595,7 @@
 				5BCEB5D522A7985A0053CAEC /* NSBundle+PGDatePicker.m in Sources */,
 				5BCEB5E022A7985A0053CAEC /* PGDatePicker+MonthDayHourMinute.m in Sources */,
 				5B13876A227EC3580017BA57 /* PrescriptionDetailViewController.m in Sources */,
+				5BB32D5422B8D8A60085891B /* SortCell.m in Sources */,
 				5B15F368228AA959005DA806 /* PatientRiskLevelViewController.m in Sources */,
 				5B02F7972242275300BE8269 /* WHC_PhotoListCell.m in Sources */,
 				5B875B99224CAEC400736FC2 /* PatientCell9.m in Sources */,

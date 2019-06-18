@@ -8,6 +8,7 @@
 
 #import "HistoryViewController.h"
 #import "HistoryDetailViewController.h"
+#import "SortViewController.h"
 #import "PGDatePickManager.h"
 #import "HistoryCell.h"
 #import "UserModel.h"
@@ -39,11 +40,12 @@
 #define kNoDataLbl_FontSize 20
 #define kNoDataLbl_Height 18
 
-@interface HistoryViewController ()<UITableViewDelegate,UITableViewDataSource,PGDatePickerDelegate,PGDatePickManagerDelegate>
+@interface HistoryViewController ()<UITableViewDelegate,UITableViewDataSource,PGDatePickerDelegate,PGDatePickManagerDelegate,SortDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *timeLbl;
 @property (nonatomic,strong)UILabel *titleLbl;
+@property (nonatomic,strong)UIButton *sortBtn;
 @property (nonatomic,strong)UIImageView *bgImg;
 @property (nonatomic,strong)UIView *searchBgView;
 @property (nonatomic,strong)UIView *bottomView;
@@ -59,6 +61,8 @@
 @property (nonatomic,strong)PGDatePickManager *datePickManager;
 @property (nonatomic,assign)BOOL isSearch;
 @property (nonatomic,strong)NSMutableArray *searchResults;
+@property (nonatomic,strong)SortViewController *sort;
+@property (nonatomic,strong)UIPopoverPresentationController *popController;
 @end
 
 @implementation HistoryViewController
@@ -102,6 +106,15 @@
     self.titleLbl.textAlignment = NSTextAlignmentCenter;
     self.titleLbl.text = @"历史记录";
     [self.navView addSubview:self.titleLbl];
+    
+    self.sortBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.sortBtn setImage:[UIImage imageNamed:@"sort"] forState:UIControlStateNormal];
+    self.sortBtn.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    self.sortBtn.frame = CGRectMake(kWidth - kButton_Height - kBackButton_LeftMargin, backButtonTop, kButton_Height, kButton_Height);
+    self.sortBtn.layer.cornerRadius = kButton_Height / 2.0;
+    self.sortBtn.layer.masksToBounds = YES;
+    [self.sortBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
+    [self.navView addSubview:self.sortBtn];
 }
 
 - (void)setupUI {
@@ -496,16 +509,6 @@
             if (weakSelf.isFooterClick) {
                 if (weakSelf.isSearch) {
                     [weakSelf.searchResults addObjectsFromArray:rows];
-                    NSPredicate *titlePredicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.prescriptionTF.text];
-                    self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:titlePredicate]];
-                    if (self.startTimeStr.length > 0) {
-                        NSPredicate *startTimePredicate = [NSPredicate predicateWithFormat:@"SELF.startTime CONTAINS[c] %@",self.startTimeStr];
-                        self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:startTimePredicate]];
-                    }
-                    if (self.nameTF.text > 0) {
-                        NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"SELF.id = %d || self.userName CONTAINS[c] %@",[self.nameTF.text integerValue],self.nameTF.text];
-                        self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:namePredicate]];
-                    }
                 } else {
                     [weakSelf.sportlists addObjectsFromArray:rows];
                 }
@@ -524,16 +527,6 @@
                             weakSelf.searchResults = [tempArr mutableCopy];
                         } else {
                             [weakSelf.searchResults addObjectsFromArray:rows];
-                        }
-                        NSPredicate *titlePredicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.prescriptionTF.text];
-                        self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:titlePredicate]];
-                        if (self.startTimeStr.length > 0) {
-                            NSPredicate *startTimePredicate = [NSPredicate predicateWithFormat:@"SELF.startTime CONTAINS[c] %@",self.startTimeStr];
-                            self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:startTimePredicate]];
-                        }
-                        if (self.nameTF.text > 0) {
-                            NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"SELF.id = %d || self.userName CONTAINS[c] %@",[self.nameTF.text integerValue],self.nameTF.text];
-                            self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:namePredicate]];
                         }
                     } else {
                         if (weakSelf.sportlists.count > 0) {//之前有数据
@@ -626,6 +619,41 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)sort:(UIButton*)sender {
+    NSLog(@"排序");
+    self.sort = [[SortViewController alloc] init];
+    self.sort.preferredContentSize = CGSizeMake(245, 250);
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.sort.titleName = @"排序方式";
+    NSMutableArray *sortArr = [NSMutableArray array];
+    NSMutableDictionary *nameDict = [NSMutableDictionary dictionary];
+    [nameDict setValue:@"姓名" forKey:@"sortkey"];
+    [nameDict setValue:[NSNumber numberWithBool:NO] forKey:@"hasSelected"];
+    [sortArr addObject:nameDict];
+    
+    NSMutableDictionary *prescriptionDict = [NSMutableDictionary dictionary];
+    [prescriptionDict setValue:@"处方名称" forKey:@"sortkey"];
+    [prescriptionDict setValue:[NSNumber numberWithBool:NO] forKey:@"hasSelected"];
+    [sortArr addObject:prescriptionDict];
+    
+    NSMutableDictionary *startTimeDict = [NSMutableDictionary dictionary];
+    [startTimeDict setValue:@"开始时间" forKey:@"sortkey"];
+    [startTimeDict setValue:[NSNumber numberWithBool:NO] forKey:@"hasSelected"];
+    [sortArr addObject:startTimeDict];
+    
+    [defaults setValue:sortArr forKey:@"classSort"];
+    
+    self.sort.conditionsArr = sortArr;
+    self.sort.modalPresentationStyle = UIModalPresentationPopover;
+    self.popController = [self.sort popoverPresentationController];
+    self.popController.sourceView = self.sortBtn;
+    self.popController.sourceRect = self.sortBtn.bounds;
+    self.sort.delegate = self;
+    self.popController.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    
+    [self presentViewController:self.sort animated:YES completion:nil];
+}
+
 - (void)search:(UIButton*)sender {
     [self.nameTF resignFirstResponder];
     [self.prescriptionTF resignFirstResponder];
@@ -653,6 +681,23 @@
         [parameter setValue:self.prescriptionTF.text forKey:@"title"];
         [self getUsersSportList:parameter];
     }
+}
+
+#pragma makr - SortDelegate
+
+- (void)conditionChoose:(NSDictionary *)condition {
+    NSLog(@"sort condition is :%@",condition);
+    NSString *field = [condition valueForKey:@"sortField"];
+    BOOL isAsc = [[condition valueForKey:@"sortType"] boolValue];
+    if (self.isSearch) {
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:field ascending:isAsc];
+        self.searchResults = [[self.searchResults sortedArrayUsingDescriptors:@[sort]] mutableCopy];
+    } else {
+        NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:field ascending:isAsc];
+        self.sportlists = [[self.sportlists sortedArrayUsingDescriptors:@[sort]] mutableCopy];
+    }
+    [self.listView reloadData];
+    [self.sort dismissViewControllerAnimated:NO completion:nil];
 }
 
 /*

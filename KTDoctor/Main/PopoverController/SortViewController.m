@@ -77,8 +77,8 @@
     }
     
     self.listBgView = [[UIView alloc] init];
-    self.listBgView.layer.borderColor = [UIColor colorWithHexString:@"#10a9cc"].CGColor;
-    self.listBgView.layer.borderWidth = 1.0;
+    self.listBgView.layer.borderColor = [UIColor clearColor].CGColor;
+//    self.listBgView.layer.borderWidth = 1.0;
     [self.view addSubview:self.listBgView];
     
     self.listView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
