@@ -8,6 +8,7 @@
 
 #import "PatientManageViewController.h"
 #import "PatientInfoViewController.h"
+#import "KTDropDownMenus.h"
 #import "LMJDropdownMenu.h"
 #import "CustomTextField.h"
 #import "UserModel.h"
@@ -35,6 +36,7 @@
 #define kSearch_TF_Height 20
 #define kSearch_TF_Font 13.0
 #define kSearch_DropView_Font 12.0
+#define kDropdownHeight 30
 #define kBottomView_TopMargin 15
 #define kBottomView_BottomMargin 20
 #define kPrescription_DropList_TopMargin 13
@@ -53,7 +55,7 @@
 #define kSortView_Btn_Font 13.0
 #define kCell_Height 30
 
-@interface PatientManageViewController ()<UITableViewDelegate,UITableViewDataSource,LMJDropdownMenuDelegate,CustomTextFieldDelegate>
+@interface PatientManageViewController ()<UITableViewDelegate,UITableViewDataSource,LMJDropdownMenuDelegate,CustomTextFieldDelegate,XXTGDropdownMenuDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -61,12 +63,12 @@
 @property (nonatomic,strong)UIView *searchBgView;
 @property (nonatomic,strong)UIView *bottomView;
 @property (nonatomic,strong)UITextField *nameTF;
-@property (nonatomic,strong)LMJDropdownMenu *diseaseDropMenu;
-@property (nonatomic,strong)LMJDropdownMenu *riskLevelDropMenu;
+@property (nonatomic,strong)KTDropDownMenus *diseaseDropMenu;
+@property (nonatomic,strong)KTDropDownMenus *riskLevelDropMenu;
 @property (nonatomic,strong)UITextField *ageTF;
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)UIView *listBgView;
-@property (nonatomic,strong)LMJDropdownMenu *prescriptionMenu;
+@property (nonatomic,strong)KTDropDownMenus *prescriptionMenu;
 @property (nonatomic,strong)UILabel *patientTitleLbl;
 @property (nonatomic,strong)UIView *sortView;
 @property (nonatomic,strong)UIButton *idBtn;
@@ -109,6 +111,11 @@
     self.dieaseBtnAsc = NO;
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self hideAllMenus];
 }
 
 - (void)setNavBar {
@@ -162,15 +169,19 @@
 //    self.nameTF.delegate = self;
     [self.searchBgView addSubview:self.nameTF];
     
-    self.diseaseDropMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal + CGRectGetMaxX(self.nameTF.frame) + KSearchContent_Space * kXScal, self.searchBgView.frame.origin.y + TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
-    [self.diseaseDropMenu setMenuTitles:@[@"II型糖尿病"] rowHeight:kDropMenu_Item_Height attr:@{@"title":@"病症",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+    self.diseaseDropMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal + CGRectGetMaxX(self.nameTF.frame) + KSearchContent_Space * kXScal, self.searchBgView.frame.origin.y + TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
+    [self.diseaseDropMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.diseaseDropMenu.defualtStr = @"病症";
     self.diseaseDropMenu.delegate = self;
+    self.diseaseDropMenu.titles = @[@"II型糖尿病"];
     self.diseaseDropMenu.tag = 10;
     [self.bgImg addSubview:self.diseaseDropMenu];
     
-    self.riskLevelDropMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.diseaseDropMenu.frame) + KSearchContent_Space * kXScal, self.diseaseDropMenu.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
-    [self.riskLevelDropMenu setMenuTitles:@[@"高",@"中",@"低"] rowHeight:kDropMenu_Item_Height attr:@{@"title":@"风险等级",@"titleFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal],@"titleColor":[UIColor colorWithHexString:@"#999999"],@"itemColor":[UIColor colorWithHexString:@"#999999"],@"itemFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]}];
+    self.riskLevelDropMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.diseaseDropMenu.frame) + KSearchContent_Space * kXScal, self.diseaseDropMenu.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
+    [self.riskLevelDropMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.riskLevelDropMenu.defualtStr = @"请选择";
     self.riskLevelDropMenu.delegate = self;
+    self.riskLevelDropMenu.titles = @[@"高",@"中",@"低"];
     self.riskLevelDropMenu.tag = 20;
     [self.bgImg addSubview:self.riskLevelDropMenu];
     
@@ -200,8 +211,11 @@
     self.bottomView.layer.masksToBounds = YES;
     [self.bgImg addSubview:self.bottomView];
     
-    self.prescriptionMenu = [[LMJDropdownMenu alloc] initWithFrame:CGRectMake(self.bottomView.frame.origin.x + kPrescription_DropList_LeftMargin * kXScal, self.bottomView.frame.origin.y + kPrescription_DropList_TopMargin * kYScal, tfWidth, kPrescription_DropList_Height * kYScal)];
-    [self.prescriptionMenu setMenuTitles:@[@"待开具处方",@"已开具处方"] rowHeight:kDropMenu_Item_Height attr:@{@"title":@"待开具处方",@"titleFont":[UIFont systemFontOfSize:kSearch_TF_Font * kYScal],@"titleColor":[UIColor blackColor],@"itemColor":[UIColor blackColor],@"itemFont":[UIFont systemFontOfSize:kSearch_DropView_Font * kYScal]}];
+    self.prescriptionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.bottomView.frame.origin.x + kPrescription_DropList_LeftMargin * kXScal, self.bottomView.frame.origin.y + kPrescription_DropList_TopMargin * kYScal, tfWidth, kPrescription_DropList_Height * kYScal)];
+    [self.prescriptionMenu setDropdownHeight:kDropdownHeight * kYScal];
+    self.prescriptionMenu.defualtStr = @"待开具处方";
+    self.prescriptionMenu.delegate = self;
+    self.prescriptionMenu.titles = @[@"待开具处方",@"已开具处方"];
     self.prescriptionMenu.delegate = self;
     self.prescriptionMenu.tag = 30;
     [self.bgImg addSubview:self.prescriptionMenu];
@@ -445,18 +459,23 @@
     cell.checkBtn.tag = 1000 + indexPath.section;
     return cell;
 }
-#pragma mark - LMJDropdownMenu Delegate
 
-- (void)dropdownMenu:(LMJDropdownMenu *)menu selectedCellNumber:(NSInteger)number{
-    NSLog(@"你选择了：%ld",(long)number);
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    [self hideAllMenus];
+}
+
+#pragma mark - XXTGDropdownMenuDelegate Delegate
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
+{
     self.offset = 0;
     if (menu == self.prescriptionMenu) {
         if (self.datas.count > 0) {
             [self.datas removeAllObjects];
         }
-        if (number == 0) {
+        if ([string isEqualToString:@"待开具处方"]) {
             self.type = 1;
-        } else if (number == 1) {
+        } else if ([string isEqualToString:@"已开具处方"]) {
             self.type = 2;
         }
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
@@ -476,19 +495,8 @@
     }
 }
 
-- (void)dropdownMenuWillShow:(LMJDropdownMenu *)menu{
-    NSLog(@"--将要显示--");
-}
-
-- (void)dropdownMenuDidShow:(LMJDropdownMenu *)menu{
-    NSLog(@"--已经显示--");
-}
-
-- (void)dropdownMenuWillHidden:(LMJDropdownMenu *)menu{
-    NSLog(@"--将要隐藏--");
-}
-- (void)dropdownMenuDidHidden:(LMJDropdownMenu *)menu{
-    NSLog(@"--已经隐藏--");
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    [self hideMenuExcept:menu];
 }
 
 #pragma mark CustomTextFieldDelegate
@@ -514,6 +522,7 @@
 }
 
 - (void)search:(UIButton*)sender {
+    [self hideAllMenus];
     NSLog(@"搜索");
     if (self.datas.count > 0) {
         [self.datas removeAllObjects];
@@ -528,10 +537,6 @@
     [parameter setValue:@(self.offset) forKey:@"offset"];
     [parameter setValue:@10 forKey:@"rows"];
     [parameter setValue:self.nameTF.text forKey:@"keyword"];
-//    NSString *diseaseTitle = self.diseaseDropMenu.mainBtn.titleLabel.text;
-//    if (![diseaseTitle isEqualToString:@"病症"]) {
-//        [parameter setValue:diseaseTitle forKey:@"disease"];
-//    }
     NSInteger riskLevel = 0;
     NSString *riskLevelStr = self.riskLevelDropMenu.mainBtn.titleLabel.text;
     if ([riskLevelStr isEqualToString:@"低"]) {
@@ -586,6 +591,7 @@
 }
 
 - (void)checkInfo:(UIButton*)sender {
+    [self hideAllMenus];
     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
     UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
     NSDictionary *dict = user.organ;
@@ -599,6 +605,39 @@
     NSInteger userId = [[info valueForKey:@"id"] integerValue];
     [parameter setValue:@(userId) forKey:@"userId"];
     [self checkPatientInfo:parameter];
+}
+
+- (void)hideMenuExcept:(KTDropDownMenus *)menu {
+    if (menu == self.prescriptionMenu) {
+        for (UIView *view in self.bgImg.subviews) {
+            if ([view isKindOfClass:[KTDropDownMenus class]]) {
+                KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+                if (ktMenu != self.prescriptionMenu) {
+                    [ktMenu hiddenCityList];
+                }
+            }
+        }
+    } else {
+        for (UIView *view in self.bgImg.subviews) {
+            if ([view isKindOfClass:[KTDropDownMenus class]]) {
+                KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+                if (menu !=ktMenu) {
+                    [ktMenu hiddenCityList];
+                }
+            }
+        }
+        [self.prescriptionMenu hiddenCityList];
+    }
+}
+
+- (void)hideAllMenus {
+    for (UIView *view in self.bgImg.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
+        }
+    }
+    [self.prescriptionMenu hiddenCityList];
 }
 
 #pragma mark - netFunctions
