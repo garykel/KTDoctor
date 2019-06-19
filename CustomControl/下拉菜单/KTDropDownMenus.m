@@ -219,8 +219,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)setDefualtStr:(NSString *)defualtStr{
     
     [_mainBtn setTitle:defualtStr forState:UIControlStateNormal];
-//    [_mainBtn setTitleColor:RGB(200, 200, 200) forState:UIControlStateNormal];
-    [_mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [_mainBtn setTitleColor:RGB(200, 200, 200) forState:UIControlStateNormal];
+//    [_mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 }
 
 

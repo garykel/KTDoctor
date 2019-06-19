@@ -208,13 +208,7 @@ CGSize systemListviewSize;
     self.deviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kDeviceMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
     [self.deviceMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.deviceMenu.defualtStr = @"有氧设备";
-    NSMutableArray *devicesArr = [NSMutableArray array];
-    if (self.deviceTypeArr.count > 0) {
-        for (NSDictionary *dict in self.deviceTypeArr) {
-            [devicesArr addObject:[dict valueForKey:@"name"]];
-        }
-    }
-    self.deviceMenu.titles = [devicesArr copy];
+    self.deviceMenu.titles = @[@"有氧设备",@"力量设备"];
     self.deviceMenu.delegate = self;
     self.deviceMenu.tag = 30;
     [self.searchBgView addSubview:self.deviceMenu];
@@ -222,7 +216,7 @@ CGSize systemListviewSize;
     self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
     [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.trainingPositionMenu.defualtStr = @"训练部位";
-//    self.trainingPositionMenu.titles = @[@"胸部"];
+    self.trainingPositionMenu.titles = @[@"胸部"];
     self.trainingPositionMenu.delegate = self;
     self.trainingPositionMenu.tag = 40;
     [self.searchBgView addSubview:self.trainingPositionMenu];
@@ -887,10 +881,10 @@ CGSize systemListviewSize;
                     }
                 }
             }
-            [self.trainingDeviceMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
-            [self.trainingDeviceMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            [self.trainingPositionMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
-            [self.trainingPositionMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            [self.trainingDeviceMenu.mainBtn setTitle:@"训练设备" forState:UIControlStateNormal];
+            [self.trainingDeviceMenu.mainBtn setTitleColor:RGB(200, 200, 200) forState:UIControlStateNormal];
+            [self.trainingPositionMenu.mainBtn setTitle:@"训练部位" forState:UIControlStateNormal];
+            [self.trainingPositionMenu.mainBtn setTitleColor:RGB(200, 200, 200) forState:UIControlStateNormal];
             self.trainingPositionMenu.titles = [positions copy];
             [self.trainingPositionMenu.mTableView reloadData];
         }
@@ -904,9 +898,6 @@ CGSize systemListviewSize;
             [menu hiddenCityList];
             [STTextHudTool showText:@"请选择训练部位"];
         }
-    } else if(menu == self.trainingPositionMenu) {
-        [menu hiddenCityList];
-        [STTextHudTool showText:@"请选择训练类型"];
     }
 }
 
