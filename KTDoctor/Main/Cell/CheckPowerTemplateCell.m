@@ -304,6 +304,8 @@
             for (NSInteger i = 20; i < 60; i++) {
                 [items addObject:[NSString stringWithFormat:@"%d",i]];
             }
+            [self.restRightMenu.mainBtn setTitle:@"20" forState:UIControlStateNormal];
+            [self.restRightMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             self.restRightMenu.titles = [items copy];
             [self.restRightMenu.mTableView reloadData];
         } else if (num > 0) {
