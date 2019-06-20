@@ -195,6 +195,7 @@
     [self configFooterview];
     self.listView.tableHeaderView = self.topView;
     self.listView.tableFooterView = self.bottomView;
+    self.listView.tableFooterView.hidden = YES;
     [self computeAvgDifficulty];
     [self computeTotalTrainingTime];
 }
@@ -236,7 +237,7 @@
     self.dieaseMenu.center = CGPointMake(CGRectGetMaxX(self.dieaseLbl.frame) + kDieaseLbl_RightMargin * kXScal + kDieaseTF_Width * kXScal/2.0, self.dieaseLbl.center.y);
     [self.dieaseMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.dieaseMenu.defualtStr = @"II型糖尿病";
-    self.dieaseMenu.delegate = self;
+    [self.dieaseMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.dieaseMenu.titles = @[@"II型糖尿病"];
     self.dieaseMenu.delegate = self;
     [self.topBgView addSubview:self.dieaseMenu];
@@ -252,7 +253,7 @@
     self.riskLevelMenu.defualtStr = @"请选择";
     self.riskLevelMenu.delegate = self;
     self.riskLevelMenu.titles = @[@"高",@"中",@"低"];
-    self.riskLevelMenu.delegate = self;
+    [self.riskLevelMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.riskLevelMenu.backgroundColor = [UIColor whiteColor];
     NSInteger riskLevel = [[self.templateInfo valueForKey:@"riskLevel"] integerValue];
     if (riskLevel == 3) {
@@ -293,6 +294,7 @@
     self.trainingPositionMenu.backgroundColor = [UIColor whiteColor];
     self.trainingPositionMenu.tag = 10;
     [self.trainingPositionMenu.mainBtn setTitle:@"心肺" forState:UIControlStateNormal];
+    [self.trainingPositionMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.topBgView addSubview:self.trainingPositionMenu];
     
     CGFloat trainingDeviceLbl_LeftMargin = self.topBgView.frame.size.width - kRiskLevelLbl_Width * kXScal - kDieaseLbl_RightMargin * kXScal -  kTrainingDeviceMenu_Width * kXScal - kTrainingDeviceLbl_RightMargin * kXScal;
@@ -334,6 +336,7 @@
     self.traingDeviceMenu.backgroundColor = [UIColor whiteColor];
     self.traingDeviceMenu.delegate = self;
     self.traingDeviceMenu.tag = 10;
+    [self.traingDeviceMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.topBgView addSubview:self.traingDeviceMenu];
     
     self.treatmentLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.dieaseLbl.frame.origin.x, CGRectGetMaxY(self.deviceTypeLbl.frame) + kDieaseLbl_BottomMargin * kYScal, kDieaseLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
@@ -352,6 +355,7 @@
     self.treatmentMenu.delegate = self;
     NSInteger treatmentPeriod = [[self.templateInfo valueForKey:@"treatmentPeriod"] integerValue];
     [self.treatmentMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",treatmentPeriod] forState:UIControlStateNormal];
+    [self.treatmentMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.treatmentMenu.tag = 40;
     [self.topBgView addSubview:self.treatmentMenu];
     
@@ -380,7 +384,7 @@
     self.trainingFrequencyMenu.titles = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7"];
     self.trainingFrequencyMenu.delegate = self;
     self.trainingFrequencyMenu.backgroundColor = [UIColor whiteColor];
-    self.trainingFrequencyMenu.delegate = self;
+    [self.trainingFrequencyMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     NSInteger daysPerWeek = [[self.templateInfo valueForKey:@"daysPerWeek"] integerValue];
     [self.trainingFrequencyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",daysPerWeek] forState:UIControlStateNormal];
     self.trainingFrequencyMenu.tag = 50;
@@ -399,7 +403,7 @@
     self.sportTimePointMenu.titles = @[@"任意",@"三餐前半小时",@"三餐后一小时"];
     self.sportTimePointMenu.delegate = self;
     self.sportTimePointMenu.backgroundColor = [UIColor whiteColor];
-    self.sportTimePointMenu.delegate = self;
+    [self.sportTimePointMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     NSInteger timing = [[self.templateInfo valueForKey:@"timing"] integerValue];
     if (timing == 3) {
         [self.sportTimePointMenu.mainBtn setTitle:@"任意" forState:UIControlStateNormal];
@@ -655,6 +659,11 @@
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
     if (menu == self.traingDeviceMenu) {
+        if (self.groups.count > 0) {
+            [self.groups removeAllObjects];
+        }
+        [self.listView reloadData];
+        self.listView.tableFooterView.hidden = YES;
         if (self.equipIds.count > 0) {
             for (NSDictionary *dict in self.equipIds) {
                 NSString *name = [dict valueForKey:@"name"];
