@@ -22,6 +22,21 @@
  *  @param delay 显示时间
  */
 + (void)showErrorText:(NSString *)text withSecond:(NSInteger)delay;
+
+/**
+ *  一直显示纯文本提示
+ *
+ *  @param text 问题
+ */
+
+- (void)showWaitText:(NSString*)text;
+
+/**
+ *  隐藏文本提示
+ *
+ *
+ */
+- (void)dismissWaitText;
 /**
  *  纯文本提示
  *

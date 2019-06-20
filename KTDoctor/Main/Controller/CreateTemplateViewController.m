@@ -486,6 +486,10 @@
             cell.selectionStyle          = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor clearColor];
         }
+        cell.difficultyImg.userInteractionEnabled = YES;
+        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showTips:)];
+        [cell.difficultyImg addGestureRecognizer:gesture];
+        
         AerobicriptionModel *dict = [self.groups objectAtIndex:indexPath.section];
         cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
         NSArray *hrRangeArr = [[dict valueForKey:@"hrRange"] componentsSeparatedByString:@"-"];
@@ -590,6 +594,9 @@
             cell.selectionStyle          = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor clearColor];
         }
+        cell.difficultyImg.userInteractionEnabled = YES;
+        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showTips:)];
+        [cell.difficultyImg addGestureRecognizer:gesture];
         AerobicriptionModel *dict = [self.groups objectAtIndex:indexPath.section];
         cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
         NSArray *hrRangeArr = [[dict valueForKey:@"hrRange"] componentsSeparatedByString:@"-"];
@@ -688,6 +695,10 @@
         [cell.removeBtn addTarget:self action:@selector(removeGroup:) forControlEvents:UIControlEventTouchUpInside];
         return cell;
     }
+}
+
+- (void)showTips:(UITapGestureRecognizer*)gesture {
+    [STTextHudTool showText:@"强度百分比将在厨房中用来计算患者的运动目标心率。计算公式如下：目标心率=（最大心率-静息心率）x 强度百分比+静息心率。"];
 }
 
 - (NSString *)getTimeString:(NSInteger)seconds {

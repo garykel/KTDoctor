@@ -13,6 +13,10 @@
 //超长时间
 #define timeOut   15
 @implementation STTextHudTool
+
+- (void)showWaitText:(NSString *)text {
+    
+}
 + (void)showText:(NSString *)text{
     [self showText:text withSecond:defaultDely];
 }
