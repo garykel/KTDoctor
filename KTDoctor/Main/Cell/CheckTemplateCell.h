@@ -15,7 +15,7 @@
 @property (nonatomic,strong)UIView *infoBgView;//白色内容视图
 @property (nonatomic,strong)UILabel *groupNameLbl;
 @property (nonatomic,strong)UILabel *difficultyPercentLbl;
-@property (nonatomic,strong)UIImageView *difficultyImg;
+@property (nonatomic,strong)UIButton *difficultyImg;
 @property (nonatomic,strong)KTDropDownMenus *difficultyLeftMenu;
 @property (nonatomic,strong)UILabel *difficultyTildeLbl;
 @property (nonatomic,strong)KTDropDownMenus *difficultyRightMenu;

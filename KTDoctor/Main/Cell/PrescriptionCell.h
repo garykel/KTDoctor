@@ -11,7 +11,7 @@
 @interface PrescriptionCell : UITableViewCell
 @property (nonatomic,strong)UILabel *groupNameLbl;//第几组
 @property (nonatomic,strong)UILabel *difficultyPercentLbl;//强度百分比
-@property (nonatomic,strong)UIImageView *difficultyImg;
+@property (nonatomic,strong)UIButton *difficultyImg;
 @property (nonatomic,strong)UITextField *difficultyLeftTF;//强度百分比左边界
 @property (nonatomic,strong)UILabel *difficultyTildeLbl;//～
 @property (nonatomic,strong)UITextField *difficultyRightTF;//强度百分比右边界

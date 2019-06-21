@@ -23,7 +23,7 @@
 #define kDifficultyPercentLbl_Width 64
 #define kDifficultyPercentLbl_Height 13
 #define kDifficultyPercentLbl_Fontsize 13.0
-#define kDifficultyPercentImg_Widht 13
+#define kDifficultyPercentImg_Widht 30
 #define kDifficultyPercentImg_Right 15
 #define kMenu_Width 68
 #define kMenu_Height 20
@@ -94,10 +94,11 @@
     self.difficultyPercentLbl.text = @"强度百分比";
     [self.infoBgView addSubview:self.difficultyPercentLbl];
     
-    self.difficultyImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"difficulty"]];
-    self.difficultyImg.frame = CGRectMake(kDifficultyPercentLbl_RightMargin * kXScal, 0, kDifficultyPercentImg_Widht * kYScal, kDifficultyPercentImg_Widht * kYScal);
-    self.difficultyImg.center = CGPointMake(CGRectGetMaxX(self.difficultyPercentLbl.frame) + kDifficultyPercentLbl_RightMargin * kXScal + kDifficultyPercentImg_Widht * kYScal/2.0, self.difficultyPercentLbl.center.y);
-    self.difficultyImg.layer.cornerRadius = kDifficultyPercentImg_Widht * kYScal/2.0;
+    self.difficultyImg = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.difficultyImg setImage:[UIImage imageNamed:@"difficulty"] forState:UIControlStateNormal];
+    self.difficultyImg.frame = CGRectMake(kDifficultyPercentLbl_RightMargin * kXScal, 0, kDifficultyPercentImg_Widht * kXScal, kDifficultyPercentImg_Widht * kXScal);
+    self.difficultyImg.center = CGPointMake(CGRectGetMaxX(self.difficultyPercentLbl.frame) + kDifficultyPercentLbl_RightMargin * kXScal + kDifficultyPercentImg_Widht * kXScal/2.0, self.difficultyPercentLbl.center.y);
+    self.difficultyImg.layer.cornerRadius = kDifficultyPercentImg_Widht * kXScal/2.0;
     self.difficultyImg.layer.masksToBounds = YES;
     [self.infoBgView addSubview:self.difficultyImg];
     

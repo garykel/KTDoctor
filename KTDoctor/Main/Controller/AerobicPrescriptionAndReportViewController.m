@@ -381,7 +381,7 @@
 }
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *reuseCellStr = [NSString stringWithFormat:@"prescriptionCellId%d%d",indexPath.section,indexPath.row];
+    NSString *reuseCellStr = [NSString stringWithFormat:@"AerobicReportCellId%d%d",indexPath.section,indexPath.row];
     AerobicReportCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellStr];
     if (cell == nil) {
         cell = [[AerobicReportCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellStr];

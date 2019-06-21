@@ -59,6 +59,10 @@
 #define kSaveBtn_FontSize 15.0
 #define kFooterView_Height 155+98
 #define kCell_Height 118
+#define kTipsLbl_Height 44
+#define kTipsLbl_Width kWidth - 2 * 160 * kXScal
+#define kTipsLbl_FontSize 15.0
+#define kTipsView_Height 48
 
 @interface CreateTemplateViewController ()<UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource,XXTGDropdownMenuDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -110,6 +114,8 @@
 @property (nonatomic,assign)NSInteger typeid;
 @property (nonatomic,assign)BOOL cellHasNullData;
 @property (nonatomic,assign)BOOL hasClickAddBtn;
+@property (nonatomic,strong)UIView *tipsView;
+@property (nonatomic,strong)UILabel *tipsLbl;
 @end
 
 @implementation CreateTemplateViewController
@@ -135,6 +141,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.cellHasNullData = YES;
+    self.tipsView.hidden = YES;
 }
 
 - (void)dealloc {
@@ -193,6 +200,26 @@
     self.listView.tableFooterView = self.bottomView;
     [self computeTotalTrainingTime];
     [self computeAvgDifficulty];
+    
+    self.tipsLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 30, kTipsLbl_Height * kYScal)];
+    self.tipsLbl.textColor = [UIColor whiteColor];
+    self.tipsLbl.backgroundColor = [UIColor clearColor];
+    self.tipsLbl.text = @"强度百分比将在处方中用来计算患者的运动目标心率。计算公式如下：目标心率=（最大心率-安静心率）x 强度百分比+安静心率。";
+    self.tipsLbl.numberOfLines = 2;
+    self.tipsLbl.font = [UIFont systemFontOfSize:kTipsLbl_FontSize * kYScal];
+    CGSize size = [self.tipsLbl sizeThatFits:CGSizeMake(kTipsLbl_Width, kTipsLbl_Height * kYScal)];
+    self.tipsLbl.frame = CGRectMake(0, 0, size.width, size.height);
+    
+    self.tipsView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, size.width + 30, size.height + 20)];
+    self.tipsView.center = CGPointMake(kWidth/2.0, kHeight/2.0);
+    self.tipsView.backgroundColor = [UIColor blackColor];
+    self.tipsView.layer.cornerRadius = 8;
+    self.tipsView.layer.masksToBounds = YES;
+    self.tipsView.hidden = YES;
+    [self.view addSubview:self.tipsView];
+    
+    self.tipsLbl.center = CGPointMake(self.tipsView.frame.size.width/2.0, self.tipsView.frame.size.height/2.0);
+    [self.tipsView addSubview:self.tipsLbl];
 }
 
 - (void)configHeaderview {
@@ -486,9 +513,7 @@
             cell.selectionStyle          = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor clearColor];
         }
-        cell.difficultyImg.userInteractionEnabled = YES;
-        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showTips:)];
-        [cell.difficultyImg addGestureRecognizer:gesture];
+        [cell.difficultyImg addTarget:self action:@selector(showTips:) forControlEvents:UIControlEventTouchUpInside];
         
         AerobicriptionModel *dict = [self.groups objectAtIndex:indexPath.section];
         cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
@@ -594,9 +619,7 @@
             cell.selectionStyle          = UITableViewCellSelectionStyleNone;
             cell.backgroundColor = [UIColor clearColor];
         }
-        cell.difficultyImg.userInteractionEnabled = YES;
-        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showTips:)];
-        [cell.difficultyImg addGestureRecognizer:gesture];
+        [cell.difficultyImg addTarget:self action:@selector(showTips:) forControlEvents:UIControlEventTouchUpInside];
         AerobicriptionModel *dict = [self.groups objectAtIndex:indexPath.section];
         cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
         NSArray *hrRangeArr = [[dict valueForKey:@"hrRange"] componentsSeparatedByString:@"-"];
@@ -697,8 +720,20 @@
     }
 }
 
-- (void)showTips:(UITapGestureRecognizer*)gesture {
-    [STTextHudTool showText:@"强度百分比将在厨房中用来计算患者的运动目标心率。计算公式如下：目标心率=（最大心率-静息心率）x 强度百分比+静息心率。"];
+- (void)showTips:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+    if (sender.selected) {
+        sender.selected = NO;
+        if (self.tipsView.hidden) {
+            self.tipsView.hidden = NO;
+        } else {
+            self.tipsView.hidden = YES;
+        }
+    } else {
+        sender.selected = YES;
+        self.tipsView.hidden = YES;
+    }
 }
 
 - (NSString *)getTimeString:(NSInteger)seconds {

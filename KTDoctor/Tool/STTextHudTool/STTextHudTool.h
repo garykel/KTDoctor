@@ -29,14 +29,8 @@
  *  @param text 问题
  */
 
-- (void)showWaitText:(NSString*)text;
++ (void)showLongWaitText:(NSString*)text;
 
-/**
- *  隐藏文本提示
- *
- *
- */
-- (void)dismissWaitText;
 /**
  *  纯文本提示
  *

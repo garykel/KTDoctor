@@ -162,12 +162,17 @@
     }
 }
 - (void)hideHud{
-    if (self.delay == 0) {
-        self.delay = defaeltDelay;
+//    if (self.delay == 0) {
+//        self.delay = defaeltDelay;
+//    }
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self hidStHud];
+//    });
+    if (self.delay > 0) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self hidStHud];
+        });
     }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self hidStHud];
-    });
 }
 - (void)hidStHud{
     if (_waitView) {

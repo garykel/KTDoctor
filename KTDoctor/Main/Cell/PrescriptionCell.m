@@ -19,7 +19,7 @@
 #define kLongLbl_BottomMargin 26
 #define kLongLbl_Width 70
 #define kItemLbl_FontSize 13.0
-#define kPercentImg_Width 13
+#define kPercentImg_Width 30
 #define kPercentImg_RightMargin 15
 #define kPercentTF_Width 61
 #define kPercentTF_Height 20
@@ -65,7 +65,8 @@ extern CGSize prescriptionListviewSize;
     self.difficultyPercentLbl.font = [UIFont systemFontOfSize:kItemLbl_FontSize * kYScal];
     [self.contentView addSubview:self.difficultyPercentLbl];
     
-    self.difficultyImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"difficulty"]];
+    self.difficultyImg = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.difficultyImg setImage:[UIImage imageNamed:@"difficulty"] forState:UIControlStateNormal];
     self.difficultyImg.layer.cornerRadius = kPercentImg_Width * kXScal/2.0;
     self.difficultyImg.layer.masksToBounds = YES;
     self.difficultyImg.frame = CGRectMake(0, 0, kPercentImg_Width * kXScal, kPercentImg_Width * kXScal);

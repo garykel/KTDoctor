@@ -9,7 +9,6 @@
 #import "PrescriptionDetailViewController.h"
 #import "PrescriptionCell.h"
 #import "UserModel.h"
-#import "AerobicGroupCell.h"
 
 #define kBackButton_LeftMargin 15
 #define kButton_Height 30
@@ -62,6 +61,11 @@
 #define kWeekMenu_RightMargin 15
 #define kWeekLbl_Width 15
 
+#define kTipsLbl_Height 44
+#define kTipsLbl_Width kWidth - 2 * 150 * kXScal
+#define kTipsLbl_FontSize 15.0
+#define kTipsView_Height 48
+
 CGSize prescriptionListviewSize;
 
 @interface PrescriptionDetailViewController ()<UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource>
@@ -108,6 +112,8 @@ CGSize prescriptionListviewSize;
 @property (nonatomic,strong)UILabel *doctorAdviceValLbl;
 @property (nonatomic,strong)NSMutableArray *groups;
 @property (nonatomic,assign)NSInteger type2;
+@property (nonatomic,strong)UIView *tipsView;
+@property (nonatomic,strong)UILabel *tipsLbl;
 @end
 
 @implementation PrescriptionDetailViewController
@@ -119,6 +125,11 @@ CGSize prescriptionListviewSize;
     self.type2 = [[self.prescriptionDict valueForKey:@"type2"] integerValue];
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.tipsView.hidden = YES;
 }
 
 - (void)setNavBar {
@@ -436,6 +447,26 @@ CGSize prescriptionListviewSize;
     self.doctorAdviceValLbl.font = [UIFont systemFontOfSize:kDoctorLbl_FontSize * kYScal];
     self.doctorAdviceValLbl.text = [self.prescriptionDict valueForKey:@"doctorAdvice"];
     [self.doctorAdviceView addSubview:self.doctorAdviceValLbl];
+    
+    self.tipsLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 30, kTipsLbl_Height * kYScal)];
+    self.tipsLbl.textColor = [UIColor whiteColor];
+    self.tipsLbl.backgroundColor = [UIColor clearColor];
+    self.tipsLbl.text = @"强度百分比将在处方中用来计算患者的运动目标心率。计算公式如下：目标心率=（最大心率-安静心率）x 强度百分比+安静心率。";
+    self.tipsLbl.numberOfLines = 2;
+    self.tipsLbl.font = [UIFont systemFontOfSize:kTipsLbl_FontSize * kYScal];
+    CGSize size = [self.tipsLbl sizeThatFits:CGSizeMake(kTipsLbl_Width, kTipsLbl_Height * kYScal)];
+    self.tipsLbl.frame = CGRectMake(0, 0, size.width, size.height);
+    
+    self.tipsView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, size.width + 30, size.height + 20)];
+    self.tipsView.center = CGPointMake(kWidth/2.0, kHeight/2.0);
+    self.tipsView.backgroundColor = [UIColor blackColor];
+    self.tipsView.layer.cornerRadius = 8;
+    self.tipsView.layer.masksToBounds = YES;
+    self.tipsView.hidden = YES;
+    [self.scrollview addSubview:self.tipsView];
+    
+    self.tipsLbl.center = CGPointMake(self.tipsView.frame.size.width/2.0, self.tipsView.frame.size.height/2.0);
+    [self.tipsView addSubview:self.tipsLbl];
 }
 
 //计算训练总时长
@@ -501,13 +532,14 @@ CGSize prescriptionListviewSize;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *reuseCellIdStr = [NSString stringWithFormat:@"AerobicGroupCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
+    NSString *reuseCellIdStr = [NSString stringWithFormat:@"PrescriptionCell%ld%ld",(long)indexPath.section,(long)indexPath.row];
     PrescriptionCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellIdStr];
     if (cell == nil) {
         cell = [[PrescriptionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellIdStr];
         cell.selectionStyle          = UITableViewCellSelectionStyleNone;
         cell.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     }
+    [cell.difficultyImg addTarget:self action:@selector(showTips:) forControlEvents:UIControlEventTouchUpInside];
     cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
     NSDictionary *dict = [self.groups objectAtIndex:indexPath.section];
     NSLog(@"dict is :%@",dict);
@@ -539,6 +571,22 @@ CGSize prescriptionListviewSize;
         cell.difficultyTF.text = [NSString stringWithFormat:@"%d w",[[dict valueForKey:@"difficulty"] integerValue]];
     }
     return cell;
+}
+
+- (void)showTips:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+    if (sender.selected) {
+        sender.selected = NO;
+        if (self.tipsView.hidden) {
+            self.tipsView.hidden = NO;
+        } else {
+            self.tipsView.hidden = YES;
+        }
+    } else {
+        sender.selected = YES;
+        self.tipsView.hidden = YES;
+    }
 }
 
 #pragma mark - button click events

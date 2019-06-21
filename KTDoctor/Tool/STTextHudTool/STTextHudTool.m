@@ -14,9 +14,12 @@
 #define timeOut   15
 @implementation STTextHudTool
 
-- (void)showWaitText:(NSString *)text {
-    
++ (void)showLongWaitText:(NSString *)text {
+    STTextHud * hud = [[STTextHud alloc]init];
+    hud.hudStyle = STHudText;
+    [hud showText:text withSecond:0];
 }
+
 + (void)showText:(NSString *)text{
     [self showText:text withSecond:defaultDely];
 }

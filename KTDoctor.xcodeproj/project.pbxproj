@@ -44,7 +44,6 @@
 		5B02F7BA224B75D700BE8269 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B9224B75D700BE8269 /* GCDAsyncUdpSocket.m */; };
 		5B02F7BD224B7F4F00BE8269 /* SportDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */; };
 		5B0AC3112254A1570001C48F /* DS-DIGIB.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */; };
-		5B0CE8352276A99200B6D8B9 /* AerobicGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B0CE8342276A99200B6D8B9 /* AerobicGroupCell.m */; };
 		5B110FE422979C3D00471B8D /* CreatePowerTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B110FE322979C3D00471B8D /* CreatePowerTemplateViewController.m */; };
 		5B126726225B3EFD00894CCF /* HistoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B126725225B3EFD00894CCF /* HistoryCell.m */; };
 		5B132536226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B132535226F088E00EBA0A1 /* CreateAerobicPrescriptionViewController.m */; };
@@ -281,8 +280,6 @@
 		5B02F7BB224B7F4F00BE8269 /* SportDataModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SportDataModel.h; sourceTree = "<group>"; };
 		5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SportDataModel.m; sourceTree = "<group>"; };
 		5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DS-DIGIB.TTF"; sourceTree = "<group>"; };
-		5B0CE8332276A99200B6D8B9 /* AerobicGroupCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AerobicGroupCell.h; sourceTree = "<group>"; };
-		5B0CE8342276A99200B6D8B9 /* AerobicGroupCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicGroupCell.m; sourceTree = "<group>"; };
 		5B110FE222979C3D00471B8D /* CreatePowerTemplateViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CreatePowerTemplateViewController.h; sourceTree = "<group>"; };
 		5B110FE322979C3D00471B8D /* CreatePowerTemplateViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CreatePowerTemplateViewController.m; sourceTree = "<group>"; };
 		5B126724225B3EFD00894CCF /* HistoryCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HistoryCell.h; sourceTree = "<group>"; };
@@ -695,8 +692,6 @@
 				5B3FD008227013CF007DC605 /* AerobicReportCell.m */,
 				5B5E2E102270551F00DB7534 /* ReportListCell.h */,
 				5B5E2E112270551F00DB7534 /* ReportListCell.m */,
-				5B0CE8332276A99200B6D8B9 /* AerobicGroupCell.h */,
-				5B0CE8342276A99200B6D8B9 /* AerobicGroupCell.m */,
 				0962F89C227D8C0B00611E27 /* CustomTemplateCell.h */,
 				0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */,
 				0962F8A2227DDDA300611E27 /* SystemTemplateCell.h */,
@@ -1622,7 +1617,6 @@
 				5BD964072239052D006FD9CD /* NSString+mobile.m in Sources */,
 				5B1A74A5229CE6BF00DD90B6 /* CheckPowerTemplateViewController.m in Sources */,
 				5BF8D91C228026E9002199E4 /* UIImage+ZJImage.m in Sources */,
-				5B0CE8352276A99200B6D8B9 /* AerobicGroupCell.m in Sources */,
 				5BECDC0E223665390025D6F2 /* UserModel.m in Sources */,
 				5B3FD009227013CF007DC605 /* AerobicReportCell.m in Sources */,
 				5B02F7802241DC6A00BE8269 /* UIView+Extension.m in Sources */,
