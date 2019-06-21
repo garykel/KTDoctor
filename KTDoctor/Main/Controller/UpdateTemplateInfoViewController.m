@@ -7,6 +7,7 @@
 //
 
 #import "UpdateTemplateInfoViewController.h"
+#import "AddTemplateViewController.h"
 #import "CreatePrescriptionCell.h"
 #import "PowerTemplateCell.h"
 #import "AerobicriptionModel.h"
@@ -144,7 +145,6 @@
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
-    [self.navigationController popViewControllerAnimated:NO];
     self.tipsView.hidden = YES;
 }
 
@@ -906,7 +906,12 @@
         if (code == 0) {
             [STTextHudTool showText:@"修改成功"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCustomTemplatesNotification" object:nil];
-            [weakSelf.navigationController popViewControllerAnimated:NO];
+            for (UIViewController *view in weakSelf.navigationController.viewControllers) {
+                if ([view isKindOfClass:[AddTemplateViewController class]]) {
+                    [weakSelf.navigationController popToViewController:view animated:NO];
+                    break;
+                }
+            }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];

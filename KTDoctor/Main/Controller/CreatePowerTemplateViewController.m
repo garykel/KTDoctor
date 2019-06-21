@@ -7,6 +7,7 @@
 //
 
 #import "CreatePowerTemplateViewController.h"
+#import "AddTemplateViewController.h"
 #import "KTDropDownMenus.h"
 #import "StrengthTemplateCell.h"
 #import "AerobicriptionModel.h"
@@ -734,7 +735,11 @@
         if (code == 0) {
             [STTextHudTool showText:@"保存成功"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCustomTemplatesNotification" object:nil];
-            [weakSelf.navigationController popViewControllerAnimated:NO];
+            for (UIViewController *view in weakSelf.navigationController.viewControllers) {
+                if ([view isKindOfClass:[AddTemplateViewController class]]) {
+                    [weakSelf.navigationController popToViewController:view animated:NO];
+                }
+            }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];

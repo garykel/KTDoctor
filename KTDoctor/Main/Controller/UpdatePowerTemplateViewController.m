@@ -7,6 +7,7 @@
 //
 
 #import "UpdatePowerTemplateViewController.h"
+#import "AddTemplateViewController.h"
 #import "StrengthTemplateCell.h"
 #import "AerobicriptionModel.h"
 #import "UserModel.h"
@@ -105,6 +106,8 @@
 @property (nonatomic,strong)NSMutableArray *groups;
 @property (nonatomic,strong)NSMutableArray *equipIds;
 @property (nonatomic,assign)NSInteger typeid;
+@property (nonatomic,assign)BOOL cellHasNullData;
+@property (nonatomic,assign)BOOL hasClickAddBtn;
 @end
 
 @implementation UpdatePowerTemplateViewController
@@ -112,6 +115,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.cellHasNullData = YES;
+    self.hasClickAddBtn = NO;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray array];
     self.equipIds = [NSMutableArray array];
@@ -126,8 +131,14 @@
     self.groups = [templates mutableCopy];
     self.type2 = [[self.templateInfo valueForKey:@"type2"] integerValue];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeWeight) name:@"ComputeWeightNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCellHasNullData:) name:@"PrescriptionCellDataIsOKNotification" object:nil];
     [self setNavBar];
     [self setupUI];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.cellHasNullData = YES;
 }
 
 - (void)dealloc {
@@ -625,6 +636,12 @@
     }
 }
 
+- (void)checkCellHasNullData:(NSNotification*)noti {
+    NSDictionary *userInfo = [noti valueForKey:@"userInfo"];
+    BOOL hasNullData = [[userInfo valueForKey:@"hasNullData"] boolValue];
+    self.cellHasNullData = hasNullData;
+}
+
 #pragma mark - network functions
 
 - (void)getDeviceTypeInfo:(NSMutableDictionary *)parameter {
@@ -662,7 +679,11 @@
         if (code == 0) {
             [STTextHudTool showText:@"修改成功"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCustomTemplatesNotification" object:nil];
-            [weakSelf.navigationController popViewControllerAnimated:NO];
+            for (UIViewController *view in weakSelf.navigationController.viewControllers) {
+                if ([view isKindOfClass:[AddTemplateViewController class]]) {
+                    [weakSelf.navigationController popToViewController:view animated:NO];
+                }
+            }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
@@ -681,64 +702,86 @@
 }
 
 - (void)saveOrCreate:(UIButton*)sender {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        NSString *orgCode = [self.templateInfo valueForKey:@"orgCode"];
-        [parameter setValue:orgCode forKey:@"orgCode"];
-        NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
-        [parameter setValue:@(self.typeid) forKey:@"type"]; //类型
-        [parameter setValue:@(id) forKey:@"id"];
-        //    [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
-        [parameter setValue:self.templateNameTF.text forKey:@"title"];
-        NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;
-        [parameter setValue:disease forKey:@"disease"];
-        [parameter setValue:self.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
-        [parameter setValue:self.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
-        NSString *timingStr = self.sportTimePointMenu.mainBtn.titleLabel.text;
-        NSInteger timing = 0;
-        if ([timingStr isEqualToString:@"任意"]) {
-            timing = 3;
-        } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
-            timing = 1;
-        } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
-            timing = 2;
+    __weak typeof (self)weakSelf = self;
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+    if (weakSelf.type2 == 1) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPrescriptionCellHasNullDataNotification" object:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPowerCellHasNullDataNotification" object:nil];
+    }
+    if (weakSelf.templateNameTF.text.length == 0) {
+        [STTextHudTool showText:@"请填写模板名称"];
+    } else if([weakSelf.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+        [STTextHudTool showText:@"请选择风险等级"];
+    } else if([weakSelf.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+        [STTextHudTool showText:@"请选择训练部位"];
+    }else if([weakSelf.traingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.traingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+        [STTextHudTool showText:@"请选择训练设备"];
+    }else if(weakSelf.trainingFrequencyMenu.mainBtn.titleLabel.text.length == 0 ||[self.trainingFrequencyMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
+        [STTextHudTool showText:@"请选择每周训练几天"];
+    } else {
+        if (!self.cellHasNullData) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+                NSString *orgCode = [self.templateInfo valueForKey:@"orgCode"];
+                [parameter setValue:orgCode forKey:@"orgCode"];
+                NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
+                [parameter setValue:@(self.typeid) forKey:@"type"]; //类型
+                [parameter setValue:@(id) forKey:@"id"];
+                //    [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
+                [parameter setValue:self.templateNameTF.text forKey:@"title"];
+                NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;
+                [parameter setValue:disease forKey:@"disease"];
+                [parameter setValue:self.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
+                [parameter setValue:self.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
+                NSString *timingStr = self.sportTimePointMenu.mainBtn.titleLabel.text;
+                NSInteger timing = 0;
+                if ([timingStr isEqualToString:@"任意"]) {
+                    timing = 3;
+                } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
+                    timing = 1;
+                } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
+                    timing = 2;
+                }
+                [parameter setValue:@(timing) forKey:@"timing"];
+                //    [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
+                NSInteger riskLevel = [[self.templateInfo valueForKey:@"riskLevel"] integerValue];
+                [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
+                NSInteger targetCalorie = [[self.templateInfo valueForKey:@"targetCalorie"] integerValue];
+                [parameter setValue:@(targetCalorie) forKey:@"targetCalorie"];
+                [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
+                if (self.groups.count > 0) {
+                    NSMutableArray *groups = [NSMutableArray array];
+                    for (AerobicriptionModel *model in self.groups) {
+                        NSMutableDictionary *group = [NSMutableDictionary dictionary];
+                        [group setValue:model.title forKey:@"title"];
+                        [group setValue:model.hrRange forKey:@"hrRange"];
+                        [group setValue:model.rpeRange forKey:@"rpeRange"];
+                        [group setValue:model.difficulty forKey:@"difficulty"];
+                        [group setValue:@(model.calorie) forKey:@"calorie"];
+                        [group setValue:@(model.duration) forKey:@"duration"];
+                        [group setValue:@(model.restDuration) forKey:@"restDuration"];
+                        [group setValue:@(model.speed) forKey:@"speed"];
+                        [group setValue:@(model.weight) forKey:@"weight"];
+                        [group setValue:@(model.times) forKey:@"times"];
+                        [group setValue:model.rotationAngle forKey:@"rotationAngle"];
+                        [groups addObject:group];
+                    }
+                    [parameter setValue:groups forKey:@"sections"];
+                } else {
+                    [parameter setValue:@[] forKey:@"sections"];
+                }
+                [self updateTemplate:parameter];
+            }];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+            }];
+            [alert addAction:okAction];
+            [alert addAction:cancelAction];
+            [self presentViewController:alert animated:NO completion:nil];
         }
-        [parameter setValue:@(timing) forKey:@"timing"];
-        //    [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
-        NSInteger riskLevel = [[self.templateInfo valueForKey:@"riskLevel"] integerValue];
-        [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
-        NSInteger targetCalorie = [[self.templateInfo valueForKey:@"targetCalorie"] integerValue];
-        [parameter setValue:@(targetCalorie) forKey:@"targetCalorie"];
-        [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
-        if (self.groups.count > 0) {
-            NSMutableArray *groups = [NSMutableArray array];
-            for (AerobicriptionModel *model in self.groups) {
-                NSMutableDictionary *group = [NSMutableDictionary dictionary];
-                [group setValue:model.title forKey:@"title"];
-                [group setValue:model.hrRange forKey:@"hrRange"];
-                [group setValue:model.rpeRange forKey:@"rpeRange"];
-                [group setValue:model.difficulty forKey:@"difficulty"];
-                [group setValue:@(model.calorie) forKey:@"calorie"];
-                [group setValue:@(model.duration) forKey:@"duration"];
-                [group setValue:@(model.restDuration) forKey:@"restDuration"];
-                [group setValue:@(model.speed) forKey:@"speed"];
-                [group setValue:@(model.weight) forKey:@"weight"];
-                [group setValue:@(model.times) forKey:@"times"];
-                [group setValue:model.rotationAngle forKey:@"rotationAngle"];
-                [groups addObject:group];
-            }
-            [parameter setValue:groups forKey:@"sections"];
-        } else {
-            [parameter setValue:@[] forKey:@"sections"];
-        }
-        [self updateTemplate:parameter];
-    }];
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-    }];
-    [alert addAction:okAction];
-    [alert addAction:cancelAction];
-    [self presentViewController:alert animated:NO completion:nil];
+    }
 }
 
 - (void)giveup:(UIButton*)sender {
@@ -755,7 +798,8 @@
 }
 
 - (void)addGroup:(UIButton*)sender {
-    NSLog(@"增加行");
+    self.hasClickAddBtn = YES;
+    self.cellHasNullData = NO;
     NSInteger index = sender.tag - 10000;
     AerobicriptionModel *model = [self.groups objectAtIndex:index];
     AerobicriptionModel *dict = [[AerobicriptionModel alloc] init];

@@ -7,6 +7,7 @@
 //
 
 #import "CreateTemplateViewController.h"
+#import "AddTemplateViewController.h"
 #import "CreatePrescriptionCell.h"
 #import "PowerTemplateCell.h"
 #import "AerobicriptionModel.h"
@@ -257,7 +258,7 @@
     self.dieaseMenu.center = CGPointMake(CGRectGetMaxX(self.dieaseLbl.frame) + kDieaseLbl_RightMargin * kXScal + kDieaseTF_Width * kXScal/2.0, self.dieaseLbl.center.y);
     [self.dieaseMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.dieaseMenu.defualtStr = @"II型糖尿病";
-    self.dieaseMenu.delegate = self;
+    [self.dieaseMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.dieaseMenu.titles = @[@"II型糖尿病"];
     self.dieaseMenu.delegate = self;
     [self.topBgView addSubview:self.dieaseMenu];
@@ -353,11 +354,9 @@
     self.treatmentMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.deviceTypeTF.frame.origin.x, CGRectGetMaxY(self.deviceTypeTF.frame) + kDieaseTF_BottomMargin * kYScal, kWeekMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
     [self.treatmentMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.treatmentMenu.defualtStr = @"6";
-    self.treatmentMenu.delegate = self;
+    [self.treatmentMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.treatmentMenu.titles = @[@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",@"10",@"11",@"12"];
-    self.treatmentMenu.delegate = self;
     self.treatmentMenu.backgroundColor = [UIColor whiteColor];
-    self.treatmentMenu.delegate = self;
     self.treatmentMenu.delegate = self;
     self.treatmentMenu.tag = 40;
     [self.topBgView addSubview:self.treatmentMenu];
@@ -400,12 +399,10 @@
     self.sportTimePointMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.traingDeviceMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingDeviceMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
     [self.sportTimePointMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.sportTimePointMenu.defualtStr = @"三餐前半小时";
-    self.sportTimePointMenu.delegate = self;
+    [self.sportTimePointMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     self.sportTimePointMenu.titles = @[@"任意",@"三餐前半小时",@"三餐后一小时"];
     self.sportTimePointMenu.delegate = self;
     self.sportTimePointMenu.backgroundColor = [UIColor whiteColor];
-    self.sportTimePointMenu.delegate = self;
-    self.sportTimePointMenu.delegate = self;
     self.sportTimePointMenu.tag = 60;
     [self.topBgView addSubview:self.sportTimePointMenu];
 }
@@ -1052,7 +1049,11 @@
         if (code == 0) {
             [STTextHudTool showText:@"保存成功"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateCustomTemplatesNotification" object:nil];
-            [weakSelf.navigationController popViewControllerAnimated:NO];
+            for (UIViewController *view in weakSelf.navigationController.viewControllers) {
+                if ([view isKindOfClass:[AddTemplateViewController class]]) {
+                    [weakSelf.navigationController popToViewController:view animated:NO];
+                }
+            }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
