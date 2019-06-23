@@ -7,6 +7,7 @@
 //
 
 #import "PatientRiskLevelViewController.h"
+#import "PatientManageViewController.h"
 #import "CreateAerobicPrescriptionViewController.h"
 #import "CreatePowerPrescriptionViewController.h"
 #import "MainViewController.h"
@@ -214,28 +215,6 @@
     NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
-//    [parameter setValue:@"II型糖尿病" forKey:@"disease"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"restHr"] integerValue]) forKey:@"restHr"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"weight"] floatValue]) forKey:@"weight"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"height"] floatValue]) forKey:@"height"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"waistline"] floatValue]) forKey:@"waistline"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"hrv"] floatValue]) forKey:@"hrv"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"fbg"] floatValue]) forKey:@"fbg"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"sbp"] integerValue]) forKey:@"sbp"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"dbp"] integerValue]) forKey:@"dbp"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"hdl"] floatValue]) forKey:@"hdl"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"bfr"] integerValue]) forKey:@"bfr"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"sportFrequency"] integerValue]) forKey:@"sportFrequency"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"hasHbp"] integerValue]) forKey:@"hasHbp"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"hasHbs"] integerValue]) forKey:@"hasHbs"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"hasHbf"] integerValue]) forKey:@"hasHbf"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"hasSmoking"] integerValue]) forKey:@"hasSmoking"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"familyDiabetes"] integerValue]) forKey:@"familyDiabetes"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"familySuddenDeath"] integerValue]) forKey:@"familySuddenDeath"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"threeMonthStatus"] integerValue]) forKey:@"threeMonthStatus"];
-////    [parameter setValue:@([[self.userInfo valueForKey:@"mobile"] integerValue]) forKey:@"mobile"];
-////    [parameter setValue:@([[self.userInfo valueForKey:@"smsCode"] floatValue]) forKey:@"smsCode"];
-//    [parameter setValue:@([[self.userInfo valueForKey:@"maxAlarmHr"] integerValue]) forKey:@"maxAlarmHr"];
     [self doctorSaveUserInfo:parameter];
 }
 
@@ -246,11 +225,18 @@
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
         if (code == 0) {
+            BOOL hasManagePage = NO;
             NSArray *tempCVs = [self.navigationController viewControllers];
             for (UIViewController *vc in tempCVs) {
-                if ([vc isKindOfClass:[MainViewController class]]) {
+                if ([vc isKindOfClass:[PatientManageViewController class]]) {
                     [self.navigationController popToViewController:vc animated:NO];
+                    hasManagePage = YES;
+                    break;
                 }
+            }
+            if (!hasManagePage) {
+                MainViewController *main = [[MainViewController alloc] init];
+                [self.navigationController pushViewController:main animated:NO];
             }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];

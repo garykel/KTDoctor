@@ -446,13 +446,14 @@
     [self.sportView addSubview:self.timeLbl];
     
     
-    self.timeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame) + kCellLbl_Space * kXScal, self.timeLbl.frame.origin.y, 2 * lblWidth, cellHeight)];
+    self.timeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.mileValLbl.center.x, self.timeLbl.frame.origin.y, 2 * lblWidth, cellHeight)];
     self.timeValLbl.textColor = [UIColor blackColor];
-    self.timeValLbl.textAlignment = NSTextAlignmentCenter;
+    self.timeValLbl.textAlignment = NSTextAlignmentLeft;
     NSInteger totalTime = [[sportData valueForKey:@"totalTime"] integerValue];
     NSString *timeStr = [self getLongtimeString:totalTime];
     self.timeValLbl.text = [NSString stringWithFormat:@"%@",timeStr];
     self.timeValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
+//    self.timeValLbl.center = CGPointMake(self.mileValLbl.center.x, self.timeLbl.center.y);
     [self.sportView addSubview:self.timeValLbl];
         
     CGFloat leftUnitImg_TopMargin = (self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kLeftUnitImg_Height * kYScal)/2;

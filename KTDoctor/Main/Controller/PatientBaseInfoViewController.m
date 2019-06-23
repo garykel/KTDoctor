@@ -886,6 +886,22 @@
     if ([textField.text isEqualToString:@"0.0"] || [textField.text isEqualToString:@"0"]) {
         textField.text = @"";
         [STTextHudTool showText:@"输入数字需要大于0"];
+    } else {
+        if (textField == self.quietHRTF) {
+            NSInteger hr = [textField.text integerValue];
+            if (hr <= 50) {
+                textField.text = @"50";
+            } else if (hr >=240) {
+                textField.text = @"240";
+            }
+        } else if (textField == self.maxAlertHrTF) {
+            NSInteger alertHr = [self.maxAlertHrTF.text integerValue];
+            if (alertHr <= 50) {
+                textField.text = @"50";
+            } else if (alertHr >= 240) {
+                textField.text = @"240";
+            }
+        }
     }
 }
 
