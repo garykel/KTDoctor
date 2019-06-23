@@ -421,15 +421,15 @@
 }
 
 - (void)checkHasNullData {
-    NSString *difficultLeft = self.model.hrRangeLeft;
-    NSString *difficultRight = self.model.hrRangeRight;
-    NSString *trainingTimeLeft = self.model.durationLeft;
-    NSString *trainingTimeRight = self.model.durationRight;
-    NSString *difficulty = self.model.difficulty;
-    NSString *rpeLeft = self.model.rpeRangeLeft;
-    NSString *rpeRight = self.model.rpeRangeRight;
-    NSString *restTimeLeft = self.model.restLeft;
-    NSString *restTimeRight = self.model.restRight;
+    NSString *difficultLeft = self.difficultyLeftMenu.mainBtn.titleLabel.text;
+    NSString *difficultRight = self.difficultyRightMenu.mainBtn.titleLabel.text;
+    NSString *trainingTimeLeft = self.traingingTimeLeftMenu.mainBtn.titleLabel.text;
+    NSString *trainingTimeRight = self.traingingTimeRightMenu.mainBtn.titleLabel.text;
+    NSString *difficulty = self.difficultyMenu.mainBtn.titleLabel.text;
+    NSString *rpeLeft = self.rpeLeftMenu.mainBtn.titleLabel.text;
+    NSString *rpeRight = self.rpeRightMenu.mainBtn.titleLabel.text;
+    NSString *restTimeLeft = self.restLeftMenu.mainBtn.titleLabel.text;
+    NSString *restTimeRight = self.restRightMenu.mainBtn.titleLabel.text;
     if (difficultLeft.length > 0 && difficultRight.length > 0 && trainingTimeLeft.length > 0 && trainingTimeRight.length > 0 && difficulty.length > 0 && rpeLeft.length > 0 && rpeRight.length > 0 && restTimeLeft.length > 0 && restTimeRight.length > 0) {
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"hasNullData"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"PrescriptionCellDataIsOKNotification" object:nil userInfo:userInfo];

@@ -114,7 +114,6 @@
 @property (nonatomic,assign)NSInteger typeid;
 @property (nonatomic,strong)UIView *tipsView;
 @property (nonatomic,strong)UILabel *tipsLbl;
-@property (nonatomic,assign)BOOL cellHasNullData;
 @end
 
 @implementation UpdateTemplateInfoViewController
@@ -122,7 +121,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
-    self.cellHasNullData = NO;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.groups = [NSMutableArray array];
     self.equipIds = [NSMutableArray array];
@@ -139,7 +137,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeTotalTrainingTime) name:@"ComputeTotalTrainingTimeNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeAvgDifficulty) name:@"ComputeAvgDifficultyNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidelAllMenus) name:kHideDropDownNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkCellHasNullData:) name:@"PrescriptionCellDataIsOKNotification" object:nil];
     [self setNavBar];
     [self setupUI];
 }
@@ -149,13 +146,6 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     self.tipsView.hidden = YES;
-    self.cellHasNullData = YES;
-}
-
-- (void)checkCellHasNullData:(NSNotification*)noti {
-    NSDictionary *userInfo = [noti valueForKey:@"userInfo"];
-    BOOL hasNullData = [[userInfo valueForKey:@"hasNullData"] boolValue];
-    self.cellHasNullData = hasNullData;
 }
 
 - (void)dealloc {
@@ -560,8 +550,6 @@
         cell.groupNameLbl.text = [NSString stringWithFormat:@"第%d组",indexPath.section + 1];
         NSArray *hrRangeArr = [[dict valueForKey:@"hrRange"] componentsSeparatedByString:@"-"];
         if (hrRangeArr.count > 0) {
-            dict.hrRangeLeft = [NSString stringWithFormat:@"%d",[hrRangeArr[0] integerValue]];
-            dict.hrRangeRight = [NSString stringWithFormat:@"%d",[hrRangeArr[1] integerValue]];
             NSString *leftDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[0] integerValue]];
             NSString *rightDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[1] integerValue]];
             [cell.difficultyLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
@@ -577,8 +565,6 @@
             [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",difficulty] forState:UIControlStateNormal];
             [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         } else {
-            dict.hrRangeLeft = @"";
-            dict.hrRangeRight = @"";
             [cell.difficultyLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.difficultyLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.difficultyRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
@@ -594,8 +580,6 @@
         if (rpeRangeArr.count > 0) {
             NSString *leftRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[0] floatValue]];
             NSString *rightRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[1] floatValue]];
-            dict.rpeRangeLeft = leftRpe;
-            dict.rpeRangeRight = rightRpe;
             [cell.rpeLeftMenu.mainBtn setTitle:leftRpe forState:UIControlStateNormal];
             [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
@@ -606,8 +590,6 @@
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
         } else {
-            dict.rpeRangeLeft = @"";
-            dict.rpeRangeRight = @"";
             [cell.rpeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
@@ -630,15 +612,11 @@
         if (duration > 0) {
             NSInteger min = duration / 60;
             NSInteger sec = duration % 60;
-            dict.durationLeft = [NSString stringWithFormat:@"%d",min];
-            dict.durationRight = [NSString stringWithFormat:@"%d",sec];
             [cell.traingingTimeLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
             [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         } else {
-            dict.durationLeft = @"";
-            dict.durationRight = @"";
             [cell.traingingTimeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
@@ -648,15 +626,11 @@
         if (restDuration > 0) {
             NSInteger min = restDuration / 60;
             NSInteger sec = restDuration % 60;
-            dict.restLeft = [NSString stringWithFormat:@"%d",min];
-            dict.restRight = [NSString stringWithFormat:@"%d",sec];
             [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
             [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         } else {
-            dict.restLeft = @"";
-            dict.restRight = @"";
             [cell.restLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
@@ -683,8 +657,6 @@
         if (hrRangeArr.count > 0) {
             NSString *leftDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[0] integerValue]];
             NSString *rightDificultyPercent = [NSString stringWithFormat:@"%d%%",[hrRangeArr[1] integerValue]];
-            dict.hrRangeLeft = [NSString stringWithFormat:@"%d",[hrRangeArr[0] integerValue]];
-            dict.hrRangeRight = [NSString stringWithFormat:@"%d",[hrRangeArr[1] integerValue]];
             [cell.difficultyLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.difficultyLeftMenu.mainBtn setTitle:leftDificultyPercent forState:UIControlStateNormal];
             [cell.difficultyRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
@@ -698,8 +670,6 @@
             [cell.difficultyMenu.mainBtn setTitle:[NSString stringWithFormat:@"%dw",difficulty] forState:UIControlStateNormal];
             [cell.difficultyMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         } else {
-            dict.hrRangeLeft = @"";
-            dict.hrRangeRight = @"";
             [cell.difficultyLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.difficultyLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.difficultyRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
@@ -716,8 +686,6 @@
         if (rpeRangeArr.count > 0) {
             NSString *leftRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[0] floatValue]];
             NSString *rightRpe = [NSString stringWithFormat:@"%.1f",[rpeRangeArr[1] floatValue]];
-            dict.rpeRangeLeft = leftRpe;
-            dict.rpeRangeRight = rightRpe;
             [cell.rpeLeftMenu.mainBtn setTitle:leftRpe forState:UIControlStateNormal];
             [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
@@ -728,8 +696,6 @@
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",restDuration%60] forState:UIControlStateNormal];
         } else {
-            dict.rpeRangeLeft = @"";
-            dict.rpeRangeRight = @"";
             [cell.rpeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.rpeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.rpeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
@@ -752,15 +718,11 @@
         if (duration > 0) {
             NSInteger min = duration / 60;
             NSInteger sec = duration % 60;
-            dict.durationLeft = [NSString stringWithFormat:@"%d",min];
-            dict.durationRight = [NSString stringWithFormat:@"%d",sec];
             [cell.traingingTimeLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
             [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         } else {
-            dict.durationLeft = @"";
-            dict.durationRight = @"";
             [cell.traingingTimeLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.traingingTimeLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.traingingTimeRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
@@ -770,15 +732,11 @@
         if (restDuration > 0) {
             NSInteger min = restDuration / 60;
             NSInteger sec = restDuration % 60;
-            dict.restLeft = [NSString stringWithFormat:@"%d",min];
-            dict.restRight = [NSString stringWithFormat:@"%d",sec];
             [cell.restLeftMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",min] forState:UIControlStateNormal];
             [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:[NSString stringWithFormat:@"%d",sec] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
         } else {
-            dict.restLeft = @"";
-            dict.restRight = @"";
             [cell.restLeftMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
             [cell.restLeftMenu.mainBtn setTitleColor:[UIColor colorWithHexString:@"#333333"] forState:UIControlStateNormal];
             [cell.restRightMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
@@ -885,7 +843,6 @@
                 }
             }
         }
-        [self.listView reloadData];
     }
 }
 
@@ -975,83 +932,64 @@
 - (void)saveOrCreate:(UIButton*)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
-    if (self.type2 == 1) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPrescriptionCellHasNullDataNotification" object:nil];
-    } else {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"CheckPowerCellHasNullDataNotification" object:nil];
-    }
-    if (self.templateNameTF.text.length == 0) {
-        [STTextHudTool showText:@"请填写模板名称"];
-    } else if([self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
-        [STTextHudTool showText:@"请选择风险等级"];
-    } else if([self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
-        [STTextHudTool showText:@"请选择训练部位"];
-    }else if([self.traingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.traingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
-        [STTextHudTool showText:@"请选择训练设备"];
-    }else if(self.trainingFrequencyMenu.mainBtn.titleLabel.text.length == 0 ||[self.trainingFrequencyMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
-        [STTextHudTool showText:@"请选择每周训练几天"];
-    }else {
-        if (!self.cellHasNullData) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-                NSString *orgCode = [self.templateInfo valueForKey:@"orgCode"];
-                [parameter setValue:orgCode forKey:@"orgCode"];
-                NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
-                [parameter setValue:@(self.typeid) forKey:@"type"]; //类型
-                [parameter setValue:@(id) forKey:@"id"];
-                [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
-                [parameter setValue:self.templateNameTF.text forKey:@"title"];
-                NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;
-                [parameter setValue:disease forKey:@"disease"];
-                [parameter setValue:self.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
-                [parameter setValue:self.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
-                NSString *timingStr = self.sportTimePointMenu.mainBtn.titleLabel.text;
-                NSInteger timing = 0;
-                if ([timingStr isEqualToString:@"任意"]) {
-                    timing = 3;
-                } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
-                    timing = 1;
-                } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
-                    timing = 2;
-                }
-                [parameter setValue:@(timing) forKey:@"timing"];
-                [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
-                NSInteger riskLevel = [[self.templateInfo valueForKey:@"riskLevel"] integerValue];
-                [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
-                NSInteger targetCalorie = [[self.templateInfo valueForKey:@"targetCalorie"] integerValue];
-                [parameter setValue:@(targetCalorie) forKey:@"targetCalorie"];
-                [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
-                if (self.groups.count > 0) {
-                    NSMutableArray *groups = [NSMutableArray array];
-                    for (AerobicriptionModel *model in self.groups) {
-                        NSMutableDictionary *group = [NSMutableDictionary dictionary];
-                        [group setValue:model.title forKey:@"title"];
-                        [group setValue:model.hrRange forKey:@"hrRange"];
-                        [group setValue:model.rpeRange forKey:@"rpeRange"];
-                        [group setValue:model.difficulty forKey:@"difficulty"];
-                        [group setValue:@(model.calorie) forKey:@"calorie"];
-                        [group setValue:@(model.duration) forKey:@"duration"];
-                        [group setValue:@(model.restDuration) forKey:@"restDuration"];
-                        [group setValue:@(model.speed) forKey:@"speed"];
-                        [group setValue:@(model.weight) forKey:@"weight"];
-                        [group setValue:@(model.times) forKey:@"times"];
-                        [group setValue:model.rotationAngle forKey:@"rotationAngle"];
-                        [groups addObject:group];
-                    }
-                    [parameter setValue:groups forKey:@"sections"];
-                } else {
-                    [parameter setValue:@[] forKey:@"sections"];
-                }
-                [self updateTemplate:parameter];
-            }];
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-            }];
-            [alert addAction:okAction];
-            [alert addAction:cancelAction];
-            [self presentViewController:alert animated:NO completion:nil];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定保存吗？" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSString *orgCode = [self.templateInfo valueForKey:@"orgCode"];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        NSInteger id = [[self.templateInfo valueForKey:@"id"] integerValue];
+        [parameter setValue:@(self.typeid) forKey:@"type"]; //类型
+        [parameter setValue:@(id) forKey:@"id"];
+        [parameter setValue:@(self.type2) forKey:@"type2"]; //类型2，1=强度，2=功率
+        [parameter setValue:self.templateNameTF.text forKey:@"title"];
+        NSString *disease = self.dieaseMenu.mainBtn.titleLabel.text;
+        [parameter setValue:disease forKey:@"disease"];
+        [parameter setValue:self.treatmentMenu.mainBtn.titleLabel.text forKey:@"treatmentPeriod"];
+        [parameter setValue:self.trainingFrequencyMenu.mainBtn.titleLabel.text forKey:@"daysPerWeek"];
+        NSString *timingStr = self.sportTimePointMenu.mainBtn.titleLabel.text;
+        NSInteger timing = 0;
+        if ([timingStr isEqualToString:@"任意"]) {
+            timing = 3;
+        } else if ([timingStr isEqualToString:@"三餐前半小时"]) {
+            timing = 1;
+        } else if ([timingStr isEqualToString:@"三餐后一小时"]) {
+            timing = 2;
         }
-    }
+        [parameter setValue:@(timing) forKey:@"timing"];
+        [parameter setValue:@"14-16" forKey:@"difficultyLevel"];
+        NSInteger riskLevel = [[self.templateInfo valueForKey:@"riskLevel"] integerValue];
+        [parameter setValue:@(riskLevel) forKey:@"riskLevel"];
+        NSInteger targetCalorie = [[self.templateInfo valueForKey:@"targetCalorie"] integerValue];
+        [parameter setValue:@(targetCalorie) forKey:@"targetCalorie"];
+        [parameter setValue:@(self.targetDuration) forKey:@"targetDuration"];
+        if (self.groups.count > 0) {
+            NSMutableArray *groups = [NSMutableArray array];
+            for (AerobicriptionModel *model in self.groups) {
+                NSMutableDictionary *group = [NSMutableDictionary dictionary];
+                [group setValue:model.title forKey:@"title"];
+                [group setValue:model.hrRange forKey:@"hrRange"];
+                [group setValue:model.rpeRange forKey:@"rpeRange"];
+                [group setValue:model.difficulty forKey:@"difficulty"];
+                [group setValue:@(model.calorie) forKey:@"calorie"];
+                [group setValue:@(model.duration) forKey:@"duration"];
+                [group setValue:@(model.restDuration) forKey:@"restDuration"];
+                [group setValue:@(model.speed) forKey:@"speed"];
+                [group setValue:@(model.weight) forKey:@"weight"];
+                [group setValue:@(model.times) forKey:@"times"];
+                [group setValue:model.rotationAngle forKey:@"rotationAngle"];
+                [groups addObject:group];
+            }
+            [parameter setValue:groups forKey:@"sections"];
+        } else {
+            [parameter setValue:@[] forKey:@"sections"];
+        }
+        [self updateTemplate:parameter];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:okAction];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:NO completion:nil];
 }
 
 - (void)giveup:(UIButton*)sender {
@@ -1070,7 +1008,7 @@
 }
 
 - (void)addGroup:(UIButton*)sender {
-    self.cellHasNullData = NO;
+    NSLog(@"增加行");
     NSInteger index = sender.tag - 10000;
     AerobicriptionModel *model = [self.groups objectAtIndex:index];
     AerobicriptionModel *dict = [[AerobicriptionModel alloc] init];
