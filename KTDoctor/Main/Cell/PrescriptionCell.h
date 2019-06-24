@@ -21,6 +21,7 @@
 @property (nonatomic,strong)UITextField *traingingTimeRightTF;
 @property (nonatomic,strong)UILabel *traingingTimeSecLbl;//s标签
 @property (nonatomic,strong)UILabel *difficultyLbl;//强度
+@property (nonatomic,assign)NSInteger type2;
 @property (nonatomic,strong)UITextField *difficultyTF;
 @property (nonatomic,strong)UILabel *rpeZoneLbl;//RPE区间
 @property (nonatomic,strong)UITextField *rpeLeftTF;

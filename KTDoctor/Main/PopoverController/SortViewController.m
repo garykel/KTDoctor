@@ -7,6 +7,7 @@
 //
 
 #import "SortViewController.h"
+#import "SortCell.h"
 
 @interface SortViewController ()<UITableViewDataSource,UITableViewDelegate>
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -15,6 +16,7 @@
 @property (nonatomic,strong)UIButton *descBtn;
 @property (nonatomic,strong)UIView *listBgView;
 @property (nonatomic,strong)UITableView *listView;
+@property (nonatomic,assign)BOOL isAsc;
 @end
 
 @implementation SortViewController
@@ -46,7 +48,7 @@
     [self.ascBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.ascBtn setBackgroundColor:[UIColor colorWithHexString:@"#10a9cc"]];
     self.ascBtn.tag = 1;
-    [self.ascBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
+    [self.ascBtn addTarget:self action:@selector(sortBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.sortBtnBgView addSubview:self.ascBtn];
     
     self.descBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -55,7 +57,7 @@
     [self.descBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.descBtn setBackgroundColor:[UIColor whiteColor]];
     self.descBtn.tag = 2;
-    [self.descBtn addTarget:self action:@selector(sort:) forControlEvents:UIControlEventTouchUpInside];
+    [self.descBtn addTarget:self action:@selector(sortBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.sortBtnBgView addSubview:self.descBtn];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -125,17 +127,17 @@
     }];
     
     [self.listBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.sortBtnBgView.mas_bottom).offset(20);
+        make.top.equalTo(self.sortBtnBgView.mas_bottom).offset(5);
         make.left.equalTo(self.view.mas_left).offset(10);
         make.right.equalTo(self.view.mas_right).offset(-10);
-        make.bottom.equalTo(self.view.mas_bottom).offset(-10);
+        make.bottom.equalTo(self.view.mas_bottom).offset(0);
     }];
     
     [self.listView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.listBgView.mas_top).offset(1);
         make.left.equalTo(self.listBgView.mas_left).offset(1);
         make.right.equalTo(self.listBgView.mas_right).offset(-1);
-        make.bottom.equalTo(self.listBgView.mas_bottom).offset(-0.5);
+        make.bottom.equalTo(self.listBgView.mas_bottom).offset(1);
     }];
 }
 
@@ -155,13 +157,15 @@
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *reuseCellId = @"reuseCellId";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellId];
+    SortCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseCellId];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellId];
+        cell = [[SortCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseCellId];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     NSMutableDictionary *dict = (NSMutableDictionary*)[self.conditionsArr objectAtIndexCheck:indexPath.section];
     cell.textLabel.text = [dict valueForKey:@"sortkey"];
+    BOOL hasSelected = [[dict valueForKey:@"hasSelected"] boolValue];
+    cell.markImg.hidden = !hasSelected;
     cell.textLabel.font = [UIFont systemFontOfSize:15.0];
     return cell;
 }
@@ -184,13 +188,11 @@
     NSString *sortFieldName = [sortDict valueForKey:@"sortkey"];
     NSString *sortField = @"";
     if ([sortFieldName isEqualToString:@"姓名"]) {
-        sortField = @"name";
-    } else if ([sortFieldName isEqualToString:@"心率带ID"]){
-        sortField = @"hrDeviceId";
-    } else if([sortFieldName isEqualToString:@"设备ID"]) {
-        sortField = @"deviceId";
-    } else if ([sortFieldName isEqualToString:@"当前心率"]) {
-        sortField = @"currentHR";
+        sortField = @"userName";
+    } else if ([sortFieldName isEqualToString:@"处方名称"]){
+        sortField = @"title";
+    } else if([sortFieldName isEqualToString:@"开始时间"]) {
+        sortField = @"startTime";
     }
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL isAsc = YES;
@@ -205,7 +207,8 @@
     NSDictionary *lastSortInfo = [defaults valueForKey:@"lastSortInfo"];
     if (lastSortInfo) {
         NSInteger lastSelectIndex = [[lastSortInfo valueForKey:@"selectedRow"] integerValue];
-        UITableViewCell *lastCell = [self.listView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:lastSelectIndex]];
+        SortCell *lastCell = [self.listView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:lastSelectIndex]];
+        lastCell.markImg.hidden = YES;
         NSMutableDictionary *sortDict = [self.conditionsArr objectAtIndexCheck:lastSelectIndex];
         NSMutableDictionary *newdict = [NSMutableDictionary dictionary];
         [newdict setValue:[sortDict valueForKey:@"sortkey"] forKey:@"sortkey"];
@@ -213,8 +216,9 @@
         lastCell.backgroundColor = [UIColor clearColor];
         [self.conditionsArr replaceObjectAtIndex:lastSelectIndex withObject:newdict];
     }
-    UITableViewCell *cell = [self.listView cellForRowAtIndexPath:indexPath];
-    cell.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
+    SortCell *cell = [self.listView cellForRowAtIndexPath:indexPath];
+    cell.markImg.hidden = NO;
+//    cell.backgroundColor = [UIColor colorWithHexString:@"#10a9cc"];
     NSMutableDictionary *newSortDict = [NSMutableDictionary dictionary];
     [newSortDict setValue:[NSNumber numberWithBool:YES] forKey:@"hasSelected"];
     [newSortDict setValue:[sortDict valueForKey:@"sortkey"] forKey:@"sortkey"];
@@ -222,18 +226,31 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setValue:self.conditionsArr forKey:@"classSort"];
     NSMutableDictionary *currentSortDict = [NSMutableDictionary dictionary];
-    [currentSortDict setValue:[NSNumber numberWithInteger:isAsc] forKey:@"isAsc"];
+    [currentSortDict setValue:[NSNumber numberWithInteger:self.isAsc] forKey:@"isAsc"];
     [currentSortDict setValue:[NSNumber numberWithInteger:indexPath.section] forKey:@"selectedRow"];
     [userDefaults setValue:currentSortDict forKey:@"lastSortInfo"];
     [userDefaults synchronize];
     [self.listView reloadData];
     
-    [conditionDict setValue:[NSNumber numberWithBool:isAsc] forKey:@"sortType"];
+    [conditionDict setValue:[NSNumber numberWithBool:self.isAsc] forKey:@"sortType"];
     [conditionDict setValue:sortField forKey:@"sortField"];
     [self.delegate conditionChoose:conditionDict];
 }
 
 #pragma mark - button click events
+
+- (void)sortBtnClick:(UIButton*)sender {
+    NSInteger tag = sender.tag;
+    if (tag == 1) {
+        self.isAsc = YES;
+        [self.ascBtn setBackgroundColor:[UIColor colorWithHexString:@"#10a9cc"]];
+        [self.descBtn setBackgroundColor:[UIColor whiteColor]];
+    } else {
+        self.isAsc = NO;
+        [self.ascBtn setBackgroundColor:[UIColor whiteColor]];
+        [self.descBtn setBackgroundColor:[UIColor colorWithHexString:@"#10a9cc"]];
+    }
+}
 
 - (void)sort:(UIButton*)sender {
     NSInteger tag = sender.tag;
@@ -265,13 +282,11 @@
         NSString *sortFieldName = [sortDict valueForKey:@"sortkey"];
         NSString *sortField = @"";
         if ([sortFieldName isEqualToString:@"姓名"]) {
-            sortField = @"name";
-        } else if ([sortFieldName isEqualToString:@"心率带ID"]){
-            sortField = @"hrDeviceId";
-        } else if([sortFieldName isEqualToString:@"设备ID"]) {
-            sortField = @"deviceId";
-        } else if ([sortFieldName isEqualToString:@"当前心率"]) {
-            sortField = @"currentHR";
+            sortField = @"userName";
+        } else if ([sortFieldName isEqualToString:@"处方名称"]){
+            sortField = @"title";
+        } else if([sortFieldName isEqualToString:@"开始时间"]) {
+            sortField = @"startTime";
         }
         [conditionDict setValue:[NSNumber numberWithBool:isAsc] forKey:@"sortType"];
         [conditionDict setValue:sortField forKey:@"sortField"];

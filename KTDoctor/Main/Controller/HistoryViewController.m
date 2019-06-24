@@ -622,7 +622,7 @@
 - (void)sort:(UIButton*)sender {
     NSLog(@"排序");
     self.sort = [[SortViewController alloc] init];
-    self.sort.preferredContentSize = CGSizeMake(245, 250);
+    self.sort.preferredContentSize = CGSizeMake(245, 233);
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.sort.titleName = @"排序方式";
     NSMutableArray *sortArr = [NSMutableArray array];

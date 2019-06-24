@@ -567,8 +567,10 @@ CGSize prescriptionListviewSize;
     cell.restRightTF.text = [NSString stringWithFormat:@"%d",restSec];
     if (self.type2 == 1) {
         cell.difficultyTF.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"difficulty"] integerValue]];
+        cell.difficultyLbl.text = @"强      度";
     } else {
         cell.difficultyTF.text = [NSString stringWithFormat:@"%d w",[[dict valueForKey:@"difficulty"] integerValue]];
+        cell.difficultyLbl.text = @"功      率";
     }
     return cell;
 }
