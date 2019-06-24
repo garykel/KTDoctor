@@ -419,7 +419,6 @@
     [self.topBgView addSubview:self.dayLbl];
     
     self.trainingFrequencyMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.trainingPositionMenu.frame.origin.x, self.treatmentMenu.frame.origin.y, kTrainingPositionMenu_Width * kXScal, kDieaseTF_Height * kYScal)];
-//    [self.trainingFrequencyMenu setMenuTitles:@[@"1",@"2",@"3",@"4",@"5",@"6",@"7"] rowHeight:kDieaseLbl_FontSieze * kYScal attr:@{@"title":@"",@"titleFone":[UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal],@"titleColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemColor":[UIColor colorWithHexString:@"#A5A5A5"],@"itemFont":[UIFont systemFontOfSize:kDieaseLbl_FontSieze *kYScal]}];
     [self.trainingFrequencyMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.trainingFrequencyMenu.defualtStr = @"请选择";
     self.trainingFrequencyMenu.delegate = self;

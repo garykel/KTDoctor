@@ -48,6 +48,7 @@
 #define kNoDatLbl_Width 100
 #define kNoDataLbl_FontSize 20
 #define kNoDataLbl_Height 18
+#define kReportList_CellHeight 195
 
 @interface AerobicPrescriptionAndReportViewController ()<UITableViewDelegate,UITableViewDataSource,XXTGDropdownMenuDelegate,CustomTextFieldDelegate,PGDatePickerDelegate,PGDatePickManagerDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -554,8 +555,6 @@
     NSDictionary *dict = [self.precriptionsArr objectAtIndex:index];
     NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
     if (reportNum > 0) {
-//        BOOL close = [[self.closeArr objectAtIndex:index] boolValue];
-//        [self.closeArr replaceObjectAtIndex:index withObject:[NSNumber numberWithBool:!close]];
         NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
         [parameter setValue:@0 forKey:@"offset"];
         [parameter setValue:@(reportNum) forKey:@"rows"];
@@ -784,7 +783,6 @@
                         } else {
                             [weakSelf.precriptionsArr addObjectsFromArray:rows];
                         }
-                        [weakSelf.precriptionsArr addObjectsFromArray:rows];
                         if (weakSelf.closeArr.count > 0) {
                             [weakSelf.closeArr removeAllObjects];
                         }
