@@ -822,6 +822,7 @@
         }
         [self.listView reloadData];
         AerobicriptionModel *model = [[AerobicriptionModel alloc] init];
+        model.title = @"第1组";
         [self.groups addObject:model];
         [self.listView reloadData];
         self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
