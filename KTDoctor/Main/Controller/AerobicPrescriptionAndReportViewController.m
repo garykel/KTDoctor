@@ -356,19 +356,24 @@
 //    return 67 * kYScal;
     if (self.isSearch) {
         BOOL close = [[self.searchCloseArr objectAtIndex:indexPath.section] boolValue];
+        NSDictionary *dict = [self.searchResults objectAtIndex:indexPath.section];
+        NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
         if (close) {
-            return 67 * kYScal;
+            return [AerobicReportCell cellDefaultHeight];
         } else {
-            return (67 + 200)* kYScal;
+            return [AerobicReportCell cellMoreHeight:reportNum];
         }
     } else {
         BOOL close = [[self.closeArr objectAtIndex:indexPath.section] boolValue];
+        NSDictionary *dict = [self.precriptionsArr objectAtIndex:indexPath.section];
+        NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
         if (close) {
-            return 67 * kYScal;
+            return [AerobicReportCell cellDefaultHeight];
         } else {
-            return (67 + 200)* kYScal;
+            return [AerobicReportCell cellMoreHeight:reportNum];
         }
     }
+    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
@@ -456,6 +461,10 @@
             cell.sportDaysValLbl.text = [NSString stringWithFormat:@"%d",sportDays];
             NSInteger reportNum = [[dict valueForKey:@"reportNum"] integerValue];
             cell.reportsValLbl.text = [NSString stringWithFormat:@"%d",reportNum];
+            CGRect orginRect = cell.reportListview.frame;
+            cell.reportListview.frame = CGRectMake(orginRect.origin.x, orginRect.origin.y, orginRect.size.width, [AerobicReportCell cellMoreHeight:reportNum]);
+            cell.reportListview.scrollEnabled = NO;
+            [cell.reportListview reloadData];
             cell.reportsBtn.tag = 1000 + indexPath.section;
             [cell.reportsBtn addTarget:self action:@selector(showReport:) forControlEvents:UIControlEventTouchUpInside];
             cell.prescriptionDetailBtn.tag = 2000+ indexPath.section;

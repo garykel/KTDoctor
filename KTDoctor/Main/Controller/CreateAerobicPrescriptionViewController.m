@@ -866,8 +866,8 @@
                 [self.recommendTemplateArr removeAllObjects];
             }
             if (self.totalTemplateArr.count > 0) {
+                NSLog(@"total templateArr is :%@",[self convertToJSONData:self.totalTemplateArr]);
                 NSMutableArray *templateNames = [NSMutableArray array];
-                NSLog(@"equipmentsArr is :%@",[self convertToJSONData:self.equipmentsArr]);
                 NSLog(@"totalTemplateArr is :%@",[self convertToJSONData:self.totalTemplateArr]);
                 for (NSDictionary *dict in self.totalTemplateArr) {
                     NSArray *typeList = [dict valueForKey:@"typeList"];
@@ -1069,7 +1069,7 @@
                 NSString *orgCode = orgCodeArr[0];
                 [para setValue:orgCode forKey:@"orgCode"];
                 [para setValue:@(weakself.offset) forKey:@"offset"];
-                [para setValue:@20 forKey:@"rows"];
+                [para setValue:@10 forKey:@"rows"];
                 NSString *disease = [weakself.prescriptionDict valueForKey:@"disease"];
                 [para setValue:disease forKey:@"disease"];
                 [para setValue:@"" forKey:@"difficulty"];
@@ -1078,8 +1078,6 @@
                 [para setValue:@1 forKey:@"type"];
                 [weakself getRecommendTemplateList:para];
             }
-            NSLog(@"totalTemplateArr count is :%d",weakself.totalTemplateArr.count);
-            NSLog(@"recommendArr count is :%d",weakself.recommendArr.count);
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];

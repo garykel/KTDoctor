@@ -40,5 +40,7 @@
 @property (nonatomic,strong)NSMutableArray *reportsArr;
 @property (nonatomic,assign)NSInteger type2;
 @property (nonatomic,strong)NSDictionary *patientInfo;
++ (CGFloat)cellDefaultHeight;
++ (CGFloat)cellMoreHeight:(NSInteger)reportsNum;
 @end
 

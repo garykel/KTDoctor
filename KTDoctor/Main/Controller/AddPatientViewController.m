@@ -527,9 +527,12 @@
 - (void)sendSMS:(NSMutableDictionary*)parameter {
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kSEND_SMS_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
         if (code == 0) {
             NSString *code = [responseObject valueForKey:@"code"];
             self.smsCode = code;
+        } else {
+            [STTextHudTool showText:msg];
         }
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);

@@ -211,7 +211,7 @@
     self.bottomView.layer.masksToBounds = YES;
     [self.bgImg addSubview:self.bottomView];
     
-    self.prescriptionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.bottomView.frame.origin.x + kPrescription_DropList_LeftMargin * kXScal, self.bottomView.frame.origin.y + kPrescription_DropList_TopMargin * kYScal, tfWidth, kPrescription_DropList_Height * kYScal)];
+    self.prescriptionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(self.bottomView.frame.origin.x + kPrescription_DropList_LeftMargin * kXScal, self.bottomView.frame.origin.y + kPrescription_DropList_TopMargin * kYScal, tfWidth, kSearch_TF_Height * kYScal)];
     [self.prescriptionMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.prescriptionMenu.defualtStr = @"待开具处方";
     self.prescriptionMenu.delegate = self;

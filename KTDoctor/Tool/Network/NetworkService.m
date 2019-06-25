@@ -57,7 +57,7 @@ static const NSString * ERROR_NET = @"网络连接失败";
     [HttpClient postJSONWithUrl:url parameters:params success:^(NSDictionary *responseObject) {
         //to do ....
         
-        NSLog(@"url:%@ params:%@",url,params);
+        NSLog(@"url:%@ params:%@ result:%@",url,params,[self convertToJSONData:responseObject]);
         success(responseObject);
     } fail:^(NSError *error) {
         fail(error);

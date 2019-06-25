@@ -209,8 +209,7 @@
     self.prescriptionDetailBtn.layer.masksToBounds = YES;
     [self.contentView addSubview:self.prescriptionDetailBtn];
     
-    self.reportListview = [[UITableView alloc] initWithFrame:CGRectMake(self.infoView.frame.origin.x, CGRectGetMaxY(self.infoView.frame) + kReportList_TopMargin * kYScal, CGRectGetMaxX(self.prescriptionDetailBtn.frame),200) style:UITableViewStylePlain];
-//    self.reportListview.hidden = YES;
+    self.reportListview = [[UITableView alloc] initWithFrame:CGRectMake(self.infoView.frame.origin.x, CGRectGetMaxY(self.infoView.frame) + kReportList_TopMargin * kYScal, CGRectGetMaxX(self.prescriptionDetailBtn.frame),200 * kYScal) style:UITableViewStylePlain];
     self.reportListview.delegate = self;
     self.reportListview.dataSource = self;
     self.reportListview.backgroundColor = [UIColor clearColor];
@@ -232,6 +231,14 @@
     }
     self.reportListview.tableFooterView = [[UIView alloc] init];
     [self.contentView addSubview:self.reportListview];
+}
+
++ (CGFloat)cellDefaultHeight {
+    return kInfoView_Height * kYScal;
+}
+
++ (CGFloat)cellMoreHeight:(NSInteger)reportsNum {    
+    return kInfoView_Height * kYScal + reportsNum * 200 * kYScal;
 }
 
 #pragma mark - UITableViewDataSource && UITableViewDelegate
