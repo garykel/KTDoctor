@@ -633,43 +633,92 @@
         if (self.searchCloseArr.count > 0) {
             [self.searchCloseArr removeAllObjects];
         }
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || self.createTime = %@",prescriptionName,self.startTimeStr];
-        self.searchResults = [NSMutableArray arrayWithArray:[self.precriptionsArr filteredArrayUsingPredicate:predicate]];
-        if (self.trainingEquipmentStr.length > 0) {
+        NSMutableArray *results = [NSMutableArray array];
+        NSMutableArray *prescriptions = [NSMutableArray array];
+        if (self.precriptionsArr.count > 0) {
+            for (NSDictionary *dictonary in self.precriptionsArr) {
+                NSDictionary *prescription = [dictonary valueForKey:@"prescription"];
+                [prescriptions addObject:prescription];
+            }
+        }
+        //处方名称
+        if (prescriptionName.length > 0) {
             NSMutableArray *tempArr = [NSMutableArray array];
-            if (self.searchResults.count > 0) {
-                for (NSDictionary *dict in self.searchResults) {
-                    NSArray *typeList = [dict valueForKey:@"typeList"];
-                    if (typeList.count > 0) {
-                        for (NSString *typeDict in typeList) {
-                            NSString *name = [typeDict valueForKey:@"name"];
-                            if ([name isEqualToString:self.trainingEquipmentStr]) {
-                                [tempArr addObject:dict];
-                            }
-                        }
+            if (prescriptions.count > 0) {
+                for (NSDictionary *dictonary in prescriptions) {
+                    NSString *name = [dictonary valueForKey:@"title"];
+                    if ([[name lowercaseString] containsString:[prescriptionName lowercaseString]]) {
+                        [tempArr addObject:dictonary];
                     }
                 }
-            } else {
-                if (self.precriptionsArr.count > 0) {
-                    for (NSDictionary *dict in self.precriptionsArr) {
-                        NSArray *typeList = [dict valueForKey:@"typeList"];
-                        if (typeList.count > 0) {
-                            for (NSString *typeDict in typeList) {
-                                NSString *name = [typeDict valueForKey:@"name"];
-                                if ([name isEqualToString:self.trainingEquipmentStr]) {
-                                    [tempArr addObject:dict];
-                                }
-                            }
+            }
+            prescriptions = [tempArr mutableCopy];
+        }
+        //开始时间
+        if (self.startTimeStr.length > 0) {
+            NSMutableArray *tempArr = [NSMutableArray array];
+            if (prescriptions.count > 0) {
+                for (NSDictionary *dictonary in prescriptions) {
+                    NSString *startTime = [dictonary valueForKey:@"startTime"];
+                    if ([startTime containsString:self.startTimeStr]) {
+                        [tempArr addObject:dictonary];
+                    }
+                }
+            }
+            prescriptions = [tempArr mutableCopy];
+        }
+        //训练部位
+        if (![trainingPositionStr isEqualToString:@"训练部位"]) {
+            NSMutableArray *tempArr = [NSMutableArray array];
+            if (prescriptions.count > 0) {
+                for (NSDictionary *dictonary in prescriptions) {
+                    NSArray *typeList = [dictonary valueForKey:@"typeList"];
+                    if (typeList.count > 2) {
+                        NSDictionary *typeDict = typeList[1];
+                        NSString *position = [typeDict valueForKey:@"name"];
+                        if ([trainingPositionStr isEqualToString:position]) {
+                            [tempArr addObject:dictonary];
                         }
                     }
                 }
             }
-            self.searchResults = [tempArr mutableCopy];
+            prescriptions = [tempArr mutableCopy];
         }
+        //训练设备
+        if (![trainingDeviceStr isEqualToString:@"训练设备"]) {
+            NSMutableArray *tempArr = [NSMutableArray array];
+            if (prescriptions.count > 0) {
+                for (NSDictionary *dictonary in prescriptions) {
+                    NSArray *typeList = [dictonary valueForKey:@"typeList"];
+                    if (typeList.count > 2) {
+                        NSDictionary *typeDict = typeList[2];
+                        NSString *device = [typeDict valueForKey:@"name"];
+                        if ([trainingDeviceStr isEqualToString:device]) {
+                            [tempArr addObject:dictonary];
+                        }
+                    }
+                }
+            }
+            prescriptions = [tempArr mutableCopy];
+        }
+        if (prescriptions.count > 0) {
+            for (NSDictionary *prescription in prescriptions) {
+                NSMutableDictionary *prescriptionDict = [NSMutableDictionary dictionary];
+                [prescriptionDict setValue:prescription forKey:@"prescription"];
+                [prescriptionDict setValue:@[] forKey:@"reports"];
+                [results addObject:prescriptionDict];
+            }
+        }
+        self.searchResults = [results mutableCopy];
         for (NSInteger i = 0; i < self.searchResults.count; i++) {
             [self.searchCloseArr addObject:[NSNumber numberWithBool:YES]];
         }
         [self.listView reloadData];
+        if (self.searchResults.count > 0) {
+            self.noDataLbl.hidden = YES;
+        } else {
+            self.noDataLbl.hidden = NO;
+        }
         NSDictionary *summarydict = [self getReportSummary];
         self.summaryLbl.text = [NSString stringWithFormat:@"累积处方数：%d  累积运动天数：%d  累积报告数：%d",[[summarydict valueForKey:@"sumPrescriptionCount"] integerValue],[[summarydict valueForKey:@"sumSportDays"] integerValue],[[summarydict valueForKey:@"sumReportCount"] integerValue]];
     }
@@ -889,11 +938,93 @@
         NSLog(@"******用户处方列表********%@**************",responseObject);
         if (code == 0) {
             NSArray *rows = [responseObject valueForKey:@"rows"];
+            NSString *prescriptionName = self.prescriptionTF.text;
+            NSString *trainingPositionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
+            NSString *trainingDeviceStr = self.trainingEquipmentMenu.mainBtn.titleLabel.text;
             if (weakSelf.isFooterClick) {
                 if (weakSelf.isSearch) {
-                    [weakSelf.searchResults addObjectsFromArray:rows];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || self.createTime = %@",self.prescriptionTF.text,self.startTimeStr];
-                    self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
+                    NSMutableArray *results = [NSMutableArray array];
+                    NSMutableArray *tempArr = [NSMutableArray array];
+                    if (weakSelf.searchResults.count > 0) {
+                        for (NSDictionary *dictonary in weakSelf.searchResults) {
+                            NSDictionary *prescription = [dictonary valueForKey:@"prescription"];
+                            [tempArr addObject:prescription];
+                        }
+                    }
+                    if (rows.count > 0) {
+                        for (NSDictionary *dictonary in rows) {
+                            [tempArr addObject:dictonary];
+                        }
+                    }
+                    //处方名称
+                    if (prescriptionName.length > 0) {
+                        NSMutableArray *tempArr = [NSMutableArray array];
+                        if (tempArr.count > 0) {
+                            for (NSDictionary *dictonary in tempArr) {
+                                NSString *name = [dictonary valueForKey:@"title"];
+                                if ([[name lowercaseString] containsString:[prescriptionName lowercaseString]]) {
+                                    [tempArr addObject:dictonary];
+                                }
+                            }
+                        }
+                        tempArr = [tempArr mutableCopy];
+                    }
+                    //开始时间
+                    if (self.startTimeStr.length > 0) {
+                        NSMutableArray *tempArr = [NSMutableArray array];
+                        if (tempArr.count > 0) {
+                            for (NSDictionary *dictonary in tempArr) {
+                                NSString *startTime = [dictonary valueForKey:@"startTime"];
+                                if ([startTime containsString:self.startTimeStr]) {
+                                    [tempArr addObject:dictonary];
+                                }
+                            }
+                        }
+                        tempArr = [tempArr mutableCopy];
+                    }
+                    //训练部位
+                    if (![trainingPositionStr isEqualToString:@"训练部位"]) {
+                        NSMutableArray *tempArr = [NSMutableArray array];
+                        if (tempArr.count > 0) {
+                            for (NSDictionary *dictonary in tempArr) {
+                                NSArray *typeList = [dictonary valueForKey:@"typeList"];
+                                if (typeList.count > 2) {
+                                    NSDictionary *typeDict = typeList[1];
+                                    NSString *position = [typeDict valueForKey:@"name"];
+                                    if ([trainingPositionStr isEqualToString:position]) {
+                                        [tempArr addObject:dictonary];
+                                    }
+                                }
+                            }
+                        }
+                        tempArr = [tempArr mutableCopy];
+                    }
+                    //训练设备
+                    if (![trainingDeviceStr isEqualToString:@"训练设备"]) {
+                        NSMutableArray *tempArr = [NSMutableArray array];
+                        if (tempArr.count > 0) {
+                            for (NSDictionary *dictonary in tempArr) {
+                                NSArray *typeList = [dictonary valueForKey:@"typeList"];
+                                if (typeList.count > 2) {
+                                    NSDictionary *typeDict = typeList[2];
+                                    NSString *device = [typeDict valueForKey:@"name"];
+                                    if ([trainingDeviceStr isEqualToString:device]) {
+                                        [tempArr addObject:dictonary];
+                                    }
+                                }
+                            }
+                        }
+                        tempArr = [tempArr mutableCopy];
+                    }
+                    if (tempArr.count > 0) {
+                        for (NSDictionary *dict in tempArr) {
+                            NSMutableDictionary *prescriptionDict = [NSMutableDictionary dictionary];
+                            [prescriptionDict setValue:dict forKey:@"prescription"];
+                            [prescriptionDict setValue:@[] forKey:@"reports"];
+                            [results addObject:prescriptionDict];
+                        }
+                    }
+                    weakSelf.searchResults = [results mutableCopy];
                     if (weakSelf.searchCloseArr.count > 0) {
                         [weakSelf.searchCloseArr removeAllObjects];
                     }
@@ -901,7 +1032,28 @@
                         [weakSelf.searchCloseArr addObject:[NSNumber numberWithBool:YES]];
                     }
                 } else {
-                    [weakSelf.precriptionsArr addObjectsFromArray:rows];
+                    NSMutableArray *tempArr = [NSMutableArray array];
+                    NSMutableArray *results = [NSMutableArray array];
+                    if (weakSelf.precriptionsArr.count > 0) {
+                        for (NSDictionary *dictonary in weakSelf.precriptionsArr) {
+                            NSDictionary *prescription = [dictonary valueForKey:@"prescription"];
+                            [tempArr addObject:prescription];
+                        }
+                    }
+                    if (rows.count > 0) {
+                        for (NSDictionary *dictonary in rows) {
+                            [tempArr addObject:dictonary];
+                        }
+                    }
+                    if (tempArr.count > 0) {
+                        for (NSDictionary *dict in tempArr) {
+                            NSMutableDictionary *prescriptionDict = [NSMutableDictionary dictionary];
+                            [prescriptionDict setValue:dict forKey:@"prescription"];
+                            [prescriptionDict setValue:@[] forKey:@"reports"];
+                            [results addObject:prescriptionDict];
+                        }
+                    }
+                    weakSelf.precriptionsArr = [results mutableCopy];
                     if (weakSelf.closeArr.count > 0) {
                         [weakSelf.closeArr removeAllObjects];
                     }
@@ -913,20 +1065,92 @@
             } else {
                 if (rows.count > 0) {
                     if (weakSelf.isSearch) {
+                        NSMutableArray *results = [NSMutableArray array];
+                        NSMutableArray *tempArr = [NSMutableArray array];
                         if (weakSelf.searchResults.count > 0) {//之前有数据
                             //替换前n个数据
-                            NSMutableArray *tempArr = [NSMutableArray array];
+                            NSMutableArray *originArr = [NSMutableArray array];
+                            for (NSDictionary *dictonary in weakSelf.searchResults) {
+                                NSDictionary *prescription = [dictonary valueForKey:@"prescription"];
+                                [originArr addObject:prescription];
+                            }
                             [tempArr addObjectsFromArray:rows];
-                            if (weakSelf.searchResults.count > rows.count) {//除去n个数据还有数据剩下
-                                NSArray *afterArr = [weakSelf.searchResults subarrayWithRange:NSMakeRange(rows.count, weakSelf.searchResults.count - rows.count)];
+                            if (originArr.count > rows.count) {//除去n个数据还有数据剩下
+                                NSArray *afterArr = [originArr subarrayWithRange:NSMakeRange(rows.count, originArr.count - rows.count)];
                                 [tempArr addObjectsFromArray:afterArr];
                             }
-                            weakSelf.searchResults = [tempArr mutableCopy];
                         } else {
-                            [weakSelf.searchResults addObjectsFromArray:rows];
+                            [tempArr addObjectsFromArray:rows];
                         }
-                        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@ || self.createTime = %@",self.prescriptionTF.text,self.startTimeStr];
-                        self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
+                        //处方名称
+                        if (prescriptionName.length > 0) {
+                            NSMutableArray *tempArrs = [NSMutableArray array];
+                            if (tempArr.count > 0) {
+                                for (NSDictionary *dictonary in tempArr) {
+                                    NSString *name = [dictonary valueForKey:@"title"];
+                                    if ([[name lowercaseString] containsString:[prescriptionName lowercaseString]]) {
+                                        [tempArrs addObject:dictonary];
+                                    }
+                                }
+                            }
+                            tempArr = [tempArrs mutableCopy];
+                        }
+                        //开始时间
+                        if (self.startTimeStr.length > 0) {
+                            NSMutableArray *tempArrs = [NSMutableArray array];
+                            if (tempArr.count > 0) {
+                                for (NSDictionary *dictonary in tempArr) {
+                                    NSString *startTime = [dictonary valueForKey:@"startTime"];
+                                    if ([startTime containsString:self.startTimeStr]) {
+                                        [tempArrs addObject:dictonary];
+                                    }
+                                }
+                            }
+                            tempArr = [tempArrs mutableCopy];
+                        }
+                        //训练部位
+                        if (![trainingPositionStr isEqualToString:@"训练部位"]) {
+                            NSMutableArray *tempArrs = [NSMutableArray array];
+                            if (tempArr.count > 0) {
+                                for (NSDictionary *dictonary in tempArr) {
+                                    NSArray *typeList = [dictonary valueForKey:@"typeList"];
+                                    if (typeList.count > 2) {
+                                        NSDictionary *typeDict = typeList[1];
+                                        NSString *position = [typeDict valueForKey:@"name"];
+                                        if ([trainingPositionStr isEqualToString:position]) {
+                                            [tempArrs addObject:dictonary];
+                                        }
+                                    }
+                                }
+                            }
+                            tempArr = [tempArrs mutableCopy];
+                        }
+                        //训练设备
+                        if (![trainingDeviceStr isEqualToString:@"训练设备"]) {
+                            NSMutableArray *tempArrs = [NSMutableArray array];
+                            if (tempArr.count > 0) {
+                                for (NSDictionary *dictonary in tempArr) {
+                                    NSArray *typeList = [dictonary valueForKey:@"typeList"];
+                                    if (typeList.count > 2) {
+                                        NSDictionary *typeDict = typeList[2];
+                                        NSString *device = [typeDict valueForKey:@"name"];
+                                        if ([trainingDeviceStr isEqualToString:device]) {
+                                            [tempArrs addObject:dictonary];
+                                        }
+                                    }
+                                }
+                            }
+                            tempArr = [tempArrs mutableCopy];
+                        }
+                        if (tempArr.count > 0) {
+                            for (NSDictionary *dictonary in tempArr) {
+                                NSMutableDictionary *prescriptionDict = [NSMutableDictionary dictionary];
+                                [prescriptionDict setValue:dictonary forKey:@"prescription"];
+                                [prescriptionDict setValue:@[] forKey:@"reports"];
+                                [results addObject:prescriptionDict];
+                            }
+                        }
+                        weakSelf.searchResults = [results mutableCopy];
                         if (weakSelf.searchCloseArr.count > 0) {
                             [weakSelf.searchCloseArr removeAllObjects];
                         }
@@ -934,18 +1158,32 @@
                             [self.searchCloseArr addObject:[NSNumber numberWithBool:YES]];
                         }
                     } else {
+                        NSMutableArray *results = [NSMutableArray array];
+                        NSMutableArray *tempArr = [NSMutableArray array];
                         if (weakSelf.precriptionsArr.count > 0) {//之前有数据
                             //替换前n个数据
-                            NSMutableArray *tempArr = [NSMutableArray array];
+                            NSMutableArray *originArr = [NSMutableArray array];
+                            for (NSDictionary *dictonary in weakSelf.precriptionsArr) {
+                                NSDictionary *prescription = [dictonary valueForKey:@"prescription"];
+                                [originArr addObject:prescription];
+                            }
                             [tempArr addObjectsFromArray:rows];
-                            if (weakSelf.precriptionsArr.count > rows.count) {//除去n个数据还有数据剩下
-                                NSArray *afterArr = [weakSelf.precriptionsArr subarrayWithRange:NSMakeRange(rows.count, weakSelf.precriptionsArr.count - rows.count)];
+                            if (originArr.count > rows.count) {//除去n个数据还有数据剩下
+                                NSArray *afterArr = [originArr subarrayWithRange:NSMakeRange(rows.count, originArr.count - rows.count)];
                                 [tempArr addObjectsFromArray:afterArr];
                             }
-                            weakSelf.precriptionsArr = [tempArr mutableCopy];
                         } else {
-                            [weakSelf.precriptionsArr addObjectsFromArray:rows];
+                            [tempArr addObjectsFromArray:rows];
                         }
+                        if (tempArr.count > 0) {
+                            for (NSDictionary *dictonary in tempArr) {
+                                NSMutableDictionary *prescriptionDict = [NSMutableDictionary dictionary];
+                                [prescriptionDict setValue:dictonary forKey:@"prescription"];
+                                [prescriptionDict setValue:@[] forKey:@"reports"];
+                                [results addObject:prescriptionDict];
+                            }
+                        }
+                        weakSelf.precriptionsArr = [results mutableCopy];
                         if (weakSelf.closeArr.count > 0) {
                             [weakSelf.closeArr removeAllObjects];
                         }
