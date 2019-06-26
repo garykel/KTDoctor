@@ -868,6 +868,7 @@
             if (self.totalTemplateArr.count > 0) {
                 NSLog(@"total templateArr is :%@",[self convertToJSONData:self.totalTemplateArr]);
                 NSMutableArray *templateNames = [NSMutableArray array];
+                NSLog(@"equipmentsArr is :%@",[self convertToJSONData:self.equipmentsArr]);
                 NSLog(@"totalTemplateArr is :%@",[self convertToJSONData:self.totalTemplateArr]);
                 for (NSDictionary *dict in self.totalTemplateArr) {
                     NSArray *typeList = [dict valueForKey:@"typeList"];

@@ -3074,7 +3074,16 @@ CGSize testResultsListViewSize;
         if (code == 0) {
             NSArray *rows = [responseObject valueForKey:@"rows"];
             AerobicPrescriptionAndReportViewController *report = [[AerobicPrescriptionAndReportViewController alloc] init];
-            report.precriptionsArr = [rows mutableCopy];
+            NSMutableArray *results = [NSMutableArray array];
+            if (rows.count > 0) {
+                for (NSDictionary *dict in rows) {
+                    NSMutableDictionary *tempDict = [NSMutableDictionary dictionary];
+                    [tempDict setValue:dict forKey:@"prescription"];
+                    [tempDict setValue:@[] forKey:@"reports"];
+                    [results addObject:tempDict];
+                }
+            }
+            report.precriptionsArr = [results mutableCopy];
             report.patientInfo = self.latestInfoDict;
             if (self.deviceTypeArr.count > 0) {
                 for (NSDictionary *dict in self.deviceTypeArr) {

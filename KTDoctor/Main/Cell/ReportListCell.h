@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface ReportListCell : UITableViewCell
+@property (nonatomic,strong)UIView *headerView;
 @property (nonatomic,strong)UIImageView *sequenceImg;
 @property (nonatomic,strong)UILabel *sequenceLbl;
 @property (nonatomic,strong)UIImageView *accomplishImg;

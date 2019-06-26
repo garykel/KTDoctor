@@ -36,8 +36,6 @@
 @property (nonatomic,strong)UILabel *sportDaysValLbl;
 @property (nonatomic,strong)UIButton *reportsBtn;
 @property (nonatomic,strong)UILabel *reportsValLbl;
-@property (nonatomic,strong)UITableView *reportListview;
-@property (nonatomic,strong)NSMutableArray *reportsArr;
 @property (nonatomic,assign)NSInteger type2;
 @property (nonatomic,strong)NSDictionary *patientInfo;
 + (CGFloat)cellDefaultHeight;

@@ -36,6 +36,7 @@
 #define kPre_TopMargin 4
 #define kPre_Width 62
 #define kPreView_Height 67
+#define kHeader_Height 10
 @implementation ReportListCell
 
 - (void)awakeFromNib {
@@ -53,8 +54,12 @@
 - (void)setUI {
     self.layer.cornerRadius = 4;
     self.layer.masksToBounds = YES;
+    self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kListView_Width * kXScal, kHeader_Height)];
+    self.headerView.backgroundColor = [UIColor colorWithHexString:@"#DBF2F7"];
+    [self.contentView addSubview:self.headerView];
+    
     self.sequenceImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sequence"]];
-    self.sequenceImg.frame = CGRectMake(0, 0, kSequenceImg_Width * kXScal, kSequenceImg_Height * kYScal);
+    self.sequenceImg.frame = CGRectMake(0, CGRectGetMaxY(self.headerView.frame), kSequenceImg_Width * kXScal, kSequenceImg_Height * kYScal);
     [self.contentView addSubview:self.sequenceImg];
     
     self.sequenceLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.sequenceImg.frame.size.width, kSequenceLbl_Height * kYScal)];
