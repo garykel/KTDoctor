@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface PrescriptionCell : UITableViewCell
+@property (nonatomic,strong)UIView *bgView;//蓝色背景视图
+@property (nonatomic,strong)UIView *infoBgView;//白色内容视图
 @property (nonatomic,strong)UILabel *groupNameLbl;//第几组
 @property (nonatomic,strong)UILabel *difficultyPercentLbl;//强度百分比
 @property (nonatomic,strong)UIButton *difficultyImg;
