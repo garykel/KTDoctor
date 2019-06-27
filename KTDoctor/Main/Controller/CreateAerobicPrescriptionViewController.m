@@ -162,21 +162,6 @@
     self.groups = [NSMutableArray array];
     [self setNavBar];
     [self setupUI];
-    
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    NSDictionary *dict = self.user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@(self.offset) forKey:@"offset"];
-    [parameter setValue:@10 forKey:@"rows"];
-    NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
-    [parameter setValue:disease forKey:@"disease"];
-    [parameter setValue:@"" forKey:@"difficulty"];
-    NSInteger riskLevel = [[self.prescriptionDict valueForKey:@"riskLevel"] integerValue];
-    [parameter setValue:@(riskLevel) forKey:@"risk"];
-    [parameter setValue:@1 forKey:@"type"];
-    [self getRecommendTemplateList:parameter];
 }
 
 - (void)dealloc {
@@ -965,6 +950,7 @@
         }
         
     }else if (menu == self.traingDeviceMenu){ //训练设备
+        self.offset = 0;
         if (![self isBlankString:string]) {
             if (self.groups.count > 0) {
                 [self.groups removeAllObjects];
@@ -975,31 +961,33 @@
             if (self.recommendTemplateArr.count > 0) {
                 [self.recommendTemplateArr removeAllObjects];
             }
-            if (self.totalTemplateArr.count > 0) {
-                NSLog(@"total templateArr is :%@",[self convertToJSONData:self.totalTemplateArr]);
-                NSMutableArray *templateNames = [NSMutableArray array];
-                NSLog(@"equipmentsArr is :%@",[self convertToJSONData:self.equipmentsArr]);
-                NSLog(@"totalTemplateArr is :%@",[self convertToJSONData:self.totalTemplateArr]);
-                for (NSDictionary *dict in self.totalTemplateArr) {
-                    NSArray *typeList = [dict valueForKey:@"typeList"];
-                    if (typeList.count > 2) {
-                        for (NSDictionary *typeDict in typeList) {
-                            NSString *name = [typeDict valueForKey:@"name"];
-                            if ([string isEqualToString:name]) {
-                                self.type = [[typeDict valueForKey:@"id"] integerValue];
-                                [templateNames addObject:[dict valueForKey:@"title"]];
-                                [self.recommendTemplateArr addObject:dict];
-                            }
-                        }
+            if (self.recommendArr.count > 0) {
+                [self.recommendArr removeAllObjects];
+            }
+            if (self.equipmentsArr.count > 0) {
+                for (NSDictionary *dict in self.equipmentsArr) {
+                    NSString *name = [dict valueForKey:@"name"];
+                    if ([name isEqualToString:string]) {
+                        self.type = [[dict valueForKey:@"id"] integerValue];
                     }
                 }
-                self.recommendArr = [templateNames mutableCopy];
-                self.templateMenu.titles = self.recommendArr;
-                [self.templateMenu.mTableView reloadData];
             }
+            NSMutableDictionary *para = [NSMutableDictionary dictionary];
+            NSDictionary *dict = self.user.organ;
+            NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+            NSString *orgCode = orgCodeArr[0];
+            [para setValue:orgCode forKey:@"orgCode"];
+            [para setValue:@0 forKey:@"offset"];
+            [para setValue:@10 forKey:@"rows"];
+            NSString *disease = [self.prescriptionDict valueForKey:@"disease"];
+            [para setValue:disease forKey:@"disease"];
+            [para setValue:@"" forKey:@"difficulty"];
+            NSInteger riskLevel = [[self.prescriptionDict valueForKey:@"riskLevel"] integerValue];
+            [para setValue:@(riskLevel) forKey:@"risk"];
+            [para setValue:@(self.type) forKey:@"type"];
+            [self getRecommendTemplateList:para];
         }
     }else if (menu == self.templateMenu){ //推荐模版
-        
         if (![self isBlankString:string]) {
             for (NSDictionary *dict in self.recommendTemplateArr) {
                 NSString *title = [dict valueForKey:@"title"];
@@ -1170,7 +1158,6 @@
 }
 
 - (void)getRecommendTemplateList:(NSMutableDictionary*)parameter{
-    
     kWeakSelf(self);
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_RECOMMEND_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
@@ -1178,26 +1165,41 @@
         NSLog(@"*********获取推荐处方模板*****%@**************",[self convertToJSONData:responseObject]);
         if (code == 0) {
             NSArray *rows = [responseObject valueForKey:@"rows"];
+            NSInteger total = [[responseObject valueForKey:@"total"] integerValue];
             if (rows.count > 0) {
-                [weakself.totalTemplateArr addObjectsFromArray:rows];
+                [weakself.recommendTemplateArr addObjectsFromArray:rows];
                 for (NSDictionary *dict in rows) {
                     [weakself.recommendArr addObject:[dict valueForKey:@"title"]];
                 }
-                weakself.offset += 10;
-                NSMutableDictionary *para = [NSMutableDictionary dictionary];
-                NSDictionary *dict = weakself.user.organ;
-                NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-                NSString *orgCode = orgCodeArr[0];
-                [para setValue:orgCode forKey:@"orgCode"];
-                [para setValue:@(weakself.offset) forKey:@"offset"];
-                [para setValue:@10 forKey:@"rows"];
-                NSString *disease = [weakself.prescriptionDict valueForKey:@"disease"];
-                [para setValue:disease forKey:@"disease"];
-                [para setValue:@"" forKey:@"difficulty"];
-                NSInteger riskLevel = [[weakself.prescriptionDict valueForKey:@"riskLevel"] integerValue];
-                [para setValue:@(riskLevel) forKey:@"risk"];
-                [para setValue:@1 forKey:@"type"];
-                [weakself getRecommendTemplateList:para];
+                if (weakself.recommendArr.count == total) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        weakself.templateMenu.titles = weakself.recommendArr;
+                        [weakself.templateMenu.mTableView reloadData];
+                    });
+                } else {
+                    if (weakself.recommendArr.count > 0) {
+                        [weakself.recommendArr removeAllObjects];
+                    }
+                    if (weakself.recommendTemplateArr.count > 0) {
+                        [weakself.recommendTemplateArr removeAllObjects];
+                    }
+                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                        NSMutableDictionary *para = [NSMutableDictionary dictionary];
+                        NSDictionary *dict = weakself.user.organ;
+                        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+                        NSString *orgCode = orgCodeArr[0];
+                        [para setValue:orgCode forKey:@"orgCode"];
+                        [para setValue:@0 forKey:@"offset"];
+                        [para setValue:@(total) forKey:@"rows"];
+                        NSString *disease = [weakself.prescriptionDict valueForKey:@"disease"];
+                        [para setValue:disease forKey:@"disease"];
+                        [para setValue:@"" forKey:@"difficulty"];
+                        NSInteger riskLevel = [[weakself.prescriptionDict valueForKey:@"riskLevel"] integerValue];
+                        [para setValue:@(riskLevel) forKey:@"risk"];
+                        [para setValue:@(self.type) forKey:@"type"];
+                        [weakself getRecommendTemplateList:para];
+                    });
+                }
             }
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
