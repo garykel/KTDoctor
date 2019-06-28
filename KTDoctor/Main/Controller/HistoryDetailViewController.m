@@ -60,12 +60,31 @@
 #define kMarkLbl_LeftMargin 18
 #define kMarkLbl_Height 11
 #define kMarkLbl_FontSize 11.0
-
-@interface HistoryDetailViewController ()<ChartViewDelegate>
+#define kTopBgImg_Height 550
+#define kTopBgImg_BottomMargin 15
+#define kBottomBgImg_Height 665
+#define kBottomBgImg_BottomMargin 15
+#define kHistoryLbl_Height 18
+#define kHistoryLbl_Width 150
+#define kHistoryLbl_FontSize 18.0
+#define kHistoryLbl_TopMargin 15
+#define kHistoryLbl_BottomMargin 28
+#define kHistoryLineChart_Space 15
+#define kBottomView_CompleteLbl_LeftMargin 60
+#define kBottomView_CompleteLbl_RigtMargin 60
+#define kBottomView_CompleteLbl_Width 100
+#define kBottomView_CompleteLbl_Height 13
+#define kBottomView_CompleteLbl_BottomMargin 10
+#define kBottomView_CompleteLbl_FontSize 13.0
+#define kBottomView_DescriptionLbl_Width 110
+#define kBottomView_DescriptionLbl_Height 11
+#define kBottomView_DescriptionLbl_FontSize 11.0
+@interface HistoryDetailViewController ()<ChartViewDelegate,UIScrollViewDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
-@property (nonatomic,strong)UIImageView *bgImg; 
+@property (nonatomic,strong)UIImageView *topBgImg;
+@property (nonatomic,strong)UIImageView *bottomBgImg;
 @property (nonatomic,strong)UIView *leftView;
 @property (nonatomic,strong)UIImageView *finishBgImg;
 @property (nonatomic,strong)UILabel *finishLbl;
@@ -118,6 +137,20 @@
 @property (nonatomic,strong)NSMutableArray *rpeArr;
 @property (nonatomic,strong)NSMutableArray *calorieArr;
 @property (nonatomic,strong)NSMutableArray *difficultyArr;
+@property (nonatomic,strong)UIScrollView *scrollview;
+@property (nonatomic,strong)UILabel *historyLbl;//运动历史数据
+@property (nonatomic,strong)UILabel *historyCompleteLbl;//历史完成度
+@property (nonatomic,strong)UILabel *historyCompleteDespLbl;//历史完成度描述
+@property (nonatomic,strong)LineChartView *completeLinechart;
+@property (nonatomic,strong)UILabel *historyCalorieLbl;//历史消耗
+@property (nonatomic,strong)UILabel *historyCalorieDespLbl;//历史消耗描述
+@property (nonatomic,strong)LineChartView *calorieLinechart;
+@property (nonatomic,strong)UILabel *historyMaxHrLbl;//历史最大心率
+@property (nonatomic,strong)UILabel *historyMaxHrDespLbl;//历史最大心率描述
+@property (nonatomic,strong)LineChartView *maxHrLinechart;
+@property (nonatomic,strong)UILabel *historyAvgHrLbl;//历史平均心率
+@property (nonatomic,strong)UILabel *historyAvgHrDespLbl;//历史平均心率描述
+@property (nonatomic,strong)LineChartView *avgHrLinechart;
 @end
 
 @implementation HistoryDetailViewController
@@ -224,16 +257,28 @@
 }
 
 - (void)setupUI {
+    self.view.backgroundColor = [UIColor lightTextColor];
+    self.scrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.navView.frame), kWidth, kHeight - CGRectGetMaxY(self.navView.frame))];
+    self.scrollview.delegate = self;
+    self.scrollview.contentSize = CGSizeMake(kWidth, (kBackgroundImg_TopMargin + kTopBgImg_Height + kTopBgImg_BottomMargin + kBottomBgImg_Height + kBottomBgImg_BottomMargin) * kYScal);
+    self.scrollview.backgroundColor = [UIColor clearColor];
+    self.scrollview.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:self.scrollview];
+    [self configTopView];
+    [self configBottomView];
+}
+
+- (void)configTopView {
     UIImage *bgImg = [UIImage imageNamed:@"whiteBg"];
-    bgImg = [self imageCompressWithSimple:bgImg scaledToSize:CGSizeMake(kWidth - 2 * kBackgroundImg_LeftMargin * kXScal, kHeight - (CGRectGetMaxY(self.navView.frame) + kBackgroundImg_TopMargin * kYScal + kBackgroundImg_BottomMargin * kYScal))];
-    self.bgImg = [[UIImageView alloc] initWithFrame:CGRectMake(kBackgroundImg_LeftMargin * kXScal, CGRectGetMaxY(self.navView.frame) + kBackgroundImg_TopMargin * kYScal, kWidth - 2 * kBackgroundImg_LeftMargin * kXScal, kHeight - (CGRectGetMaxY(self.navView.frame) + kBackgroundImg_TopMargin * kYScal + kBackgroundImg_BottomMargin * kYScal))];
-    self.bgImg.image = bgImg;
-    [self.view addSubview:self.bgImg];
-    self.bgImg.userInteractionEnabled = YES;
+    bgImg = [self imageCompressWithSimple:bgImg scaledToSize:CGSizeMake(kWidth - 2 * kBackgroundImg_LeftMargin * kXScal, kTopBgImg_Height * kYScal)];
+    self.topBgImg = [[UIImageView alloc] initWithFrame:CGRectMake(kBackgroundImg_LeftMargin * kXScal, kBackgroundImg_TopMargin * kYScal, kWidth - 2 * kBackgroundImg_LeftMargin * kXScal, kTopBgImg_Height * kYScal)];
+    self.topBgImg.image = bgImg;
+    [self.scrollview addSubview:self.topBgImg];
+    self.topBgImg.userInteractionEnabled = YES;
     
-    self.leftView = [[UIView alloc] initWithFrame:CGRectMake(kLeftView_LeftMargin * kXScal, kLeftView_TopMargin * kYScal, kLeftView_Width, self.bgImg.frame.size.height - kLeftView_TopMargin * kYScal - kLeftView_BottomMargin * kYScal)];
+    self.leftView = [[UIView alloc] initWithFrame:CGRectMake(kLeftView_LeftMargin * kXScal, kLeftView_TopMargin * kYScal, kLeftView_Width, self.topBgImg.frame.size.height - kLeftView_TopMargin * kYScal - kLeftView_BottomMargin * kYScal)];
     self.leftView.backgroundColor = [UIColor colorWithHexString:@"#d1f3f8"];
-    [self.bgImg addSubview:self.leftView];
+    [self.topBgImg addSubview:self.leftView];
     
     CGFloat finishImgLeftMargin = self.leftView.frame.size.width - (kFinishImg_Width - kFinishImg_RightMargin) * kXScal;
     self.finishBgImg = [[UIImageView alloc] initWithFrame:CGRectMake(finishImgLeftMargin, -kFinishImg_TopMargin * kYScal, kFinishImg_Width * kYScal, kFinishImg_Width * kYScal)];
@@ -291,7 +336,7 @@
     [self.sportView addSubview:self.avgHRLbl];
     
     self.avgHRValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgHRLbl.frame) + kCellLbl_Space * kXScal, 0, lblWidth, cellHeight)];
-    self.avgHRValLbl.textColor = [UIColor blackColor];    
+    self.avgHRValLbl.textColor = [UIColor blackColor];
     NSInteger avgHr = [[sportData valueForKey:@"avgHr"] integerValue];
     self.avgHRValLbl.text = [NSString stringWithFormat:@"%d",avgHr];
     self.avgHRValLbl.textAlignment = NSTextAlignmentCenter;
@@ -453,24 +498,68 @@
     NSString *timeStr = [self getLongtimeString:totalTime];
     self.timeValLbl.text = [NSString stringWithFormat:@"%@",timeStr];
     self.timeValLbl.font = [UIFont systemFontOfSize:kSportView_Lbl_FontSize * kYScal];
-//    self.timeValLbl.center = CGPointMake(self.mileValLbl.center.x, self.timeLbl.center.y);
+    //    self.timeValLbl.center = CGPointMake(self.mileValLbl.center.x, self.timeLbl.center.y);
     [self.sportView addSubview:self.timeValLbl];
-        
-    CGFloat leftUnitImg_TopMargin = (self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kLeftUnitImg_Height * kYScal)/2;
+    
+    CGFloat leftUnitImg_TopMargin = (self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kLeftUnitImg_Height * kYScal)/2;
     self.leftUnitImg = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.leftView.frame) + kLeftView_RightMargin * kXScal, leftUnitImg_TopMargin, kLeftUnitImg_Width * kXScal, kLeftUnitImg_Height * kYScal)];
     self.leftUnitImg.image = [UIImage imageNamed:@"leftUnit"];
-    [self.bgImg addSubview:self.leftUnitImg];
+    [self.topBgImg addSubview:self.leftUnitImg];
     
-    CGFloat lineChartView_Width = self.bgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
-    CGFloat lineChartView_Height = self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
+    CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
+    CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
     self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
     [self setLineChartDataWithSportData:sportData];
-    [self.bgImg addSubview:self.lineChartView];
+    [self.topBgImg addSubview:self.lineChartView];
     
-    CGFloat righUnitImg_TopMargin = (self.bgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kRightUnitImg_Height * kYScal)/2;
+    CGFloat righUnitImg_TopMargin = (self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal - kRightUnitImg_Height * kYScal)/2;
     self.rightUnitImg = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.lineChartView.frame) + kLeftUnitImg_RightMargin * kXScal, righUnitImg_TopMargin, kRightUnitImg_Width * kXScal, kRightUnitImg_Height * kYScal)];
     self.rightUnitImg.image = [UIImage imageNamed:@"rightUnit"];
-    [self.bgImg addSubview:self.rightUnitImg];
+    [self.topBgImg addSubview:self.rightUnitImg];
+}
+
+- (void)configBottomView {
+    UIImage *bottomBgImg = [UIImage imageNamed:@"whiteBg"];
+    bottomBgImg = [self imageCompressWithSimple:bottomBgImg scaledToSize:CGSizeMake(kWidth - 2 * kBackgroundImg_LeftMargin * kXScal, kBottomBgImg_Height * kYScal)];
+    self.bottomBgImg = [[UIImageView alloc] initWithFrame:CGRectMake(self.topBgImg.frame.origin.x, CGRectGetMaxY(self.topBgImg.frame)  + kBottomBgImg_BottomMargin * kYScal, self.topBgImg.frame.size.width, kBottomBgImg_Height * kYScal)];
+    self.bottomBgImg.image = bottomBgImg;
+    [self.scrollview addSubview:self.bottomBgImg];
+    self.bottomBgImg.userInteractionEnabled = YES;
+    
+    self.historyLbl = [[UILabel alloc] initWithFrame:CGRectMake((self.bottomBgImg.frame.size.width - kHistoryLbl_Width)/2, kHistoryLbl_TopMargin * kYScal, kHistoryLbl_Width * kXScal, kHistoryLbl_Height * kYScal)];
+    self.historyLbl.text = @"运动历史数据";
+    self.historyLbl.font = [UIFont systemFontOfSize:kHistoryLbl_FontSize * kYScal];
+    self.historyLbl.textAlignment = NSTextAlignmentCenter;
+    self.historyLbl.textColor = [UIColor colorWithHexString:@"#10a9cb"];
+    [self.bottomBgImg addSubview:self.historyLbl];
+    
+    CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal)/4;
+    CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
+    self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
+    [self setCompleteLinechartData];
+    [self.bottomBgImg addSubview:self.completeLinechart];
+    
+    self.historyCompleteDespLbl = [[UILabel alloc] initWithFrame:CGRectMake(kBottomView_CompleteLbl_LeftMargin * kXScal, self.completeLinechart.frame.origin.y + linechartHeight/2.0, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_DescriptionLbl_Height * kYScal)];
+    self.historyCompleteDespLbl.font = [UIFont systemFontOfSize:kBottomView_DescriptionLbl_FontSize * kYScal];
+    self.historyCompleteDespLbl.text = @"完成度越高说明您的运动效果越好。";
+    self.historyCompleteDespLbl.textColor = [UIColor redColor];
+    [self.bottomBgImg addSubview:self.historyCompleteDespLbl];
+    
+    self.calorieLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.completeLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+    [self.bottomBgImg addSubview:self.calorieLinechart];
+    
+    self.maxHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.calorieLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+    [self.bottomBgImg addSubview:self.maxHrLinechart];
+    
+    self.avgHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.maxHrLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+    [self.bottomBgImg addSubview:self.avgHrLinechart];
+}
+
+- (void)setCompleteLinechartData {
+    if (self.reports.count > 0) {
+        NSDictionary *dict = [self.reports objectAtIndex:0];
+        NSLog(@"reports dict :%@",[self convertToJSONData:dict]);
+    }
 }
 
 - (void)setLineChartDataWithSportData:(NSDictionary*)sportData {
@@ -545,6 +634,174 @@
     [data setValueFont:[UIFont systemFontOfSize:11.0]];
     [data setValueTextColor:[UIColor clearColor]];
     _lineChartView.data = data;
+}
+
+- (LineChartView*)completeLinechart {
+    if (_completeLinechart == nil) {
+        _completeLinechart = [[LineChartView alloc] init];
+        _completeLinechart.noDataText = @"暂无数据";
+        _completeLinechart.chartDescription.enabled = NO;
+        _completeLinechart.scaleYEnabled = NO;
+        _completeLinechart.doubleTapToZoomEnabled = NO;
+        ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
+        markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
+        markerY.chartView = _completeLinechart;
+        _completeLinechart.marker = markerY;
+        [self.markBgView addSubview:self.markY];
+        [markerY addSubview:self.markBgView];
+        
+        _completeLinechart.rightAxis.enabled = NO;//不绘制右轴
+        ChartXAxis *xAxis = _completeLinechart.xAxis;
+        xAxis.granularityEnabled = YES;
+        xAxis.labelPosition = XAxisLabelPositionBottom;
+        xAxis.gridColor = [UIColor clearColor];
+        xAxis.labelTextColor = [UIColor blackColor];
+        xAxis.axisLineColor = [UIColor grayColor];
+        _completeLinechart.maxVisibleCount = 999;
+        
+        ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
+        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
+        leftAxis.axisMinimum = 0;//设置Y轴的最小值
+        leftAxis.axisMaximum = 100;//设置Y轴的最大值
+        leftAxis.inverted = NO;//是否将Y轴进行上下翻转
+        leftAxis.axisLineColor = [UIColor redColor];//Y轴颜色
+        leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
+        leftAxis.labelTextColor = [UIColor redColor];//文字颜色
+        leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
+        leftAxis.drawAxisLineEnabled = YES;//画Y轴线
+        leftAxis.axisLineColor = [UIColor grayColor];
+        leftAxis.drawGridLinesEnabled = YES;
+        leftAxis.gridAntialiasEnabled = NO;//开启抗锯齿
+        _completeLinechart.delegate = self;
+    }
+    return _completeLinechart;
+}
+
+- (LineChartView*)calorieLinechart {
+    if (_calorieLinechart == nil) {
+        _calorieLinechart = [[LineChartView alloc] init];
+        _calorieLinechart.noDataText = @"暂无数据";
+        _calorieLinechart.chartDescription.enabled = NO;
+        _calorieLinechart.scaleYEnabled = NO;
+        _calorieLinechart.doubleTapToZoomEnabled = NO;
+        ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
+        markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
+        markerY.chartView = _calorieLinechart;
+        _calorieLinechart.marker = markerY;
+        [self.markBgView addSubview:self.markY];
+        [markerY addSubview:self.markBgView];
+        
+        _calorieLinechart.rightAxis.enabled = NO;//不绘制右轴
+        ChartXAxis *xAxis = _calorieLinechart.xAxis;
+        xAxis.granularityEnabled = YES;
+        xAxis.labelPosition = XAxisLabelPositionBottom;
+        xAxis.gridColor = [UIColor clearColor];
+        xAxis.labelTextColor = [UIColor blackColor];
+        xAxis.axisLineColor = [UIColor grayColor];
+        _calorieLinechart.maxVisibleCount = 999;
+        
+        ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
+        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
+        leftAxis.axisMinimum = 0;//设置Y轴的最小值
+        leftAxis.axisMaximum = 100;//设置Y轴的最大值
+        leftAxis.inverted = NO;//是否将Y轴进行上下翻转
+        leftAxis.axisLineColor = [UIColor redColor];//Y轴颜色
+        leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
+        leftAxis.labelTextColor = [UIColor redColor];//文字颜色
+        leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
+        leftAxis.drawAxisLineEnabled = YES;//画Y轴线
+        leftAxis.axisLineColor = [UIColor grayColor];
+        leftAxis.drawGridLinesEnabled = YES;
+        leftAxis.gridAntialiasEnabled = NO;//开启抗锯齿
+        _calorieLinechart.delegate = self;
+    }
+    return _calorieLinechart;
+}
+
+- (LineChartView*)maxHrLinechart {
+    if (_maxHrLinechart == nil) {
+        _maxHrLinechart = [[LineChartView alloc] init];
+        _maxHrLinechart.noDataText = @"暂无数据";
+        _maxHrLinechart.chartDescription.enabled = NO;
+        _maxHrLinechart.scaleYEnabled = NO;
+        _maxHrLinechart.doubleTapToZoomEnabled = NO;
+        ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
+        markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
+        markerY.chartView = _maxHrLinechart;
+        _maxHrLinechart.marker = markerY;
+        [self.markBgView addSubview:self.markY];
+        [markerY addSubview:self.markBgView];
+        
+        _maxHrLinechart.rightAxis.enabled = NO;//不绘制右轴
+        ChartXAxis *xAxis = _completeLinechart.xAxis;
+        xAxis.granularityEnabled = YES;
+        xAxis.labelPosition = XAxisLabelPositionBottom;
+        xAxis.gridColor = [UIColor clearColor];
+        xAxis.labelTextColor = [UIColor blackColor];
+        xAxis.axisLineColor = [UIColor grayColor];
+        _maxHrLinechart.maxVisibleCount = 999;
+        
+        ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
+        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
+        leftAxis.axisMinimum = 0;//设置Y轴的最小值
+        leftAxis.axisMaximum = 100;//设置Y轴的最大值
+        leftAxis.inverted = NO;//是否将Y轴进行上下翻转
+        leftAxis.axisLineColor = [UIColor redColor];//Y轴颜色
+        leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
+        leftAxis.labelTextColor = [UIColor redColor];//文字颜色
+        leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
+        leftAxis.drawAxisLineEnabled = YES;//画Y轴线
+        leftAxis.axisLineColor = [UIColor grayColor];
+        leftAxis.drawGridLinesEnabled = YES;
+        leftAxis.gridAntialiasEnabled = NO;//开启抗锯齿
+        _maxHrLinechart.delegate = self;
+    }
+    return _maxHrLinechart;
+}
+
+- (LineChartView*)avgHrLinechart {
+    if (_avgHrLinechart == nil) {
+        _avgHrLinechart = [[LineChartView alloc] init];
+        _avgHrLinechart.noDataText = @"暂无数据";
+        _avgHrLinechart.chartDescription.enabled = NO;
+        _avgHrLinechart.scaleYEnabled = NO;
+        _avgHrLinechart.doubleTapToZoomEnabled = NO;
+        ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
+        markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
+        markerY.chartView = _avgHrLinechart;
+        _avgHrLinechart.marker = markerY;
+        [self.markBgView addSubview:self.markY];
+        [markerY addSubview:self.markBgView];
+        
+        _avgHrLinechart.rightAxis.enabled = NO;//不绘制右轴
+        ChartXAxis *xAxis = _avgHrLinechart.xAxis;
+        xAxis.granularityEnabled = YES;
+        xAxis.labelPosition = XAxisLabelPositionBottom;
+        xAxis.gridColor = [UIColor clearColor];
+        xAxis.labelTextColor = [UIColor blackColor];
+        xAxis.axisLineColor = [UIColor grayColor];
+        _avgHrLinechart.maxVisibleCount = 999;
+        
+        ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
+        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
+        leftAxis.axisMinimum = 0;//设置Y轴的最小值
+        leftAxis.axisMaximum = 100;//设置Y轴的最大值
+        leftAxis.inverted = NO;//是否将Y轴进行上下翻转
+        leftAxis.axisLineColor = [UIColor redColor];//Y轴颜色
+        leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
+        leftAxis.labelTextColor = [UIColor redColor];//文字颜色
+        leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
+        leftAxis.drawAxisLineEnabled = YES;//画Y轴线
+        leftAxis.axisLineColor = [UIColor grayColor];
+        leftAxis.drawGridLinesEnabled = YES;
+        leftAxis.gridAntialiasEnabled = NO;//开启抗锯齿
+        _avgHrLinechart.delegate = self;
+    }
+    return _avgHrLinechart;
 }
 
 - (LineChartView*)lineChartView {

@@ -13,4 +13,5 @@
 @property (nonatomic,assign)NSInteger type2;
 @property (nonatomic,assign)BOOL isFromReport;
 @property (nonatomic,strong)NSDictionary *patientInfo;
+@property (nonatomic,strong)NSArray *reports;//报告列表
 @end

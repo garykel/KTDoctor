@@ -581,6 +581,7 @@
         }
         NSDictionary *dict = [dictonary valueForKey:@"prescription"];
         NSArray *reports = [dictonary valueForKey:@"reports"];
+        history.reports = [reports copy];
         NSDictionary *reportsDict = [reports objectAtIndex:(indexPath.row - 1)];
         NSMutableDictionary *sportDict = [NSMutableDictionary dictionary];
         [sportDict setValue:reportsDict forKey:@"sportData"];
