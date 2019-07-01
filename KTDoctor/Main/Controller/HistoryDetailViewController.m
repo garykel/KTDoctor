@@ -56,6 +56,9 @@
 #define kCellLbl_Space 10
 #define kMarkBgView_Width 125
 #define kMarkBgView_Height 115
+#define kHistoryMarkBgView_Width 125
+#define kHistoryMarkBgView_Height 55
+#define kHistoryMarkValLbl_LeftMargin 5
 #define kMarkLbl_TopMargin 12
 #define kMarkLbl_LeftMargin 18
 #define kMarkLbl_Height 11
@@ -70,14 +73,15 @@
 #define kHistoryLbl_TopMargin 15
 #define kHistoryLbl_BottomMargin 28
 #define kHistoryLineChart_Space 15
+#define kHistoryLineChart_BottomMargin 10
 #define kBottomView_CompleteLbl_LeftMargin 60
 #define kBottomView_CompleteLbl_RigtMargin 60
-#define kBottomView_CompleteLbl_Width 100
+#define kBottomView_CompleteLbl_Width 110
 #define kBottomView_CompleteLbl_Height 13
-#define kBottomView_CompleteLbl_BottomMargin 10
+#define kBottomView_CompleteLbl_BottomMargin 15
 #define kBottomView_CompleteLbl_FontSize 13.0
 #define kBottomView_DescriptionLbl_Width 110
-#define kBottomView_DescriptionLbl_Height 11
+#define kBottomView_DescriptionLbl_Height 30
 #define kBottomView_DescriptionLbl_FontSize 11.0
 @interface HistoryDetailViewController ()<ChartViewDelegate,UIScrollViewDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -124,6 +128,18 @@
 @property (nonatomic,strong)LineChartView *lineChartView;
 @property (nonatomic,strong)UILabel *markY;
 @property (nonatomic,strong)UIImageView *markBgView;
+@property (nonatomic,strong)UIImageView *historyCompleteMarkBgView;
+@property (nonatomic,strong)UILabel *historyCompleteMarkTimeLbl;
+@property (nonatomic,strong)UILabel *historyCompleteMarkValLbl;
+@property (nonatomic,strong)UIImageView *historyCalorieMarkBgView;
+@property (nonatomic,strong)UILabel *historyCalorieMarkTimeLbl;
+@property (nonatomic,strong)UILabel *historyCalorieMarkValLbl;
+@property (nonatomic,strong)UIImageView *historyMaxHrMarkBgView;
+@property (nonatomic,strong)UILabel *historyMaxHrMarkTimeLbl;
+@property (nonatomic,strong)UILabel *historyMaxMarkValLbl;
+@property (nonatomic,strong)UIImageView *historyAvgHrMarkBgView;
+@property (nonatomic,strong)UILabel *historyAvgHrMarkTimeLbl;
+@property (nonatomic,strong)UILabel *historyAvgHrMarkValLbl;
 @property (nonatomic,strong)LineChartDataSet *set1;
 @property (nonatomic,strong)LineChartDataSet *set2;
 @property (nonatomic,strong)UILabel *markTimeLbl;
@@ -533,32 +549,210 @@
     self.historyLbl.textColor = [UIColor colorWithHexString:@"#10a9cb"];
     [self.bottomBgImg addSubview:self.historyLbl];
     
-    CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal)/4;
+    CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
     CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
     self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
     [self setCompleteLinechartData];
     [self.bottomBgImg addSubview:self.completeLinechart];
     
-    self.historyCompleteDespLbl = [[UILabel alloc] initWithFrame:CGRectMake(kBottomView_CompleteLbl_LeftMargin * kXScal, self.completeLinechart.frame.origin.y + linechartHeight/2.0, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_DescriptionLbl_Height * kYScal)];
+    self.historyCompleteDespLbl = [[UILabel alloc] initWithFrame:CGRectMake(kBottomView_CompleteLbl_LeftMargin * kXScal, self.completeLinechart.frame.origin.y + linechartHeight/2.0 - 20, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_DescriptionLbl_Height * kYScal)];
     self.historyCompleteDespLbl.font = [UIFont systemFontOfSize:kBottomView_DescriptionLbl_FontSize * kYScal];
     self.historyCompleteDespLbl.text = @"完成度越高说明您的运动效果越好。";
-    self.historyCompleteDespLbl.textColor = [UIColor redColor];
+    self.historyCompleteDespLbl.numberOfLines = 2;
+    self.historyCompleteDespLbl.textColor = [UIColor colorWithHexString:@"#f14444"];
     [self.bottomBgImg addSubview:self.historyCompleteDespLbl];
     
+    self.historyCompleteLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.historyCompleteDespLbl.origin.x, self.historyCompleteDespLbl.frame.origin.y - kBottomView_CompleteLbl_BottomMargin * kYScal, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_CompleteLbl_Height * kYScal)];
+    self.historyCompleteLbl.font = [UIFont systemFontOfSize:kBottomView_CompleteLbl_FontSize * kYScal];
+    self.historyCompleteLbl.text = @"完成度（%）";
+    self.historyCompleteLbl.textColor = [UIColor colorWithHexString:@"#e51616"];
+    [self.bottomBgImg addSubview:self.historyCompleteLbl];
+    
     self.calorieLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.completeLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+    [self setCalorieLinechartData];
     [self.bottomBgImg addSubview:self.calorieLinechart];
     
+    self.historyCalorieDespLbl = [[UILabel alloc] initWithFrame:CGRectMake(kBottomView_CompleteLbl_LeftMargin * kXScal, self.calorieLinechart.frame.origin.y + linechartHeight/2.0 - 20, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_DescriptionLbl_Height * kYScal)];
+    self.historyCalorieDespLbl.font = [UIFont systemFontOfSize:kBottomView_DescriptionLbl_FontSize * kYScal];
+    self.historyCalorieDespLbl.text = @"消耗增加可能代表了您代谢能力的提高。";
+    self.historyCalorieDespLbl.numberOfLines = 2;
+    self.historyCalorieDespLbl.textColor = [UIColor colorWithHexString:@"#bc3eea"];
+    [self.bottomBgImg addSubview:self.historyCalorieDespLbl];
+    
+    self.historyCalorieLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.historyCalorieDespLbl.origin.x, self.historyCalorieDespLbl.frame.origin.y - kBottomView_CompleteLbl_BottomMargin * kYScal, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_CompleteLbl_Height * kYScal)];
+    self.historyCalorieLbl.font = [UIFont systemFontOfSize:kBottomView_CompleteLbl_FontSize * kYScal];
+    self.historyCalorieLbl.text = @"消耗（kcal）";
+    self.historyCalorieLbl.textColor = [UIColor colorWithHexString:@"#af16e8"];
+    [self.bottomBgImg addSubview:self.historyCalorieLbl];
+    
     self.maxHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.calorieLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+    [self setMaxHrLinechartData];
     [self.bottomBgImg addSubview:self.maxHrLinechart];
     
+    self.historyMaxHrDespLbl = [[UILabel alloc] initWithFrame:CGRectMake(kBottomView_CompleteLbl_LeftMargin * kXScal, self.maxHrLinechart.frame.origin.y + linechartHeight/2.0 - 20, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_DescriptionLbl_Height * kYScal)];
+    self.historyMaxHrDespLbl.font = [UIFont systemFontOfSize:kBottomView_DescriptionLbl_FontSize * kYScal];
+    self.historyMaxHrDespLbl.text = @"最大心率降低可能代表了您心扉能力的增强。";
+    self.historyMaxHrDespLbl.numberOfLines = 2;
+    self.historyMaxHrDespLbl.textColor = [UIColor colorWithHexString:@"#3c5dda"];
+    [self.bottomBgImg addSubview:self.historyMaxHrDespLbl];
+    
+    self.historyMaxHrLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.historyMaxHrDespLbl.origin.x, self.historyMaxHrDespLbl.frame.origin.y - kBottomView_CompleteLbl_BottomMargin * kYScal, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_CompleteLbl_Height * kYScal)];
+    self.historyMaxHrLbl.font = [UIFont systemFontOfSize:kBottomView_CompleteLbl_FontSize * kYScal];
+    self.historyMaxHrLbl.text = @"最大心率（bpm）";
+    self.historyMaxHrLbl.textColor = [UIColor colorWithHexString:@"#1537b6"];
+    [self.bottomBgImg addSubview:self.historyMaxHrLbl];
+    
     self.avgHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.maxHrLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+    [self setAvgHrLinechartData];
     [self.bottomBgImg addSubview:self.avgHrLinechart];
+    
+    self.historyAvgHrDespLbl = [[UILabel alloc] initWithFrame:CGRectMake(kBottomView_CompleteLbl_LeftMargin * kXScal, self.avgHrLinechart.frame.origin.y + linechartHeight/2.0 - 20, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_DescriptionLbl_Height * kYScal)];
+    self.historyAvgHrDespLbl.font = [UIFont systemFontOfSize:kBottomView_DescriptionLbl_FontSize * kYScal];
+    self.historyAvgHrDespLbl.text = @"平均心率降低可能代表了您心肺能力的增强。";
+    self.historyAvgHrDespLbl.numberOfLines = 2;
+    self.historyAvgHrDespLbl.textColor = [UIColor colorWithHexString:@"#40a638"];
+    [self.bottomBgImg addSubview:self.historyAvgHrDespLbl];
+    
+    self.historyAvgHrLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.historyAvgHrDespLbl.origin.x, self.historyAvgHrDespLbl.frame.origin.y - kBottomView_CompleteLbl_BottomMargin * kYScal, kBottomView_DescriptionLbl_Width * kXScal, kBottomView_CompleteLbl_Height * kYScal)];
+    self.historyAvgHrLbl.font = [UIFont systemFontOfSize:kBottomView_CompleteLbl_FontSize * kYScal];
+    self.historyAvgHrLbl.text = @"平均心率（bpm）";
+    self.historyAvgHrLbl.textColor = [UIColor colorWithHexString:@"#15870c"];
+    [self.bottomBgImg addSubview:self.historyAvgHrLbl];
 }
 
 - (void)setCompleteLinechartData {
     if (self.reports.count > 0) {
-        NSDictionary *dict = [self.reports objectAtIndex:0];
-        NSLog(@"reports dict :%@",[self convertToJSONData:dict]);
+        NSMutableArray *xVals = [NSMutableArray array];
+        for (NSInteger i = 0; i < self.reports.count; i++) {
+            [xVals addObject:[NSString stringWithFormat:@"%d",i+1]];
+        }
+        NSMutableArray *dataSets = [NSMutableArray array];
+        NSMutableArray *leftVals = [NSMutableArray array];
+        if (xVals.count > 0) {
+            _completeLinechart.xAxis.valueFormatter = [[ChartIndexAxisValueFormatter alloc] initWithValues:xVals];
+            for (NSInteger j = 0; j < xVals.count; j++) {
+                NSDictionary *dict = [self.reports objectAtIndex:j];
+                NSInteger completePercent = [[dict valueForKey:@"completePercent"] integerValue];
+                ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:j y:completePercent];
+                [leftVals addObject:entry];
+            }
+        }
+        LineChartDataSet *set = [[LineChartDataSet alloc] initWithValues:leftVals label:@"完成度"];
+        set.axisDependency = AxisDependencyLeft;
+        set.lineWidth = 2.0;
+        set.drawValuesEnabled = YES;
+        [set setColor:[UIColor colorWithHexString:@"#e51616"]];
+        set.drawCirclesEnabled = NO;
+        set.drawFilledEnabled = NO;
+        set.highlightEnabled = YES;//选中拐点开启高亮效果
+        set.highlightColor = [UIColor clearColor];
+        [dataSets addObject:set];
+        LineChartData *data = [[LineChartData alloc] initWithDataSets:dataSets];
+        [data setValueFont:[UIFont systemFontOfSize:11.0]];
+        [data setValueTextColor:[UIColor clearColor]];
+        _completeLinechart.data = data;
+    }
+}
+
+- (void)setCalorieLinechartData {
+    if (self.reports.count > 0) {
+        NSMutableArray *xVals = [NSMutableArray array];
+        for (NSInteger i = 0; i < self.reports.count; i++) {
+            [xVals addObject:[NSString stringWithFormat:@"%d",i+1]];
+        }
+        NSMutableArray *dataSets = [NSMutableArray array];
+        NSMutableArray *leftVals = [NSMutableArray array];
+        if (xVals.count > 0) {
+            _calorieLinechart.xAxis.valueFormatter = [[ChartIndexAxisValueFormatter alloc] initWithValues:xVals];
+            for (NSInteger j = 0; j < xVals.count; j++) {
+                NSDictionary *dict = [self.reports objectAtIndex:j];
+                CGFloat calorie = [[dict valueForKey:@"calorie"] floatValue];
+                ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:j y:calorie];
+                [leftVals addObject:entry];
+            }
+        }
+        LineChartDataSet *set = [[LineChartDataSet alloc] initWithValues:leftVals label:@"消耗"];
+        set.axisDependency = AxisDependencyLeft;
+        set.lineWidth = 2.0;
+        set.drawValuesEnabled = YES;
+        [set setColor:[UIColor colorWithHexString:@"#af16e8"]];
+        set.drawCirclesEnabled = NO;
+        set.drawFilledEnabled = NO;
+        set.highlightEnabled = YES;//选中拐点开启高亮效果
+        set.highlightColor = [UIColor clearColor];
+        [dataSets addObject:set];
+        LineChartData *data = [[LineChartData alloc] initWithDataSets:dataSets];
+        [data setValueFont:[UIFont systemFontOfSize:11.0]];
+        [data setValueTextColor:[UIColor clearColor]];
+        _calorieLinechart.data = data;
+    }
+}
+
+- (void)setMaxHrLinechartData {
+    if (self.reports.count > 0) {
+        NSMutableArray *xVals = [NSMutableArray array];
+        for (NSInteger i = 0; i < self.reports.count; i++) {
+            [xVals addObject:[NSString stringWithFormat:@"%d",i+1]];
+        }
+        NSMutableArray *dataSets = [NSMutableArray array];
+        NSMutableArray *leftVals = [NSMutableArray array];
+        if (xVals.count > 0) {
+            _maxHrLinechart.xAxis.valueFormatter = [[ChartIndexAxisValueFormatter alloc] initWithValues:xVals];
+            for (NSInteger j = 0; j < xVals.count; j++) {
+                NSDictionary *dict = [self.reports objectAtIndex:j];
+                NSInteger calorie = [[dict valueForKey:@"maxHr"] integerValue];
+                ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:j y:calorie];
+                [leftVals addObject:entry];
+            }
+        }
+        LineChartDataSet *set = [[LineChartDataSet alloc] initWithValues:leftVals label:@"最大心率"];
+        set.axisDependency = AxisDependencyLeft;
+        set.lineWidth = 2.0;
+        set.drawValuesEnabled = YES;
+        [set setColor:[UIColor colorWithHexString:@"#1537b6"]];
+        set.drawCirclesEnabled = NO;
+        set.drawFilledEnabled = NO;
+        set.highlightEnabled = YES;//选中拐点开启高亮效果
+        set.highlightColor = [UIColor clearColor];
+        [dataSets addObject:set];
+        LineChartData *data = [[LineChartData alloc] initWithDataSets:dataSets];
+        [data setValueFont:[UIFont systemFontOfSize:11.0]];
+        [data setValueTextColor:[UIColor clearColor]];
+        _maxHrLinechart.data = data;
+    }
+}
+
+- (void)setAvgHrLinechartData {
+    if (self.reports.count > 0) {
+        NSMutableArray *xVals = [NSMutableArray array];
+        for (NSInteger i = 0; i < self.reports.count; i++) {
+            [xVals addObject:[NSString stringWithFormat:@"%d",i+1]];
+        }
+        NSMutableArray *dataSets = [NSMutableArray array];
+        NSMutableArray *leftVals = [NSMutableArray array];
+        if (xVals.count > 0) {
+            _avgHrLinechart.xAxis.valueFormatter = [[ChartIndexAxisValueFormatter alloc] initWithValues:xVals];
+            for (NSInteger j = 0; j < xVals.count; j++) {
+                NSDictionary *dict = [self.reports objectAtIndex:j];
+                NSInteger calorie = [[dict valueForKey:@"avgHr"] integerValue];
+                ChartDataEntry *entry = [[ChartDataEntry alloc] initWithX:j y:calorie];
+                [leftVals addObject:entry];
+            }
+        }
+        LineChartDataSet *set = [[LineChartDataSet alloc] initWithValues:leftVals label:@"平均心率"];
+        set.axisDependency = AxisDependencyLeft;
+        set.lineWidth = 2.0;
+        set.drawValuesEnabled = YES;
+        [set setColor:[UIColor colorWithHexString:@"#15870c"]];
+        set.drawCirclesEnabled = NO;
+        set.drawFilledEnabled = NO;
+        set.highlightEnabled = YES;//选中拐点开启高亮效果
+        set.highlightColor = [UIColor clearColor];
+        [dataSets addObject:set];
+        LineChartData *data = [[LineChartData alloc] initWithDataSets:dataSets];
+        [data setValueFont:[UIFont systemFontOfSize:11.0]];
+        [data setValueTextColor:[UIColor clearColor]];
+        _avgHrLinechart.data = data;
     }
 }
 
@@ -573,7 +767,7 @@
             [xVals addObject:timeStr];
         }
     }
-    NSMutableArray *dataSets = [[NSMutableArray alloc] init];
+    NSMutableArray *dataSets = [NSMutableArray array];
     if (xVals.count > 0) {
         _lineChartView.xAxis.valueFormatter = [[DateValueFormatter alloc] initWithArr:xVals];
         NSMutableArray *leftVals = [NSMutableArray array];
@@ -644,11 +838,10 @@
         _completeLinechart.scaleYEnabled = NO;
         _completeLinechart.doubleTapToZoomEnabled = NO;
         ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
-        markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
+        markerY.offset = CGPointMake(-kHistoryMarkBgView_Width * kXScal, -kHistoryMarkBgView_Height * kYScal - 5);
         markerY.chartView = _completeLinechart;
         _completeLinechart.marker = markerY;
-        [self.markBgView addSubview:self.markY];
-        [markerY addSubview:self.markBgView];
+        [markerY addSubview:self.historyCompleteMarkBgView];
         
         _completeLinechart.rightAxis.enabled = NO;//不绘制右轴
         ChartXAxis *xAxis = _completeLinechart.xAxis;
@@ -660,12 +853,12 @@
         _completeLinechart.maxVisibleCount = 999;
         
         ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
-        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        leftAxis.labelCount = 6;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
         leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
         leftAxis.axisMinimum = 0;//设置Y轴的最小值
         leftAxis.axisMaximum = 100;//设置Y轴的最大值
         leftAxis.inverted = NO;//是否将Y轴进行上下翻转
-        leftAxis.axisLineColor = [UIColor redColor];//Y轴颜色
+        leftAxis.axisLineColor = [UIColor colorWithHexString:@"#e51616"];//Y轴颜色
         leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
         leftAxis.labelTextColor = [UIColor redColor];//文字颜色
         leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
@@ -684,13 +877,14 @@
         _calorieLinechart.noDataText = @"暂无数据";
         _calorieLinechart.chartDescription.enabled = NO;
         _calorieLinechart.scaleYEnabled = NO;
+        _calorieLinechart.scaleXEnabled = NO;
         _calorieLinechart.doubleTapToZoomEnabled = NO;
+        
         ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
-        markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
+        markerY.offset = CGPointMake(-kHistoryMarkBgView_Width * kXScal, -kHistoryMarkBgView_Height * kYScal - 5);
         markerY.chartView = _calorieLinechart;
         _calorieLinechart.marker = markerY;
-        [self.markBgView addSubview:self.markY];
-        [markerY addSubview:self.markBgView];
+        [markerY addSubview:self.historyCalorieMarkBgView];
         
         _calorieLinechart.rightAxis.enabled = NO;//不绘制右轴
         ChartXAxis *xAxis = _calorieLinechart.xAxis;
@@ -700,16 +894,30 @@
         xAxis.labelTextColor = [UIColor blackColor];
         xAxis.axisLineColor = [UIColor grayColor];
         _calorieLinechart.maxVisibleCount = 999;
-        
-        ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
-        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        NSMutableArray *calories = [NSMutableArray array];
+        if (self.reports.count > 0) {
+            for (NSDictionary *dict in self.reports) {
+                CGFloat calorie = [[dict valueForKey:@"calorie"] floatValue];
+                [calories addObject:[NSNumber numberWithFloat:calorie]];
+            }
+        }
+        CGFloat maxCalorie = [[calories valueForKeyPath:@"@max.floatValue"] floatValue];
+        CGFloat minCalorie = [[calories valueForKeyPath:@"@min.floatValue"] floatValue];
+        NSInteger max = (NSInteger)(maxCalorie * 10);
+        if (max %2==0) {
+            maxCalorie+=4;
+        } else {
+            maxCalorie+=5;
+        }
+        ChartYAxis *leftAxis = _calorieLinechart.leftAxis;//获取左边Y轴
+        leftAxis.labelCount = 6;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
         leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
-        leftAxis.axisMinimum = 0;//设置Y轴的最小值
-        leftAxis.axisMaximum = 100;//设置Y轴的最大值
+        leftAxis.axisMinimum = minCalorie;//设置Y轴的最小值
+        leftAxis.axisMaximum = maxCalorie;//设置Y轴的最大值
         leftAxis.inverted = NO;//是否将Y轴进行上下翻转
-        leftAxis.axisLineColor = [UIColor redColor];//Y轴颜色
+        leftAxis.axisLineColor = [UIColor colorWithHexString:@"#af16e8"];//Y轴颜色
         leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
-        leftAxis.labelTextColor = [UIColor redColor];//文字颜色
+        leftAxis.labelTextColor = [UIColor colorWithHexString:@"#af16e8"];//文字颜色
         leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
         leftAxis.drawAxisLineEnabled = YES;//画Y轴线
         leftAxis.axisLineColor = [UIColor grayColor];
@@ -727,15 +935,15 @@
         _maxHrLinechart.chartDescription.enabled = NO;
         _maxHrLinechart.scaleYEnabled = NO;
         _maxHrLinechart.doubleTapToZoomEnabled = NO;
+
         ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
-        markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
+        markerY.offset = CGPointMake(-kHistoryMarkBgView_Width * kXScal, -kHistoryMarkBgView_Height * kYScal - 5);
         markerY.chartView = _maxHrLinechart;
         _maxHrLinechart.marker = markerY;
-        [self.markBgView addSubview:self.markY];
-        [markerY addSubview:self.markBgView];
+        [markerY addSubview:self.historyMaxHrMarkBgView];
         
         _maxHrLinechart.rightAxis.enabled = NO;//不绘制右轴
-        ChartXAxis *xAxis = _completeLinechart.xAxis;
+        ChartXAxis *xAxis = _maxHrLinechart.xAxis;
         xAxis.granularityEnabled = YES;
         xAxis.labelPosition = XAxisLabelPositionBottom;
         xAxis.gridColor = [UIColor clearColor];
@@ -743,15 +951,15 @@
         xAxis.axisLineColor = [UIColor grayColor];
         _maxHrLinechart.maxVisibleCount = 999;
         
-        ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
-        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        ChartYAxis *leftAxis = _maxHrLinechart.leftAxis;//获取左边Y轴
+        leftAxis.labelCount = 7;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
         leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
         leftAxis.axisMinimum = 0;//设置Y轴的最小值
-        leftAxis.axisMaximum = 100;//设置Y轴的最大值
+        leftAxis.axisMaximum = 240;//设置Y轴的最大值
         leftAxis.inverted = NO;//是否将Y轴进行上下翻转
         leftAxis.axisLineColor = [UIColor redColor];//Y轴颜色
         leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
-        leftAxis.labelTextColor = [UIColor redColor];//文字颜色
+        leftAxis.labelTextColor = [UIColor colorWithHexString:@"#1537b6"];//文字颜色
         leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
         leftAxis.drawAxisLineEnabled = YES;//画Y轴线
         leftAxis.axisLineColor = [UIColor grayColor];
@@ -769,12 +977,12 @@
         _avgHrLinechart.chartDescription.enabled = NO;
         _avgHrLinechart.scaleYEnabled = NO;
         _avgHrLinechart.doubleTapToZoomEnabled = NO;
+
         ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
-        markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
+        markerY.offset = CGPointMake(-kHistoryMarkBgView_Width * kXScal, -kHistoryMarkBgView_Height * kYScal - 5);
         markerY.chartView = _avgHrLinechart;
         _avgHrLinechart.marker = markerY;
-        [self.markBgView addSubview:self.markY];
-        [markerY addSubview:self.markBgView];
+        [markerY addSubview:self.historyAvgHrMarkBgView];
         
         _avgHrLinechart.rightAxis.enabled = NO;//不绘制右轴
         ChartXAxis *xAxis = _avgHrLinechart.xAxis;
@@ -785,15 +993,15 @@
         xAxis.axisLineColor = [UIColor grayColor];
         _avgHrLinechart.maxVisibleCount = 999;
         
-        ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
-        leftAxis.labelCount = 9;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
+        ChartYAxis *leftAxis = _avgHrLinechart.leftAxis;//获取左边Y轴
+        leftAxis.labelCount = 7;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
         leftAxis.forceLabelsEnabled = YES;//不强制绘制指定数量的label
         leftAxis.axisMinimum = 0;//设置Y轴的最小值
-        leftAxis.axisMaximum = 100;//设置Y轴的最大值
+        leftAxis.axisMaximum = 240;//设置Y轴的最大值
         leftAxis.inverted = NO;//是否将Y轴进行上下翻转
         leftAxis.axisLineColor = [UIColor redColor];//Y轴颜色
         leftAxis.labelPosition = YAxisLabelPositionOutsideChart;//label位置
-        leftAxis.labelTextColor = [UIColor redColor];//文字颜色
+        leftAxis.labelTextColor = [UIColor colorWithHexString:@"#15870c"];//文字颜色
         leftAxis.labelFont = [UIFont systemFontOfSize:10.0f];//文字字体
         leftAxis.drawAxisLineEnabled = YES;//画Y轴线
         leftAxis.axisLineColor = [UIColor grayColor];
@@ -815,7 +1023,7 @@
         markerY.offset = CGPointMake(-kMarkBgView_Width * kXScal, -kMarkBgView_Height * kYScal - 5);
         markerY.chartView = _lineChartView;
         _lineChartView.marker = markerY;
-        [self.markBgView addSubview:self.markY];
+//        [self.markBgView addSubview:self.markY];
         [markerY addSubview:self.markBgView];
         
         _lineChartView.rightAxis.enabled = YES;//不绘制右轴
@@ -869,11 +1077,97 @@
         _markY.numberOfLines = 2;
         _markY.text =@"";
         _markY.textColor = [UIColor whiteColor];
-//        _markY.backgroundColor = [UIColor colorWithHexString:@"#b4b4b4"];
     }
     return _markY;
 }
 
+- (UIImageView*)historyCompleteMarkBgView {
+    if (!_historyCompleteMarkBgView) {
+        _historyCompleteMarkBgView = [[UIImageView alloc] init];
+        _historyCompleteMarkBgView.backgroundColor = [UIColor colorWithHexString:@"#e4f7f8"];
+        _historyCompleteMarkBgView.frame = CGRectMake(0, 0, kHistoryMarkBgView_Width * kXScal, kHistoryMarkBgView_Height * kYScal);
+        
+        _historyCompleteMarkTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(kMarkLbl_LeftMargin * kXScal, kMarkLbl_TopMargin * kYScal, kMarkBgView_Width * kXScal - kMarkLbl_LeftMargin * kXScal, kMarkLbl_Height * kYScal)];
+        _historyCompleteMarkTimeLbl.text = @"第1次";
+        _historyCompleteMarkTimeLbl.font = [UIFont systemFontOfSize:kMarkLbl_FontSize * kYScal];
+        _historyCompleteMarkTimeLbl.textColor = [UIColor blackColor];
+        [_historyCompleteMarkBgView addSubview:_historyCompleteMarkTimeLbl];
+        CGFloat vSpace = kHistoryMarkBgView_Height * kYScal - 2 * kMarkLbl_TopMargin * kYScal - 2 * kMarkLbl_Height * kYScal;
+        
+        _historyCompleteMarkValLbl = [[UILabel alloc] initWithFrame:CGRectMake(_historyCompleteMarkTimeLbl.frame.origin.x + kHistoryMarkValLbl_LeftMargin * kXScal, CGRectGetMaxY(_historyCompleteMarkTimeLbl.frame) + vSpace, _historyCompleteMarkTimeLbl.frame.size.width, _historyCompleteMarkTimeLbl.frame.size.height)];
+        _historyCompleteMarkValLbl.textColor = [UIColor blackColor];
+        _historyCompleteMarkValLbl.text = @"完成度：0";
+        _historyCompleteMarkValLbl.font = [UIFont systemFontOfSize:kMarkLbl_FontSize * kYScal];
+        [_historyCompleteMarkBgView addSubview:_historyCompleteMarkValLbl];
+    }
+    return _historyCompleteMarkBgView;
+}
+
+- (UIImageView*)historyCalorieMarkBgView {
+    if (!_historyCalorieMarkBgView) {
+        _historyCalorieMarkBgView = [[UIImageView alloc] init];
+        _historyCalorieMarkBgView.backgroundColor = [UIColor colorWithHexString:@"#e4f7f8"];
+        _historyCalorieMarkBgView.frame = CGRectMake(0, 0, kHistoryMarkBgView_Width * kXScal, kHistoryMarkBgView_Height * kYScal);
+        
+        _historyCalorieMarkTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(kMarkLbl_LeftMargin * kXScal, kMarkLbl_TopMargin * kYScal, kMarkBgView_Width * kXScal - kMarkLbl_LeftMargin * kXScal, kMarkLbl_Height * kYScal)];
+        _historyCalorieMarkTimeLbl.text = @"第1次";
+        _historyCalorieMarkTimeLbl.font = [UIFont systemFontOfSize:kMarkLbl_FontSize * kYScal];
+        _historyCalorieMarkTimeLbl.textColor = [UIColor blackColor];
+        [_historyCalorieMarkBgView addSubview:_historyCalorieMarkTimeLbl];
+        CGFloat vSpace = kHistoryMarkBgView_Height * kYScal - 2 * kMarkLbl_TopMargin * kYScal - 2 * kMarkLbl_Height * kYScal;
+        
+        _historyCalorieMarkValLbl = [[UILabel alloc] initWithFrame:CGRectMake(_historyCalorieMarkTimeLbl.frame.origin.x + kHistoryMarkValLbl_LeftMargin * kXScal, CGRectGetMaxY(_historyCalorieMarkTimeLbl.frame) + vSpace, _historyCalorieMarkTimeLbl.frame.size.width, _historyCalorieMarkTimeLbl.frame.size.height)];
+        _historyCalorieMarkValLbl.textColor = [UIColor blackColor];
+        _historyCalorieMarkValLbl.text = @"消耗：0.0";
+        _historyCalorieMarkValLbl.font = [UIFont systemFontOfSize:kMarkLbl_FontSize * kYScal];
+        [_historyCalorieMarkBgView addSubview:_historyCalorieMarkValLbl];
+    }
+    return _historyCalorieMarkBgView;
+}
+
+- (UIImageView*)historyMaxHrMarkBgView {
+    if (!_historyMaxHrMarkBgView) {
+        _historyMaxHrMarkBgView = [[UIImageView alloc] init];
+        _historyMaxHrMarkBgView.backgroundColor = [UIColor colorWithHexString:@"#e4f7f8"];
+        _historyMaxHrMarkBgView.frame = CGRectMake(0, 0, kHistoryMarkBgView_Width * kXScal, kHistoryMarkBgView_Height * kYScal);
+        
+        _historyMaxHrMarkTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(kMarkLbl_LeftMargin * kXScal, kMarkLbl_TopMargin * kYScal, kMarkBgView_Width * kXScal - kMarkLbl_LeftMargin * kXScal, kMarkLbl_Height * kYScal)];
+        _historyMaxHrMarkTimeLbl.text = @"第1次";
+        _historyMaxHrMarkTimeLbl.font = [UIFont systemFontOfSize:kMarkLbl_FontSize * kYScal];
+        _historyMaxHrMarkTimeLbl.textColor = [UIColor blackColor];
+        [_historyMaxHrMarkBgView addSubview:_historyMaxHrMarkTimeLbl];
+        CGFloat vSpace = kHistoryMarkBgView_Height * kYScal - 2 * kMarkLbl_TopMargin * kYScal - 2 * kMarkLbl_Height * kYScal;
+        
+        _historyMaxMarkValLbl = [[UILabel alloc] initWithFrame:CGRectMake(_historyMaxHrMarkTimeLbl.frame.origin.x + kHistoryMarkValLbl_LeftMargin * kXScal, CGRectGetMaxY(_historyMaxHrMarkTimeLbl.frame) + vSpace, _historyMaxHrMarkTimeLbl.frame.size.width, _historyMaxHrMarkTimeLbl.frame.size.height)];
+        _historyMaxMarkValLbl.textColor = [UIColor blackColor];
+        _historyMaxMarkValLbl.text = @"最大心率：0";
+        _historyMaxMarkValLbl.font = [UIFont systemFontOfSize:kMarkLbl_FontSize * kYScal];
+        [_historyMaxHrMarkBgView addSubview:_historyMaxMarkValLbl];
+    }
+    return _historyMaxHrMarkBgView;
+}
+
+- (UIImageView*)historyAvgHrMarkBgView {
+    if (!_historyAvgHrMarkBgView) {
+        _historyAvgHrMarkBgView = [[UIImageView alloc] init];
+        _historyAvgHrMarkBgView.backgroundColor = [UIColor colorWithHexString:@"#e4f7f8"];
+        _historyAvgHrMarkBgView.frame = CGRectMake(0, 0, kHistoryMarkBgView_Width * kXScal, kHistoryMarkBgView_Height * kYScal);
+        
+        _historyAvgHrMarkTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(kMarkLbl_LeftMargin * kXScal, kMarkLbl_TopMargin * kYScal, kMarkBgView_Width * kXScal - kMarkLbl_LeftMargin * kXScal, kMarkLbl_Height * kYScal)];
+        _historyAvgHrMarkTimeLbl.text = @"第1次";
+        _historyAvgHrMarkTimeLbl.font = [UIFont systemFontOfSize:kMarkLbl_FontSize * kYScal];
+        _historyAvgHrMarkTimeLbl.textColor = [UIColor blackColor];
+        [_historyAvgHrMarkBgView addSubview:_historyAvgHrMarkTimeLbl];
+        CGFloat vSpace = kHistoryMarkBgView_Height * kYScal - 2 * kMarkLbl_TopMargin * kYScal - 2 * kMarkLbl_Height * kYScal;
+        
+        _historyAvgHrMarkValLbl = [[UILabel alloc] initWithFrame:CGRectMake(_historyAvgHrMarkTimeLbl.frame.origin.x + kHistoryMarkValLbl_LeftMargin * kXScal, CGRectGetMaxY(_historyAvgHrMarkTimeLbl.frame) + vSpace, _historyAvgHrMarkTimeLbl.frame.size.width, _historyAvgHrMarkTimeLbl.frame.size.height)];
+        _historyAvgHrMarkValLbl.textColor = [UIColor blackColor];
+        _historyAvgHrMarkValLbl.text = @"平均心率：0";
+        _historyAvgHrMarkValLbl.font = [UIFont systemFontOfSize:kMarkLbl_FontSize * kYScal];
+        [_historyAvgHrMarkBgView addSubview:_historyAvgHrMarkValLbl];
+    }
+    return _historyAvgHrMarkBgView;
+}
 - (UIImageView*)markBgView {
     if (!_markBgView) {
         _markBgView = [[UIImageView alloc] init];
@@ -948,21 +1242,40 @@
 #pragma mark - ChartViewDelegate
 
 - (void)chartValueSelected:(ChartViewBase *)chartView entry:(ChartDataEntry *)entry highlight:(ChartHighlight *)highlight {
-    NSString *timeStr = [self getShortTimeString:(NSInteger)entry.x + 1];
-    self.markTimeLbl.text = [NSString stringWithFormat:@"时间：%@",timeStr];
-    self.markHRLbl.text = [NSString stringWithFormat:@"心率：%d bpm",(NSInteger)entry.y];
-    CGFloat speed = [[self.speedArr objectAtIndex:(NSInteger)entry.x ] floatValue];
-    self.markSpeedLbl.text = [NSString stringWithFormat:@"速度：%.1f km/h",speed];
-    if (self.type2 == 2) {
-        NSInteger power = [[self.difficultyArr objectAtIndex:(NSInteger)entry.x] integerValue];
-        self.markPowerLbl.text = [NSString stringWithFormat:@"功率：%d w",power];
-    } else {
-        NSInteger power = [[self.difficultyArr objectAtIndex:(NSInteger)entry.x] integerValue];
-        self.markPowerLbl.text = [NSString stringWithFormat:@"强度：%d ",power];
+    if (chartView == self.lineChartView) {
+        NSString *timeStr = [self getShortTimeString:(NSInteger)entry.x + 1];
+        self.markTimeLbl.text = [NSString stringWithFormat:@"时间：%@",timeStr];
+        self.markHRLbl.text = [NSString stringWithFormat:@"心率：%d bpm",(NSInteger)entry.y];
+        CGFloat speed = [[self.speedArr objectAtIndex:(NSInteger)entry.x ] floatValue];
+        self.markSpeedLbl.text = [NSString stringWithFormat:@"速度：%.1f km/h",speed];
+        if (self.type2 == 2) {
+            NSInteger power = [[self.difficultyArr objectAtIndex:(NSInteger)entry.x] integerValue];
+            self.markPowerLbl.text = [NSString stringWithFormat:@"功率：%d w",power];
+        } else {
+            NSInteger power = [[self.difficultyArr objectAtIndex:(NSInteger)entry.x] integerValue];
+            self.markPowerLbl.text = [NSString stringWithFormat:@"强度：%d ",power];
+        }
+        CGFloat calorie = [[self.calorieArr objectAtIndex:(NSInteger)entry.x] floatValue];
+        self.markCalorieLbl.text = [NSString stringWithFormat:@"消耗：%.1f kcal",calorie];
+        [self.lineChartView centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.lineChartView.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
+    } else if (chartView == self.completeLinechart) {
+        self.historyCompleteMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
+        self.historyCompleteMarkValLbl.text = [NSString stringWithFormat:@"完成度：%d",(NSInteger)entry.y];
+        [self.completeLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.completeLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
+    } else if (chartView == self.calorieLinechart) {
+        self.historyCalorieMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
+        CGFloat calorie = (CGFloat)entry.y;
+        self.historyCalorieMarkValLbl.text = [NSString stringWithFormat:@"消耗：%.1f",calorie];
+        [self.calorieLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.calorieLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
+    } else if (chartView == self.maxHrLinechart) {
+        self.historyMaxHrMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
+        self.historyMaxMarkValLbl.text = [NSString stringWithFormat:@"最大心率：%d",(NSInteger)entry.y];
+        [self.maxHrLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.maxHrLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
+    } else if (chartView == self.avgHrLinechart) {
+        self.historyAvgHrMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
+        self.historyAvgHrMarkValLbl.text = [NSString stringWithFormat:@"平均心率：%d",(NSInteger)entry.y];
+        [self.avgHrLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.avgHrLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
     }
-    CGFloat calorie = [[self.calorieArr objectAtIndex:(NSInteger)entry.x] floatValue];
-    self.markCalorieLbl.text = [NSString stringWithFormat:@"消耗：%.1f kcal",calorie];
-    [self.lineChartView centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.lineChartView.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
 }
 
 #pragma mark - button click events
