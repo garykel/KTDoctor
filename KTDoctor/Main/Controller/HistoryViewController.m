@@ -61,6 +61,7 @@
 @property (nonatomic,strong)PGDatePickManager *datePickManager;
 @property (nonatomic,assign)BOOL isSearch;
 @property (nonatomic,strong)NSMutableArray *searchResults;
+@property (nonatomic,strong)NSMutableArray *allUserSports;
 @property (nonatomic,strong)SortViewController *sort;
 @property (nonatomic,strong)UIPopoverPresentationController *popController;
 @end
@@ -73,6 +74,18 @@
     self.isFooterClick = NO;
     self.isSearch = NO;
     self.searchResults = [NSMutableArray array];
+    self.allUserSports = [NSMutableArray array];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+    NSDictionary *dict = user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@"-create_time" forKey:@"sort"];
+    [parameter setValue:@"" forKey:@"userKeyword"];
+    [self getAllUserSportList:parameter];
     [self setNavBar];
     [self setupUI];
 }
@@ -485,7 +498,7 @@
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
     [parameter setValue:@(sid) forKey:@"id"];
-    [self getUserSportDetail:parameter];
+    [self getUserSportDetail:parameter sportDict:sportDict];
 }
 
 - (NSString *)getTimeString:(NSInteger)seconds {
@@ -497,6 +510,50 @@
 }
 
 #pragma mark - net functions
+
+- (void)getAllUserSportList:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_SPORTLIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"user sport lists :%@",[weakSelf convertToJSONData:responseObject]);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            NSInteger total = [[responseObject valueForKey:@"total"] integerValue];
+            if (rows.count > 0) {
+                [weakSelf.allUserSports addObjectsFromArray:rows];
+                if (weakSelf.allUserSports.count == total) {
+                    NSLog(@"allUserSports count is :%d",weakSelf.allUserSports.count);
+                } else {
+                    if (weakSelf.allUserSports.count > 0) {
+                        [weakSelf.allUserSports removeAllObjects];
+                    }
+                    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                        NSMutableDictionary *para = [NSMutableDictionary dictionary];
+                        UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
+                        NSDictionary *dict = user.organ;
+                        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+                        NSString *orgCode = orgCodeArr[0];
+                        [para setValue:orgCode forKey:@"orgCode"];
+                        [para setValue:@0 forKey:@"offset"];
+                        [para setValue:@(total) forKey:@"rows"];
+                        [para setValue:@"-create_time" forKey:@"sort"];
+                        [para setValue:@"" forKey:@"userKeyword"];
+                        [weakSelf getAllUserSportList:para];
+                    });
+                }
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 
 - (void)getUsersSportList:(NSMutableDictionary *)parameter {
     __weak typeof (self)weakSelf = self;
@@ -572,7 +629,7 @@
     }];
 }
 
-- (void)getUserSportDetail:(NSMutableDictionary*)parameter {
+- (void)getUserSportDetail:(NSMutableDictionary*)parameter sportDict:(NSDictionary*)sportDict {
     __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUSER_SPORT_DETAIL_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
@@ -583,6 +640,19 @@
             NSLog(@"data is :%@",data);
             HistoryDetailViewController *detail = [[HistoryDetailViewController alloc] init];
             detail.sportDict = data;
+            if (weakSelf.allUserSports.count > 0) {
+                NSInteger userId = [[sportDict valueForKey:@"userId"] integerValue];
+                NSString *title = [sportDict valueForKey:@"title"];
+                NSMutableArray *results = [NSMutableArray array];
+                for (NSDictionary *dict in weakSelf.allUserSports) {
+                    NSInteger userid = [[dict valueForKey:@"userId"] integerValue];
+                    NSString *titleStr = [dict valueForKey:@"title"];
+                    if (userid == userId && [titleStr isEqualToString:title]) {
+                        [results addObject:dict];
+                    }
+                }
+                detail.reports = [results copy];
+            }
             [weakSelf.navigationController pushViewController:detail animated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];

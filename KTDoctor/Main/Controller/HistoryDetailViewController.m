@@ -836,6 +836,7 @@
         _completeLinechart.noDataText = @"暂无数据";
         _completeLinechart.chartDescription.enabled = NO;
         _completeLinechart.scaleYEnabled = NO;
+        _completeLinechart.scaleXEnabled = NO;
         _completeLinechart.doubleTapToZoomEnabled = NO;
         ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
         markerY.offset = CGPointMake(-kHistoryMarkBgView_Width * kXScal, -kHistoryMarkBgView_Height * kYScal - 5);
@@ -851,6 +852,9 @@
         xAxis.labelTextColor = [UIColor blackColor];
         xAxis.axisLineColor = [UIColor grayColor];
         _completeLinechart.maxVisibleCount = 999;
+        if (self.reports.count > 5) {
+            xAxis.labelCount = self.reports.count;
+        }
         
         ChartYAxis *leftAxis = _completeLinechart.leftAxis;//获取左边Y轴
         leftAxis.labelCount = 6;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
@@ -900,14 +904,19 @@
                 CGFloat calorie = [[dict valueForKey:@"calorie"] floatValue];
                 [calories addObject:[NSNumber numberWithFloat:calorie]];
             }
+            if (self.reports.count > 5) {
+                xAxis.labelCount = self.reports.count;
+            }
         }
-        CGFloat maxCalorie = [[calories valueForKeyPath:@"@max.floatValue"] floatValue];
-        CGFloat minCalorie = [[calories valueForKeyPath:@"@min.floatValue"] floatValue];
+        CGFloat maxCalorie = 0.0;
+        maxCalorie = [[calories valueForKeyPath:@"@max.floatValue"] floatValue];
+        CGFloat minCalorie = 0.0;
+        minCalorie = [[calories valueForKeyPath:@"@min.floatValue"] floatValue];
         NSInteger max = (NSInteger)(maxCalorie * 10);
         if (max %2==0) {
-            maxCalorie+=4;
+            maxCalorie+=4.0;
         } else {
-            maxCalorie+=5;
+            maxCalorie+=5.0;
         }
         ChartYAxis *leftAxis = _calorieLinechart.leftAxis;//获取左边Y轴
         leftAxis.labelCount = 6;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
@@ -934,6 +943,7 @@
         _maxHrLinechart.noDataText = @"暂无数据";
         _maxHrLinechart.chartDescription.enabled = NO;
         _maxHrLinechart.scaleYEnabled = NO;
+        _maxHrLinechart.scaleXEnabled = NO;
         _maxHrLinechart.doubleTapToZoomEnabled = NO;
 
         ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
@@ -950,6 +960,9 @@
         xAxis.labelTextColor = [UIColor blackColor];
         xAxis.axisLineColor = [UIColor grayColor];
         _maxHrLinechart.maxVisibleCount = 999;
+        if (self.reports.count > 5) {
+            xAxis.labelCount = self.reports.count;
+        }
         
         ChartYAxis *leftAxis = _maxHrLinechart.leftAxis;//获取左边Y轴
         leftAxis.labelCount = 7;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
@@ -976,6 +989,7 @@
         _avgHrLinechart.noDataText = @"暂无数据";
         _avgHrLinechart.chartDescription.enabled = NO;
         _avgHrLinechart.scaleYEnabled = NO;
+        _avgHrLinechart.scaleXEnabled = NO;
         _avgHrLinechart.doubleTapToZoomEnabled = NO;
 
         ChartMarkerView *markerY = [[ChartMarkerView alloc] init];
@@ -992,6 +1006,9 @@
         xAxis.labelTextColor = [UIColor blackColor];
         xAxis.axisLineColor = [UIColor grayColor];
         _avgHrLinechart.maxVisibleCount = 999;
+        if (self.reports.count > 5) {
+            xAxis.labelCount = self.reports.count;
+        }
         
         ChartYAxis *leftAxis = _avgHrLinechart.leftAxis;//获取左边Y轴
         leftAxis.labelCount = 7;//Y轴label数量，数值不一定，如果forceLabelsEnabled等于YES, 则强制绘制制定数量的label, 但是可能不平均
