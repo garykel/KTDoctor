@@ -47,8 +47,8 @@
 #define kDataView_Height 98
 #define kTrainingTimeLbl_LeftMargin 140
 #define kTrainingTimeLbl_RightMargin 10
-#define kTrainingTimeLbl_Width 70
-#define kTrainingGroupLbl_Width 70
+#define kTrainingTimeLbl_Width 120
+#define kTrainingGroupLbl_Width 120
 #define kTrainingGroupLbl_TopMargin 16
 #define kTrainingTimeValLbl_Width 100
 #define kTrainingTimeValLbl_Height 15
@@ -92,9 +92,7 @@
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,strong)UIView *dataView;
 @property (nonatomic,strong)UILabel *trainingGroupLbl;
-@property (nonatomic,strong)UILabel *trainingGroupValLbl;
 @property (nonatomic,strong)UILabel *trainingVolumeLbl;//训练总量
-@property (nonatomic,strong)UILabel *trainingVolumeValLbl;
 @property (nonatomic,strong)UIButton *saveBtn;
 @property (nonatomic,strong)UIButton *giveupBtn;
 @property (nonatomic,assign)NSInteger type2;
@@ -355,32 +353,18 @@
     [self.bottomView addSubview:self.dataView];
     
     self.trainingGroupLbl = [[UILabel alloc] initWithFrame:CGRectMake(kTrainingTimeLbl_LeftMargin * kXScal, kTrainingGroupLbl_TopMargin * kYScal, kTrainingGroupLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
-    self.trainingGroupLbl.text = @"训练组数：";
+    self.trainingGroupLbl.text = @"训练组数：1";
     self.trainingGroupLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.trainingGroupLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     [self.dataView addSubview:self.trainingGroupLbl];
     
-    self.trainingGroupValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
-    self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingGroupValLbl.text = @"1";
-    [self.dataView addSubview:self.trainingGroupValLbl];
+    CGFloat space = (self.dataView.frame.size.width - 2 * kTrainingTimeLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal)/2;
     
-    CGFloat space = (self.dataView.frame.size.width - 2 * kTrainingTimeLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal - 3 * kTrainingTimeLbl_RightMargin - 3 * kTrainingTimeValLbl_Width * kXScal)/2;
-    
-    self.trainingVolumeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
+    self.trainingVolumeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
     self.trainingVolumeLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     self.trainingVolumeLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-    self.trainingVolumeLbl.text = @"训练总量：";
+    self.trainingVolumeLbl.text = @"训练总量：0.00 kg";
     [self.dataView addSubview:self.trainingVolumeLbl];
-    
-    self.trainingVolumeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingVolumeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.trainingVolumeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingVolumeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingVolumeLbl.center.y);
-    self.trainingVolumeValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.trainingVolumeValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingVolumeValLbl.text = @"0.00 kg";
-    [self.dataView addSubview:self.trainingVolumeValLbl];
     
     CGFloat btn_LeftMargin = (self.dataView.frame.size.width - 2 * kSaveBtn_Width * kXScal - kSaveBtn_HSpace * kXScal)/2;
     self.saveBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -486,9 +470,9 @@
             sumWeight += times * weight;
         }
         self.targetDuration = sumWeight;
-        self.trainingVolumeValLbl.text = [self getTrainingVolumeString:sumWeight];
+        self.trainingVolumeLbl.text = [NSString stringWithFormat:@"训练总量：%@",[self getTrainingVolumeString:sumWeight]];
     }
-    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
+    self.trainingGroupLbl.text = [NSString stringWithFormat:@"训练组数：%d",self.groups.count];
 }
 
 #pragma mark - XXTGDropdownMenuDelegate
@@ -708,7 +692,7 @@
     [self.listView insertSection:index withRowAnimation:UITableViewRowAnimationNone];
     [self.listView reloadData];
     [self computeWeight];
-    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
+    self.trainingGroupLbl.text = [NSString stringWithFormat:@"训练组数：%d",self.groups.count];
 }
 
 - (void)removeGroup:(UIButton*)sender {
@@ -719,7 +703,7 @@
         [self.listView reloadData];
         [self computeWeight];
     }
-    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
+    self.trainingGroupLbl.text = [NSString stringWithFormat:@"训练组数：%d",self.groups.count];
 }
 
 #pragma mark - network functions

@@ -47,8 +47,8 @@
 #define kDataView_Height 98
 #define kTrainingTimeLbl_LeftMargin 140
 #define kTrainingTimeLbl_RightMargin 10
-#define kTrainingTimeLbl_Width 80
-#define kTrainingGroupLbl_Width 70
+#define kTrainingTimeLbl_Width 120
+#define kTrainingGroupLbl_Width 120
 #define kTrainingGroupLbl_TopMargin 16
 #define kTrainingTimeValLbl_Width 70
 #define kTrainingTimeValLbl_Height 12
@@ -111,11 +111,8 @@
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,strong)UIView *dataView;
 @property (nonatomic,strong)UILabel *trainingGroupLbl;
-@property (nonatomic,strong)UILabel *trainingGroupValLbl;
 @property (nonatomic,strong)UILabel *trainingTimeLbl;
-@property (nonatomic,strong)UILabel *trainingTimeValLbl;
 @property (nonatomic,strong)UILabel *avgDifficultyLbl;
-@property (nonatomic,strong)UILabel *avgDifficultyValLbl;
 @property (nonatomic,strong)UIButton *templateBtn;
 @property (nonatomic,strong)UIView *templateView;
 @property (nonatomic,strong)UILabel *prescriptionLbl;
@@ -448,45 +445,24 @@
     [self.bottomView addSubview:self.dataView];
     
     self.trainingGroupLbl = [[UILabel alloc] initWithFrame:CGRectMake(kTrainingTimeLbl_LeftMargin * kXScal, kTrainingGroupLbl_TopMargin * kYScal, kTrainingGroupLbl_Width * kXScal, kDieaseLbl_Height * kYScal)];
-    self.trainingGroupLbl.text = @"训练组数：";
+    self.trainingGroupLbl.text = @"训练组数：1";
     self.trainingGroupLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
     self.trainingGroupLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     [self.dataView addSubview:self.trainingGroupLbl];
     
-    self.trainingGroupValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
-    self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingGroupValLbl.text = @"0";
-    [self.dataView addSubview:self.trainingGroupValLbl];
+    CGFloat space = (self.dataView.frame.size.width - 2 * kTrainingTimeLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal )/2;
     
-    CGFloat space = (self.dataView.frame.size.width - 2 * kTrainingTimeLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal - 3 * kTrainingTimeLbl_RightMargin - 3 * kTrainingTimeValLbl_Width * kXScal)/2;
-    
-    self.trainingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
+    self.trainingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
     self.trainingTimeLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     self.trainingTimeLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-    self.trainingTimeLbl.text = @"训练总时长：";
+    self.trainingTimeLbl.text = @"训练总时长：00:00";
     [self.dataView addSubview:self.trainingTimeLbl];
     
-    self.trainingTimeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.trainingTimeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingTimeLbl.center.y);
-    self.trainingTimeValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.trainingTimeValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.trainingTimeValLbl.text = @"00:00";
-    [self.dataView addSubview:self.trainingTimeValLbl];
-    
-    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeValLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingGroupLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
+    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + space, self.trainingGroupLbl.frame.origin.y, kTrainingGroupLbl_Width * kXScal, kTrainingTimeValLbl_Height * kYScal)];
     self.avgDifficultyLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
     self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
-    self.avgDifficultyLbl.text = @"平均强度：";
+    self.avgDifficultyLbl.text = @"平均强度：0";
     [self.dataView addSubview:self.avgDifficultyLbl];
-    
-    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, self.trainingGroupLbl.frame.origin.y, kTrainingTimeValLbl_Width, kTrainingTimeValLbl_Height * kYScal)];
-    self.avgDifficultyValLbl.center = CGPointMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.avgDifficultyLbl.center.y);
-    self.avgDifficultyValLbl.textColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kTrainingTimeValLbl_FontSize * kYScal];
-    self.avgDifficultyValLbl.text = @"0";
-    [self.dataView addSubview:self.avgDifficultyValLbl];
     
     self.templateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.templateBtn.frame = CGRectMake((self.dataView.frame.size.width - kTemplateButton_Width * kXScal)/2, self.dataView.frame.size.height - kTemplateButton_Height * kYScal - kTemplateButton_BottomMargin * kYScal, kTemplateButton_Width * kXScal, kTemplateButton_Height * kYScal);
@@ -903,7 +879,7 @@
     [self.listView reloadData];
     [self computeAvgDifficulty];
     [self computeTotalTrainingTime];
-    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
+    self.trainingGroupLbl.text = [NSString stringWithFormat:@"训练组数：%d",self.groups.count];
 }
 
 - (void)removeGroup:(UIButton*)sender {
@@ -917,7 +893,7 @@
         [self computeAvgDifficulty];
         [self computeTotalTrainingTime];
     }
-    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",self.groups.count];
+    self.trainingGroupLbl.text = [NSString stringWithFormat:@"训练组数：%d",self.groups.count];
 }
 
 #pragma mark - XXTGDropdownMenuDelegate
@@ -1084,12 +1060,12 @@
                 [self.treatmentMenu.mainBtn setTitle:@"6" forState:UIControlStateNormal];
                 [self.trainingFrequencyMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
                 [self.sportTimePointMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
-                self.trainingGroupValLbl.text = @"0";
-                self.trainingTimeValLbl.text = @"00:00";
+                self.trainingGroupLbl.text = @"训练组数：0";
+                self.trainingTimeLbl.text = @"训练总时长：00:00";
                 if (self.selectedTemplateType2 == 1) {
-                    self.avgDifficultyValLbl.text = @"0";
+                    self.avgDifficultyLbl.text = @"平均强度：0";
                 } else {
-                    self.avgDifficultyValLbl.text = @"0 w";
+                    self.avgDifficultyLbl.text = @"平均功率：0 w";
                 }
                 [self.listView reloadData];
             }
@@ -1141,7 +1117,7 @@
                 weakself.groups = [templates mutableCopy];
                 weakself.listView.tableFooterView.hidden = NO;
                 [weakself.listView reloadData];
-                weakself.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",weakself.groups.count];
+                weakself.trainingGroupLbl.text = [NSString stringWithFormat:@"训练组数：%d",weakself.groups.count];
                 [weakself computeTotalTrainingTime];
                 [weakself computeAvgDifficulty];
             }
@@ -1250,7 +1226,7 @@
             sumTime += [[dict valueForKey:@"restDuration"] integerValue];
         }
         self.targetDuration = sumTime;
-        self.trainingTimeValLbl.text = [self getTimeString:sumTime];
+        self.trainingTimeLbl.text = [NSString stringWithFormat:@"训练总时长：%@",[self getTimeString:sumTime]];
     }
 }
 
@@ -1262,9 +1238,9 @@
             sumDifficulty += [[dict valueForKey:@"difficulty"] integerValue];
         }
         if (self.selectedTemplateType2 == 1) {
-            self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",sumDifficulty / self.groups.count];
+            self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均强度：%d",sumDifficulty / self.groups.count];
         } else {
-            self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d w",sumDifficulty / self.groups.count];
+            self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均功率：%d w",sumDifficulty / self.groups.count];
         }
     }
 }

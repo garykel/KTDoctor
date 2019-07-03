@@ -61,8 +61,8 @@
 #define kDataView_Height 43
 #define kTrainingTimeLbl_LeftMargin 140
 #define kTrainingTimeLbl_RightMargin 10
-#define kTrainingTimeLbl_Width 80
-#define kTrainingGroupLbl_Width 70
+#define kTrainingTimeLbl_Width 120
+#define kTrainingGroupLbl_Width 120
 #define kTrainingGroupLbl_TopMargin 16
 #define kDieaseLbl_FontSieze 13.0
 #define kDieaseLbl_Width 54
@@ -122,11 +122,8 @@ CGSize prescriptionListviewSize;
 @property (nonatomic,strong)UITableView *listView;
 @property (nonatomic,strong)UIView *dataView;
 @property (nonatomic,strong)UILabel *trainingGroupLbl;
-@property (nonatomic,strong)UILabel *trainingGroupValLbl;
 @property (nonatomic,strong)UILabel *trainingTimeLbl;
-@property (nonatomic,strong)UILabel *trainingTimeValLbl;
 @property (nonatomic,strong)UILabel *avgDifficultyLbl;
-@property (nonatomic,strong)UILabel *avgDifficultyValLbl;
 @property (nonatomic,strong)UILabel *doctorAdviceLbl;
 @property (nonatomic,strong)UIView *doctorAdviceView;
 @property (nonatomic,strong)UILabel *doctorAdviceValLbl;
@@ -393,55 +390,34 @@ CGSize prescriptionListviewSize;
     [self.bottomView addSubview:self.dataView];
 
     self.trainingGroupLbl = [[UILabel alloc] initWithFrame:CGRectMake(kTrainingGroupLbl_LeftMargin * kXScal, kTrainingGroupLbl_TopMargin * kYScal, kTrainingGroupLbl_Width * kXScal, kTrainingGroupLbl_Height * kYScal)];
-    self.trainingGroupLbl.text = @"训练组数：";
+    self.trainingGroupLbl.text = @"训练组数：1";
     self.trainingGroupLbl.font = [UIFont systemFontOfSize:kTrainingGroupLbl_FontSize * kYScal];
     self.trainingGroupLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
     [self.dataView addSubview:self.trainingGroupLbl];
 
-    self.trainingGroupValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingGroupLbl_RightMargin * kXScal, 0, kTrainingGroupValLbl_Width, kTrainingGroupValLbl_Height * kYScal)];
-    self.trainingGroupValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + kTrainingGroupLbl_RightMargin * kXScal + kTrainingGroupValLbl_Width * kXScal/2.0, self.trainingGroupLbl.center.y);
-    self.trainingGroupValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
-    self.trainingGroupValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
-    NSInteger sectionNum = [[self.prescriptionDict valueForKey:@"sectionNum"] integerValue];
-    self.trainingGroupValLbl.text = [NSString stringWithFormat:@"%d",sectionNum];
-    [self.dataView addSubview:self.trainingGroupValLbl];
+    CGFloat hspace = (self.dataView.frame.size.width - 2 * kTrainingGroupLbl_LeftMargin * kXScal - 2 * kTrainingGroupLbl_Width * kXScal - kTrainingTimeLbl_Width * kXScal)/2;
 
-    CGFloat hspace = (self.dataView.frame.size.width - 2 * kTrainingGroupLbl_LeftMargin * kXScal - 2 * (kTrainingGroupLbl_Width + kTrainingGroupLbl_RightMargin + kTrainingGroupValLbl_Width) * kXScal - (kTrainingTimeLbl_Width + kTrainingTimeLbl_RightMargin + kTrainingGroupValLbl_Width) * kXScal)/2;
-
-    self.trainingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupValLbl.frame) + hspace, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingGroupValLbl_Height * kYScal)];
+    self.trainingTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingGroupLbl.frame) + hspace, self.trainingGroupLbl.frame.origin.y, kTrainingTimeLbl_Width * kXScal, kTrainingGroupValLbl_Height * kYScal)];
     self.trainingTimeLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.trainingTimeLbl.font = [UIFont systemFontOfSize:kTrainingGroupLbl_FontSize * kYScal];
-    self.trainingTimeLbl.text = @"训练总时长：";
+    self.trainingTimeLbl.text = @"训练总时长：00:00";
     [self.dataView addSubview:self.trainingTimeLbl];
 
-    self.trainingTimeValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingGroupValLbl_Height * kYScal)];
-    self.trainingTimeValLbl.center = CGPointMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.trainingTimeLbl.center.y);
-    self.trainingTimeValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
-    self.trainingTimeValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
-    self.trainingTimeValLbl.text = [self computeTotalTrainingTime];
-    [self.dataView addSubview:self.trainingTimeValLbl];
-
-    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeValLbl.frame) + hspace, self.trainingGroupLbl.frame.origin.y, kTrainingGroupLbl_Width * kXScal, kTrainingGroupValLbl_Height * kYScal)];
+    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.trainingTimeLbl.frame) + hspace, self.trainingGroupLbl.frame.origin.y, kTrainingGroupLbl_Width * kXScal, kTrainingGroupValLbl_Height * kYScal)];
     self.avgDifficultyLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kTrainingGroupLbl_FontSize * kYScal];
     if (self.type2 == 1) {
-        self.avgDifficultyLbl.text = @"平均强度：";
+        self.avgDifficultyLbl.text = @"平均强度：0";
     } else {
-        self.avgDifficultyLbl.text = @"平均功率：";
+        self.avgDifficultyLbl.text = @"平均功率：0w";
     }
-    [self.dataView addSubview:self.avgDifficultyLbl];
-
-    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal, 0, kTrainingTimeValLbl_Width, kTrainingGroupValLbl_Height * kYScal)];
-    self.avgDifficultyValLbl.center = CGPointMake(CGRectGetMaxX(self.avgDifficultyLbl.frame) + kTrainingTimeLbl_RightMargin * kXScal + kTrainingTimeValLbl_Width * kXScal/2.0, self.avgDifficultyLbl.center.y);
-    self.avgDifficultyValLbl.textColor = [UIColor colorWithHexString:@"#5F5F5F"];
-    self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kTrainingGroupValLbl_FontSize * kYScal];
     NSInteger avgDifficulty = [self computerAvgDifficulty];
     if (self.type2 == 1) {
-        self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",avgDifficulty];
+        self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均强度：%d",avgDifficulty];
     } else {
-        self.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d w",avgDifficulty];
+        self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均功率：%d w",avgDifficulty];
     }
-    [self.dataView addSubview:self.avgDifficultyValLbl];
+    [self.dataView addSubview:self.avgDifficultyLbl];
 
     self.doctorLbl = [[UILabel alloc] initWithFrame:CGRectMake(kTopView_LeftMargin * kXScal, CGRectGetMaxY(self.dataView.frame) + kDoctorAdviceLbl_TopMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
     self.doctorLbl.font = [UIFont systemFontOfSize:kDoctorLbl_FontSize * kYScal];
