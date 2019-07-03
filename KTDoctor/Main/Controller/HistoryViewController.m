@@ -651,7 +651,7 @@
                         [results addObject:dict];
                     }
                 }
-                detail.reports = [results copy];
+                detail.reports = [[results reverseObjectEnumerator] allObjects];
             }
             [weakSelf.navigationController pushViewController:detail animated:NO];
         } else if (code == 10011) {

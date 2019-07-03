@@ -572,30 +572,29 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     if (indexPath.row > 0) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
-        HistoryDetailViewController *history = [[HistoryDetailViewController alloc] init];
         NSDictionary *dictonary = nil;
         if (self.isSearch) {
             dictonary = [self.searchResults objectAtIndex:indexPath.section];
         } else {
             dictonary = [self.precriptionsArr objectAtIndex:indexPath.section];
         }
-        NSDictionary *dict = [dictonary valueForKey:@"prescription"];
         NSArray *reports = [dictonary valueForKey:@"reports"];
-        history.reports = [[reports reverseObjectEnumerator] allObjects];
-        NSDictionary *reportsDict = [reports objectAtIndex:(indexPath.row - 1)];
-        NSMutableDictionary *sportDict = [NSMutableDictionary dictionary];
-        [sportDict setValue:reportsDict forKey:@"sportData"];
-        NSString *headUrl = [self.patientInfo valueForKey:@"headUrl"];
-        [sportDict setValue:headUrl forKey:@"headUrl"];
-        NSDictionary *prescription = @{@"type2":[NSNumber numberWithInteger:[[dict valueForKey:@"type2"] integerValue]]};
-        [sportDict setValue:prescription forKey:@"prescription"];
-        [sportDict setValue:[self.patientInfo valueForKey:@"name"] forKey:@"name"];
-        [sportDict setValue:[self.patientInfo valueForKey:@"userId"] forKey:@"userId"];
-        history.patientInfo = self.patientInfo;
-        history.sportDict = sportDict;
-        [self.navigationController pushViewController:history animated:NO];
+        if (reports.count > 0) {
+            if (indexPath.row > 0) {
+                NSDictionary *dict = [reports objectAtIndex:(indexPath.row - 1)];
+                NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+                NSInteger sid = [[dict valueForKey:@"id"] integerValue];
+                NSDictionary *userDict = self.user.organ;
+                NSArray *orgCodeArr = [userDict valueForKey:@"orgCode"];
+                NSString *orgCode = orgCodeArr[0];
+                [parameter setValue:orgCode forKey:@"orgCode"];
+                [parameter setValue:@(sid) forKey:@"id"];
+                [self getUserSportDetail:parameter reports:[[reports reverseObjectEnumerator] allObjects]];
+            }
+        }
     }
 }
+
 - (NSString *)getTimeString:(NSInteger)seconds {
     NSString *timeStr = @"";
     NSInteger minute = seconds / 60;
@@ -923,6 +922,31 @@
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
             [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
+- (void)getUserSportDetail:(NSMutableDictionary*)parameter reports:(NSArray*)reports {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUSER_SPORT_DETAIL_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"sport detail :%@",responseObject);
+        if (code == 0) {
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSLog(@"data is :%@",data);
+            HistoryDetailViewController *detail = [[HistoryDetailViewController alloc] init];
+            detail.sportDict = data;
+            detail.reports = reports;
+            [weakSelf.navigationController pushViewController:detail animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }
