@@ -11,7 +11,7 @@
 #define kSequenceImg_Height 34
 #define kSequenceLbl_FontSize 12.0
 #define kSequenceLbl_Height 10
-#define kAccomplishImg_Width 53
+#define kAccomplishImg_Width 30
 #define kAccomplishImg_LeftMargin 57
 #define kAccomplishImg_TopMargin 83
 #define kAccomplishImg_BottomMargin 59
@@ -69,8 +69,7 @@
     self.sequenceLbl.font = [UIFont systemFontOfSize:kSequenceLbl_FontSize * kYScal];
     [self.contentView addSubview:self.sequenceLbl];
     
-    self.accomplishImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accomplish"]];
-    self.accomplishImg.frame = CGRectMake(kAccomplishImg_LeftMargin * kXScal, kAccomplishImg_TopMargin * kYScal, kAccomplishImg_Width * kYScal, kAccomplishImg_Width * kYScal);
+    self.accomplishImg = [[CircleProgressView alloc] initWithFrame:CGRectMake(kAccomplishImg_LeftMargin * kXScal, kAccomplishImg_TopMargin * kYScal, kAccomplishImg_Width * kYScal, kAccomplishImg_Width * kYScal) percent:self.percent color:[UIColor colorWithHexString:@"#10a9cc"]];
     [self.contentView addSubview:self.accomplishImg];
     
     self.percentLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.accomplishImg.frame.size.width, kAccomplishLbl_Height * kYScal)];

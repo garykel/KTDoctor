@@ -13,6 +13,7 @@
 		0962F89E227D8C0B00611E27 /* CustomTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0962F89D227D8C0B00611E27 /* CustomTemplateCell.m */; };
 		0962F8A4227DDDA300611E27 /* SystemTemplateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */; };
 		09B681172288602900255F5D /* AerobicriptionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 09B681162288602900255F5D /* AerobicriptionModel.m */; };
+		09DD9CE122CD0AAB0051847D /* CircleProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 09DD9CDF22CD0AAB0051847D /* CircleProgressView.m */; };
 		09E47CB22237F97D00B33249 /* STTextHud.xib in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA72237F97C00B33249 /* STTextHud.xib */; };
 		09E47CB32237F97D00B33249 /* angle-mask@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 09E47CA92237F97D00B33249 /* angle-mask@3x.png */; };
 		09E47CB42237F97D00B33249 /* NSString+Size.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E47CAB2237F97D00B33249 /* NSString+Size.m */; };
@@ -224,6 +225,8 @@
 		0962F8A3227DDDA300611E27 /* SystemTemplateCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SystemTemplateCell.m; sourceTree = "<group>"; };
 		09B681152288602900255F5D /* AerobicriptionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AerobicriptionModel.h; sourceTree = "<group>"; };
 		09B681162288602900255F5D /* AerobicriptionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicriptionModel.m; sourceTree = "<group>"; };
+		09DD9CDF22CD0AAB0051847D /* CircleProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleProgressView.m; sourceTree = "<group>"; };
+		09DD9CE022CD0AAB0051847D /* CircleProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleProgressView.h; sourceTree = "<group>"; };
 		09E47CA62237F97C00B33249 /* STTextHud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STTextHud.h; sourceTree = "<group>"; };
 		09E47CA72237F97C00B33249 /* STTextHud.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = STTextHud.xib; sourceTree = "<group>"; };
 		09E47CA82237F97C00B33249 /* GCLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCLoadingView.h; sourceTree = "<group>"; };
@@ -795,6 +798,8 @@
 				5BEC2E432269BD8800CDDF09 /* UnitTextField.m */,
 				5BB39800228E91ED00A56A38 /* ChooseTemplateTypeView.h */,
 				5BB39801228E91ED00A56A38 /* ChooseTemplateTypeView.m */,
+				09DD9CE022CD0AAB0051847D /* CircleProgressView.h */,
+				09DD9CDF22CD0AAB0051847D /* CircleProgressView.m */,
 				5B2889FC22A4FAAF00607F7D /* SymbolsValueFormatter.h */,
 				5B2889FD22A4FAAF00607F7D /* SymbolsValueFormatter.m */,
 			);
@@ -1723,6 +1728,7 @@
 				5BB398082292594B00A56A38 /* PowerTemplateCell.m in Sources */,
 				5BF8D90B22802689002199E4 /* NSString+md5.m in Sources */,
 				5BECDBF922365EDC0025D6F2 /* NSString+TimeConvert.m in Sources */,
+				09DD9CE122CD0AAB0051847D /* CircleProgressView.m in Sources */,
 				5BF8D8F02280262F002199E4 /* NSObject+CheckIsNull.m in Sources */,
 				5BF95288226F0DE9009D4734 /* AerobicPrescriptionAndReportViewController.m in Sources */,
 				5BECDC03223662F90025D6F2 /* HttpClient.m in Sources */,
