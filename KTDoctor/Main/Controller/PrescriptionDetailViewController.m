@@ -481,6 +481,21 @@ CGSize prescriptionListviewSize;
     
     self.tipsLbl.center = CGPointMake(self.tipsView.frame.size.width/2.0, self.tipsView.frame.size.height/2.0);
     [self.tipsView addSubview:self.tipsLbl];
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handletapGesture:)];
+    [self.view addGestureRecognizer:tap];
+}
+
+// 点击其他区域关闭弹窗
+- (void)handletapGesture:(UITapGestureRecognizer *)sender
+{
+    if (sender.state == UIGestureRecognizerStateEnded){
+        CGPoint location = [sender locationInView:self.tipsView];
+        NSLog(@"location :%@",NSStringFromCGPoint(location));
+        if (!CGRectContainsPoint(self.view.frame, location)) {
+            self.tipsView.hidden = YES;
+        }
+    }
 }
 
 //计算训练总时长
