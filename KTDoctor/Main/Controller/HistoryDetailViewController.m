@@ -167,6 +167,7 @@
 @property (nonatomic,strong)UILabel *historyAvgHrLbl;//历史平均心率
 @property (nonatomic,strong)UILabel *historyAvgHrDespLbl;//历史平均心率描述
 @property (nonatomic,strong)LineChartView *avgHrLinechart;
+@property (nonatomic,strong)ChartViewBase *lastChartView;
 @end
 
 @implementation HistoryDetailViewController
@@ -1259,7 +1260,9 @@
 #pragma mark - ChartViewDelegate
 
 - (void)chartValueSelected:(ChartViewBase *)chartView entry:(ChartDataEntry *)entry highlight:(ChartHighlight *)highlight {
+    [self hideOtherChartView];
     if (chartView == self.lineChartView) {
+        self.markBgView.hidden = NO;
         NSString *timeStr = [self getShortTimeString:(NSInteger)entry.x + 1];
         self.markTimeLbl.text = [NSString stringWithFormat:@"时间：%@",timeStr];
         self.markHRLbl.text = [NSString stringWithFormat:@"心率：%d bpm",(NSInteger)entry.y];
@@ -1276,22 +1279,61 @@
         self.markCalorieLbl.text = [NSString stringWithFormat:@"消耗：%.1f kcal",calorie];
         [self.lineChartView centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.lineChartView.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
     } else if (chartView == self.completeLinechart) {
+        self.historyCompleteMarkBgView.hidden = NO;
         self.historyCompleteMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
         self.historyCompleteMarkValLbl.text = [NSString stringWithFormat:@"完成度：%d",(NSInteger)entry.y];
         [self.completeLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.completeLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
     } else if (chartView == self.calorieLinechart) {
+        self.historyCalorieMarkBgView.hidden = NO;
         self.historyCalorieMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
         CGFloat calorie = (CGFloat)entry.y;
         self.historyCalorieMarkValLbl.text = [NSString stringWithFormat:@"消耗：%.1f",calorie];
         [self.calorieLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.calorieLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
     } else if (chartView == self.maxHrLinechart) {
+        self.historyMaxHrMarkBgView.hidden = NO;
         self.historyMaxHrMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
         self.historyMaxMarkValLbl.text = [NSString stringWithFormat:@"最大心率：%d",(NSInteger)entry.y];
         [self.maxHrLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.maxHrLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
     } else if (chartView == self.avgHrLinechart) {
+        self.historyAvgHrMarkBgView.hidden = NO;
         self.historyAvgHrMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
         self.historyAvgHrMarkValLbl.text = [NSString stringWithFormat:@"平均心率：%d",(NSInteger)entry.y];
         [self.avgHrLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.avgHrLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
+    }
+    self.lastChartView = chartView;
+}
+
+- (void)hideOtherChartView {
+    if (self.lastChartView == self.lineChartView) {
+        self.markBgView.hidden = YES;
+        [self chartValueNothingSelected:self.lineChartView];
+    } else if (self.lastChartView == self.completeLinechart) {
+        self.historyCompleteMarkBgView.hidden = YES;
+        [self chartValueNothingSelected:self.completeLinechart];
+    } else if(self.lastChartView == self.maxHrLinechart) {
+        [self chartValueNothingSelected:self.maxHrLinechart];
+        self.historyMaxHrMarkBgView.hidden = YES;
+    } else if (self.lastChartView == self.avgHrLinechart) {
+        self.historyAvgHrMarkBgView.hidden = YES;
+        [self chartValueNothingSelected:self.avgHrLinechart];
+    } else if (self.lastChartView == self.calorieLinechart) {
+        self.historyCalorieMarkBgView.hidden = YES;
+        [self chartValueNothingSelected:self.calorieLinechart];
+    }
+}
+
+- (void)chartValueNothingSelected:(ChartViewBase *)chartView {
+    NSLog(@"取消选中");
+    if (chartView == self.lineChartView) {
+        self.markBgView.hidden = YES;
+    } else if (chartView == self.completeLinechart) {
+        self.historyCompleteMarkBgView.hidden = YES;
+    } else if (chartView == self.calorieLinechart) {
+        self.historyCalorieMarkBgView.hidden = YES;
+    } else if (chartView == self.maxHrLinechart) {
+        self.historyMaxHrMarkBgView.hidden = YES;
+    } else if (chartView == self.avgHrLinechart) {
+        self.historyAvgHrMarkBgView.hidden = YES;
     }
 }
 
