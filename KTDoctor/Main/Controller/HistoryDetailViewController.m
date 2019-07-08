@@ -1279,177 +1279,177 @@
         [self.lineChartView centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.lineChartView.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
         
         //重新绘制completeLinechart
-        [self.completeLinechart removeFromSuperview];
-        [self.completeLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.completeLinechart];
-        [self.lineChartView setDrawMarkers:YES];
-        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
-        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
-        self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
-        [self setCompleteLinechartData];
-        [self.bottomBgImg addSubview:self.completeLinechart];
+//        [self.completeLinechart removeFromSuperview];
+//        [self.completeLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.completeLinechart];
+//        [self.lineChartView setDrawMarkers:YES];
+//        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
+//        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
+//        self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
+//        [self setCompleteLinechartData];
+//        [self.bottomBgImg addSubview:self.completeLinechart];
     } else if (chartView == self.completeLinechart) {
         NSLog(@"completeLinechart 选中");
         self.historyCompleteMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
         self.historyCompleteMarkValLbl.text = [NSString stringWithFormat:@"完成度：%d",(NSInteger)entry.y];
         [self.completeLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.completeLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
-        [self.completeLinechart setDrawMarkers:YES];
-        
-        [self.lineChartView removeFromSuperview];
-        [self.lineChartView setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.lineChartView];
-        CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
-        CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
-        self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
-        NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
-        [self setLineChartDataWithSportData:sportData];
-        [self.topBgImg addSubview:self.lineChartView];
-        
-        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
-        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
-        
-        [self.calorieLinechart removeFromSuperview];
-        [self.calorieLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.calorieLinechart];
-        self.calorieLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.completeLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setCalorieLinechartData];
-        [self.bottomBgImg addSubview:self.calorieLinechart];
-        
-        [self.maxHrLinechart removeFromSuperview];
-        [self.maxHrLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.maxHrLinechart];
-        self.maxHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.calorieLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setMaxHrLinechartData];
-        [self.bottomBgImg addSubview:self.maxHrLinechart];
-        
-        [self.avgHrLinechart removeFromSuperview];
-        [self.avgHrLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.avgHrLinechart];
-        self.avgHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.maxHrLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setAvgHrLinechartData];
-        [self.bottomBgImg addSubview:self.avgHrLinechart];
+//        [self.completeLinechart setDrawMarkers:YES];
+//
+//        [self.lineChartView removeFromSuperview];
+//        [self.lineChartView setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.lineChartView];
+//        CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
+//        CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
+//        self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
+//        NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+//        [self setLineChartDataWithSportData:sportData];
+//        [self.topBgImg addSubview:self.lineChartView];
+//
+//        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
+//        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
+//
+//        [self.calorieLinechart removeFromSuperview];
+//        [self.calorieLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.calorieLinechart];
+//        self.calorieLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.completeLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setCalorieLinechartData];
+//        [self.bottomBgImg addSubview:self.calorieLinechart];
+//
+//        [self.maxHrLinechart removeFromSuperview];
+//        [self.maxHrLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.maxHrLinechart];
+//        self.maxHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.calorieLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setMaxHrLinechartData];
+//        [self.bottomBgImg addSubview:self.maxHrLinechart];
+//
+//        [self.avgHrLinechart removeFromSuperview];
+//        [self.avgHrLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.avgHrLinechart];
+//        self.avgHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.maxHrLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setAvgHrLinechartData];
+//        [self.bottomBgImg addSubview:self.avgHrLinechart];
         
     } else if (chartView == self.calorieLinechart) {
         NSLog(@"calorieLinechart 选中");
-        [self.calorieLinechart setDrawMarkers:YES];
+//        [self.calorieLinechart setDrawMarkers:YES];
         self.historyCalorieMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
         CGFloat calorie = (CGFloat)entry.y;
         self.historyCalorieMarkValLbl.text = [NSString stringWithFormat:@"消耗：%.1f",calorie];
         [self.calorieLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.calorieLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
         
-        [self.lineChartView removeFromSuperview];
-        [self.lineChartView setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.lineChartView];
-        CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
-        CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
-        self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
-        NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
-        [self setLineChartDataWithSportData:sportData];
-        [self.topBgImg addSubview:self.lineChartView];
-        
-        [self.completeLinechart removeFromSuperview];
-        [self.completeLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.completeLinechart];
-        [self.lineChartView setDrawMarkers:YES];
-        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
-        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
-        self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
-        [self setCompleteLinechartData];
-        [self.bottomBgImg addSubview:self.completeLinechart];
-        
-        [self.maxHrLinechart removeFromSuperview];
-        [self.maxHrLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.maxHrLinechart];
-        self.maxHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.calorieLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setMaxHrLinechartData];
-        [self.bottomBgImg addSubview:self.maxHrLinechart];
-        
-        [self.avgHrLinechart removeFromSuperview];
-        [self.avgHrLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.avgHrLinechart];
-        self.avgHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.maxHrLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setAvgHrLinechartData];
-        [self.bottomBgImg addSubview:self.avgHrLinechart];
+//        [self.lineChartView removeFromSuperview];
+//        [self.lineChartView setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.lineChartView];
+//        CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
+//        CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
+//        self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
+//        NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+//        [self setLineChartDataWithSportData:sportData];
+//        [self.topBgImg addSubview:self.lineChartView];
+//
+//        [self.completeLinechart removeFromSuperview];
+//        [self.completeLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.completeLinechart];
+//        [self.lineChartView setDrawMarkers:YES];
+//        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
+//        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
+//        self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
+//        [self setCompleteLinechartData];
+//        [self.bottomBgImg addSubview:self.completeLinechart];
+//
+//        [self.maxHrLinechart removeFromSuperview];
+//        [self.maxHrLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.maxHrLinechart];
+//        self.maxHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.calorieLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setMaxHrLinechartData];
+//        [self.bottomBgImg addSubview:self.maxHrLinechart];
+//
+//        [self.avgHrLinechart removeFromSuperview];
+//        [self.avgHrLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.avgHrLinechart];
+//        self.avgHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.maxHrLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setAvgHrLinechartData];
+//        [self.bottomBgImg addSubview:self.avgHrLinechart];
     } else if (chartView == self.maxHrLinechart) {
         NSLog(@"maxHrLinechart 选中");
-        [self.maxHrLinechart setDrawMarkers:YES];
+//        [self.maxHrLinechart setDrawMarkers:YES];
         self.historyMaxHrMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
         self.historyMaxMarkValLbl.text = [NSString stringWithFormat:@"最大心率：%d",(NSInteger)entry.y];
         [self.maxHrLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.maxHrLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
         
-        [self.lineChartView removeFromSuperview];
-        [self.lineChartView setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.lineChartView];
-        CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
-        CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
-        self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
-        NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
-        [self setLineChartDataWithSportData:sportData];
-        [self.topBgImg addSubview:self.lineChartView];
-        
-        [self.completeLinechart removeFromSuperview];
-        [self.completeLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.completeLinechart];
-        [self.lineChartView setDrawMarkers:YES];
-        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
-        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
-        self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
-        [self setCompleteLinechartData];
-        [self.bottomBgImg addSubview:self.completeLinechart];
-        
-        [self.calorieLinechart removeFromSuperview];
-        [self.calorieLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.calorieLinechart];
-        self.calorieLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.completeLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setCalorieLinechartData];
-        [self.bottomBgImg addSubview:self.calorieLinechart];
-        
-        [self.avgHrLinechart removeFromSuperview];
-        [self.avgHrLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.avgHrLinechart];
-        self.avgHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.maxHrLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setAvgHrLinechartData];
-        [self.bottomBgImg addSubview:self.avgHrLinechart];
+//        [self.lineChartView removeFromSuperview];
+//        [self.lineChartView setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.lineChartView];
+//        CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
+//        CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
+//        self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
+//        NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+//        [self setLineChartDataWithSportData:sportData];
+//        [self.topBgImg addSubview:self.lineChartView];
+//
+//        [self.completeLinechart removeFromSuperview];
+//        [self.completeLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.completeLinechart];
+//        [self.lineChartView setDrawMarkers:YES];
+//        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
+//        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
+//        self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
+//        [self setCompleteLinechartData];
+//        [self.bottomBgImg addSubview:self.completeLinechart];
+//
+//        [self.calorieLinechart removeFromSuperview];
+//        [self.calorieLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.calorieLinechart];
+//        self.calorieLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.completeLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setCalorieLinechartData];
+//        [self.bottomBgImg addSubview:self.calorieLinechart];
+//
+//        [self.avgHrLinechart removeFromSuperview];
+//        [self.avgHrLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.avgHrLinechart];
+//        self.avgHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.maxHrLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setAvgHrLinechartData];
+//        [self.bottomBgImg addSubview:self.avgHrLinechart];
     } else if (chartView == self.avgHrLinechart) {
         NSLog(@"avgHrLinechart 选中");
-        [self.avgHrLinechart setDrawMarkers:YES];
+//        [self.avgHrLinechart setDrawMarkers:YES];
         self.historyAvgHrMarkTimeLbl.text = [NSString stringWithFormat:@"第%d次",(NSInteger)entry.x + 1];
         self.historyAvgHrMarkValLbl.text = [NSString stringWithFormat:@"平均心率：%d",(NSInteger)entry.y];
         [self.avgHrLinechart centerViewToAnimatedWithXValue:entry.x yValue:entry.y axis:[self.avgHrLinechart.data getDataSetByIndex:highlight.dataSetIndex].axisDependency duration:1.0];
         
-        [self.lineChartView removeFromSuperview];
-        [self.lineChartView setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.lineChartView];
-        CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
-        CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
-        self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
-        NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
-        [self setLineChartDataWithSportData:sportData];
-        [self.topBgImg addSubview:self.lineChartView];
-        
-        [self.completeLinechart removeFromSuperview];
-        [self.completeLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.completeLinechart];
-        [self.lineChartView setDrawMarkers:YES];
-        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
-        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
-        self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
-        [self setCompleteLinechartData];
-        [self.bottomBgImg addSubview:self.completeLinechart];
-        
-        [self.calorieLinechart removeFromSuperview];
-        [self.calorieLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.calorieLinechart];
-        self.calorieLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.completeLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setCalorieLinechartData];
-        [self.bottomBgImg addSubview:self.calorieLinechart];
-        
-        [self.maxHrLinechart removeFromSuperview];
-        [self.maxHrLinechart setDrawMarkers:NO];
-        [self chartValueNothingSelected:self.maxHrLinechart];
-        self.maxHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.calorieLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
-        [self setMaxHrLinechartData];
-        [self.bottomBgImg addSubview:self.maxHrLinechart];
+//        [self.lineChartView removeFromSuperview];
+//        [self.lineChartView setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.lineChartView];
+//        CGFloat lineChartView_Width = self.topBgImg.frame.size.width - CGRectGetMaxX(self.leftUnitImg.frame) - kLeftUnitImg_RightMargin * kXScal - 2 * kRightUnitLbl_LeftMargin * kXScal - kRightUnitImg_Width * kXScal;
+//        CGFloat lineChartView_Height = self.topBgImg.frame.size.height - kLineCharView_TopMargin * kYScal - kLineCharView_BottomMargin * kYScal;
+//        self.lineChartView.frame = CGRectMake(CGRectGetMaxX(self.leftUnitImg.frame) + kLeftUnitImg_RightMargin * kXScal, kLineCharView_TopMargin * kYScal, lineChartView_Width, lineChartView_Height);
+//        NSDictionary *sportData = [self.sportDict valueForKey:@"sportData"];
+//        [self setLineChartDataWithSportData:sportData];
+//        [self.topBgImg addSubview:self.lineChartView];
+//
+//        [self.completeLinechart removeFromSuperview];
+//        [self.completeLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.completeLinechart];
+//        [self.lineChartView setDrawMarkers:YES];
+//        CGFloat linechartHeight = (self.bottomBgImg.frame.size.height - CGRectGetMaxY(self.historyLbl.frame) - kHistoryLbl_BottomMargin * kYScal - 3 * kHistoryLineChart_Space * kYScal - kHistoryLineChart_BottomMargin * kYScal)/4;
+//        CGFloat linechartWidth = self.bottomBgImg.frame.size.width - (kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal;
+//        self.completeLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.historyLbl.frame) + kHistoryLbl_BottomMargin * kYScal, linechartWidth, linechartHeight);
+//        [self setCompleteLinechartData];
+//        [self.bottomBgImg addSubview:self.completeLinechart];
+//
+//        [self.calorieLinechart removeFromSuperview];
+//        [self.calorieLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.calorieLinechart];
+//        self.calorieLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.completeLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setCalorieLinechartData];
+//        [self.bottomBgImg addSubview:self.calorieLinechart];
+//
+//        [self.maxHrLinechart removeFromSuperview];
+//        [self.maxHrLinechart setDrawMarkers:NO];
+//        [self chartValueNothingSelected:self.maxHrLinechart];
+//        self.maxHrLinechart.frame = CGRectMake((kBottomView_CompleteLbl_LeftMargin +  kBottomView_CompleteLbl_Width + kBottomView_CompleteLbl_RigtMargin) * kXScal, CGRectGetMaxY(self.calorieLinechart.frame) + kHistoryLineChart_Space * kYScal, linechartWidth, linechartHeight);
+//        [self setMaxHrLinechartData];
+//        [self.bottomBgImg addSubview:self.maxHrLinechart];
     }
     self.lastChartView = chartView;
 }
@@ -1474,42 +1474,42 @@
 }
 
 - (void)chartValueNothingSelected:(ChartViewBase *)chartView {
-    if (chartView == self.lineChartView) {
-        if (self.lastChartView == chartView) {
-            [self.lastChartView setDrawMarkers:NO];
-        } else {
-            [self.lastChartView setDrawMarkers:YES];
-        }
-        NSLog(@"lineChartView 取消选中");
-    } else if (chartView == self.completeLinechart) {
-        NSLog(@"completeLinechart 取消选中");
-        if (self.completeLinechart == chartView) {
-            [self.completeLinechart setDrawMarkers:NO];
-        } else {
-            [self.completeLinechart setDrawMarkers:YES];
-        }
-    } else if (chartView == self.calorieLinechart) {
-        NSLog(@"calorieLinechart 取消选中");
-        if (self.calorieLinechart == chartView) {
-            [self.calorieLinechart setDrawMarkers:NO];
-        } else {
-            [self.calorieLinechart setDrawMarkers:YES];
-        }
-    } else if (chartView == self.maxHrLinechart) {
-        NSLog(@"maxHrLinechart 取消选中");
-        if (self.maxHrLinechart == chartView) {
-            [self.maxHrLinechart setDrawMarkers:NO];
-        } else {
-            [self.maxHrLinechart setDrawMarkers:YES];
-        }
-    } else if (chartView == self.avgHrLinechart) {
-        NSLog(@"avgHrLinechart 取消选中");
-        if (self.avgHrLinechart == chartView) {
-            [self.avgHrLinechart setDrawMarkers:NO];
-        } else {
-            [self.avgHrLinechart setDrawMarkers:YES];
-        }
-    }
+//    if (chartView == self.lineChartView) {
+//        if (self.lastChartView == chartView) {
+//            [self.lastChartView setDrawMarkers:NO];
+//        } else {
+//            [self.lastChartView setDrawMarkers:YES];
+//        }
+//        NSLog(@"lineChartView 取消选中");
+//    } else if (chartView == self.completeLinechart) {
+//        NSLog(@"completeLinechart 取消选中");
+//        if (self.completeLinechart == chartView) {
+//            [self.completeLinechart setDrawMarkers:NO];
+//        } else {
+//            [self.completeLinechart setDrawMarkers:YES];
+//        }
+//    } else if (chartView == self.calorieLinechart) {
+//        NSLog(@"calorieLinechart 取消选中");
+//        if (self.calorieLinechart == chartView) {
+//            [self.calorieLinechart setDrawMarkers:NO];
+//        } else {
+//            [self.calorieLinechart setDrawMarkers:YES];
+//        }
+//    } else if (chartView == self.maxHrLinechart) {
+//        NSLog(@"maxHrLinechart 取消选中");
+//        if (self.maxHrLinechart == chartView) {
+//            [self.maxHrLinechart setDrawMarkers:NO];
+//        } else {
+//            [self.maxHrLinechart setDrawMarkers:YES];
+//        }
+//    } else if (chartView == self.avgHrLinechart) {
+//        NSLog(@"avgHrLinechart 取消选中");
+//        if (self.avgHrLinechart == chartView) {
+//            [self.avgHrLinechart setDrawMarkers:NO];
+//        } else {
+//            [self.avgHrLinechart setDrawMarkers:YES];
+//        }
+//    }
 }
 
 #pragma mark - button click events
