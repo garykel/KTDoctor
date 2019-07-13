@@ -120,6 +120,7 @@
     AerobicriptionModel *model = [[AerobicriptionModel alloc] init];
     [self.groups addObject:model];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(computeWeight) name:@"ComputeWeightNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllmenus) name:kHideDropDownNotification object:nil];
     [self setNavBar];
     [self setupUI];
 }
@@ -569,11 +570,15 @@
 
 #pragma mark - button click events
 - (void)back:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     [self.navigationController popViewControllerAnimated:NO];
 }
 
 - (void)saveOrCreate:(UIButton*)sender {
     __weak typeof (self)weakSelf = self;
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (self.templateNameTF.text.length == 0) {
         [STTextHudTool showText:@"请填写模板名称"];
     } else if([self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@""] ||[self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"请选择"]) {
@@ -660,6 +665,8 @@
 }
 
 - (void)giveup:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:@"确定放弃吗？" preferredStyle:UIAlertControllerStyleAlert];
     UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self.navigationController popViewControllerAnimated:NO];
@@ -673,6 +680,8 @@
 }
 
 - (void)addGroup:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     NSLog(@"增加行");
     NSInteger index = sender.tag - 10000;
     AerobicriptionModel *model = [self.groups objectAtIndex:index];
@@ -696,6 +705,8 @@
 }
 
 - (void)removeGroup:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (self.groups.count > 1) {
         NSInteger index = sender.tag - 20000;
         [self.groups removeObjectAtIndex:index];
@@ -704,6 +715,15 @@
         [self computeWeight];
     }
     self.trainingGroupLbl.text = [NSString stringWithFormat:@"训练组数：%d",self.groups.count];
+}
+
+- (void)hideAllmenus {
+    for (UIView *view in self.topBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
+        }
+    }
 }
 
 #pragma mark - network functions

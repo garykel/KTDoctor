@@ -856,6 +856,8 @@
 
 #pragma mark - button click events
 - (void)back:(UIButton*)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     [self.navigationController popViewControllerAnimated:NO];
 }
 

@@ -56,6 +56,7 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideAllMenus) name:kHideCellDropDownNotification object:nil];
         [self setUI];
     }
     return self;
@@ -245,6 +246,15 @@
     self.removeBtn.layer.cornerRadius = kAddBtn_Width * kYScal/2.0;
     self.removeBtn.layer.masksToBounds = YES;
     [self.bgView addSubview:self.removeBtn];
+}
+
+- (void)hideAllMenus {
+    for (UIView *view in self.infoBgView.subviews) {
+        if ([view isKindOfClass:[KTDropDownMenus class]]) {
+            KTDropDownMenus *ktMenu = (KTDropDownMenus*)view;
+            [ktMenu hiddenCityList];
+        }
+    }
 }
 
 #pragma mark - XXTGDropdownMenuDelegate

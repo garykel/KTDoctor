@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CircleProgressView.h"
+
 @interface ReportListCell : UITableViewCell
 @property (nonatomic,strong)UIView *headerView;
 @property (nonatomic,strong)UIImageView *sequenceImg;
 @property (nonatomic,strong)UILabel *sequenceLbl;
-@property (nonatomic,strong)CircleProgressView *accomplishImg;
+@property (nonatomic,strong)UIImageView *accomplishImg;
 @property (nonatomic,strong)UILabel *percentLbl;
 @property (nonatomic,strong)UILabel *accomplishLbl;
 @property (nonatomic,strong)UIImageView *timeImg;
@@ -97,5 +97,4 @@
 @property (nonatomic,strong)UIImageView *rpe12Img;
 @property (nonatomic,strong)UIView *rpe12ImgBgView;
 @property (nonatomic,strong)UILabel *rpe12Lbl;
-@property (nonatomic,assign)NSInteger percent;
 @end

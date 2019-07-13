@@ -497,7 +497,6 @@
         NSDictionary *reportDict = [reports objectAtIndex:(indexPath.row - 1)];
         cell.sequenceLbl.text = [NSString stringWithFormat:@"%d",reports.count - (indexPath.row - 1)];
         NSInteger completePercent = [[reportDict valueForKey:@"completePercent"] integerValue];
-        cell.percent = completePercent;
         cell.percentLbl.text = [NSString stringWithFormat:@"%d%%",completePercent];
         cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[reportDict valueForKey:@"startTime"]];
         NSInteger totalTime = [[reportDict valueForKey:@"totalTime"] integerValue];
