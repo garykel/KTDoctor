@@ -40,10 +40,14 @@
 @property (nonatomic,strong)UILabel *calorieValLbl;
 @property (nonatomic,strong)UIView *titleSeperateView5;
 @property (nonatomic,strong)UIView *valueSeperateView5;
-@property (nonatomic,strong)UILabel *avgSpeedLbl;
-@property (nonatomic,strong)UILabel *avgSpeedValLbl;
+@property (nonatomic,strong)UILabel *metsLbl;
+@property (nonatomic,strong)UILabel *metsValLbl;
 @property (nonatomic,strong)UIView *titleSeperateView6;
 @property (nonatomic,strong)UIView *valueSeperateView6;
+@property (nonatomic,strong)UILabel *avgSpeedLbl;
+@property (nonatomic,strong)UILabel *avgSpeedValLbl;
+@property (nonatomic,strong)UIView *titleSeperateView7;
+@property (nonatomic,strong)UIView *valueSeperateView7;
 @property (nonatomic,strong)UILabel *avgDifficultyLbl;
 @property (nonatomic,strong)UILabel *avgDifficultyValLbl;
 @property (nonatomic,strong)UIView *rpeView;

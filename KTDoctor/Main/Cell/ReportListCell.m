@@ -112,7 +112,7 @@
     self.titleView.layer.masksToBounds = YES;
     [self.contentView addSubview:self.titleView];
     
-    CGFloat itemWidth = (width - 6 * 1)/7;
+    CGFloat itemWidth = (width - 7 * 1)/8;
     self.totalTimeLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, itemWidth, kTitleView_Height * kYScal)];
     self.totalTimeLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.totalTimeLbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize];
@@ -228,35 +228,56 @@
     self.valueSeperateView5.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
     [self.valueView addSubview:self.valueSeperateView5];
     
-    self.avgSpeedLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.titleSeperateView5.frame), 0, itemWidth, kTitleView_Height * kYScal)];
+    self.metsLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.titleSeperateView5.frame), 0, itemWidth, kTitleView_Height * kYScal)];
+    self.metsLbl.textColor = [UIColor colorWithHexString:@"#666666"];
+    self.metsLbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize];
+    self.metsLbl.text = @"代谢当量";
+    self.metsLbl.textAlignment = NSTextAlignmentCenter;
+    [self.titleView addSubview:self.metsLbl];
+    
+    self.titleSeperateView6 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.metsLbl.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.titleSeperateView6.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.titleView addSubview:self.titleSeperateView6];
+    
+    self.metsValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.valueSeperateView5.frame), 0, itemWidth, kTitleView_Height * kYScal)];
+    self.metsValLbl.textColor = [UIColor colorWithHexString:@"#666666"];
+    self.metsValLbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize];
+    self.metsValLbl.textAlignment = NSTextAlignmentCenter;
+    [self.valueView addSubview:self.metsValLbl];
+    
+    self.valueSeperateView6 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.metsValLbl.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.valueSeperateView6.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.valueView addSubview:self.valueSeperateView6];
+    
+    self.avgSpeedLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.titleSeperateView6.frame), 0, itemWidth, kTitleView_Height * kYScal)];
     self.avgSpeedLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.avgSpeedLbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize];
     self.avgSpeedLbl.text = @"平均速度";
     self.avgSpeedLbl.textAlignment = NSTextAlignmentCenter;
     [self.titleView addSubview:self.avgSpeedLbl];
     
-    self.titleSeperateView6 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame), 0, 1, kTitleView_Height * kYScal)];
-    self.titleSeperateView6.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
-    [self.titleView addSubview:self.titleSeperateView6];
+    self.titleSeperateView7 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedLbl.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.titleSeperateView7.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.titleView addSubview:self.titleSeperateView7];
     
-    self.avgSpeedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.valueSeperateView5.frame), 0, itemWidth, kTitleView_Height * kYScal)];
+    self.avgSpeedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.valueSeperateView6.frame), 0, itemWidth, kTitleView_Height * kYScal)];
     self.avgSpeedValLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.avgSpeedValLbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize];
     self.avgSpeedValLbl.textAlignment = NSTextAlignmentCenter;
     [self.valueView addSubview:self.avgSpeedValLbl];
     
-    self.valueSeperateView6 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedValLbl.frame), 0, 1, kTitleView_Height * kYScal)];
-    self.valueSeperateView6.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
-    [self.valueView addSubview:self.valueSeperateView6];
+    self.valueSeperateView7 = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.avgSpeedValLbl.frame), 0, 1, kTitleView_Height * kYScal)];
+    self.valueSeperateView7.backgroundColor = [UIColor colorWithHexString:@"#9EDCEA"];
+    [self.valueView addSubview:self.valueSeperateView7];
     
-    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.titleSeperateView6.frame), 0, itemWidth, kTitleView_Height * kYScal)];
+    self.avgDifficultyLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.titleSeperateView7.frame), 0, itemWidth, kTitleView_Height * kYScal)];
     self.avgDifficultyLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.avgDifficultyLbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize];
     self.avgDifficultyLbl.text = @"平均强度";
     self.avgDifficultyLbl.textAlignment = NSTextAlignmentCenter;
     [self.titleView addSubview:self.avgDifficultyLbl];
     
-    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.valueSeperateView6.frame), 0, itemWidth, kTitleView_Height * kYScal)];
+    self.avgDifficultyValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.valueSeperateView7.frame), 0, itemWidth, kTitleView_Height * kYScal)];
     self.avgDifficultyValLbl.textColor = [UIColor colorWithHexString:@"#666666"];
     self.avgDifficultyValLbl.font = [UIFont systemFontOfSize:kTitleView_ItemLbl_FontSize];
     self.avgDifficultyValLbl.textAlignment = NSTextAlignmentCenter;

@@ -50,6 +50,9 @@
 @property (nonatomic,strong)UILabel *mileLbl;
 @property (nonatomic,strong)UIView *mileSeperateView;
 @property (nonatomic,strong)UIView *mileValSeperateView;
+@property (nonatomic,strong)UILabel *metsLbl;
+@property (nonatomic,strong)UIView *metsSeperateView;
+@property (nonatomic,strong)UIView *metsValSeperateView;
 @property (nonatomic,strong)UILabel *avgSpeedLbl;
 @property (nonatomic,strong)UIView *avgSpeedSeperateView;
 @property (nonatomic,strong)UIView *avgSpeedValSeperateView;
@@ -161,7 +164,7 @@
     self.topTitleView.layer.masksToBounds = YES;
     [self.contentView addSubview:self.topTitleView];
     
-    CGFloat lblWidth = (width - 7 * 1)/8;
+    CGFloat lblWidth = (width - 7 * 1)/9;
     self.accomplishLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, lblWidth, kHistory_AccomplishView_Height * kYScal)];
     self.accomplishLbl.textColor = [UIColor blackColor];
     self.accomplishLbl.textAlignment = NSTextAlignmentCenter;
@@ -217,7 +220,18 @@
     self.mileSeperateView.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     [self.topTitleView addSubview:self.mileSeperateView];
     
-    self.avgSpeedLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.mileSeperateView.frame), 0, lblWidth, kHistory_AccomplishView_Height * kYScal)];
+    self.metsLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.mileSeperateView.frame), 0, lblWidth, kHistory_AccomplishView_Height * kYScal)];
+    self.metsLbl.textColor = [UIColor blackColor];
+    self.metsLbl.textAlignment = NSTextAlignmentCenter;
+    self.metsLbl.text = @"代谢当量";
+    self.metsLbl.font = [UIFont systemFontOfSize:kHistory_Lbl_FontSize * kYScal];
+    [self.topTitleView addSubview:self.metsLbl];
+    
+    self.metsSeperateView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.metsLbl.frame), 0, 1, kHistory_AccomplishView_Height * kYScal )];
+    self.metsSeperateView.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
+    [self.topTitleView addSubview:self.metsSeperateView];
+    
+    self.avgSpeedLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.metsSeperateView.frame), 0, lblWidth, kHistory_AccomplishView_Height * kYScal)];
     self.avgSpeedLbl.textColor = [UIColor blackColor];
     self.avgSpeedLbl.textAlignment = NSTextAlignmentCenter;
     self.avgSpeedLbl.text = @"平均速度";
@@ -302,7 +316,17 @@
     self.mileValSeperateView.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
     [self.topValueView addSubview:self.mileValSeperateView];
     
-    self.avgSpeedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.mileValLbl.frame) + 1, 0, lblWidth, kHistory_AccomplishView_Height * kYScal)];
+    self.metsValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.mileValLbl.frame) + 1, 0, lblWidth, kHistory_AccomplishView_Height * kYScal)];
+    self.metsValLbl.textColor = [UIColor blackColor];
+    self.metsValLbl.textAlignment = NSTextAlignmentCenter;
+    self.metsValLbl.font = [UIFont systemFontOfSize:kHistory_Lbl_FontSize * kYScal];
+    [self.topValueView addSubview:self.metsValLbl];
+    
+    self.metsValSeperateView = [[UIView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.metsValLbl.frame), 0, 1, kHistory_AccomplishView_Height * kYScal )];
+    self.metsValSeperateView.backgroundColor = [UIColor colorWithHexString:@"#a7e0ec"];
+    [self.topValueView addSubview:self.metsValSeperateView];
+    
+    self.avgSpeedValLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.metsValLbl.frame) + 1, 0, lblWidth, kHistory_AccomplishView_Height * kYScal)];
     self.avgSpeedValLbl.textColor = [UIColor blackColor];
     self.avgSpeedValLbl.textAlignment = NSTextAlignmentCenter;
     self.avgSpeedValLbl.font = [UIFont systemFontOfSize:kHistory_Lbl_FontSize * kYScal];

@@ -345,14 +345,16 @@
             cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[sportDict valueForKey:@"startTime"]];
             NSInteger completePercent = [[sportDict valueForKey:@"completePercent"] integerValue];
             cell.accomplishValLbl.text = [NSString stringWithFormat:@"%ld %%",completePercent];
-            cell.maxHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"maxHr"]];
-            cell.avgHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"avgHr"]];
+            cell.maxHrValLbl.text = [NSString stringWithFormat:@"%@ Bpm",[sportDict valueForKey:@"maxHr"]];
+            cell.avgHrValLbl.text = [NSString stringWithFormat:@"%@ Bpm",[sportDict valueForKey:@"avgHr"]];
             CGFloat calorie = [[sportDict valueForKey:@"calorie"] floatValue];
-            cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f kcal",calorie];
+            cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f Kcal",calorie];
             CGFloat totalMileage = [[sportDict valueForKey:@"totalMileage"] floatValue];
-            cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
+            cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f Km",totalMileage];
+            CGFloat met = [[sportDict valueForKey:@"mets"] floatValue];
+            cell.metsValLbl.text = [NSString stringWithFormat:@"%.1f METs",met];
             CGFloat speed = [[sportDict valueForKey:@"speed"] floatValue];
-            cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
+            cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f Km/h",speed];
             NSInteger type2 = [[sportDict valueForKey:@"type2"] integerValue];
             if (type2 == 1) {
                 cell.avgIntensityLbl.text = @"平均强度";
@@ -416,21 +418,23 @@
             cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[sportDict valueForKey:@"startTime"]];
             NSInteger completePercent = [[sportDict valueForKey:@"completePercent"] integerValue];
             cell.accomplishValLbl.text = [NSString stringWithFormat:@"%ld %%",completePercent];
-            cell.maxHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"maxHr"]];
-            cell.avgHrValLbl.text = [NSString stringWithFormat:@"%@ bpm",[sportDict valueForKey:@"avgHr"]];
+            cell.maxHrValLbl.text = [NSString stringWithFormat:@"%@ Bpm",[sportDict valueForKey:@"maxHr"]];
+            cell.avgHrValLbl.text = [NSString stringWithFormat:@"%@ Bpm",[sportDict valueForKey:@"avgHr"]];
             CGFloat calorie = [[sportDict valueForKey:@"calorie"] floatValue];
-            cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f kcal",calorie];
+            cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f Kcal",calorie];
             CGFloat totalMileage = [[sportDict valueForKey:@"totalMileage"] floatValue];
-            cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
+            cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f Km",totalMileage];
+            CGFloat met = [[sportDict valueForKey:@"mets"] floatValue];
+            cell.metsValLbl.text = [NSString stringWithFormat:@"%.1f METs",met];
             CGFloat speed = [[sportDict valueForKey:@"speed"] floatValue];
-            cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
+            cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f Km/h",speed];
             NSInteger type2 = [[sportDict valueForKey:@"type2"] integerValue];
             if (type2 == 1) {
                 cell.avgIntensityLbl.text = @"平均强度";
                 cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@",[sportDict valueForKey:@"avgDifficulty"]];
             } else {
                 cell.avgIntensityLbl.text = @"平均功率";
-                cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@ w",[sportDict valueForKey:@"avgDifficulty"]];
+                cell.avgIntensityValLbl.text = [NSString stringWithFormat:@"%@ W",[sportDict valueForKey:@"avgDifficulty"]];
             }
             NSInteger totalTime = [[sportDict valueForKey:@"totalTime"] integerValue];
             NSString *totalTimeStr = [self getTimeString:totalTime];

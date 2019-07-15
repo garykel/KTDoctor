@@ -503,20 +503,22 @@
         NSString *totalTimeStr = [self getTimeString:totalTime];
         cell.totalTimeValLbl.text = totalTimeStr;
         NSInteger avgHr = [[reportDict valueForKey:@"avgHr"] integerValue];
-        cell.avgHrValLbl.text = [NSString stringWithFormat:@"%d bpm",avgHr];
+        cell.avgHrValLbl.text = [NSString stringWithFormat:@"%d Bpm",avgHr];
         NSInteger maxHr = [[reportDict valueForKey:@"maxHr"] integerValue];
-        cell.maxHrValLbl.text = [NSString stringWithFormat:@"%d bpm",maxHr];
+        cell.maxHrValLbl.text = [NSString stringWithFormat:@"%d Bpm",maxHr];
         CGFloat totalMileage = [[reportDict valueForKey:@"totalMileage"] floatValue];
-        cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f km",totalMileage];
+        cell.mileValLbl.text = [NSString stringWithFormat:@"%.1f Km",totalMileage];
         CGFloat calorie = [[reportDict valueForKey:@"calorie"] floatValue];
-        cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f kcal",calorie];
+        cell.calorieValLbl.text = [NSString stringWithFormat:@"%.1f Kcal",calorie];
+        CGFloat met = [[reportDict valueForKey:@"mets"] floatValue];
+        cell.metsValLbl.text = [NSString stringWithFormat:@"%.1f METs",met];
         CGFloat speed = [[reportDict valueForKey:@"speed"] floatValue];
-        cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f km/h",speed];
+        cell.avgSpeedValLbl.text = [NSString stringWithFormat:@"%.1f Km/h",speed];
         NSInteger avgDifficulty = [[reportDict valueForKey:@"avgDifficulty"] integerValue];
         NSInteger type2 = [[reportDict valueForKey:@"type2"] integerValue];
         if (type2 == 2) {
             cell.avgDifficultyLbl.text = @"平均功率";
-            cell.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%dw",avgDifficulty];
+            cell.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%dW",avgDifficulty];
         } else {
             cell.avgDifficultyLbl.text = @"平均强度";
             cell.avgDifficultyValLbl.text = [NSString stringWithFormat:@"%d",avgDifficulty];

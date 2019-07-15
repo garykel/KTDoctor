@@ -19,6 +19,7 @@
 @property (nonatomic,strong)UILabel *avgHrValLbl;
 @property (nonatomic,strong)UILabel *calorieValLbl;
 @property (nonatomic,strong)UILabel *mileValLbl;
+@property (nonatomic,strong)UILabel *metsValLbl;
 @property (nonatomic,strong)UILabel *avgSpeedValLbl;
 @property (nonatomic,strong)UILabel *avgIntensityLbl;
 @property (nonatomic,strong)UILabel *avgIntensityValLbl;
