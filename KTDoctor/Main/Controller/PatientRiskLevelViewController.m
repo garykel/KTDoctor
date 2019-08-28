@@ -194,11 +194,46 @@
     [self.navigationController popViewControllerAnimated:NO];
 }
 
+//获取设备类型列表
+- (void)getDeviceTypeList:(NSMutableDictionary *)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDEVICE_TYPE_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *data = [responseObject valueForKey:@"data"];
+            CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
+            create.prescriptionDict = weakSelf.userInfo;
+            if (data.count > 0) {
+                for (NSDictionary *dict in data) {
+                    NSString *name = [dict valueForKey:@"name"];
+                    if ([name isEqualToString:@"有氧设备"]) {
+                        create.deviceTypeArr = [[dict valueForKey:@"children"] mutableCopy];
+                    }
+                }
+            }
+            [weakSelf.navigationController pushViewController:create animated:NO];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
+
 //开具有氧处方
 - (void)createAerobicPrescription:(UIButton*)sender {
-    CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
-    create.prescriptionDict = self.userInfo;
-    [self.navigationController pushViewController:create animated:NO];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    NSMutableDictionary *para = [NSMutableDictionary dictionary];
+    [para setValue:orgCode forKey:@"orgCode"];
+    [self getDeviceTypeList:para];
 }
 
 //开具力量处方

@@ -461,7 +461,7 @@ CGSize testResultsListViewSize;
     
     NSMutableDictionary *para = [NSMutableDictionary dictionary];
     [para setValue:orgCode forKey:@"orgCode"];
-    [self getDeviceTypeList:parameter];
+    [self getDeviceTypeList:para];
     [self setNavBar];
     [self setupUI];
 }
