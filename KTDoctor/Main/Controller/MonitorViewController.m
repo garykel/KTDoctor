@@ -856,7 +856,7 @@ withFilterContext:(nullable id)filterContext {
     model.endTime = [dict valueForKey:@"endTime"];
     model.headUrl = [dict valueForKey:@"headUrl"];
     model.isEnd = [[dict valueForKey:@"isEnd"] integerValue];
-    model.isxiuxi = [[dict valueForKey:@"isxiuxi"] integerValue];
+    model.isxiuxi = [[dict valueForKey:@"isxiuxi"] boolValue];
     model.kcal = [[dict valueForKey:@"kcal"] floatValue];
     model.lc = [[dict valueForKey:@"lc"] floatValue];
     model.maxHr = [[dict valueForKey:@"maxHr"] integerValue];
@@ -869,6 +869,8 @@ withFilterContext:(nullable id)filterContext {
     model.xId = [dict valueForKey:@"xId"];
     model.xiaojietime = [[dict valueForKey:@"xiaojietime"] integerValue];
     model.doctorId = user.userId;
+    model.met = [[dict valueForKey:@"met"] floatValue];
+    model.type2 = [[dict valueForKey:@"type2"] integerValue];
     [self handlerPatient:model];
 }
 

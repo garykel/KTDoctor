@@ -19,7 +19,7 @@
 @property (nonatomic,copy)NSString *endTime;
 @property (nonatomic,copy)NSString *headUrl;
 @property (nonatomic,assign)NSInteger isEnd;
-@property (nonatomic,assign)NSInteger isxiuxi;
+@property (nonatomic,assign)BOOL isxiuxi;
 @property (nonatomic,assign)CGFloat kcal;
 @property (nonatomic,assign)CGFloat lc;
 @property (nonatomic,assign)NSInteger maxHr;
@@ -31,4 +31,6 @@
 @property (nonatomic,assign)NSInteger userId;
 @property (nonatomic,copy)NSString *xId;
 @property (nonatomic,assign)NSInteger xiaojietime;
+@property (nonatomic,assign)NSInteger type2;
+@property (nonatomic,assign)CGFloat met;
 @end
