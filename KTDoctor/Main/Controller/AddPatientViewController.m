@@ -121,6 +121,8 @@
 @property (nonatomic,assign)BOOL isPasswordLogin;//是否是密码登录
 @property (nonatomic,strong)UserModel *user;
 @property (nonatomic,strong)NSTimer *timer;
+@property (nonatomic,strong)NSTimer *userTimer;
+@property (nonatomic,copy)NSString *stateStr;
 @end
 
 @implementation AddPatientViewController
@@ -143,10 +145,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refreshQRCode) userInfo:nil repeats:YES];
+    self.userTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(getWXUserInfo) userInfo:nil repeats:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [self.timer invalidate];
+    [self.userTimer invalidate];
 }
 
 - (void)setupUI {
@@ -468,15 +472,60 @@
     [self getWXQRCode:parameter];
 }
 
+- (void)getWXUserInfo {
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:self.stateStr forKey:@"state"];
+    [self getWXUserInfos:parameter];
+}
+
 #pragma mark - netFunctions
+
+//获取微信用户信息
+- (void)getWXUserInfos:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kWX_USER_INFO_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        if (code == 0) {
+            NSDictionary *dict = [responseObject valueForKey:@"data"];
+            NSLog(@"userinfo is :%@",dict);
+            [weakSelf.userTimer invalidate];
+            NSMutableDictionary *para = [NSMutableDictionary dictionary];
+            NSDictionary *userDict = weakSelf.user.organ;
+            NSArray *orgCodeArr = [userDict valueForKey:@"orgCode"];
+            NSString *orgCode = orgCodeArr[0];
+            [para setValue:orgCode forKey:@"orgCode"];
+            NSInteger userId = [[dict valueForKey:@"userId"] integerValue];
+            [para setValue:@(userId) forKey:@"userId"];
+            [weakSelf doctorGetUserInfo:para];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else if(code == 21407){
+            NSString *msg = [responseObject valueForKey:@"msg"];
+            NSLog(@"get wx userinfo error:%@",msg);
+        } else {
+            NSString *msg = [responseObject valueForKey:@"msg"];
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
+}
 
 //获取扫码地址
 - (void)getWXQRCode:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kWX_GET_QR_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
         NSInteger code = [[responseObject valueForKey:@"code"] longValue];
         if (code == 0) {
             NSDictionary *dict = [responseObject valueForKey:@"data"];
             NSString *url = [dict valueForKey:@"url"];
+            weakSelf.stateStr = [dict valueForKey:@"state"];
             NSLog(@"qr data is :%@",url);
             // 1.创建过滤器 -- 苹果没有将这个字符封装成常量
             CIFilter *filter = [CIFilter filterWithName:@"CIQRCodeGenerator"];
@@ -489,7 +538,7 @@
             CIImage *outputImage = [filter outputImage];
             // 5.显示二维码
             self.scanImg.image = [UIImage imageWithCIImage:outputImage];
-        }
+        } 
     } andFaild:^(NSError *error) {
         NSLog(@"error :%@",error);
     }];
