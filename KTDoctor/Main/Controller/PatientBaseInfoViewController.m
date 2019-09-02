@@ -398,7 +398,7 @@
     self.kfxtTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.kfxtStar.frame) + kNameTF_LeftMargin * kXScal, self.waistlineTF.frame.origin.y, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.kfxtTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.kfxtTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"fbg"] floatValue]];
-    self.kfxtTF.unitLbl.text = @"mmlo/L";
+    self.kfxtTF.unitLbl.text = @"mmol/L";
     self.kfxtTF.delegate = self;
     self.kfxtTF.backgroundColor = [UIColor whiteColor];
     [self.infoView addSubview:self.kfxtTF];
@@ -493,7 +493,7 @@
     self.gmdzdbTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
     self.gmdzdbTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"hdl"] floatValue]];
     self.gmdzdbTF.backgroundColor = [UIColor whiteColor];
-    self.gmdzdbTF.unitLbl.text = @"mmlo/L";
+    self.gmdzdbTF.unitLbl.text = @"mmol/L";
     self.gmdzdbTF.delegate = self;
     self.gmdzdbTF.center = CGPointMake(CGRectGetMaxX(self.gmdzdbStar.frame) + kLongLbl_TF_LeftMargin * kXScal + kMaxAlertHr_TF_Width * kXScal/2.0, self.gmdzdbLbl.center.y);
     [self.infoView addSubview:self.gmdzdbTF];
