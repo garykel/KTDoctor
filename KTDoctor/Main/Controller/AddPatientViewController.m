@@ -62,7 +62,7 @@
 #define kPhoneTF_Height 26
 #define kPhoneTF_BottomMargin 23
 #define kPhoneTF_RightMargin 20
-#define kLoginBtn_TopMargin 29
+#define kLoginBtn_TopMargin 39
 #define kLoginBtn_Width 105
 #define kLoginBtn_Height 25
 #define kLoginBtn_FontSize 12.0
@@ -132,20 +132,23 @@
     self.navigationController.navigationBar.hidden = YES;
     self.isPasswordLogin = YES;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    NSDictionary *dict = self.user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@2 forKey:@"type"];
-    [self getWXQRCode:parameter];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textViewEditChanged:) name:UITextFieldTextDidChangeNotification object:nil];
+    ///取消获取二维码
+//    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+//    NSDictionary *dict = self.user.organ;
+//    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+//    NSString *orgCode = orgCodeArr[0];
+//    [parameter setValue:orgCode forKey:@"orgCode"];
+//    [parameter setValue:@2 forKey:@"type"];
+//    [self getWXQRCode:parameter];
     [self setupUI];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refreshQRCode) userInfo:nil repeats:YES];
-    self.userTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(getWXUserInfo) userInfo:nil repeats:YES];
+    ///取消获取二维码
+//    self.timer = [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(refreshQRCode) userInfo:nil repeats:YES];
+//    self.userTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(getWXUserInfo) userInfo:nil repeats:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -194,6 +197,7 @@
     [self.wechatLoginBtn addTarget:self action:@selector(changeLogin:) forControlEvents:UIControlEventTouchUpInside];
     [self.wechatLoginBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 0)];
     [self.loginBgImg addSubview:self.wechatLoginBtn];
+    self.wechatLoginBtn.hidden = YES;
     self.loginBgImg.userInteractionEnabled = YES;
     
     self.doctorImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"doctor1"]];
@@ -206,8 +210,8 @@
     self.dashView.userInteractionEnabled = YES;
     [self configLoginview];
     [self configScanview];
-    self.scanBgView.hidden = NO;
-    self.loginBgView.hidden = YES;
+    self.scanBgView.hidden = YES;
+    self.loginBgView.hidden = NO;
 }
 
 - (void)configLoginview {
@@ -221,11 +225,13 @@
     [self.passwordBtn.titleLabel setFont:[UIFont systemFontOfSize:kPasswordBtn_FontSize * kYScal]];
     [self.passwordBtn addTarget:self action:@selector(passwordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     self.passwordBtn.userInteractionEnabled = YES;
+    self.passwordBtn.hidden = YES;
     [self.loginBgView addSubview:self.passwordBtn];
     
     self.seperateView = [[UIView alloc] initWithFrame:CGRectMake(kMiddleView_RightMargin * kXScal, 0, kMiddleView_Width * kXScal, kMiddleView_Height * kYScal)];
     self.seperateView.backgroundColor = [UIColor colorWithHexString:@"#099FC1"];
     self.seperateView.center = CGPointMake(CGRectGetMaxX(self.passwordBtn.frame) + kMiddleView_RightMargin * kXScal + kMiddleView_Width * kXScal / 2.0, self.passwordBtn.center.y);
+    self.seperateView.hidden = YES;
     [self.loginBgView addSubview:self.seperateView];
     
     self.codeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -235,13 +241,15 @@
     self.codeBtn.frame = CGRectMake(CGRectGetMaxX(self.seperateView.frame) + kMiddleView_RightMargin * kXScal, self.passwordBtn.frame.origin.y, KCodeBtn_width * kXScal, kCodeBtn_Height * kYScal);
     self.codeBtn.userInteractionEnabled = YES;
     [self.codeBtn.titleLabel setFont:[UIFont systemFontOfSize:kPasswordBtn_FontSize * kYScal]];
+    self.codeBtn.hidden = YES;
     [self.loginBgView addSubview:self.codeBtn];
     
     self.middleLine = [[UIView alloc] initWithFrame:CGRectMake(self.passwordBtn.frame.origin.x, CGRectGetMaxY(self.passwordBtn.frame) + kPasswordBtn_BottomMargin * kYScal, self.dashView.frame.size.width - 2 * self.passwordBtn.frame.origin.x, kMiddleLine_Heigh * kYScal)];
     self.middleLine.backgroundColor = [UIColor colorWithHexString:@"#099FC1"];
+    self.middleLine.hidden = YES;
     [self.loginBgView addSubview:self.middleLine];
     
-    self.phoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.passwordBtn.frame.origin.x,CGRectGetMaxY(self.middleLine.frame) + kPhoneLbl_TopMargin * kYScal, kPhoneLbl_Width * kXScal, kPhoneLbl_Height * kYScal)];
+    self.phoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.passwordBtn.frame.origin.x,CGRectGetMaxY(self.middleLine.frame), kPhoneLbl_Width * kXScal, kPhoneLbl_Height * kYScal)];
     self.phoneLbl.text = @"手机号码";
     self.phoneLbl.textColor = [UIColor colorWithHexString:@"#011945"];
     self.phoneLbl.font = [UIFont systemFontOfSize:kPhoneLbl_FontSize * kYScal];
@@ -260,6 +268,7 @@
     self.passwordLbl.textColor = [UIColor colorWithHexString:@"#011945"];
     self.passwordLbl.text = @"密       码";
     self.passwordLbl.font = [UIFont systemFontOfSize:kPhoneLbl_FontSize * kYScal];
+    self.passwordLbl.hidden = YES;
     [self.loginBgView addSubview:self.passwordLbl];
     
     self.passwordTF = [[UITextField alloc] initWithFrame:CGRectMake(self.passwordTF.frame.origin.x, 0, self.phoneTF.frame.size.width, self.phoneTF.frame.size.height)];
@@ -268,6 +277,7 @@
     self.passwordTF.layer.masksToBounds = YES;
     self.passwordTF.secureTextEntry = YES;
     self.passwordTF.center = CGPointMake(CGRectGetMaxX(self.passwordLbl.frame) + kPhoneLbl_RightMargin * kXScal + kPhoneTF_Width * kXScal/2.0, self.passwordLbl.center.y);
+    self.passwordTF.hidden = YES;
     [self.loginBgView addSubview:self.passwordTF];
     
     self.verifyCodeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.passwordLbl.frame.origin.x, self.passwordLbl.frame.origin.y, kPhoneLbl_Width * kXScal, kPhoneLbl_Height * kYScal)];
@@ -275,7 +285,7 @@
     self.verifyCodeLbl.text = @"验 证 码";
     self.verifyCodeLbl.font = [UIFont systemFontOfSize:kPhoneLbl_FontSize * kYScal];
     [self.loginBgView addSubview:self.verifyCodeLbl];
-    self.verifyCodeLbl.hidden = YES;
+//    self.verifyCodeLbl.hidden = YES;
     
     CGFloat verifyCodeTF_Width = self.dashView.frame.size.width - CGRectGetMaxX(self.verifyCodeLbl.frame) - kPhoneLbl_RightMargin * kXScal - kVerify_Btn_LeftMargin * kXScal - kVerify_Btn_Width * kXScal - kPhoneTF_RightMargin * kXScal;
     self.verifyCodeTF = [[UITextField alloc] initWithFrame:CGRectMake(self.passwordTF.frame.origin.x, self.passwordTF.frame.origin.y, verifyCodeTF_Width, self.phoneTF.frame.size.height)];
@@ -284,7 +294,7 @@
     self.verifyCodeTF.font = [UIFont systemFontOfSize:kVerify_Btn_FontSize * kYScal];
     self.verifyCodeTF.backgroundColor = [UIColor colorWithHexString:@"#68C9DE"];
     [self.loginBgView addSubview:self.verifyCodeTF];
-    self.verifyCodeTF.hidden = YES;
+//    self.verifyCodeTF.hidden = YES;
     
     self.verifyCodeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.verifyCodeBtn.frame = CGRectMake(CGRectGetMaxX(self.verifyCodeTF.frame) + kVerify_Btn_LeftMargin * kXScal, self.verifyCodeTF.frame.origin.y, kVerify_Btn_Width * kXScal, self.verifyCodeTF.frame.size.height);
@@ -295,7 +305,7 @@
     self.verifyCodeBtn.backgroundColor = [UIColor colorWithHexString:@"#68C9DE"];
     [self.loginBgView addSubview:self.verifyCodeBtn];
     self.verifyCodeBtn.userInteractionEnabled = YES;
-    self.verifyCodeBtn.hidden = YES;
+//    self.verifyCodeBtn.hidden = YES;
     
     self.loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -304,7 +314,7 @@
     self.loginBtn.backgroundColor = [UIColor colorWithHexString:@"#0FB2D7"];
     self.loginBtn.frame = CGRectMake(0, CGRectGetMaxY(self.passwordTF.frame) + kLoginBtn_TopMargin * kYScal, kLoginBtn_Width * kXScal, kLoginBtn_Height * kYScal);
     self.loginBtn.center = CGPointMake(self.dashView.frame.size.width/2.0, CGRectGetMaxY(self.passwordTF.frame) + kLoginBtn_TopMargin * kYScal + kLoginBtn_Height * kYScal / 2.0);
-    [self.loginBtn addTarget:self action:@selector(login:) forControlEvents:UIControlEventTouchUpInside];
+    [self.loginBtn addTarget:self action:@selector(addPatient:) forControlEvents:UIControlEventTouchUpInside];
     self.loginBtn.layer.cornerRadius = 2;
     self.loginBtn.layer.masksToBounds = YES;
     self.loginBtn.userInteractionEnabled = YES;
@@ -313,6 +323,7 @@
 - (void)configScanview {
     self.scanBgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.dashView.frame.size.width, self.dashView.frame.size.height)];
     self.scanBgView.backgroundColor = [UIColor clearColor];
+    self.scanBgView.hidden = YES;
     [self.dashView addSubview:self.scanBgView];
     
     self.QRCodeLbl = [[UILabel alloc] initWithFrame:CGRectMake((self.scanBgView.frame.size.width - kWechatTitleLbl_Width * kXScal)/2.0, kWechatTitleLbl_TopMargin * kYScal, kWechatTitleLbl_Width * kXScal, kWechatTitleLbl_Height * kYScal)];
@@ -420,6 +431,26 @@
         [parameter setValue:@0 forKey:@"type"];
         [parameter setValue:self.phoneTF.text forKey:@"mobile"];
         [self sendSMS:parameter];
+    }
+}
+
+- (void)addPatient:(UIButton*)sender {
+    BOOL isMobile = [NSString isPhoneNumber:self.phoneTF.text];
+    NSString *mobile = self.phoneTF.text;
+    NSString *smsCode = self.verifyCodeTF.text;
+    if (mobile.length > 0 && smsCode.length > 0) {
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        [parameter setValue:smsCode forKey:@"smsCode"];
+        [parameter setValue:mobile forKey:@"mobile"];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [self addPatientInfo:parameter];
+    } else if (mobile.length == 0 || !isMobile) {
+        [STTextHudTool showText:@"您输入的用户名错误"];
+    } else {
+        [STTextHudTool showText:@"请输入验证码"];
     }
 }
 
@@ -618,6 +649,35 @@
     }];
 }
 
+- (void)addPatientInfo:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUSER_REGISTER_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        if (code == 0) {
+            [STTextHudTool showText:@"添加成功"];
+            NSDictionary *data = [responseObject valueForKey:@"data"];
+            NSMutableDictionary *para = [NSMutableDictionary dictionary];
+            NSDictionary *dict = weakSelf.user.organ;
+            NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+            NSString *orgCode = orgCodeArr[0];
+            [para setValue:orgCode forKey:@"orgCode"];
+            NSInteger userId = [[data valueForKey:@"userId"] integerValue];
+            [para setValue:@(userId) forKey:@"userId"];
+            [weakSelf doctorGetUserInfo:para];
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
+        } else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+        [STTextHudTool showText:@"error"];
+    }];
+}
+
 //医师获取用户信息
 - (void)doctorGetUserInfo:(NSMutableDictionary*)parameter {
     __weak typeof (self)weakSelf = self;
@@ -643,6 +703,37 @@
 }
 
 #pragma mark - UITextFieldDelegate
+-(void)textViewEditChanged:(NSNotification *)notification{
+    // 拿到文本改变的 text field
+    UITextField *textField = (UITextField *)notification.object;
+    // 需要限制的长度
+    NSUInteger maxLength = 0;
+    if (textField == self.phoneTF) { // 手机号限制长度
+        maxLength = 11;
+    } else if(textField == self.verifyCodeTF) {//验证码限制长度
+        maxLength = 6;
+    }
+    if (maxLength == 0) return;
+    
+    // text field 的内容
+    NSString *contentText = textField.text;
+    
+    // 获取高亮内容的范围
+    UITextRange *selectedRange = [textField markedTextRange];
+    // 这行代码 可以认为是 获取高亮内容的长度
+    NSInteger markedTextLength = [textField offsetFromPosition:selectedRange.start toPosition:selectedRange.end];
+    // 没有高亮内容时,对已输入的文字进行操作
+    if (markedTextLength == 0) {
+        // 如果 text field 的内容长度大于我们限制的内容长度
+        if (contentText.length > maxLength) {
+            // 截取从前面开始maxLength长度的字符串
+            //            textField.text = [contentText substringToIndex:maxLength];
+            // 此方法用于在字符串的一个range范围内，返回此range范围内完整的字符串的range
+            NSRange rangeRange = [contentText rangeOfComposedCharacterSequencesForRange:NSMakeRange(0, maxLength)];
+            textField.text = [contentText substringWithRange:rangeRange];
+        }
+    }
+}
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     return [self validateNumber:string];
