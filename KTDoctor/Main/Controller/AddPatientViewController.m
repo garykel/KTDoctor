@@ -62,7 +62,7 @@
 #define kPhoneTF_Height 26
 #define kPhoneTF_BottomMargin 23
 #define kPhoneTF_RightMargin 20
-#define kLoginBtn_TopMargin 39
+#define kLoginBtn_TopMargin 49
 #define kLoginBtn_Width 105
 #define kLoginBtn_Height 25
 #define kLoginBtn_FontSize 12.0
@@ -103,6 +103,7 @@
 @property (nonatomic,strong)UIImageView *dashView;
 @property (nonatomic,strong)UIButton *userLoginBtn;//账号登录
 @property (nonatomic,strong)UIButton *passwordBtn; //密码登录按钮
+@property (nonatomic,strong)UILabel *smsCodeLoginLbl;//短信验证码登录标签
 @property (nonatomic,strong)UIView *seperateView;//密码登录和短信随机码登录之间的视图
 @property (nonatomic,strong)UIButton *codeBtn;//短信随机码登录按钮
 @property (nonatomic,strong)UIView *seperateLine;//分割线
@@ -244,12 +245,20 @@
     self.codeBtn.hidden = YES;
     [self.loginBgView addSubview:self.codeBtn];
     
+    self.smsCodeLoginLbl = [[UILabel alloc] init];
+    self.smsCodeLoginLbl.textColor = [UIColor colorWithHexString:@"#000033"];
+    self.smsCodeLoginLbl.text = @"短信验证码登录";
+    self.smsCodeLoginLbl.frame = CGRectMake((self.loginBgView.frame.size.width - KCodeBtn_width * kXScal)/2, self.passwordBtn.frame.origin.y, KCodeBtn_width * kXScal, kCodeBtn_Height * kYScal);
+    self.smsCodeLoginLbl.font = [UIFont systemFontOfSize:kPasswordBtn_FontSize * kYScal];
+    self.smsCodeLoginLbl.textAlignment = NSTextAlignmentCenter;
+    [self.loginBgView addSubview:self.smsCodeLoginLbl];
+    
     self.middleLine = [[UIView alloc] initWithFrame:CGRectMake(self.passwordBtn.frame.origin.x, CGRectGetMaxY(self.passwordBtn.frame) + kPasswordBtn_BottomMargin * kYScal, self.dashView.frame.size.width - 2 * self.passwordBtn.frame.origin.x, kMiddleLine_Heigh * kYScal)];
     self.middleLine.backgroundColor = [UIColor colorWithHexString:@"#099FC1"];
     self.middleLine.hidden = YES;
     [self.loginBgView addSubview:self.middleLine];
     
-    self.phoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.passwordBtn.frame.origin.x,CGRectGetMaxY(self.middleLine.frame), kPhoneLbl_Width * kXScal, kPhoneLbl_Height * kYScal)];
+    self.phoneLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.passwordBtn.frame.origin.x,CGRectGetMaxY(self.smsCodeLoginLbl.frame) + kPhoneLbl_TopMargin * kYScal, kPhoneLbl_Width * kXScal, kPhoneLbl_Height * kYScal)];
     self.phoneLbl.text = @"手机号码";
     self.phoneLbl.textColor = [UIColor colorWithHexString:@"#011945"];
     self.phoneLbl.font = [UIFont systemFontOfSize:kPhoneLbl_FontSize * kYScal];
