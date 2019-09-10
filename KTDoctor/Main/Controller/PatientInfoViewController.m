@@ -528,18 +528,8 @@ CGSize testResultsListViewSize;
     [self.icCardBtn setTitle:@"写入IC卡" forState:UIControlStateNormal];
     self.icCardBtn.layer.cornerRadius = kICCardBtn_Height * kYScal/2.0;
     self.icCardBtn.layer.masksToBounds = YES;
+    self.icCardBtn.hidden = YES;
     [self.scrollview addSubview:self.icCardBtn];
-    
-    self.updateInfoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.updateInfoBtn.backgroundColor = [UIColor colorWithHexString:@"#0FAAC9"];
-    self.updateInfoBtn.frame = CGRectMake(CGRectGetMaxX(self.icCardBtn.frame) + kICCardBtn_RightMargin * kXScal, self.icCardBtn.frame.origin.y, kICCardBtn_Width * kXScal, kICCardBtn_Height * kYScal);
-    [self.updateInfoBtn.titleLabel setFont:[UIFont systemFontOfSize:kICCardBtn_FontSize * kYScal]];
-    [self.updateInfoBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.updateInfoBtn setTitle:@"修改资料" forState:UIControlStateNormal];
-    self.updateInfoBtn.layer.cornerRadius = kICCardBtn_Height * kYScal/2.0;
-    self.updateInfoBtn.layer.masksToBounds = YES;
-    [self.updateInfoBtn addTarget:self action:@selector(updateInfoBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    [self.scrollview addSubview:self.updateInfoBtn];
     
     CGFloat leftView_Width = (self.scrollview.frame.size.width - kMiddle_Space * kXScal)/2.0;
     CGFloat lbl_Width = (leftView_Width - 2 * kTopLbl_Space)/3.0;
@@ -624,6 +614,18 @@ CGSize testResultsListViewSize;
     self.changeBtn.layer.cornerRadius = kICCardBtn_Height * kYScal/2.0;
     self.changeBtn.layer.masksToBounds = YES;
     [self.scrollview addSubview:self.changeBtn];
+    
+    self.updateInfoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.updateInfoBtn.backgroundColor = [UIColor colorWithHexString:@"#0FAAC9"];
+    self.updateInfoBtn.frame = CGRectMake(CGRectGetMaxX(self.icCardBtn.frame) + kICCardBtn_RightMargin * kXScal, self.changeBtn.frame.origin.y, kICCardBtn_Width * kXScal, kICCardBtn_Height * kYScal);
+    [self.updateInfoBtn.titleLabel setFont:[UIFont systemFontOfSize:kICCardBtn_FontSize * kYScal]];
+    [self.updateInfoBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.updateInfoBtn setTitle:@"修改资料" forState:UIControlStateNormal];
+    self.updateInfoBtn.layer.cornerRadius = kICCardBtn_Height * kYScal/2.0;
+    self.updateInfoBtn.layer.masksToBounds = YES;
+    [self.updateInfoBtn addTarget:self action:@selector(updateInfoBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self.scrollview addSubview:self.updateInfoBtn];
+    
     
     self.leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.leftBtn setImage:[UIImage imageNamed:@"left"] forState:UIControlStateNormal];

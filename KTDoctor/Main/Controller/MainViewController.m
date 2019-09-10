@@ -20,7 +20,7 @@
 #import "OpenAerobicPrescriptionVC.h"
 
 #define kMain_NavView_LogoutBtn_LeftMargin 15
-#define kMain_NavView_LogoutBtn_Height 30
+#define kMain_NavView_LogoutBtn_Height 45
 #define kMain_Organ_LogoView_Width 150
 #define kMain_Organ_LogoView_Height 25
 #define kMain_NavView_LogoutBtn_Width 150

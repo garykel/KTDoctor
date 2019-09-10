@@ -27,7 +27,7 @@
 #define kDoctorImg_Width 161
 #define kDoctorImg_Height 266
 #define KDashView_TopMargin 58
-#define KDashView_Width 242
+#define KDashView_Width 300
 #define kDashView_BottomMargin 63
 #define kChangeBtn_TopMargin 21
 #define kChangeBtn_Width 95
@@ -39,13 +39,13 @@
 #define kPasswordBtn_Height 15
 #define kPasswordBtn_RightMargin 12
 #define kPasswordBtn_Width 70
-#define kPasswordBtn_FontSize 15.0
+#define kPasswordBtn_FontSize 20.0
 #define kPasswordBtn_BottomMargin 18.0
 #define kMiddleView_Width 3
 #define kMiddleView_Height 15
 #define kMiddleView_RightMargin 11
 #define KCodeBtn_width 110
-#define kCodeBtn_Height 15
+#define kCodeBtn_Height 20
 #define kCodeBtn_FontSize 15.0
 #define kMiddleLine_Heigh 1
 #define kMiddleLine_LeftMargin 20
@@ -247,7 +247,7 @@
     
     self.smsCodeLoginLbl = [[UILabel alloc] init];
     self.smsCodeLoginLbl.textColor = [UIColor colorWithHexString:@"#000033"];
-    self.smsCodeLoginLbl.text = @"短信验证码登录";
+    self.smsCodeLoginLbl.text = @"添加患者";
     self.smsCodeLoginLbl.frame = CGRectMake((self.loginBgView.frame.size.width - KCodeBtn_width * kXScal)/2, self.passwordBtn.frame.origin.y, KCodeBtn_width * kXScal, kCodeBtn_Height * kYScal);
     self.smsCodeLoginLbl.font = [UIFont systemFontOfSize:kPasswordBtn_FontSize * kYScal];
     self.smsCodeLoginLbl.textAlignment = NSTextAlignmentCenter;
@@ -264,13 +264,16 @@
     self.phoneLbl.font = [UIFont systemFontOfSize:kPhoneLbl_FontSize * kYScal];
     [self.loginBgView addSubview:self.phoneLbl];
     
-    self.phoneTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.phoneLbl.frame) + kPhoneLbl_RightMargin * kXScal, 0, kPhoneTF_Width * kXScal, kPhoneTF_Height * kYScal)];
+    CGFloat phoneTfWidth = self.dashView.frame.size.width - CGRectGetMaxX(self.phoneLbl.frame) - kPhoneLbl_RightMargin * kXScal - self.phoneLbl.frame.origin.x;
+    self.phoneTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.phoneLbl.frame) + kPhoneLbl_RightMargin * kXScal, 0, phoneTfWidth, kPhoneTF_Height * kYScal)];
     self.phoneTF.backgroundColor = [UIColor colorWithHexString:@"#68C9DE"];
     self.phoneTF.layer.cornerRadius = 2;
+    self.phoneTF.placeholder = @"请输入手机号";
     self.phoneTF.layer.masksToBounds = YES;
     self.phoneTF.delegate = self;
     self.phoneTF.keyboardType = UIKeyboardTypeNumberPad;
-    self.phoneTF.center = CGPointMake(CGRectGetMaxX(self.phoneLbl.frame) + kPhoneLbl_RightMargin * kXScal + kPhoneTF_Width * kXScal/2.0, self.phoneLbl.center.y);
+    self.phoneTF.font = [UIFont systemFontOfSize:kVerify_Btn_FontSize * kYScal];
+    self.phoneTF.center = CGPointMake(CGRectGetMaxX(self.phoneLbl.frame) + kPhoneLbl_RightMargin * kXScal + phoneTfWidth/2.0, self.phoneLbl.center.y);
     [self.loginBgView addSubview:self.phoneTF];
     
     self.passwordLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.phoneLbl.frame.origin.x, CGRectGetMaxY(self.phoneLbl.frame) + kPhoneLbl_BottomMargin * kYScal, kPhoneLbl_Width * kXScal, kPhoneLbl_Height * kYScal)];
@@ -291,13 +294,13 @@
     
     self.verifyCodeLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.passwordLbl.frame.origin.x, self.passwordLbl.frame.origin.y, kPhoneLbl_Width * kXScal, kPhoneLbl_Height * kYScal)];
     self.verifyCodeLbl.textColor = [UIColor colorWithHexString:@"#011945"];
-    self.verifyCodeLbl.text = @"验 证 码";
+    self.verifyCodeLbl.text = @"验  证  码";
     self.verifyCodeLbl.font = [UIFont systemFontOfSize:kPhoneLbl_FontSize * kYScal];
     [self.loginBgView addSubview:self.verifyCodeLbl];
 //    self.verifyCodeLbl.hidden = YES;
     
-    CGFloat verifyCodeTF_Width = self.dashView.frame.size.width - CGRectGetMaxX(self.verifyCodeLbl.frame) - kPhoneLbl_RightMargin * kXScal - kVerify_Btn_LeftMargin * kXScal - kVerify_Btn_Width * kXScal - kPhoneTF_RightMargin * kXScal;
-    self.verifyCodeTF = [[UITextField alloc] initWithFrame:CGRectMake(self.passwordTF.frame.origin.x, self.passwordTF.frame.origin.y, verifyCodeTF_Width, self.phoneTF.frame.size.height)];
+    CGFloat verifyCodeTF_Width = phoneTfWidth - kVerify_Btn_LeftMargin * kXScal - kVerify_Btn_Width * kXScal;
+    self.verifyCodeTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.verifyCodeLbl.frame) + kPhoneLbl_RightMargin * kXScal, self.passwordTF.frame.origin.y, verifyCodeTF_Width, self.phoneTF.frame.size.height)];
     self.verifyCodeTF.placeholder = @"请输入验证码";
     self.verifyCodeTF.delegate = self;
     self.verifyCodeTF.font = [UIFont systemFontOfSize:kVerify_Btn_FontSize * kYScal];
@@ -319,7 +322,7 @@
     self.loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.loginBtn.titleLabel setFont:[UIFont systemFontOfSize:kLoginBtn_FontSize * kYScal]];
-    [self.loginBtn setTitle:@"登录" forState:UIControlStateNormal];
+    [self.loginBtn setTitle:@"添    加" forState:UIControlStateNormal];
     self.loginBtn.backgroundColor = [UIColor colorWithHexString:@"#0FB2D7"];
     self.loginBtn.frame = CGRectMake(0, CGRectGetMaxY(self.passwordTF.frame) + kLoginBtn_TopMargin * kYScal, kLoginBtn_Width * kXScal, kLoginBtn_Height * kYScal);
     self.loginBtn.center = CGPointMake(self.dashView.frame.size.width/2.0, CGRectGetMaxY(self.passwordTF.frame) + kLoginBtn_TopMargin * kYScal + kLoginBtn_Height * kYScal / 2.0);
@@ -428,18 +431,23 @@
 
 - (void)sendVerifyCode:(UIButton*)sender {
     NSLog(@"发送验证码");
+     BOOL isMobile = [NSString isPhoneNumber:self.phoneTF.text];
     self.smsCode = @"";
     if (self.phoneTF.text.length == 0) {
-        [STTextHudTool showText:@"您输入的用户名错误"];
+        [STTextHudTool showText:@"请输入手机号"];
     } else {
-        self.verifyCodeBtn.enabled = NO;
-        self.verifyCodeBtn.backgroundColor = [UIColor lightGrayColor];
-        self.seconds = 60;
-        self.verifyCodeTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verifyTimerRepeat) userInfo:nil repeats:YES];
-        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        [parameter setValue:@0 forKey:@"type"];
-        [parameter setValue:self.phoneTF.text forKey:@"mobile"];
-        [self sendSMS:parameter];
+        if (isMobile) {
+            self.verifyCodeBtn.enabled = NO;
+            self.verifyCodeBtn.backgroundColor = [UIColor lightGrayColor];
+            self.seconds = 60;
+            self.verifyCodeTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(verifyTimerRepeat) userInfo:nil repeats:YES];
+            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            [parameter setValue:@0 forKey:@"type"];
+            [parameter setValue:self.phoneTF.text forKey:@"mobile"];
+            [self sendSMS:parameter];
+        } else {
+            [STTextHudTool showText:@"手机号格式错误"];
+        }
     }
 }
 
@@ -457,7 +465,7 @@
         [parameter setValue:orgCode forKey:@"orgCode"];
         [self addPatientInfo:parameter];
     } else if (mobile.length == 0 || !isMobile) {
-        [STTextHudTool showText:@"您输入的用户名错误"];
+        [STTextHudTool showText:@"手机号格式错误"];
     } else {
         [STTextHudTool showText:@"请输入验证码"];
     }
@@ -712,6 +720,16 @@
 }
 
 #pragma mark - UITextFieldDelegate
+
+//- (void)textFieldDidEndEditing:(UITextField *)textField {
+//    if (textField == self.phoneTF) {
+//        BOOL isMobile = [NSString isPhoneNumber:self.phoneTF.text];
+//        if (!isMobile) {
+//            [STTextHudTool showText:@"手机号码格式错误"];
+//        }
+//    }
+//}
+
 -(void)textViewEditChanged:(NSNotification *)notification{
     // 拿到文本改变的 text field
     UITextField *textField = (UITextField *)notification.object;

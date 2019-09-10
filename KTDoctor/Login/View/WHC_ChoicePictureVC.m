@@ -104,7 +104,9 @@
         ALAssetRepresentation  * representation = [whcAS.asset defaultRepresentation];
         CGImageRef  imageRef = [representation fullResolutionImage];
         UIImage    * image = [UIImage imageWithCGImage:imageRef scale:0 orientation:(UIImageOrientation)representation.orientation];
-        [imageArr addObject:image];
+        if (image == nil) {
+            [imageArr addObject:image];
+        }
     }
     dispatch_sync(dispatch_get_main_queue(), ^{
         [self dismissViewControllerAnimated:YES completion:^{

@@ -147,7 +147,12 @@
     
     
     self.birthday = [self.userInfo valueForKey:@"birthdate"];
-    self.needUploadImg = NO;
+    NSString *headUrl = [self.userInfo valueForKey:@"headUrl"];
+    if (headUrl.length == 0) {
+        self.needUploadImg = YES;
+    } else {
+        self.needUploadImg = NO;
+    }
     [self setNavBar];
     [self setupUI];
 }
@@ -256,7 +261,11 @@
     
     self.nameTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.nameStar.frame) + kNameTF_LeftMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.nameTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.nameTF.text = [self.userInfo valueForKey:@"name"];
+    NSString *name = [self.userInfo valueForKey:@"name"];
+    if (name.length > 0) {
+        self.nameTF.text = name;
+    }
+    self.nameTF.placeholder = @"请输入";
     self.nameTF.backgroundColor = [UIColor whiteColor];
     self.nameTF.center = CGPointMake(CGRectGetMaxX(self.nameStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.nameLbl.center.y);
     [self.infoView addSubview:self.nameTF];
@@ -301,8 +310,12 @@
     
     self.phoneTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.phoneStar.frame) + kNameTF_LeftMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.phoneTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.phoneTF.text = [self.userInfo valueForKey:@"mobile"];
     self.phoneTF.backgroundColor = [UIColor whiteColor];
+    NSString *phone = [self.userInfo valueForKey:@"mobile"];
+    if (phone.length > 0) {
+        self.phoneTF.text = phone;
+    }
+    self.phoneTF.placeholder = @"请输入";
     self.phoneTF.enabled = NO;
     self.phoneTF.center = CGPointMake(CGRectGetMaxX(self.phoneStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.phoneLbl.center.y);
     [self.infoView addSubview:self.phoneTF];
@@ -318,7 +331,11 @@
     [self.infoView addSubview:self.birthStar];
     
     self.birthTF = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.birthStar.frame) + kNameTF_LeftMargin * kXScal, self.phoneTF.frame.origin.y, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
-    [self.birthTF setTitle:[self.userInfo valueForKey:@"birthdate"] forState:UIControlStateNormal];
+    NSString *date = [self.userInfo valueForKey:@"birthdate"];
+    if ([date isEqualToString:@""]) {
+        date = @"1980-01-01";
+    }
+    [self.birthTF setTitle:date forState:UIControlStateNormal];
     self.birthTF.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     self.birthTF.titleEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     [self.birthTF.titleLabel setFont:[UIFont systemFontOfSize:kNameTF_FontSize * kYScal]];
@@ -341,8 +358,12 @@
     self.heightTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.nameStar.frame) + kNameTF_LeftMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.heightTF.unitLbl.text = @"cm";
     self.heightTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.heightTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"height"] floatValue]];
+    NSString *height = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"height"] floatValue]];
+    if (![height isEqualToString:@"0.0"]) {
+        self.heightTF.text = height;
+    }
     self.heightTF.backgroundColor = [UIColor whiteColor];
+    self.heightTF.placeholder = @"请输入";
     self.heightTF.delegate = self;
     self.heightTF.center = CGPointMake(CGRectGetMaxX(self.heightStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.heightLbl.center.y);
     [self.infoView addSubview:self.heightTF];
@@ -359,8 +380,12 @@
     
     self.weightTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.weightStar.frame) + kNameTF_LeftMargin * kXScal, self.heightTF.frame.origin.y, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.weightTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.weightTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"weight"] floatValue]];
+    NSString *weight = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"weight"] floatValue]];
+    if (![weight isEqualToString:@"0.0"]) {
+        self.weightTF.text = weight;
+    }
     self.weightTF.backgroundColor = [UIColor whiteColor];
+    self.weightTF.placeholder = @"请输入";
     self.weightTF.unitLbl.text = @"kg";
     self.weightTF.delegate = self;
     [self.infoView addSubview:self.weightTF];
@@ -378,9 +403,13 @@
     
     self.waistlineTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.waistlineStar.frame) + kNameTF_LeftMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.waistlineTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.waistlineTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"waistline"] floatValue]];
+    NSString *waist = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"waistline"] floatValue]];
+    if (![waist isEqualToString:@"0.0"]) {
+        self.waistlineTF.text = waist;
+    }
     self.waistlineTF.backgroundColor = [UIColor whiteColor];
     self.waistlineTF.unitLbl.text = @"cm";
+    self.waistlineTF.placeholder = @"请输入";
     self.waistlineTF.delegate = self;
     self.waistlineTF.center = CGPointMake(CGRectGetMaxX(self.nameStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.waistlineLbl.center.y);
     [self.infoView addSubview:self.waistlineTF];
@@ -397,8 +426,12 @@
     
     self.kfxtTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.kfxtStar.frame) + kNameTF_LeftMargin * kXScal, self.waistlineTF.frame.origin.y, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.kfxtTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.kfxtTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"fbg"] floatValue]];
+    NSString *kfxt = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"fbg"] floatValue]];
+    if (![kfxt isEqualToString:@"0.0"]) {
+        self.kfxtTF.text = kfxt;
+    }
     self.kfxtTF.unitLbl.text = @"mmol/L";
+    self.kfxtTF.placeholder = @"请输入";
     self.kfxtTF.delegate = self;
     self.kfxtTF.backgroundColor = [UIColor whiteColor];
     [self.infoView addSubview:self.kfxtTF];
@@ -416,9 +449,13 @@
     
     self.quietHRTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.quietHRStar.frame) + kNameTF_LeftMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.quietHRTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.quietHRTF.text = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"restHr"] integerValue]];
+    NSString *quietHR = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"restHr"] integerValue]];
+    if (![quietHR isEqualToString:@"0"]) {
+        self.quietHRTF.text = quietHR;
+    }
     self.quietHRTF.backgroundColor = [UIColor whiteColor];
     self.quietHRTF.unitLbl.text = @"bpm";
+    self.quietHRTF.placeholder = @"请输入";
     self.quietHRTF.delegate = self;
     self.quietHRTF.center = CGPointMake(CGRectGetMaxX(self.quietHRStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.quietHRLbl.center.y);
     [self.infoView addSubview:self.quietHRTF];
@@ -432,12 +469,17 @@
     self.xlbyStar = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"blueStar"]];
     self.xlbyStar.frame = CGRectMake(CGRectGetMaxX(self.xlbyLbl.frame) + kNameLbl_RightMargin * kXScal, self.quietHRStar.frame.origin.y, kHeadStar_Width * kXScal, kHeadStar_Width * kXScal);
     [self.infoView addSubview:self.xlbyStar];
+    self.xlbyStar.hidden = YES;
     
     self.xlbyTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.xlbyStar.frame) + kNameTF_LeftMargin * kXScal, self.quietHRTF.frame.origin.y, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.xlbyTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.xlbyTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"hrv"] floatValue]];
+    NSString *xlby = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"hrv"] floatValue]];
+    if (![xlby isEqualToString:@"0.0"]) {
+        self.xlbyTF.text = xlby;
+    }
     self.xlbyTF.backgroundColor = [UIColor whiteColor];
     self.xlbyTF.delegate = self;
+    self.xlbyTF.placeholder = @"请输入";
     [self.infoView addSubview:self.xlbyTF];
     
     self.ssyLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.nameLbl.frame.origin.x,CGRectGetMaxY(self.quietHRLbl.frame) + kNameLbl_BottomMargin * kYScal, kNameLbl_Width * kXScal, kNameLbl_Height * kYScal)];
@@ -453,10 +495,14 @@
     
     self.ssyTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.ssyStar.frame) + kNameTF_LeftMargin * kXScal, 0, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.ssyTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.ssyTF.text = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"sbp"] integerValue]];
+    NSString *ssy = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"sbp"] integerValue]];
+    if (![ssy isEqualToString:@"0"]) {
+        self.ssyTF.text = ssy;
+    }
     self.ssyTF.unitLbl.text = @"mmHg";
     self.ssyTF.backgroundColor = [UIColor whiteColor];
     self.ssyTF.delegate = self;
+    self.ssyTF.placeholder = @"请输入";
     self.ssyTF.center = CGPointMake(CGRectGetMaxX(self.ssyStar.frame) + kNameTF_LeftMargin * kXScal + kNameTF_Width * kXScal/2.0, self.ssyLbl.center.y);
     [self.infoView addSubview:self.ssyTF];
     
@@ -472,9 +518,13 @@
     
     self.szyTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.szyStar.frame) + kNameTF_LeftMargin * kXScal, self.ssyTF.frame.origin.y, kNameTF_Width * kXScal, kNameTF_Height * kYScal)];
     self.szyTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.szyTF.text = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"dbp"] integerValue]];
+    NSString *szy = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"dbp"] integerValue]];
+    if (![szy isEqualToString:@"0"]) {
+        self.szyTF.text = szy;
+    }
     self.szyTF.unitLbl.text = @"mmHg";
     self.szyTF.delegate = self;
+    self.szyTF.placeholder = @"请输入";
     self.szyTF.backgroundColor = [UIColor whiteColor];
     [self.infoView addSubview:self.szyTF];
     
@@ -491,10 +541,14 @@
     
     self.gmdzdbTF = [[UnitTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.gmdzdbStar.frame) + kLongLbl_TF_LeftMargin * kXScal, 0, kMaxAlertHr_TF_Width * kXScal, kNameTF_Height * kYScal)];
     self.gmdzdbTF.font = [UIFont systemFontOfSize:kNameTF_FontSize * kYScal];
-    self.gmdzdbTF.text = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"hdl"] floatValue]];
+    NSString *gmdzdb = [NSString stringWithFormat:@"%.1f",[[self.userInfo valueForKey:@"hdl"] floatValue]];
+    if (![gmdzdb isEqualToString:@"0.0"]) {
+        self.gmdzdbTF.text = gmdzdb;
+    }
     self.gmdzdbTF.backgroundColor = [UIColor whiteColor];
     self.gmdzdbTF.unitLbl.text = @"mmol/L";
     self.gmdzdbTF.delegate = self;
+    self.gmdzdbTF.placeholder = @"请输入";
     self.gmdzdbTF.center = CGPointMake(CGRectGetMaxX(self.gmdzdbStar.frame) + kLongLbl_TF_LeftMargin * kXScal + kMaxAlertHr_TF_Width * kXScal/2.0, self.gmdzdbLbl.center.y);
     [self.infoView addSubview:self.gmdzdbTF];
     
@@ -541,7 +595,10 @@
     self.maxAlertHrTF.placeholder = @"心率范围50-240";
     self.maxAlertHrTF.unitLbl.text = @"bpm";
     self.maxAlertHrTF.delegate = self;
-    self.maxAlertHrTF.text = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"maxAlarmHr"] integerValue]];
+    NSString *maxAlertHr = [NSString stringWithFormat:@"%d",[[self.userInfo valueForKey:@"maxAlarmHr"] integerValue]];
+    if (![maxAlertHr isEqualToString:@"0"]) {
+        self.maxAlertHrTF.text = maxAlertHr;
+    }
     [self.infoView addSubview:self.maxAlertHrTF];
     
     self.nextBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -632,7 +689,29 @@
 }
 
 - (void)next:(UIButton*)sender {
-    if (self.nameTF.text.length > 0 && self.phoneTF.text.length > 0 && self.heightTF.text.length > 0 && self.weightTF.text.length > 0 && self.waistlineTF.text.length > 0 && self.kfxtTF.text.length > 0 && self.quietHRTF.text.length > 0 && self.xlbyTF.text.length > 0 && self.ssyTF.text.length > 0 && self.szyTF.text.length > 0 && self.gmdzdbTF.text.length > 0 && self.maxAlertHrTF.text.length > 0) {
+    if (self.nameTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入姓名"];
+    } else if (self.phoneTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入手机号"];
+    } else if (self.heightTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入身高"];
+    } else if(self.weightTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入体重"];
+    } else if (self.waistlineTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入腰围"];
+    }  else if (self.kfxtTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入空腹血糖"];
+    } else if (self.quietHRTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入安静心率"];
+    } else if (self.ssyTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入收缩压"];
+    } else if(self.szyTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入舒张压"];
+    } else if (self.gmdzdbTF.text.length == 0) {
+        [STTextHudTool showText:@"请输入高密度脂蛋白"];
+    } else if (self.hrDeviceTF.mainBtn.titleLabel.text.length == 0) {
+        [STTextHudTool showText:@"请输入心率带"];
+    } else {
         NSMutableDictionary *dict = [self.userInfo mutableCopy];
         [dict setValue:self.nameTF.text forKey:@"name"];
         NSString *sexStr = self.sexMenu.mainBtn.titleLabel.text;
@@ -674,8 +753,6 @@
             question.userInfo = [self.userInfo mutableCopy];
             [self.navigationController pushViewController:question animated:NO];
         }
-    } else {
-        [STTextHudTool showText:@"请补齐未填项"];
     }
 }
 
@@ -753,13 +830,17 @@
 
 - (void)upLoadImage {
     UIImage *image = self.selectedImg;
-    NSString  *jpgPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Portrait.jpg"];
-    BOOL success = [UIImageJPEGRepresentation(image, 0.5) writeToFile:jpgPath atomically:YES]; //其中0.5表示压缩比例，1表示不压缩，数值越小压缩比例越大
-    if (success) {
-        NSLog(@"写入本地成功");
-        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        [parameter setObject:jpgPath forKey:@"file"];
-        [self uploadPhoto:parameter];
+    if (image == nil) {
+        [STTextHudTool showText:@"请上传头像"];
+    } else {
+        NSString  *jpgPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Portrait.jpg"];
+        BOOL success = [UIImageJPEGRepresentation(image, 0.5) writeToFile:jpgPath atomically:YES]; //其中0.5表示压缩比例，1表示不压缩，数值越小压缩比例越大
+        if (success) {
+            NSLog(@"写入本地成功");
+            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            [parameter setObject:jpgPath forKey:@"file"];
+            [self uploadPhoto:parameter];
+        }
     }
 }
 
