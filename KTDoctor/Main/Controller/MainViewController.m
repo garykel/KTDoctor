@@ -160,7 +160,8 @@
     self.pop.modalPresentationStyle = UIModalPresentationPopover;
     self.popController = [self.pop popoverPresentationController];
     self.popController.sourceView = self.logoutBtn;
-    self.popController.sourceRect = self.logoutBtn.bounds;
+    self.popController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+    self.popController.sourceRect = CGRectMake(self.logoutBtn.bounds.origin.x, (kNavView_Height - kMain_NavView_LogoutBtn_Height)/2, self.logoutBtn.bounds.size.width, self.logoutBtn.bounds.size.height);
     [self presentViewController:self.pop animated:YES completion:nil];
 }
 
@@ -339,11 +340,11 @@
         NSLog(@"%@",[weakSelf convertToJSONData:responseObject]);
         if (code == 0) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
-            [weakSelf.navigationController popViewControllerAnimated:NO];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
-            [self.navigationController popToRootViewControllerAnimated:NO];
+            [weakSelf.navigationController popToRootViewControllerAnimated:NO];
         } else {
             [STTextHudTool showText:msg];
         }

@@ -21,8 +21,8 @@
 }
 
 - (void)setupUI {
-    self.view.backgroundColor = [UIColor yellowColor];
-    self.tableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.tableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 10, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
     self.tableview.tableFooterView = [[UIView alloc] init];
     self.tableview.backgroundColor = [UIColor whiteColor];
     self.tableview.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
@@ -54,7 +54,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 40;
+    return 110/3;
 }
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
