@@ -10,7 +10,7 @@
 
 #define kUnitLbl_RightMargin 11
 #define kUnitLbl_Width 50
-#define kUnitLbl_FontSize 11.0
+#define kUnitLbl_FontSize 10.0
 #define kUnitLbl_Height 11
 @implementation UnitTextField
 

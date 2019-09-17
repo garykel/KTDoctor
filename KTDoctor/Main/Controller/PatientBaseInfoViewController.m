@@ -10,9 +10,6 @@
 #import "PatientQuestionViewController.h"
 #import "KTDropDownMenus.h"
 #import "UnitTextField.h"
-#import "WHC_PhotoListCell.h"
-#import "WHC_PictureListVC.h"
-#import "WHC_CameraVC.h"
 #import "UserModel.h"
 
 #define kBackButton_LeftMargin 15
@@ -61,7 +58,7 @@
 #define kChangeBtn_LeftMargin 5
 #define kMaxAlertHrTF_LeftMargin 24
 
-@interface PatientBaseInfoViewController ()<WHC_CameraVCDelegate,WHC_ChoicePictureVCDelegate,UIImagePickerControllerDelegate,XXTGDropdownMenuDelegate,UITextFieldDelegate>
+@interface PatientBaseInfoViewController ()<UINavigationControllerDelegate,UIImagePickerControllerDelegate,XXTGDropdownMenuDelegate,UITextFieldDelegate>
 @property (nonatomic,strong)UIView *navView;
 @property (nonatomic,strong)UIButton *backButton;
 @property (nonatomic,strong)UILabel *titleLbl;
@@ -334,6 +331,7 @@
     NSString *date = [self.userInfo valueForKey:@"birthdate"];
     if ([date isEqualToString:@""]) {
         date = @"1980-01-01";
+        self.birthday = date;
     }
     [self.birthTF setTitle:date forState:UIControlStateNormal];
     self.birthTF.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
@@ -642,32 +640,47 @@
 }
 
 - (void)changePhoto:(UITapGestureRecognizer*)gesture {
+    __weak typeof (self)weakSelf = self;
     [self hideAllMenus];
     BOOL useable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     if (useable) {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"获取头像"
-                                                                       message:@""
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+                                                                       message:@"获取头像"
                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"从相册获取图片" style:UIAlertActionStyleDestructive
+        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"从相册中选择" style:UIAlertActionStyleDestructive
                                                              handler:^(UIAlertAction * action) {
-                                                                 //响应事件
-                                                                 WHC_PictureListVC  * vc = [WHC_PictureListVC new];
-                                                                 vc.delegate = self;
-                                                                 vc.maxChoiceImageNumberumber = 1;
-                                                                 [self.navigationController presentViewController:[[UINavigationController alloc]initWithRootViewController:vc] animated:YES completion:nil];
+            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+            imagePicker.delegate = self;
+            imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            imagePicker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+            imagePicker.allowsEditing = YES;
+            imagePicker.view.transform  =   CGAffineTransformMakeRotation(M_PI*2);
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [weakSelf presentViewController:imagePicker animated:YES completion:nil];
+            }];
                                                              }];
-        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:@"从相机获取图片" style:UIAlertActionStyleDefault
+        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction * action) {
-                                                               //响应事件
-                                                               WHC_CameraVC * vc = [WHC_CameraVC new];
-                                                               vc.delegate = self;
-                                                               [self.navigationController presentViewController:vc animated:YES completion:nil];
+            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+            imagePicker.delegate = weakSelf;
+            imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            imagePicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
+            imagePicker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+            imagePicker.allowsEditing = YES;
+            imagePicker.view.transform  =   CGAffineTransformMakeRotation(M_PI*2);
+            [weakSelf presentViewController:imagePicker animated:YES completion:nil];
                                                            }];
         [alert addAction:saveAction];
         [alert addAction:deleteAction];
-        alert.popoverPresentationController.sourceView = self.view;
-        alert.popoverPresentationController.sourceRect = CGRectMake(0,0,1.0,1.0);
-        [self.navigationController presentViewController:alert animated:YES completion:nil];
+        UIPopoverPresentationController *popover = alert.popoverPresentationController;
+        if (popover) {
+            popover.sourceView = self.navView;
+            popover.sourceRect = CGRectMake(kWidth/2, kHeight/2, kWidth, kHeight);
+            popover.sourceRect = CGRectMake(self.navView.frame.origin.x, self.navView.frame.origin.y - 20, self.navView.frame.size.width, self.navView.frame.size.height);
+        }
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [STTextHudTool showText:@"相机不可用"];
     }
 }
 
@@ -807,25 +820,38 @@
     [self hideAllMenus];
 }
 
-#pragma mark - WHC_ChoicePictureVCDelegate
-- (void)WHCChoicePictureVC:(WHC_ChoicePictureVC *)choicePictureVC didSelectedPhotoArr:(NSArray *)photoArr{
-    NSLog(@"photoArr:%@",photoArr);
-    if (photoArr.count > 0) {
-        UIImage *image = photoArr[0];
-        self.headImg.image = image;
-        self.selectedImg = image;
-        self.needUploadImg = YES;
-    }
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info {
+    NSLog(@"info is :%@",info);
+    __weak typeof (self)weakSelf = self;
+    [self dismissViewControllerAnimated:YES completion:^{
+        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        if (image!=nil) {
+            UIImage *resImg = [self imageCompressToData:image];
+            if (resImg !=nil) {
+                weakSelf.headImg.image = resImg;
+                weakSelf.selectedImg = resImg;
+                self.needUploadImg = YES;
+            }
+        }
+    }];
 }
 
-#pragma mark - WHC_CameraVCDelegate
-- (void)WHCCameraVC:(WHC_CameraVC *)cameraVC didSelectedPhoto:(UIImage *)photo{
-    if (photo) {
-        self.headImg.image = photo;
-        self.selectedImg = photo;
-        self.needUploadImg = YES;
+//图片压缩
+- (UIImage *)imageCompressToData:(UIImage *)image{
+    NSData *data=UIImageJPEGRepresentation(image, 1.0);
+    if (data.length>300*1024) {
+        if (data.length>1024*1024) {//1M以及以上
+            data=UIImageJPEGRepresentation(image, 0.1);
+        }else if (data.length>512*1024) {//0.5M-1M
+            data=UIImageJPEGRepresentation(image, 0.5);
+        }else if (data.length>300*1024) {//0.25M-0.5M
+            data=UIImageJPEGRepresentation(image, 0.9);
+        }
     }
-    [self WHCChoicePictureVC:nil didSelectedPhotoArr:@[photo]];
+    UIImage *resImage = [UIImage imageWithData:data];
+    return resImage;
 }
 
 - (void)upLoadImage {
@@ -847,9 +873,11 @@
 //上传头像
 - (void)uploadPhoto:(NSMutableDictionary*)parameter {
     __weak typeof (self)weakSelf = self;
+    [STTextHudTool loading];
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUPLOAD_IMAGE_URL] andParams:parameter andProgress:^(NSProgress *progress) {
         
     } andSucceed:^(NSDictionary *responseObject) {
+        [STTextHudTool hideSTHud];
         long code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSLog(@"msg is :%@",msg);
@@ -858,10 +886,12 @@
             NSDictionary *dataDict = [responseObject valueForKey:@"data"];
             NSString *url = [dataDict valueForKey:@"url"];
             NSLog(@"image url is :%@",url);
-            [self.userInfo setValue:url forKey:@"headUrl"];
+            NSMutableDictionary *resultDict = [NSMutableDictionary dictionaryWithDictionary:self.userInfo];
+            [resultDict setValue:url forKey:@"headUrl"];
+            
             NSLog(@"上传成功");
             PatientQuestionViewController *question = [[PatientQuestionViewController alloc] init];
-            question.userInfo = weakSelf.userInfo;
+            question.userInfo = [resultDict mutableCopy];
             [weakSelf.navigationController pushViewController:question animated:NO];
         }  else {
             [STTextHudTool showText:msg];

@@ -79,6 +79,7 @@
 @property (nonatomic,copy)NSString *birthday;
 @property (nonatomic,strong)UIImage *selectedImg;
 @property (nonatomic,assign)DocotorReistPopViewType type;
+@property (nonatomic,strong)UIView *topView;
 @end
 
 @implementation DoctorRegistView
@@ -113,12 +114,12 @@
     self.contentView.backgroundColor = [UIColor whiteColor];
     self.contentView.layer.cornerRadius = 6;
     [self addSubview:self.contentView];
-    UIView *topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, kRegistView_TopView_Height * kYScal)];
-    topView.backgroundColor = [UIColor colorWithHexString:@"#d0dce3"];
-    [self.contentView addSubview:topView];
+    self.topView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, kRegistView_TopView_Height * kYScal)];
+    self.topView.backgroundColor = [UIColor colorWithHexString:@"#d0dce3"];
+    [self.contentView addSubview:self.topView];
     
-    UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, topView.frame.size.width, kRegistView_TitleLbl_FontSize * kYScal)];
-    titleLbl.center = topView.center;
+    UILabel *titleLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.topView.frame.size.width, kRegistView_TitleLbl_FontSize * kYScal)];
+    titleLbl.center = self.topView.center;
     NSString *title = @"";
     if (self.type == DoctorRegistPopView) {
         title = @"医师注册";
@@ -129,19 +130,19 @@
     titleLbl.font = [UIFont systemFontOfSize:kRegistView_TitleLbl_FontSize * kYScal];
     titleLbl.textColor = [UIColor blackColor];
     titleLbl.textAlignment = NSTextAlignmentCenter;
-    [topView addSubview:titleLbl];
+    [self.topView addSubview:titleLbl];
     
     UIButton *exitBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [exitBtn setImage:[UIImage imageNamed:@"close"] forState:UIControlStateNormal];
     exitBtn.layer.cornerRadius = kRegistView_ExitBtn_Width * kXScal / 2.0;
     exitBtn.layer.masksToBounds = YES;
-    CGFloat exitBtnTop = (topView.frame.size.height - kRegistView_ExitBtn_Width * kXScal)/2;
-    exitBtn.frame = CGRectMake(topView.frame.size.width - kRegistView_ExitBtn_RightMargin * kXScal - kRegistView_ExitBtn_Width * kXScal, exitBtnTop, kRegistView_ExitBtn_Width * kXScal, kRegistView_ExitBtn_Width * kXScal);
+    CGFloat exitBtnTop = (self.topView.frame.size.height - kRegistView_ExitBtn_Width * kXScal)/2;
+    exitBtn.frame = CGRectMake(self.topView.frame.size.width - kRegistView_ExitBtn_RightMargin * kXScal - kRegistView_ExitBtn_Width * kXScal, exitBtnTop, kRegistView_ExitBtn_Width * kXScal, kRegistView_ExitBtn_Width * kXScal);
     
     [exitBtn addTarget:self action:@selector(exit:) forControlEvents:UIControlEventTouchUpInside];
-    [topView addSubview:exitBtn];
+    [self.topView addSubview:exitBtn];
     
-    self.headImg = [[UIImageView alloc] initWithFrame:CGRectMake(kRegistView_HeadImg_LeftMargin * kXScal,CGRectGetMaxY(topView.frame) + kRegistView_HeadImg_TopMargin * kYScal, kRegistView_HeadImg_Width * kXScal, kRegistView_HeadImg_Width * kXScal)];
+    self.headImg = [[UIImageView alloc] initWithFrame:CGRectMake(kRegistView_HeadImg_LeftMargin * kXScal,CGRectGetMaxY(self.topView.frame) + kRegistView_HeadImg_TopMargin * kYScal, kRegistView_HeadImg_Width * kXScal, kRegistView_HeadImg_Width * kXScal)];
     self.headImg.image = [UIImage imageNamed:@"default_head"];
     self.headImg.layer.cornerRadius = kRegistView_HeadImg_Width * kXScal / 2.0;
     self.headImg.layer.masksToBounds = YES;
@@ -166,7 +167,7 @@
     self.headRedStar.image = [UIImage imageNamed:@"redStar"];
     [self.contentView addSubview:self.headRedStar];
     
-    self.usernameLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImg.frame) + kRegistView_LblLeftMargin * kXScal, CGRectGetMaxY(topView.frame) + kRegistView_NameLbl_TopMargin * kYScal, kRegistView_NameLbl_Width * kXScal, kRegistView_TextField_Height * kYScal)];
+    self.usernameLbl = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.headImg.frame) + kRegistView_LblLeftMargin * kXScal, CGRectGetMaxY(self.topView.frame) + kRegistView_NameLbl_TopMargin * kYScal, kRegistView_NameLbl_Width * kXScal, kRegistView_TextField_Height * kYScal)];
     self.usernameLbl.text = @"姓       名";
     self.usernameLbl.font = [UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal];
     self.usernameLbl.textColor = [UIColor blackColor];
@@ -275,7 +276,7 @@
     self.okBtn.backgroundColor = [UIColor colorWithHexString:@"#0fa8cb"];
     [self.okBtn setTitle:@"完成" forState:UIControlStateNormal];
     [self.okBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    CGFloat okBtn_x = topView.center.x;
+    CGFloat okBtn_x = self.topView.center.x;
     CGFloat okBtn_y = CGRectGetMaxY(self.skillsView.frame) + kRegistView_OKBtn_TopMargin * kYScal + kRegistView_OKBtn_Height * kYScal / 2;
     self.okBtn.frame = CGRectMake(0, 0, KRegistView_OKBtn_Width * kXScal, kRegistView_OKBtn_Height * kYScal);
     self.okBtn.layer.cornerRadius = kRegistView_OKBtn_Height * kYScal / 2.0;
@@ -288,28 +289,41 @@
 - (void)changePhoto:(UITapGestureRecognizer*)gesture {
     BOOL useable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     if (useable) {
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"获取头像"
-                                                                       message:@""
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+                                                                       message:@"获取头像"
                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
-        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"从相册获取图片" style:UIAlertActionStyleDestructive
+        UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"从相册中选择" style:UIAlertActionStyleDestructive
                                                              handler:^(UIAlertAction * action) {
-                                                                 //响应事件
-                                                                 WHC_PictureListVC  * vc = [WHC_PictureListVC new];
-                                                                 vc.delegate = self;
-                                                                 vc.maxChoiceImageNumberumber = 1;
-                                                                 [[self currentViewController] presentViewController:[[UINavigationController alloc]initWithRootViewController:vc] animated:YES completion:nil];
+            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+            imagePicker.delegate = self;
+            imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            imagePicker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+            imagePicker.allowsEditing = YES;
+            imagePicker.view.transform  =   CGAffineTransformMakeRotation(M_PI*2);
+            [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+                [[self currentViewController] presentViewController:imagePicker animated:YES completion:nil];
+            }];
                                                              }];
-        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:@"从相机获取图片" style:UIAlertActionStyleDefault
+        UIAlertAction* saveAction = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction * action) {
-                                                               //响应事件
-                                                               WHC_CameraVC * vc = [WHC_CameraVC new];
-                                                               vc.delegate = self;
-                                                               [[self currentViewController] presentViewController:vc animated:YES completion:nil];
-                                                           }];
+            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+            imagePicker.delegate = self;
+            imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            imagePicker.videoQuality = UIImagePickerControllerQualityTypeHigh;
+            imagePicker.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+            imagePicker.allowsEditing = YES;
+            imagePicker.view.transform  =   CGAffineTransformMakeRotation(M_PI*2);
+            [[self currentViewController] presentViewController:imagePicker animated:YES completion:nil];
+        }];
+        
         [alert addAction:saveAction];
         [alert addAction:deleteAction];
-        alert.popoverPresentationController.sourceView = self;
-        alert.popoverPresentationController.sourceRect = CGRectMake(0,0,1.0,1.0);
+        UIPopoverPresentationController *popover = alert.popoverPresentationController;
+        if (popover) {
+            popover.sourceView = self.topView;
+            popover.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            popover.sourceRect = CGRectMake(self.topView.bounds.origin.x, -self.topView.frame.size.height, self.topView.frame.size.width, self.topView.frame.size.height);
+        }
         [[self currentViewController] presentViewController:alert animated:YES completion:nil]; 
     }
 }
@@ -334,6 +348,39 @@
     return vc;
 }
 
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info {
+    NSLog(@"info is :%@",info);
+    __weak typeof (self)weakSelf = self;
+    [[self currentViewController] dismissViewControllerAnimated:YES completion:^{
+        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        if (image!=nil) {
+            UIImage *resImg = [self imageCompressToData:image];
+            if (resImg !=nil) {
+                weakSelf.headImg.image = resImg;
+                weakSelf.selectedImg = resImg;
+            }
+        }
+    }];
+}
+
+
+//图片压缩
+- (UIImage *)imageCompressToData:(UIImage *)image{
+    NSData *data=UIImageJPEGRepresentation(image, 1.0);
+    if (data.length>300*1024) {
+        if (data.length>1024*1024) {//1M以及以上
+            data=UIImageJPEGRepresentation(image, 0.1);
+        }else if (data.length>512*1024) {//0.5M-1M
+            data=UIImageJPEGRepresentation(image, 0.5);
+        }else if (data.length>300*1024) {//0.25M-0.5M
+            data=UIImageJPEGRepresentation(image, 0.9);
+        }
+    }
+    UIImage *resImage = [UIImage imageWithData:data];
+    return resImage;
+}
 #pragma mark - button click events
 - (void)chooseBirthDay:(UIButton*)sender {
     NSLog(@"选择出生日期");
@@ -469,9 +516,11 @@
 
 //上传头像
 - (void)uploadPhoto:(NSMutableDictionary*)parameter {
+    [STTextHudTool loading];
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kUPLOAD_IMAGE_URL] andParams:parameter andProgress:^(NSProgress *progress) {
         
     } andSucceed:^(NSDictionary *responseObject) {
+        [STTextHudTool loading];
         long code = [[responseObject valueForKey:@"code"] longValue];
         NSString *msg = [responseObject valueForKey:@"msg"];
         NSLog(@"msg is :%@",msg);
