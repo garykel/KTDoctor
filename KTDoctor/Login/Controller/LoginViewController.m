@@ -6,10 +6,10 @@
 //  Copyright © 2019 dz. All rights reserved.
 //
 
-#define kBlueView_LeftMargin 157
-#define kBlueView_TopMargin 125
-#define kWhiteView_LeftMargin 172
-#define kWhiteView_TopMargin 112
+#define kBlueView_LeftMargin 107
+#define kBlueView_TopMargin 155
+#define kWhiteView_LeftMargin 122
+#define kWhiteView_TopMargin 142
 #define kDash_LeftMargin 218
 #define kDash_RightMargin 163
 #define kDash_TopMargin 48
@@ -22,7 +22,7 @@
 #define kDoctor_BottomMargin 60
 #define kPassword_Btn_TopMargin 28
 #define kPassword_Btn_LeftMargin 19
-#define kPassword_Btn_Width 80
+#define kPassword_Btn_Width 100
 #define kPassword_Btn_Height 30
 #define kSeperateView_Width 5
 #define kSeperateView_Height 25
@@ -152,7 +152,7 @@
     self.passwordBtn.userInteractionEnabled = YES;
     self.passwordBtn.backgroundColor = [UIColor clearColor];
     [self.passwordBtn setTitleColor:[UIColor colorWithHexString:@"#12aac8"] forState:UIControlStateNormal];
-    [self.passwordBtn.titleLabel setFont:[UIFont systemFontOfSize:15.0]];
+    [self.passwordBtn.titleLabel setFont:[UIFont systemFontOfSize:18.0]];
     [self.passwordBtn setTitle:@"密码登录" forState:UIControlStateNormal];
     [self.passwordBtn addTarget:self action:@selector(passwordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.dashView addSubview:self.passwordBtn];
@@ -178,6 +178,7 @@
     self.codeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.codeBtn setTitle:@"短信随机码登录" forState:UIControlStateNormal];
     [self.codeBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.codeBtn.titleLabel setFont:[UIFont systemFontOfSize:18.0]];
     [self.codeBtn addTarget:self action:@selector(codeBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.dashView addSubview:self.codeBtn];
     [self.codeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
