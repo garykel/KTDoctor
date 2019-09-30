@@ -48,7 +48,7 @@
 #define kRegist_Btn_Bottom 20
 #define kRegist_Btn_LeftMargin 20
 #define kRegist_Btn_Height 26
-#define kForgot_Btn_BottomMargin 30
+#define kForgot_Btn_BottomMargin 10
 #define kVersion_Lbl_FontSize 30.0
 #define kVersion_Lbl_TopMargin 10
 #define kVersion_Lbl_LeftMargin 20
@@ -331,18 +331,18 @@
     
     //忘记密码按钮
     self.forgotBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.forgotBtn.backgroundColor = [UIColor colorWithHexString:@"#12aac8"];
-    [self.forgotBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.forgotBtn setTitle:@"忘记密码" forState:UIControlStateNormal];
+    [self.forgotBtn setTitleColor:[UIColor colorWithHexString:@"#12aac8"] forState:UIControlStateNormal];
+    [self.forgotBtn setTitle:@"忘 记 密 码" forState:UIControlStateNormal];
+    self.forgotBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
     [self.forgotBtn addTarget:self action:@selector(forgot:) forControlEvents:UIControlEventTouchUpInside];
     self.forgotBtn.layer.cornerRadius = kButton_CornerRadius;
     self.forgotBtn.layer.masksToBounds = YES;
     [self.whiteView addSubview:self.forgotBtn];
 
     self.registBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.registBtn.backgroundColor = [UIColor colorWithHexString:@"#12aac8"];
-    [self.registBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.registBtn setTitleColor:[UIColor colorWithHexString:@"#12aac8"] forState:UIControlStateNormal];
     [self.registBtn setTitle:@"新医师注册" forState:UIControlStateNormal];
+    self.registBtn.titleLabel.textAlignment = NSTextAlignmentLeft;
     [self.registBtn addTarget:self action:@selector(regist:) forControlEvents:UIControlEventTouchUpInside];
     self.registBtn.layer.cornerRadius = kButton_CornerRadius;
     self.registBtn.layer.masksToBounds = YES;
