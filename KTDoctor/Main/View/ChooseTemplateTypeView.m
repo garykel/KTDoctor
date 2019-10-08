@@ -32,9 +32,11 @@
 
 @implementation ChooseTemplateTypeView
 
-- (instancetype)initWithFrame:(CGRect)frame{
-    if (self = [super initWithFrame:frame]) {
+- (instancetype)initWithFrame:(CGRect) frame title:(NSString*)title{
+    self = [super initWithFrame:frame];
+    if (self) {
         self.contentFrame = frame;
+        self.title = title;
         [self setUpView];
     }
     return self;
@@ -69,7 +71,7 @@
     
     self.titleLbl = [[UILabel alloc] initWithFrame:CGRectMake((self.topView.frame.size.width - kTitleLbl_Width * kXScal)/2, (kTopView_Height * kYScal - kTitleLbl_Height * kYScal)/2.0, kTitleLbl_Width * kXScal, kTitleLbl_Height * kYScal)];
     self.titleLbl.textColor = [UIColor blackColor];
-    self.titleLbl.text = @"选择有氧模板类型";
+    self.titleLbl.text = self.title;
     self.titleLbl.font = [UIFont systemFontOfSize:kTitleLbl_FontSize * kYScal];
     [self.topView addSubview:self.titleLbl];
     

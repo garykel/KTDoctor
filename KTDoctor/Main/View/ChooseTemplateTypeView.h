@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ChooseTemplateTypeView : UIView
 @property (nonatomic,strong)UIButton *intensiteBtn;
 @property (nonatomic,strong)UIButton *powerBtn;
-- (instancetype)initWithFrame:(CGRect) frame;
+- (instancetype)initWithFrame:(CGRect) frame title:(NSString*)title;
 - (void)show;
 - (void)dismiss;
 @end

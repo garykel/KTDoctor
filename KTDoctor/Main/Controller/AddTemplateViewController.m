@@ -88,6 +88,7 @@ CGSize systemListviewSize;
 @property (nonatomic,strong)KTDropDownMenus *trainingDeviceMenu;
 @property (nonatomic,strong)UIButton *searchBtn;
 @property (nonatomic,strong)KTDropDownMenus *templateMenu;
+@property (nonatomic,strong)UIButton *recoveryBtn;
 @property (nonatomic,strong)UIButton *createAerobicTemplateBtn;
 @property (nonatomic,strong)UIButton *createPowerTemplateBtn;
 @property (nonatomic,strong)UIButton *deleteBtn;
@@ -208,7 +209,7 @@ CGSize systemListviewSize;
     self.deviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kDeviceMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
     [self.deviceMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.deviceMenu.defualtStr = @"有氧设备";
-    self.deviceMenu.titles = @[@"有氧设备",@"力量设备"];
+    self.deviceMenu.titles = @[@"有氧设备",@"力量设备",@"康复设备"];
     self.deviceMenu.delegate = self;
     self.deviceMenu.tag = 30;
     [self.searchBgView addSubview:self.deviceMenu];
@@ -252,10 +253,26 @@ CGSize systemListviewSize;
     self.templateMenu.tag = 60;
     [self.bottomView addSubview:self.templateMenu];
     
-    CGFloat createBtn_LeftMargin = self.bottomView.frame.size.width - kAerobicBtn_Width * kXScal - kPowerBtn_Width * kXScal - kDeleteBtn_Width * kXScal - 2 * kBtn_Space * kXScal - kDeleteBtn_RightMargin * kXScal;
+    CGFloat createBtn_LeftMargin = self.bottomView.frame.size.width - 2 * kAerobicBtn_Width * kXScal - kPowerBtn_Width * kXScal - kDeleteBtn_Width * kXScal - 3 * kBtn_Space * kXScal - kDeleteBtn_RightMargin * kXScal;
+    
+    self.recoveryBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.recoveryBtn.frame = CGRectMake(createBtn_LeftMargin, 0, kAerobicBtn_Width * kXScal, kDeleteBtn_Heihgt * kYScal);
+    self.recoveryBtn.center = CGPointMake(createBtn_LeftMargin + kAerobicBtn_Width * kXScal/2.0, self.templateMenu.center.y);
+    [self.recoveryBtn setTitle:@"新建康复模板" forState:UIControlStateNormal];
+    self.recoveryBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
+    [self.recoveryBtn setImage:[UIImage imageNamed:@"createTemplate"] forState:UIControlStateNormal];
+    [self.recoveryBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 0)];
+    [self.recoveryBtn.titleLabel setFont:[UIFont systemFontOfSize:kDeleteBtn_FontSize * kYScal]];
+    [self.recoveryBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.recoveryBtn addTarget:self action:@selector(recoveryBtnClick:)
+                            forControlEvents:UIControlEventTouchUpInside];
+    self.recoveryBtn.layer.cornerRadius = kDeleteBtn_Heihgt * kYScal/2.0;
+    self.recoveryBtn.layer.masksToBounds = YES;
+    [self.bottomView addSubview:self.recoveryBtn];
+    
     self.createAerobicTemplateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.createAerobicTemplateBtn.frame = CGRectMake(createBtn_LeftMargin, 0, kAerobicBtn_Width * kXScal, kDeleteBtn_Heihgt * kYScal);
-    self.createAerobicTemplateBtn.center = CGPointMake(createBtn_LeftMargin + kAerobicBtn_Width * kXScal/2.0, self.templateMenu.center.y);
+    self.createAerobicTemplateBtn.frame = CGRectMake(CGRectGetMaxX(self.recoveryBtn.frame) + kBtn_Space * kXScal, 0, kAerobicBtn_Width * kXScal, kDeleteBtn_Heihgt * kYScal);
+    self.createAerobicTemplateBtn.center = CGPointMake(CGRectGetMaxX(self.recoveryBtn.frame) + kBtn_Space * kXScal + kAerobicBtn_Width * kXScal/2.0, self.templateMenu.center.y);
     [self.createAerobicTemplateBtn setTitle:@"新建有氧模板" forState:UIControlStateNormal];
     self.createAerobicTemplateBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
     [self.createAerobicTemplateBtn setImage:[UIImage imageNamed:@"createTemplate"] forState:UIControlStateNormal];
@@ -1102,12 +1119,23 @@ CGSize systemListviewSize;
     }
 }
 
+//新建康复模板
+- (void)recoveryBtnClick:(UIButton*)sender {
+    NSLog(@"新建康复模板");
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
+    self.template = [[ChooseTemplateTypeView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kView_LeftMargin * kXScal, kView_Height * kYScal) title:@"新建康复模板"];
+    [self.template.intensiteBtn addTarget:self action:@selector(createIntensiteTemplate:) forControlEvents:UIControlEventTouchUpInside];
+    [self.template.powerBtn addTarget:self action:@selector(createPowerTemplate:) forControlEvents:UIControlEventTouchUpInside];
+    [self.template show];
+}
+
 //新建有氧模板
 - (void)createAerobicTemplateBtnClick:(UIButton*)sender {
     NSLog(@"新建有氧模板");
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
-    self.template = [[ChooseTemplateTypeView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kView_LeftMargin * kXScal, kView_Height * kYScal)];
+    self.template = [[ChooseTemplateTypeView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kView_LeftMargin * kXScal, kView_Height * kYScal) title:@"新建有氧模板"];
     [self.template.intensiteBtn addTarget:self action:@selector(createIntensiteTemplate:) forControlEvents:UIControlEventTouchUpInside];
     [self.template.powerBtn addTarget:self action:@selector(createPowerTemplate:) forControlEvents:UIControlEventTouchUpInside];
     [self.template show];
