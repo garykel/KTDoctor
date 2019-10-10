@@ -415,6 +415,7 @@ CGSize testResultsListViewSize;
 //底部功能按钮
 @property (nonatomic,strong)UIButton *aerobicReportBtn;//查看有氧历史处方及报告
 @property (nonatomic,strong)UIButton *powerReportBtn;//查看力量历史处方及报告
+@property (nonatomic,strong)UIButton *createRecoveryPrescriptionBtn;//开具康复处方
 @property (nonatomic,strong)UIButton *createAerobicPrescriptionBtn;//开具有氧处方
 @property (nonatomic,strong)UIButton *createPowerPrescriptionBtn;//开具力量处方
 @property (nonatomic,strong)UIButton *checkEvaluateBtn;//查看体能评估结果
@@ -642,7 +643,7 @@ CGSize testResultsListViewSize;
     [self configLatestInfoView];
     [self configOlderInfoView];
     
-    CGFloat button_space = (self.scrollview.frame.size.width - 2 * kBottomLongButton_LeftMargin * kXScal - 2 * kBottomLongButton_Width * kXScal - 3 * kBottomShortButton_Width * kXScal)/4;
+    CGFloat button_space = (self.scrollview.frame.size.width - 2 * kBottomLongButton_LeftMargin * kXScal - 2 * kBottomLongButton_Width * kXScal - 4 * kBottomShortButton_Width * kXScal)/5;
     self.aerobicReportBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.aerobicReportBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
     self.aerobicReportBtn.frame = CGRectMake(kBottomLongButton_LeftMargin * kXScal, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomLongButton_Width * kXScal, kBottomButton_Height * kYScal);
@@ -686,9 +687,20 @@ CGSize testResultsListViewSize;
     [self.createPowerPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.createPowerPrescriptionBtn];
     
+    self.createRecoveryPrescriptionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.createRecoveryPrescriptionBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
+    self.createRecoveryPrescriptionBtn.frame = CGRectMake(CGRectGetMaxX(self.createPowerPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
+    [self.createRecoveryPrescriptionBtn setTitle:@"开具力量处方" forState:UIControlStateNormal];
+    self.createRecoveryPrescriptionBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
+    self.createRecoveryPrescriptionBtn.layer.masksToBounds = YES;
+    [self.createRecoveryPrescriptionBtn addTarget:self action:@selector(createRecoveryPrescription:) forControlEvents:UIControlEventTouchUpInside];
+    [self.createRecoveryPrescriptionBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
+    [self.createRecoveryPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.scrollview addSubview:self.createRecoveryPrescriptionBtn];
+        
     self.checkEvaluateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.checkEvaluateBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
-    self.checkEvaluateBtn.frame = CGRectMake(CGRectGetMaxX(self.createPowerPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
+    self.checkEvaluateBtn.frame = CGRectMake(CGRectGetMaxX(self.createRecoveryPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
     [self.checkEvaluateBtn setTitle:@"查看体能评估结果" forState:UIControlStateNormal];
     self.checkEvaluateBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.checkEvaluateBtn.layer.masksToBounds = YES;
@@ -2870,6 +2882,23 @@ CGSize testResultsListViewSize;
     [self doctorGetUserInfo:para];
 }
 
+//查看有氧历史处方报告
+- (void)checkAerobicReport:(UIButton*)sender {
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    [parameter setValue:@1 forKey:@"type"];
+    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@"-create_time" forKey:@"sort"];
+    [self getUserPrescriptionList:parameter];
+}
+
+//开具有氧处方
 - (void)createAerobicPrescription:(UIButton*)sender {
     CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
     create.prescriptionDict = self.latestInfoDict;
@@ -2887,13 +2916,7 @@ CGSize testResultsListViewSize;
 //    [self.navigationController pushViewController:vc animated:YES];
 }
 
-//查看体能评估结果
-- (void)checkEvaluateResult:(UIButton*)sender {
-    CheckEvaluateReportViewController *report = [[CheckEvaluateReportViewController alloc] init];
-    report.userInfo = self.latestInfoDict;
-    [self.navigationController pushViewController:report animated:NO];
-}
-
+//开具力量处方
 - (void)createPowerPrescription:(UIButton*)sender {
     CreatePowerPrescriptionViewController *create = [[CreatePowerPrescriptionViewController alloc] init];
     create.prescriptionDict = self.latestInfoDict;
@@ -2908,19 +2931,26 @@ CGSize testResultsListViewSize;
     [self.navigationController pushViewController:create animated:NO];
 }
 
-- (void)checkAerobicReport:(UIButton*)sender {
-    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-    [parameter setValue:@0 forKey:@"offset"];
-    [parameter setValue:@10 forKey:@"rows"];
-    [parameter setValue:@1 forKey:@"type"];
-    NSInteger userId = [[self.latestInfoDict valueForKey:@"userId"] integerValue];
-    [parameter setValue:@(userId) forKey:@"userId"];
-    NSDictionary *dict = self.user.organ;
-    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
-    NSString *orgCode = orgCodeArr[0];
-    [parameter setValue:orgCode forKey:@"orgCode"];
-    [parameter setValue:@"-create_time" forKey:@"sort"];
-    [self getUserPrescriptionList:parameter];
+//开具康复处方
+- (void)createRecoveryPrescription:(UIButton*)sender {
+    CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
+    create.prescriptionDict = self.latestInfoDict;
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            NSString *name = [dict valueForKey:@"name"];
+            if ([name isEqualToString:@"康复1设备"]) {
+                create.deviceTypeArr = [dict valueForKey:@"children"];
+            }
+        }
+    }
+    [self.navigationController pushViewController:create animated:NO];
+}
+
+//查看体能评估结果
+- (void)checkEvaluateResult:(UIButton*)sender {
+    CheckEvaluateReportViewController *report = [[CheckEvaluateReportViewController alloc] init];
+    report.userInfo = self.latestInfoDict;
+    [self.navigationController pushViewController:report animated:NO];
 }
 
 #pragma mark - UITableViewDelegate && UITableViewDateSource

@@ -167,7 +167,13 @@
     self.titleLbl.font = [UIFont systemFontOfSize:kTitle_FontSize];
     self.titleLbl.textColor = [UIColor whiteColor];
     self.titleLbl.textAlignment = NSTextAlignmentCenter;
-    self.titleLbl.text = @"新建有氧处方模板";
+    NSString *title = @"";
+    if (self.sourceType == 1) {
+        title = @"新建康复处方模板";
+    } else if (self.sourceType == 2) {
+        title = @"新建有氧处方模板";
+    }
+    self.titleLbl.text = title;
     [self.navView addSubview:self.titleLbl];
 }
 
@@ -283,7 +289,13 @@
     
     self.deviceTypeTF = [[UITextField alloc] initWithFrame:CGRectMake(self.dieaseMenu.frame.origin.x, 0, kDieaseTF_Width * kXScal, kDieaseTF_Height * kYScal)];
     self.deviceTypeTF.textColor = [UIColor colorWithHexString:@"#333333"];
-    self.deviceTypeTF.text = @"有氧设备";
+    NSString *typeStr = @"";
+    if (self.sourceType == 1) {
+        typeStr = @"康复设备";
+    } else if (self.sourceType == 2) {
+        typeStr = @"有氧设备";
+    }
+    self.deviceTypeTF.text = typeStr;
     self.deviceTypeTF.backgroundColor = [UIColor whiteColor];
     self.deviceTypeTF.center = CGPointMake(CGRectGetMaxX(self.deviceTypeLbl.frame) + kDieaseLbl_RightMargin * kXScal + kDieaseTF_Width * kXScal/2.0, self.deviceTypeLbl.center.y);
     self.deviceTypeTF.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];
@@ -741,11 +753,12 @@
             self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均难度：%d",sumDifficulty / self.groups.count];
         } else {
             NSInteger avgPower = sumDifficulty / self.groups.count;
-            if (avgPower > 0) {
-                self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均功率：%dw",sumDifficulty / self.groups.count];
-            } else {
-                self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均难度：%d",sumDifficulty / self.groups.count];
-            }
+            self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均功率：%dw",sumDifficulty / self.groups.count];
+//            if (avgPower > 0) {
+//                self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均功率：%dw",sumDifficulty / self.groups.count];
+//            } else {
+//                self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均难度：%d",sumDifficulty / self.groups.count];
+//            }
         }
     }
 }

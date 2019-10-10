@@ -111,6 +111,7 @@ CGSize systemListviewSize;
 @property (nonatomic,assign)NSInteger type;//模板类型 1 系统模板 2 自定义模板
 @property (nonatomic,strong)ChooseTemplateTypeView *template;
 @property (nonatomic,assign)NSInteger templateType;//模板设备类型 1 有氧设备 2 力量设备
+@property (nonatomic,assign)NSInteger sourceType;//模板来源类型 1 新建康复模板 2新建有氧模板 3 新建力量模板
 @property (nonatomic,strong)UIButton *customTimeBtn;
 @property (nonatomic,strong)UIButton *systemTimeBtn;
 @property (nonatomic,assign)BOOL needCleanArr;
@@ -128,6 +129,7 @@ CGSize systemListviewSize;
     self.user = [[UserModel sharedUserModel] getCurrentUser];
     self.type = 2;
     self.templateType = 1;
+    self.sourceType = 1;
     self.needCleanArr = NO;
     self.isSearch = NO;
     self.searchResults = [NSMutableArray array];
@@ -1122,6 +1124,7 @@ CGSize systemListviewSize;
 //新建康复模板
 - (void)recoveryBtnClick:(UIButton*)sender {
     NSLog(@"新建康复模板");
+    self.sourceType = 1;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     self.template = [[ChooseTemplateTypeView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kView_LeftMargin * kXScal, kView_Height * kYScal) title:@"新建康复模板"];
@@ -1133,6 +1136,7 @@ CGSize systemListviewSize;
 //新建有氧模板
 - (void)createAerobicTemplateBtnClick:(UIButton*)sender {
     NSLog(@"新建有氧模板");
+    self.sourceType = 2;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     self.template = [[ChooseTemplateTypeView alloc] initWithFrame:CGRectMake(0, 0, kWidth - 2 * kView_LeftMargin * kXScal, kView_Height * kYScal) title:@"新建有氧模板"];
@@ -1148,6 +1152,7 @@ CGSize systemListviewSize;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     CreateTemplateViewController *template = [[CreateTemplateViewController alloc] init];
     template.type = 1;
+    template.sourceType = self.sourceType;
     if (self.deviceTypeArr.count > 0) {
         for (NSDictionary *dict in self.deviceTypeArr) {
             NSString *name = [dict valueForKey:@"name"];
@@ -1166,6 +1171,7 @@ CGSize systemListviewSize;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     CreateTemplateViewController *template = [[CreateTemplateViewController alloc] init];
     template.type = 2;
+    template.sourceType = self.sourceType;
     if (self.deviceTypeArr.count > 0) {
         for (NSDictionary *dict in self.deviceTypeArr) {
             NSString *name = [dict valueForKey:@"name"];
@@ -1180,6 +1186,7 @@ CGSize systemListviewSize;
 //新建力量模板
 - (void)createPowerTemplateBtnClick:(UIButton*)sender {
     [self.template dismiss];
+    self.sourceType = 3;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     CreatePowerTemplateViewController *template = [[CreatePowerTemplateViewController alloc] init];
