@@ -298,7 +298,7 @@
     
     self.deviceTypeTF = [[UITextField alloc] initWithFrame:CGRectMake(self.dieaseTF.frame.origin.x, 0, kDieaseTF_Width * kXScal, kDieaseTF_Height * kYScal)];
     self.deviceTypeTF.textColor = [UIColor colorWithHexString:@"#333333"];
-    self.deviceTypeTF.text = @"有氧设备";
+    self.deviceTypeTF.text = self.deviceTypeStr;
     self.deviceTypeTF.backgroundColor = [UIColor whiteColor];
     self.deviceTypeTF.center = CGPointMake(CGRectGetMaxX(self.deviceTypeLbl.frame) + kDieaseLbl_RightMargin * kXScal + kDieaseTF_Width * kXScal/2.0, self.deviceTypeLbl.center.y);
     self.deviceTypeTF.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze * kYScal];

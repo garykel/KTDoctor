@@ -658,6 +658,7 @@ CGSize systemListviewSize;
 }
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSString *timeBtnTitle = self.customTimeBtn.titleLabel.text;
     if (tableView == self.customTemplateListView) {
         NSString *reuselCellStr = [NSString stringWithFormat:@"customTemplatecellId%ld%ld",indexPath.section,indexPath.row];
         CustomTemplateCell *cell = [tableView dequeueReusableCellWithIdentifier:reuselCellStr];
@@ -711,7 +712,7 @@ CGSize systemListviewSize;
         cell.groupLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"sectionNum"] integerValue]];
         CGFloat targetDuration = [[dict valueForKey:@"targetDuration"] floatValue];
         NSString *timeStr = [self getTimeString:(NSInteger)targetDuration];
-        if (self.templateType == 1) {
+        if ([timeBtnTitle isEqualToString:@"运动时长"]) {
             timeStr = [self getTimeString:(NSInteger)targetDuration];
         } else {
             timeStr = [NSString stringWithFormat:@"%.1fkg",targetDuration];
@@ -784,7 +785,7 @@ CGSize systemListviewSize;
         cell.groupLbl.text = [NSString stringWithFormat:@"%d",[[dict valueForKey:@"sectionNum"] integerValue]];
         CGFloat targetDuration = [[dict valueForKey:@"targetDuration"] floatValue];
         NSString *timeStr = [self getTimeString:targetDuration];
-        if (self.templateType == 1) {
+        if ([timeBtnTitle isEqualToString:@"运动时长"]) {
             timeStr = [self getTimeString:(NSInteger)targetDuration];
         } else {
             timeStr = [NSString stringWithFormat:@"%.1fkg",targetDuration];
@@ -830,7 +831,8 @@ CGSize systemListviewSize;
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    if (menu == self.templateMenu) {
+    self.isSearch = NO;
+    if (menu == self.templateMenu) {//模板类型 自定义模板 系统模板
         self.needCleanArr = YES;
         if ([string isEqualToString:@"自定义模板"]) {
             self.systemListviewBgView.hidden = YES;
@@ -847,56 +849,37 @@ CGSize systemListviewSize;
                 [self showTemplateListWithType:self.type offset:self.systemOffset];
             }
         }
-    } else if (menu == self.trainingPositionMenu) {
-        NSMutableArray *equipmentsArr = [NSMutableArray array];
-        if (self.deviceTypeArr.count > 0) {
-            for (NSDictionary *dict in self.deviceTypeArr) {
-                NSString *name = [dict valueForKey:@"name"];
-                NSString *deviceTypeName = self.deviceMenu.mainBtn.titleLabel.text;
-                if ([name isEqualToString:deviceTypeName]) {
-                    NSArray *children = [dict valueForKey:@"children"];
-                    if (children.count > 0) {
-                        for (NSDictionary *positionDict in children) {
-                            NSString *positionName = [positionDict valueForKey:@"name"];
-                            if ([positionName isEqualToString:string]) {
-                                NSArray *positionChildren = [positionDict valueForKey:@"children"];
-                                if (positionChildren.count > 0) {
-                                    for (NSDictionary *equipDict in positionChildren) {
-                                        NSString *equipmentName = [equipDict valueForKey:@"name"];
-                                        [equipmentsArr addObject:equipmentName];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        [self.trainingDeviceMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
-        [self.trainingDeviceMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        self.trainingDeviceMenu.titles = [equipmentsArr copy];
-        [self.trainingDeviceMenu.mTableView reloadData];
-    } else if (menu == self.deviceMenu) {
-        if ([string isEqualToString:@"有氧设备"]) {
-            self.templateType = 1;
-            [self.customTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
-            [self.systemTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
-        } else if ([string isEqualToString:@"力量设备"]) {
-            self.templateType = 2;
-            [self.customTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
-            [self.systemTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
-        }
+    } else if (menu == self.deviceMenu) {//设备
         if (self.deviceTypeArr.count > 0) {
             NSMutableArray *positions = [NSMutableArray array];
             for (NSDictionary *dict in self.deviceTypeArr) {
                 NSString *name = [dict valueForKey:@"name"];
-                if ([name isEqualToString:string]) {
-                    NSArray *deviceTypeArr = [dict valueForKey:@"children"];
-                    if (deviceTypeArr.count > 0) {
-                        for (NSDictionary *dict1 in deviceTypeArr) {
-                            NSString *name = [dict1 valueForKey:@"name"];
-                            [positions addObject:name];
+                if ([name isEqualToString:@"II类医疗康复器械"]) {
+                    string = name;
+                    NSInteger id = [[dict valueForKey:@"id"] integerValue];
+                    self.templateType = id;
+                    if ([name isEqualToString:string]) {
+                        NSArray *deviceTypeArr = [dict valueForKey:@"children"];
+                        if (deviceTypeArr.count > 0) {
+                            for (NSDictionary *dict1 in deviceTypeArr) {
+                                NSString *name = [dict1 valueForKey:@"name"];
+                                [positions addObject:name];
+                            }
                         }
+                        break;
+                    }
+                } else {
+                    if ([name isEqualToString:string]) {
+                        NSInteger id = [[dict valueForKey:@"id"] integerValue];
+                        self.templateType = id;
+                        NSArray *deviceTypeArr = [dict valueForKey:@"children"];
+                        if (deviceTypeArr.count > 0) {
+                            for (NSDictionary *dict1 in deviceTypeArr) {
+                                NSString *name = [dict1 valueForKey:@"name"];
+                                [positions addObject:name];
+                            }
+                        }
+                        break;
                     }
                 }
             }
@@ -907,7 +890,221 @@ CGSize systemListviewSize;
             self.trainingPositionMenu.titles = [positions copy];
             [self.trainingPositionMenu.mTableView reloadData];
         }
+    } else if (menu == self.trainingPositionMenu) {//训练部位
+        NSMutableArray *equipmentsArr = [NSMutableArray array];
+        if (self.deviceTypeArr.count > 0) {
+            for (NSDictionary *dict in self.deviceTypeArr) {
+                NSString *name = [dict valueForKey:@"name"];
+                NSString *deviceTypeName = self.deviceMenu.mainBtn.titleLabel.text;
+                if ([deviceTypeName isEqualToString:@"康复设备"]) {
+                    deviceTypeName = @"II类医疗康复器械";
+                    if ([name isEqualToString:deviceTypeName]) {
+                        NSArray *children = [dict valueForKey:@"children"];
+                        if (children.count > 0) {
+                            for (NSDictionary *positionDict in children) {
+                                NSString *positionName = [positionDict valueForKey:@"name"];
+                                NSInteger id = [[positionDict valueForKey:@"id"] integerValue];
+                                self.templateType = id;
+                                if ([positionName isEqualToString:string]) {
+                                    NSArray *positionChildren = [positionDict valueForKey:@"children"];
+                                    if (positionChildren.count > 0) {
+                                        for (NSDictionary *equipDict in positionChildren) {
+                                            NSString *equipmentName = [equipDict valueForKey:@"name"];
+                                            [equipmentsArr addObject:equipmentName];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                } else {
+                    if ([name isEqualToString:deviceTypeName]) {
+                        NSArray *children = [dict valueForKey:@"children"];
+                        if (children.count > 0) {
+                            for (NSDictionary *positionDict in children) {
+                                NSString *positionName = [positionDict valueForKey:@"name"];
+                                NSInteger id = [[positionDict valueForKey:@"id"] integerValue];
+                                self.templateType = id;
+                                if ([positionName isEqualToString:string]) {
+                                    NSArray *positionChildren = [positionDict valueForKey:@"children"];
+                                    if (positionChildren.count > 0) {
+                                        for (NSDictionary *equipDict in positionChildren) {
+                                            NSString *equipmentName = [equipDict valueForKey:@"name"];
+                                            [equipmentsArr addObject:equipmentName];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        [self.trainingDeviceMenu.mainBtn setTitle:@"" forState:UIControlStateNormal];
+        [self.trainingDeviceMenu.mainBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        self.trainingDeviceMenu.titles = [equipmentsArr copy];
+        [self.trainingDeviceMenu.mTableView reloadData];
+    } else if (menu == self.trainingDeviceMenu) {//训练设备
+        if (self.deviceTypeArr.count > 0) {
+            for (NSDictionary *dict in self.deviceTypeArr) {
+                NSString *name = [dict valueForKey:@"name"];
+                NSString *deviceTypeName = self.deviceMenu.mainBtn.titleLabel.text;
+                if ([deviceTypeName isEqualToString:@"康复设备"]) {
+                    deviceTypeName = @"II类医疗康复器械";
+                    if ([name isEqualToString:deviceTypeName]) {
+                        NSArray *children = [dict valueForKey:@"children"];
+                        if (children.count > 0) {
+                            NSMutableArray *equips = [NSMutableArray array];
+                            for (NSDictionary *positionDict in children) {
+                                NSString *positionName = self.trainingPositionMenu.mainBtn.titleLabel.text;
+                                NSString *name = [positionDict valueForKey:@"name"];
+                                if ([name isEqualToString:positionName]) {
+                                    equips = [[positionDict valueForKey:@"children"] mutableCopy];
+                                    break;
+                                }
+                            }
+                            if (equips.count > 0) {
+                                for (NSDictionary *equip in equips) {
+                                    NSString *name = [equip valueForKey:@"name"];
+                                    NSInteger id = [[equip valueForKey:@"id"] integerValue];
+                                    if ([name isEqualToString:string]) {
+                                        self.templateType = id;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                } else {
+                    if ([name isEqualToString:deviceTypeName]) {
+                        NSArray *children = [dict valueForKey:@"children"];
+                        if (children.count > 0) {
+                            NSMutableArray *equips = [NSMutableArray array];
+                            for (NSDictionary *positionDict in children) {
+                                NSString *positionName = self.trainingPositionMenu.mainBtn.titleLabel.text;
+                                NSString *name = [positionDict valueForKey:@"name"];
+                                if ([name isEqualToString:positionName]) {
+                                    equips = [[positionDict valueForKey:@"children"] mutableCopy];
+                                    break;
+                                }
+                            }
+                            if (equips.count > 0) {
+                                for (NSDictionary *equip in equips) {
+                                    NSString *name = [equip valueForKey:@"name"];
+                                    NSInteger id = [[equip valueForKey:@"id"] integerValue];
+                                    if ([name isEqualToString:string]) {
+                                        self.templateType = id;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
+}
+
+- (void)searchTemplates:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+    NSInteger type = [[parameter valueForKey:@"type"] integerValue];
+    [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_TEMPLATE_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+        NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+        NSString *msg = [responseObject valueForKey:@"msg"];
+        NSLog(@"**************%@**************",responseObject);
+        if (code == 0) {
+            NSArray *rows = [responseObject valueForKey:@"rows"];
+            NSString *string = self.deviceMenu.mainBtn.titleLabel.text;
+            if ([string isEqualToString:@"有氧设备"]) {
+                [self.customTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+                [self.systemTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+            } else if ([string isEqualToString:@"力量设备"]) {
+                [self.customTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
+                [self.systemTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
+            } else if ([string isEqualToString:@"康复设备"]){
+                [self.customTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+                [self.systemTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+            }
+            if (weakSelf.isFooterClick) {
+                [weakSelf.searchResults addObjectsFromArray:rows];
+            } else {
+                if (rows.count > 0) {
+                    if (type == 1) {//系统模板
+                        if (weakSelf.needCleanArr) {
+                            if (weakSelf.searchResults.count > 0) {
+                                [weakSelf.searchResults removeAllObjects];
+                            }
+                            [weakSelf.searchResults addObjectsFromArray:rows];
+                        } else {
+                            if (weakSelf.searchResults.count > 0) {
+                                //替换前n个数据
+                                NSMutableArray *tempArr = [NSMutableArray array];
+                                [tempArr addObjectsFromArray:rows];
+                                if (weakSelf.searchResults.count > rows.count) {
+                                    NSArray *afterArr = [weakSelf.searchResults subarrayWithRange:NSMakeRange(rows.count, weakSelf.searchResults.count - rows.count)];
+                                    [tempArr addObjectsFromArray:afterArr];
+                                }
+                                weakSelf.searchResults = [tempArr mutableCopy];
+                            } else {
+                                [weakSelf.searchResults addObjectsFromArray:rows];
+                            }
+                        }
+                        [weakSelf.systemTemplateListView.mj_header endRefreshing];
+                        [weakSelf.systemTemplateListView reloadData];
+                    } else {//自定义模板
+                        if (weakSelf.needCleanArr) {
+                            if (weakSelf.searchResults.count > 0) {
+                                [weakSelf.searchResults removeAllObjects];
+                            }
+                            [weakSelf.searchResults addObjectsFromArray:rows];
+                        } else {
+                            if (weakSelf.searchResults.count > 0) {
+                                //替换前n个数据
+                                NSMutableArray *tempArr = [NSMutableArray array];
+                                [tempArr addObjectsFromArray:rows];
+                                if (weakSelf.searchResults.count > rows.count) {
+                                    NSArray *afterArr = [weakSelf.searchResults subarrayWithRange:NSMakeRange(rows.count, weakSelf.searchResults.count - rows.count)];
+                                    [tempArr addObjectsFromArray:afterArr];
+                                }
+                                weakSelf.searchResults = [tempArr mutableCopy];
+                            } else {
+                                [weakSelf.searchResults addObjectsFromArray:rows];
+                            }
+                        }
+                        [weakSelf.customTemplateListView.mj_header endRefreshing];
+                        [weakSelf.customTemplateListView reloadData];
+                    }
+                } else {
+                    if (type == 1) {//系统模板
+                        [weakSelf.systemTemplateListView.mj_header endRefreshing];
+                        [weakSelf.systemTemplateListView reloadData];
+                    } else {//自定义模板
+                        [weakSelf.customTemplateListView.mj_header endRefreshing];
+                        [weakSelf.customTemplateListView reloadData];
+                    }
+                }
+            }
+            if (self.type == 1) {
+                for (NSInteger i = 0; i < weakSelf.searchResults.count; i++) {
+                    [weakSelf.customeTemplateCheckArr addObject:[NSNumber numberWithBool:NO]];
+                }
+                [self.systemTemplateListView reloadData];
+            } else {
+                [self.customTemplateListView reloadData];
+            }
+        } else if (code == 10011) {
+            [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+            [self.navigationController popToRootViewControllerAnimated:NO];
+        }  else {
+            [STTextHudTool showText:msg];
+        }
+    } andFaild:^(NSError *error) {
+        NSLog(@"error :%@",error);
+    }];
 }
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
@@ -966,6 +1163,17 @@ CGSize systemListviewSize;
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (self.nameTf.text.length == 0 && [self.dieaseMenu.mainBtn.titleLabel.text isEqualToString:@"适应病症"] && [self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"风险等级"] && [self.deviceMenu.mainBtn.titleLabel.text isEqualToString:@"有氧设备"] && [self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"] && [self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
         self.isSearch = NO;
+        NSString *string = self.deviceMenu.mainBtn.titleLabel.text;
+        if ([string isEqualToString:@"有氧设备"]) {
+            [self.customTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+            [self.systemTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+        } else if ([string isEqualToString:@"力量设备"]) {
+            [self.customTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
+            [self.systemTimeBtn setTitle:@"训练总量" forState:UIControlStateNormal];
+        } else if ([string isEqualToString:@"康复设备"]){
+            [self.customTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+            [self.systemTimeBtn setTitle:@"运动时长" forState:UIControlStateNormal];
+        }
         if (self.type == 1) {
             [self.systemTemplateListView reloadData];
         } else {
@@ -976,8 +1184,38 @@ CGSize systemListviewSize;
         if (self.searchResults.count > 0) {
             [self.searchResults removeAllObjects];
         }
+        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+        NSDictionary *dict = self.user.organ;
+        NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+        NSString *orgCode = orgCodeArr[0];
+        [parameter setValue:orgCode forKey:@"orgCode"];
+        [parameter setValue:@0 forKey:@"offset"];
+        [parameter setValue:@10 forKey:@"rows"];
+        NSString *title = self.nameTf.text;
+        [parameter setValue:title forKey:@"title"];
+        NSString *diease = self.dieaseMenu.mainBtn.titleLabel.text;
+        if ([diease isEqualToString:@"适应病症"]) {
+            diease = @"";
+        }
+        [parameter setValue:diease forKey:@"diease"];
         NSInteger riskLevel = 0;
         NSString *riskLevelStr = self.riskLevelMenu.mainBtn.titleLabel.text;
+        if (![riskLevelStr isEqualToString:@"风险等级"]) {
+            if ([riskLevelStr isEqualToString:@"高"]) {
+                riskLevel = 3;
+            } else if ([riskLevelStr isEqualToString:@"中"]) {
+                riskLevel = 2;
+            } else if ([riskLevelStr isEqualToString:@"低"]) {
+                riskLevel = 1;
+            }
+        }
+        [parameter setValue:@(riskLevel) forKey:@"risk"];
+        [parameter setValue:@(self.type) forKey:@"type"];
+        [parameter setValue:@"" forKey:@"difficulty"];
+        [parameter setValue:@(self.templateType) forKey:@"templateType"];
+        [parameter setValue:@"-create_time" forKey:@"sort"];
+        [self searchTemplates:parameter];
+        return;
         if (self.type == 1) {
             self.searchResults = [self.systemTemplateArr mutableCopy];
             if (self.nameTf.text.length > 0) {
@@ -1156,7 +1394,12 @@ CGSize systemListviewSize;
     if (self.deviceTypeArr.count > 0) {
         for (NSDictionary *dict in self.deviceTypeArr) {
             NSString *name = [dict valueForKey:@"name"];
-            if ([name isEqualToString:@"有氧设备"]) {
+            if (self.sourceType == 1) {
+                if ([name isEqualToString:@"II类医疗康复器械"]) {
+                    template.deviceTypeArr = [dict valueForKey:@"children"];
+                    NSLog(@"康复设备名称 %@",template.deviceTypeArr);
+                }
+            } else if ([name isEqualToString:@"有氧设备"]) {
                 template.deviceTypeArr = [dict valueForKey:@"children"];
             }
         }
@@ -1175,7 +1418,12 @@ CGSize systemListviewSize;
     if (self.deviceTypeArr.count > 0) {
         for (NSDictionary *dict in self.deviceTypeArr) {
             NSString *name = [dict valueForKey:@"name"];
-            if ([name isEqualToString:@"有氧设备"]) {
+            if (self.sourceType == 1) {
+                if ([name isEqualToString:@"II类医疗康复器械"]) {
+                    template.deviceTypeArr = [dict valueForKey:@"children"];
+                    NSLog(@"康复设备名称 %@",template.deviceTypeArr);
+                }
+            } else if ([name isEqualToString:@"有氧设备"]) {
                 template.deviceTypeArr = [dict valueForKey:@"children"];
             }
         }

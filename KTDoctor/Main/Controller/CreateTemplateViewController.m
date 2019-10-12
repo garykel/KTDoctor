@@ -753,7 +753,7 @@
             self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均难度：%d",sumDifficulty / self.groups.count];
         } else {
             NSInteger avgPower = sumDifficulty / self.groups.count;
-            self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均功率：%dw",sumDifficulty / self.groups.count];
+            self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均功率：%dw",avgPower];
 //            if (avgPower > 0) {
 //                self.avgDifficultyLbl.text = [NSString stringWithFormat:@"平均功率：%dw",sumDifficulty / self.groups.count];
 //            } else {

@@ -64,7 +64,7 @@
 @property (nonatomic,strong)UITextField *prescriptionTF;
 @property (nonatomic,strong)UIButton *startTimeTF;
 @property (nonatomic,strong)NSString *startTimeStr;
-@property (nonatomic,strong)CustomTextField *deviceTF;
+@property (nonatomic,strong)KTDropDownMenus *deviceTF;
 @property (nonatomic,strong)KTDropDownMenus *trainingPositionMenu;
 @property (nonatomic,strong)KTDropDownMenus *trainingEquipmentMenu;
 @property (nonatomic,copy)NSString *trainingEquipmentStr;
@@ -143,7 +143,7 @@
     self.titleLbl.font = [UIFont systemFontOfSize:kTitle_FontSize];
     self.titleLbl.textColor = [UIColor whiteColor];
     self.titleLbl.textAlignment = NSTextAlignmentCenter;
-    self.titleLbl.text = @"有氧历史处方及报告";
+    self.titleLbl.text = @"查看历史处方及报告";
     [self.navView addSubview:self.titleLbl];
 }
 
@@ -183,25 +183,25 @@
     [self.startTimeTF addTarget:self action:@selector(chooseStartTime:) forControlEvents:UIControlEventTouchUpInside];
     [self.searchBgView addSubview:self.startTimeTF];
     
-    self.deviceTF = [[CustomTextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.startTimeTF.frame) + KSearchContent_Space * kXScal, self.prescriptionTF.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
-    self.deviceTF.placeholderLbl.text = @"有氧设备";
-    self.deviceTF.enabled = NO;
-    self.deviceTF.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
+    self.deviceTF = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.startTimeTF.frame) + KSearchContent_Space * kXScal, self.prescriptionTF.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
+    [self.deviceTF setDropdownHeight:kDropdownHeight * kYScal];
+    self.deviceTF.defualtStr = @"有氧设备";
+    self.deviceTF.delegate = self;
     self.deviceTF.backgroundColor = [UIColor whiteColor];
-    self.deviceTF.placeholderLbl.font = [UIFont systemFontOfSize:kSearch_TF_Font * kYScal];
+    NSMutableArray *devices = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            [devices addObject:[dict valueForKey:@"name"]];
+        }
+    }
+    self.deviceTF.titles = [devices copy];
+    self.deviceTF.tag = 100;
     [self.searchBgView addSubview:self.deviceTF];
     
     self.trainingPositionMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.deviceTF.frame) + KSearchContent_Space * kXScal + kView_LeftMargin  * kXScal, self.prescriptionTF.frame.origin.y  + self.searchBgView.frame.origin.y, tfWidth, kSearch_TF_Height * kYScal)];
     [self.trainingPositionMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.trainingPositionMenu.defualtStr = @"训练部位";
     self.trainingPositionMenu.delegate = self;
-    NSMutableArray *positionArr = [NSMutableArray array];
-    if (self.deviceTypeArr.count > 0) {
-        for (NSDictionary *dict in self.deviceTypeArr) {
-            [positionArr addObject:[dict valueForKey:@"name"]];
-        }
-    }
-    self.trainingPositionMenu.titles = [positionArr copy];
     self.trainingPositionMenu.tag = 10;
     [self.view addSubview:self.trainingPositionMenu];
     
@@ -815,10 +815,57 @@
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    
-    if (menu == self.trainingPositionMenu) { //训练部位
+    if (menu == self.deviceTF) {
+        [self.trainingPositionMenu.mainBtn setTitle:@"训练部位" forState:UIControlStateNormal];
+        [self.trainingEquipmentMenu.mainBtn setTitle:@"训练设备" forState:UIControlStateNormal];
+        if (self.deviceTypeArr.count > 0) {
+            NSString *deviceStr = self.deviceTF.mainBtn.titleLabel.text;
+            for (NSDictionary *dict in self.deviceTypeArr) {
+                NSString *deviceTypeStr = [dict valueForKey:@"name"];
+                if ([deviceStr isEqualToString:deviceTypeStr]) {
+                    NSMutableArray *positionsArr = [NSMutableArray array];
+                    NSArray *positionChildren = [dict valueForKey:@"children"];
+                    if (positionChildren.count > 0) {
+                        for (NSDictionary *positionDict in positionChildren) {
+                            NSString *position = [positionDict valueForKey:@"name"];
+                            [positionsArr addObject:position];
+                        }
+                    }
+                    self.trainingPositionMenu.titles = [positionsArr copy];
+                    [self.trainingPositionMenu.mTableView reloadData];
+                }
+            }
+        }
+    } else if (menu == self.trainingPositionMenu) { //训练部位
         if (![self isBlankString:string]) {
-
+            NSMutableArray *equipmentsArr = [NSMutableArray array];
+            if (self.deviceTypeArr.count > 0) {
+                for (NSDictionary *dict in self.deviceTypeArr) {
+                    NSString *name = [dict valueForKey:@"name"];
+                    NSString *deviceTypeName = self.deviceTF.mainBtn.titleLabel.text;
+                    if ([name isEqualToString:deviceTypeName]) {
+                        NSArray *children = [dict valueForKey:@"children"];
+                        if (children.count > 0) {
+                            for (NSDictionary *positionDict in children) {
+                                NSString *positionName = [positionDict valueForKey:@"name"];
+                                NSInteger id = [[positionDict valueForKey:@"id"] integerValue];
+                                if ([positionName isEqualToString:string]) {
+                                    NSArray *positionChildren = [positionDict valueForKey:@"children"];
+                                    if (positionChildren.count > 0) {
+                                        for (NSDictionary *equipDict in positionChildren) {
+                                            NSString *equipmentName = [equipDict valueForKey:@"name"];
+                                            [equipmentsArr addObject:equipmentName];
+                                        }
+                                    }
+                                }
+                            }
+                            self.trainingEquipmentMenu.titles = [equipmentsArr mutableCopy];
+                            [self.trainingEquipmentMenu.mTableView reloadData];
+                        }
+                        break;
+                    }
+                }
+            }
         }
         
     }else if (menu == self.trainingEquipmentMenu){ //训练设备

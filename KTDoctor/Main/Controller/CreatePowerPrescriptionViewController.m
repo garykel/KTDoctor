@@ -236,6 +236,7 @@
     
     self.dieaseTF = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, kDieaseTF_Width * kXScal, kDieaseTF_Height * kYScal)];
     self.dieaseTF.text = [self.prescriptionDict valueForKey:@"disease"];
+    self.dieaseTF.text = @"II型糖尿病";
     self.dieaseTF.backgroundColor = [UIColor whiteColor];
     self.dieaseTF.textColor = [UIColor colorWithHexString:@"#333333"];
     self.dieaseTF.font = [UIFont systemFontOfSize:kDieaseLbl_FontSieze];

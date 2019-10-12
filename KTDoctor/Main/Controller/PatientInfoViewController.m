@@ -413,7 +413,7 @@ CGSize testResultsListViewSize;
 @property (nonatomic,strong)UILabel *olderRPERangeLbll;
 
 //底部功能按钮
-@property (nonatomic,strong)UIButton *aerobicReportBtn;//查看有氧历史处方及报告
+@property (nonatomic,strong)UIButton *aerobicReportBtn;//查看历史处方及报告
 @property (nonatomic,strong)UIButton *powerReportBtn;//查看力量历史处方及报告
 @property (nonatomic,strong)UIButton *createRecoveryPrescriptionBtn;//开具康复处方
 @property (nonatomic,strong)UIButton *createAerobicPrescriptionBtn;//开具有氧处方
@@ -647,7 +647,7 @@ CGSize testResultsListViewSize;
     self.aerobicReportBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.aerobicReportBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
     self.aerobicReportBtn.frame = CGRectMake(kBottomLongButton_LeftMargin * kXScal, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomLongButton_Width * kXScal, kBottomButton_Height * kYScal);
-    [self.aerobicReportBtn setTitle:@"查看有氧历史处方及报告" forState:UIControlStateNormal];
+    [self.aerobicReportBtn setTitle:@"查看历史处方及报告" forState:UIControlStateNormal];
     self.aerobicReportBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.aerobicReportBtn.layer.masksToBounds = YES;
     [self.aerobicReportBtn addTarget:self action:@selector(checkAerobicReport:) forControlEvents:UIControlEventTouchUpInside];
@@ -690,7 +690,7 @@ CGSize testResultsListViewSize;
     self.createRecoveryPrescriptionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.createRecoveryPrescriptionBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
     self.createRecoveryPrescriptionBtn.frame = CGRectMake(CGRectGetMaxX(self.createPowerPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
-    [self.createRecoveryPrescriptionBtn setTitle:@"开具力量处方" forState:UIControlStateNormal];
+    [self.createRecoveryPrescriptionBtn setTitle:@"开具康复处方" forState:UIControlStateNormal];
     self.createRecoveryPrescriptionBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.createRecoveryPrescriptionBtn.layer.masksToBounds = YES;
     [self.createRecoveryPrescriptionBtn addTarget:self action:@selector(createRecoveryPrescription:) forControlEvents:UIControlEventTouchUpInside];
@@ -2902,6 +2902,7 @@ CGSize testResultsListViewSize;
 - (void)createAerobicPrescription:(UIButton*)sender {
     CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
     create.prescriptionDict = self.latestInfoDict;
+    create.deviceTypeStr = @"有氧设备";
     if (self.deviceTypeArr.count > 0) {
         for (NSDictionary *dict in self.deviceTypeArr) {
             NSString *name = [dict valueForKey:@"name"];
@@ -2935,10 +2936,11 @@ CGSize testResultsListViewSize;
 - (void)createRecoveryPrescription:(UIButton*)sender {
     CreateAerobicPrescriptionViewController *create = [[CreateAerobicPrescriptionViewController alloc] init];
     create.prescriptionDict = self.latestInfoDict;
+    create.deviceTypeStr = @"II类医疗康复器械";
     if (self.deviceTypeArr.count > 0) {
         for (NSDictionary *dict in self.deviceTypeArr) {
             NSString *name = [dict valueForKey:@"name"];
-            if ([name isEqualToString:@"康复1设备"]) {
+            if ([name isEqualToString:@"II类医疗康复器械"]) {
                 create.deviceTypeArr = [dict valueForKey:@"children"];
             }
         }
@@ -3117,14 +3119,15 @@ CGSize testResultsListViewSize;
             }
             report.precriptionsArr = [results mutableCopy];
             report.patientInfo = self.latestInfoDict;
-            if (self.deviceTypeArr.count > 0) {
-                for (NSDictionary *dict in self.deviceTypeArr) {
-                    NSString *name = [dict valueForKey:@"name"];
-                    if ([name isEqualToString:@"有氧设备"]) {
-                        report.deviceTypeArr = [dict valueForKey:@"children"];
-                    }
-                }
-            }
+            report.deviceTypeArr = [self.deviceTypeArr mutableCopy];
+//            if (self.deviceTypeArr.count > 0) {
+//                for (NSDictionary *dict in self.deviceTypeArr) {
+//                    NSString *name = [dict valueForKey:@"name"];
+//                    if ([name isEqualToString:@"有氧设备"]) {
+//                        report.deviceTypeArr = [self.deviceTypeArr mutableCopy];
+//                    }
+//                }
+//            }
             [weakSelf.navigationController pushViewController:report animated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
