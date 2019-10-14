@@ -81,6 +81,7 @@
 @property (nonatomic,strong)PGDatePickManager *datePickManager;
 @property (nonatomic,strong)NSMutableArray *searchResults;
 @property (nonatomic,assign)BOOL isFooterClick;
+@property (nonatomic,assign)NSInteger type;
 @end
 
 @implementation AerobicPrescriptionAndReportViewController
@@ -88,6 +89,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBar.hidden = YES;
+    self.type = 1;
     self.isSearch = NO;
     self.isFooterClick = NO;
     self.searchResults = [NSMutableArray array];
@@ -179,7 +181,7 @@
     [self.startTimeTF.titleLabel setFont:[UIFont systemFontOfSize:kSearch_TF_Font * kYScal]];
     [self.startTimeTF setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
     [self.startTimeTF setImageEdgeInsets:UIEdgeInsetsMake(0, self.startTimeTF.frame.size.width - 20, 0, 0)];
-    [self.startTimeTF setTitleEdgeInsets:UIEdgeInsetsMake(0, -tfWidth * kXScal/2.0 - 20, 0, 0)];
+    [self.startTimeTF setTitleEdgeInsets:UIEdgeInsetsMake(0, -tfWidth * kXScal/2.0 + 10, 0, 0)];
     [self.startTimeTF addTarget:self action:@selector(chooseStartTime:) forControlEvents:UIControlEventTouchUpInside];
     [self.searchBgView addSubview:self.startTimeTF];
     
@@ -618,112 +620,26 @@
 }
 
 - (void)search:(UIButton*)sender {
-    NSString *prescriptionName = self.prescriptionTF.text;
-    NSString *trainingPositionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
-    NSString *trainingDeviceStr = self.trainingEquipmentMenu.mainBtn.titleLabel.text;
-    if (prescriptionName.length == 0 && self.startTimeStr.length == 0 && [trainingPositionStr isEqualToString:@"训练部位"] && [trainingDeviceStr isEqualToString:@"训练设备"]) {
-        self.isSearch = NO;
-        self.noDataLbl.hidden = YES;
-        [self.listView reloadData];
-        NSDictionary *summarydict = [self getReportSummary];
-        self.summaryLbl.text = [NSString stringWithFormat:@"累积处方数：%d  累积运动天数：%d  累积报告数：%d",[[summarydict valueForKey:@"sumPrescriptionCount"] integerValue],[[summarydict valueForKey:@"sumSportDays"] integerValue],[[summarydict valueForKey:@"sumReportCount"] integerValue]];
-    } else {
-        self.isSearch = YES;
-        if (self.searchResults.count > 0) {
-            [self.searchResults removeAllObjects];
-        }
-        if (self.searchCloseArr.count > 0) {
-            [self.searchCloseArr removeAllObjects];
-        }
-        NSMutableArray *results = [NSMutableArray array];
-        NSMutableArray *prescriptions = [NSMutableArray array];
-        if (self.precriptionsArr.count > 0) {
-            for (NSDictionary *dictonary in self.precriptionsArr) {
-                NSDictionary *prescription = [dictonary valueForKey:@"prescription"];
-                [prescriptions addObject:prescription];
-            }
-        }
-        //处方名称
-        if (prescriptionName.length > 0) {
-            NSMutableArray *tempArr = [NSMutableArray array];
-            if (prescriptions.count > 0) {
-                for (NSDictionary *dictonary in prescriptions) {
-                    NSString *name = [dictonary valueForKey:@"title"];
-                    if ([[name lowercaseString] containsString:[prescriptionName lowercaseString]]) {
-                        [tempArr addObject:dictonary];
-                    }
-                }
-            }
-            prescriptions = [tempArr mutableCopy];
-        }
-        //开始时间
-        if (self.startTimeStr.length > 0) {
-            NSMutableArray *tempArr = [NSMutableArray array];
-            if (prescriptions.count > 0) {
-                for (NSDictionary *dictonary in prescriptions) {
-                    NSString *startTime = [dictonary valueForKey:@"startTime"];
-                    if ([startTime containsString:self.startTimeStr]) {
-                        [tempArr addObject:dictonary];
-                    }
-                }
-            }
-            prescriptions = [tempArr mutableCopy];
-        }
-        //训练部位
-        if (![trainingPositionStr isEqualToString:@"训练部位"]) {
-            NSMutableArray *tempArr = [NSMutableArray array];
-            if (prescriptions.count > 0) {
-                for (NSDictionary *dictonary in prescriptions) {
-                    NSArray *typeList = [dictonary valueForKey:@"typeList"];
-                    if (typeList.count > 2) {
-                        NSDictionary *typeDict = typeList[1];
-                        NSString *position = [typeDict valueForKey:@"name"];
-                        if ([trainingPositionStr isEqualToString:position]) {
-                            [tempArr addObject:dictonary];
-                        }
-                    }
-                }
-            }
-            prescriptions = [tempArr mutableCopy];
-        }
-        //训练设备
-        if (![trainingDeviceStr isEqualToString:@"训练设备"]) {
-            NSMutableArray *tempArr = [NSMutableArray array];
-            if (prescriptions.count > 0) {
-                for (NSDictionary *dictonary in prescriptions) {
-                    NSArray *typeList = [dictonary valueForKey:@"typeList"];
-                    if (typeList.count > 2) {
-                        NSDictionary *typeDict = typeList[2];
-                        NSString *device = [typeDict valueForKey:@"name"];
-                        if ([trainingDeviceStr isEqualToString:device]) {
-                            [tempArr addObject:dictonary];
-                        }
-                    }
-                }
-            }
-            prescriptions = [tempArr mutableCopy];
-        }
-        if (prescriptions.count > 0) {
-            for (NSDictionary *prescription in prescriptions) {
-                NSMutableDictionary *prescriptionDict = [NSMutableDictionary dictionary];
-                [prescriptionDict setValue:prescription forKey:@"prescription"];
-                [prescriptionDict setValue:@[] forKey:@"reports"];
-                [results addObject:prescriptionDict];
-            }
-        }
-        self.searchResults = [results mutableCopy];
-        for (NSInteger i = 0; i < self.searchResults.count; i++) {
-            [self.searchCloseArr addObject:[NSNumber numberWithBool:YES]];
-        }
-        [self.listView reloadData];
-        if (self.searchResults.count > 0) {
-            self.noDataLbl.hidden = YES;
-        } else {
-            self.noDataLbl.hidden = NO;
-        }
-        NSDictionary *summarydict = [self getReportSummary];
-        self.summaryLbl.text = [NSString stringWithFormat:@"累积处方数：%d  累积运动天数：%d  累积报告数：%d",[[summarydict valueForKey:@"sumPrescriptionCount"] integerValue],[[summarydict valueForKey:@"sumSportDays"] integerValue],[[summarydict valueForKey:@"sumReportCount"] integerValue]];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    NSString *title = self.prescriptionTF.text;
+    if (title.length > 0) {
+        [parameter setValue:title forKey:@"title"];
     }
+    NSString *startTime = self.startTimeTF.titleLabel.text;
+    if (![startTime isEqualToString:@"开始时间"]) {
+        [parameter setValue:startTime forKey:@"createTime"];
+    }
+    [parameter setValue:@(self.type) forKey:@"type"];
+    NSInteger userId = [[self.patientInfo valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:@"-create_time" forKey:@"sort"];
+    [self searchPrescriptions:parameter];    
 }
 
 - (void)chooseStartTime:(UIButton *)sender {
@@ -815,7 +731,7 @@
 
 - (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
 {
-    if (menu == self.deviceTF) {
+    if (menu == self.deviceTF) {//设备类型
         [self.trainingPositionMenu.mainBtn setTitle:@"训练部位" forState:UIControlStateNormal];
         [self.trainingEquipmentMenu.mainBtn setTitle:@"训练设备" forState:UIControlStateNormal];
         if (self.deviceTypeArr.count > 0) {
@@ -823,6 +739,8 @@
             for (NSDictionary *dict in self.deviceTypeArr) {
                 NSString *deviceTypeStr = [dict valueForKey:@"name"];
                 if ([deviceStr isEqualToString:deviceTypeStr]) {
+                    NSInteger id = [[dict valueForKey:@"id"] integerValue];
+                    self.type = id;
                     NSMutableArray *positionsArr = [NSMutableArray array];
                     NSArray *positionChildren = [dict valueForKey:@"children"];
                     if (positionChildren.count > 0) {
@@ -833,6 +751,7 @@
                     }
                     self.trainingPositionMenu.titles = [positionsArr copy];
                     [self.trainingPositionMenu.mTableView reloadData];
+                    break;
                 }
             }
         }
@@ -849,6 +768,7 @@
                             for (NSDictionary *positionDict in children) {
                                 NSString *positionName = [positionDict valueForKey:@"name"];
                                 NSInteger id = [[positionDict valueForKey:@"id"] integerValue];
+                                self.type = id;
                                 if ([positionName isEqualToString:string]) {
                                     NSArray *positionChildren = [positionDict valueForKey:@"children"];
                                     if (positionChildren.count > 0) {
@@ -857,6 +777,7 @@
                                             [equipmentsArr addObject:equipmentName];
                                         }
                                     }
+                                    break;
                                 }
                             }
                             self.trainingEquipmentMenu.titles = [equipmentsArr mutableCopy];
@@ -870,6 +791,36 @@
         
     }else if (menu == self.trainingEquipmentMenu){ //训练设备
         self.trainingEquipmentStr = string;
+        if (self.deviceTypeArr.count > 0) {
+            for (NSDictionary *dict in self.deviceTypeArr) {
+                NSString *name = [dict valueForKey:@"name"];
+                NSString *deviceTypeName = self.deviceTF.mainBtn.titleLabel.text;
+                if ([name isEqualToString:deviceTypeName]) {
+                    NSArray *children = [dict valueForKey:@"children"];
+                    if (children.count > 0) {
+                        for (NSDictionary *positionDict in children) {
+                            NSString *positionName = [positionDict valueForKey:@"name"];
+                            NSString *position = self.trainingPositionMenu.mainBtn.titleLabel.text;
+                            if ([positionName isEqualToString:position]) {
+                                NSArray *positionChildren = [positionDict valueForKey:@"children"];
+                                if (positionChildren.count > 0) {
+                                    for (NSDictionary *equipDict in positionChildren) {
+                                        NSString *equipmentName = [equipDict valueForKey:@"name"];
+                                        if ([string isEqualToString:equipmentName]) {
+                                            NSInteger id = [[equipDict valueForKey:@"id"] integerValue];
+                                            self.type = id;
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
     }
 }
 
@@ -1004,6 +955,53 @@
     }];
 }
 
+//搜索处方结果
+- (void)searchPrescriptions:(NSMutableDictionary*)parameter {
+    __weak typeof (self)weakSelf = self;
+       [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRESCRIPTION_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
+           NSInteger code = [[responseObject valueForKey:@"code"] longValue];
+           NSString *msg = [responseObject valueForKey:@"msg"];
+           NSLog(@"******搜索用户处方结果列表********%@**************",responseObject);
+           if (code == 0) {
+               NSArray *rows = [responseObject valueForKey:@"rows"];
+               NSMutableArray *tempArr = [NSMutableArray array];
+               NSMutableArray *results = [NSMutableArray array];
+               if (rows.count > 0) {
+                   for (NSDictionary *dictonary in rows) {
+                       [tempArr addObject:dictonary];
+                   }
+               }
+               if (tempArr.count > 0) {
+                   for (NSDictionary *dict in tempArr) {
+                       NSMutableDictionary *prescriptionDict = [NSMutableDictionary dictionary];
+                       [prescriptionDict setValue:dict forKey:@"prescription"];
+                       [prescriptionDict setValue:@[] forKey:@"reports"];
+                       [results addObject:prescriptionDict];
+                   }
+               }
+               weakSelf.precriptionsArr = [results mutableCopy];
+               if (weakSelf.closeArr.count > 0) {
+                   [weakSelf.closeArr removeAllObjects];
+               }
+               for (NSInteger i = 0; i < weakSelf.precriptionsArr.count; i++) {
+                   [weakSelf.closeArr addObject:[NSNumber numberWithBool:YES]];
+               }
+               [weakSelf.listView reloadData];
+               NSDictionary *summarydict = [self getReportSummary];
+               weakSelf.summaryLbl.text = [NSString stringWithFormat:@"累积处方数：%d  累积运动天数：%d  累积报告数：%d",[[summarydict valueForKey:@"sumPrescriptionCount"] integerValue],[[summarydict valueForKey:@"sumSportDays"] integerValue],[[summarydict valueForKey:@"sumReportCount"] integerValue]];
+           } else if (code == 10011) {
+               [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
+               [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];
+               [self.navigationController popToRootViewControllerAnimated:NO];
+           } else {
+               [STTextHudTool showText:msg];
+           }
+       } andFaild:^(NSError *error) {
+           NSLog(@"error :%@",error);
+       }];
+}
+
+//获取用户处方列表
 - (void)getUserPrescriptionList:(NSMutableDictionary*)parameter {
     __weak typeof (self)weakSelf = self;
     [[NetworkService sharedInstance] requestWithUrl:[NSString stringWithFormat:@"%@%@",kSERVER_URL,kDOCTOR_USER_PRESCRIPTION_LIST_URL] andParams:parameter andSucceed:^(NSDictionary *responseObject) {
