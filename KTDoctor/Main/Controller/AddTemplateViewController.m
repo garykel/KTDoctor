@@ -211,7 +211,13 @@ CGSize systemListviewSize;
     self.deviceMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.riskLevelMenu.frame) + kNameTF_RightMargin * kXScal, self.nameTf.frame.origin.y, kDeviceMenu_Width * kXScal, kNameTF_Heihgt * kYScal)];
     [self.deviceMenu setDropdownHeight:kDropdownHeight * kYScal];
     self.deviceMenu.defualtStr = @"有氧设备";
-    self.deviceMenu.titles = @[@"有氧设备",@"力量设备",@"康复设备"];
+    NSMutableArray *devices = [NSMutableArray array];
+    if (self.deviceTypeArr.count > 0) {
+        for (NSDictionary *dict in self.deviceTypeArr) {
+            [devices addObject:[dict valueForKey:@"name"]];
+        }
+    }
+    self.deviceMenu.titles = [devices copy];
     self.deviceMenu.delegate = self;
     self.deviceMenu.tag = 30;
     [self.searchBgView addSubview:self.deviceMenu];
@@ -896,49 +902,25 @@ CGSize systemListviewSize;
             for (NSDictionary *dict in self.deviceTypeArr) {
                 NSString *name = [dict valueForKey:@"name"];
                 NSString *deviceTypeName = self.deviceMenu.mainBtn.titleLabel.text;
-                if ([deviceTypeName isEqualToString:@"康复设备"]) {
-                    deviceTypeName = @"II类医疗康复器械";
-                    if ([name isEqualToString:deviceTypeName]) {
-                        NSArray *children = [dict valueForKey:@"children"];
-                        if (children.count > 0) {
-                            for (NSDictionary *positionDict in children) {
-                                NSString *positionName = [positionDict valueForKey:@"name"];
+                if ([name isEqualToString:deviceTypeName]) {
+                    NSArray *children = [dict valueForKey:@"children"];
+                    if (children.count > 0) {
+                        for (NSDictionary *positionDict in children) {
+                            NSString *positionName = [positionDict valueForKey:@"name"];
+                            if ([positionName isEqualToString:string]) {
                                 NSInteger id = [[positionDict valueForKey:@"id"] integerValue];
                                 self.templateType = id;
-                                if ([positionName isEqualToString:string]) {
-                                    NSArray *positionChildren = [positionDict valueForKey:@"children"];
-                                    if (positionChildren.count > 0) {
-                                        for (NSDictionary *equipDict in positionChildren) {
-                                            NSString *equipmentName = [equipDict valueForKey:@"name"];
-                                            [equipmentsArr addObject:equipmentName];
-                                        }
+                                NSArray *positionChildren = [positionDict valueForKey:@"children"];
+                                if (positionChildren.count > 0) {
+                                    for (NSDictionary *equipDict in positionChildren) {
+                                        NSString *equipmentName = [equipDict valueForKey:@"name"];
+                                        [equipmentsArr addObject:equipmentName];
                                     }
                                 }
                             }
                         }
-                        break;
                     }
-                } else {
-                    if ([name isEqualToString:deviceTypeName]) {
-                        NSArray *children = [dict valueForKey:@"children"];
-                        if (children.count > 0) {
-                            for (NSDictionary *positionDict in children) {
-                                NSString *positionName = [positionDict valueForKey:@"name"];
-                                NSInteger id = [[positionDict valueForKey:@"id"] integerValue];
-                                self.templateType = id;
-                                if ([positionName isEqualToString:string]) {
-                                    NSArray *positionChildren = [positionDict valueForKey:@"children"];
-                                    if (positionChildren.count > 0) {
-                                        for (NSDictionary *equipDict in positionChildren) {
-                                            NSString *equipmentName = [equipDict valueForKey:@"name"];
-                                            [equipmentsArr addObject:equipmentName];
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
+                    break;
                 }
             }
         }
@@ -949,59 +931,32 @@ CGSize systemListviewSize;
     } else if (menu == self.trainingDeviceMenu) {//训练设备
         if (self.deviceTypeArr.count > 0) {
             for (NSDictionary *dict in self.deviceTypeArr) {
-                NSString *name = [dict valueForKey:@"name"];
+                NSString *dname = [dict valueForKey:@"name"];
                 NSString *deviceTypeName = self.deviceMenu.mainBtn.titleLabel.text;
-                if ([deviceTypeName isEqualToString:@"康复设备"]) {
-                    deviceTypeName = @"II类医疗康复器械";
-                    if ([name isEqualToString:deviceTypeName]) {
-                        NSArray *children = [dict valueForKey:@"children"];
-                        if (children.count > 0) {
-                            NSMutableArray *equips = [NSMutableArray array];
-                            for (NSDictionary *positionDict in children) {
-                                NSString *positionName = self.trainingPositionMenu.mainBtn.titleLabel.text;
-                                NSString *name = [positionDict valueForKey:@"name"];
-                                if ([name isEqualToString:positionName]) {
-                                    equips = [[positionDict valueForKey:@"children"] mutableCopy];
+                if ([dname isEqualToString:deviceTypeName]) {
+                    NSArray *children = [dict valueForKey:@"children"];
+                    if (children.count > 0) {
+                        NSMutableArray *equips = [NSMutableArray array];
+                        for (NSDictionary *positionDict in children) {
+                            NSString *positionName = self.trainingPositionMenu.mainBtn.titleLabel.text;
+                            NSString *pname = [positionDict valueForKey:@"name"];
+                            if ([pname isEqualToString:positionName]) {
+                                equips = [[positionDict valueForKey:@"children"] mutableCopy];
+                                break;
+                            }
+                        }
+                        if (equips.count > 0) {
+                            for (NSDictionary *equip in equips) {
+                                NSString *ename = [equip valueForKey:@"name"];
+                                if ([ename isEqualToString:string]) {
+                                    NSInteger id = [[equip valueForKey:@"id"] integerValue];
+                                    self.templateType = id;
                                     break;
                                 }
                             }
-                            if (equips.count > 0) {
-                                for (NSDictionary *equip in equips) {
-                                    NSString *name = [equip valueForKey:@"name"];
-                                    NSInteger id = [[equip valueForKey:@"id"] integerValue];
-                                    if ([name isEqualToString:string]) {
-                                        self.templateType = id;
-                                    }
-                                }
-                            }
                         }
-                        break;
                     }
-                } else {
-                    if ([name isEqualToString:deviceTypeName]) {
-                        NSArray *children = [dict valueForKey:@"children"];
-                        if (children.count > 0) {
-                            NSMutableArray *equips = [NSMutableArray array];
-                            for (NSDictionary *positionDict in children) {
-                                NSString *positionName = self.trainingPositionMenu.mainBtn.titleLabel.text;
-                                NSString *name = [positionDict valueForKey:@"name"];
-                                if ([name isEqualToString:positionName]) {
-                                    equips = [[positionDict valueForKey:@"children"] mutableCopy];
-                                    break;
-                                }
-                            }
-                            if (equips.count > 0) {
-                                for (NSDictionary *equip in equips) {
-                                    NSString *name = [equip valueForKey:@"name"];
-                                    NSInteger id = [[equip valueForKey:@"id"] integerValue];
-                                    if ([name isEqualToString:string]) {
-                                        self.templateType = id;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
+                    break;
                 }
             }
         }

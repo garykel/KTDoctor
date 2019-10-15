@@ -110,7 +110,21 @@ CGSize evaluateReportListviewSize;
 //    [self.reports addObject:dict2];
 //    [self.reports addObject:dict3];
 //    [self.reports addObject:dict4];
-    self.user = [[UserModel sharedUserModel] getCurrentUser];;
+    self.user = [[UserModel sharedUserModel] getCurrentUser];
+    NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+    [parameter setValue:@0 forKey:@"offset"];
+    [parameter setValue:@10 forKey:@"rows"];
+    NSInteger userId = [[self.userInfo valueForKey:@"userId"] integerValue];
+    [parameter setValue:@(userId) forKey:@"userId"];
+    NSDictionary *dict = self.user.organ;
+    NSArray *orgCodeArr = [dict valueForKey:@"orgCode"];
+    NSString *orgCode = orgCodeArr[0];
+    [parameter setValue:orgCode forKey:@"orgCode"];
+    [parameter setValue:self.sportTimeStr forKey:@"startTime"];
+    [parameter setValue:@"" forKey:@"endTime"];
+    [parameter setValue:@"" forKey:@"sort"];
+    [self getUserStaminaTestList:parameter];
+        
     self.isFooterClick = NO;
     self.offset = 0;
     [self setNavBar];
@@ -495,9 +509,8 @@ CGSize evaluateReportListviewSize;
                 weakSelf.noDataLbl.hidden = NO;
             } else {
                 weakSelf.noDataLbl.hidden = YES;
-                weakSelf.reports = [rows mutableCopy];
-                [weakSelf.listView reloadData];
             }
+            [weakSelf.listView reloadData];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ClearLonginInfoNotification" object:nil];

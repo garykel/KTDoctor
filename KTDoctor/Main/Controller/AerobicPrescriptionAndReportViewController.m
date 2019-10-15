@@ -639,7 +639,7 @@
     NSString *orgCode = orgCodeArr[0];
     [parameter setValue:orgCode forKey:@"orgCode"];
     [parameter setValue:@"-create_time" forKey:@"sort"];
-    [self searchPrescriptions:parameter];    
+    [self searchPrescriptions:parameter];
 }
 
 - (void)chooseStartTime:(UIButton *)sender {
@@ -767,9 +767,9 @@
                         if (children.count > 0) {
                             for (NSDictionary *positionDict in children) {
                                 NSString *positionName = [positionDict valueForKey:@"name"];
-                                NSInteger id = [[positionDict valueForKey:@"id"] integerValue];
-                                self.type = id;
                                 if ([positionName isEqualToString:string]) {
+                                    NSInteger id = [[positionDict valueForKey:@"id"] integerValue];
+                                    self.type = id;
                                     NSArray *positionChildren = [positionDict valueForKey:@"children"];
                                     if (positionChildren.count > 0) {
                                         for (NSDictionary *equipDict in positionChildren) {

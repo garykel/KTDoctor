@@ -126,10 +126,10 @@
 #define kSummaryView_HRZoneLbl_RightMargin 58
 #define kBottomButton_BottomMargin 15
 #define kBottomButton_TopMargin 20
-#define kBottomLongButton_LeftMargin 52
+#define kBottomLongButton_LeftMargin 32
 #define kBottomButton_Height 28
-#define kBottomLongButton_Width 188
-#define kBottomShortButton_Width 120
+#define kBottomLongButton_Width 158
+#define kBottomShortButton_Width 135
 #define kBottomButton_FontSize 14.0
 
 CGSize testResultsListViewSize;
@@ -655,19 +655,9 @@ CGSize testResultsListViewSize;
     [self.aerobicReportBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.aerobicReportBtn];
     
-    self.powerReportBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.powerReportBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
-    self.powerReportBtn.frame = CGRectMake(CGRectGetMaxX(self.aerobicReportBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomLongButton_Width * kXScal, kBottomButton_Height * kYScal);
-    [self.powerReportBtn setTitle:@"查看力量历史处方及报告" forState:UIControlStateNormal];
-    self.powerReportBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
-    self.powerReportBtn.layer.masksToBounds = YES;
-    [self.powerReportBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
-    [self.powerReportBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.scrollview addSubview:self.powerReportBtn];
-    
     self.createAerobicPrescriptionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.createAerobicPrescriptionBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
-    self.createAerobicPrescriptionBtn.frame = CGRectMake(CGRectGetMaxX(self.powerReportBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
+    self.createAerobicPrescriptionBtn.frame = CGRectMake(CGRectGetMaxX(self.aerobicReportBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
     [self.createAerobicPrescriptionBtn setTitle:@"开具有氧处方" forState:UIControlStateNormal];
     self.createAerobicPrescriptionBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.createAerobicPrescriptionBtn.layer.masksToBounds = YES;
@@ -676,20 +666,9 @@ CGSize testResultsListViewSize;
     [self.createAerobicPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.createAerobicPrescriptionBtn];
     
-    self.createPowerPrescriptionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.createPowerPrescriptionBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
-    self.createPowerPrescriptionBtn.frame = CGRectMake(CGRectGetMaxX(self.createAerobicPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
-    [self.createPowerPrescriptionBtn setTitle:@"开具力量处方" forState:UIControlStateNormal];
-    self.createPowerPrescriptionBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
-    self.createPowerPrescriptionBtn.layer.masksToBounds = YES;
-    [self.createPowerPrescriptionBtn addTarget:self action:@selector(createPowerPrescription:) forControlEvents:UIControlEventTouchUpInside];
-    [self.createPowerPrescriptionBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
-    [self.createPowerPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    [self.scrollview addSubview:self.createPowerPrescriptionBtn];
-    
     self.createRecoveryPrescriptionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.createRecoveryPrescriptionBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
-    self.createRecoveryPrescriptionBtn.frame = CGRectMake(CGRectGetMaxX(self.createPowerPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
+    self.createRecoveryPrescriptionBtn.frame = CGRectMake(CGRectGetMaxX(self.createAerobicPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
     [self.createRecoveryPrescriptionBtn setTitle:@"开具康复处方" forState:UIControlStateNormal];
     self.createRecoveryPrescriptionBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.createRecoveryPrescriptionBtn.layer.masksToBounds = YES;
@@ -697,10 +676,21 @@ CGSize testResultsListViewSize;
     [self.createRecoveryPrescriptionBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
     [self.createRecoveryPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.createRecoveryPrescriptionBtn];
+    
+    self.createPowerPrescriptionBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.createPowerPrescriptionBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
+    self.createPowerPrescriptionBtn.frame = CGRectMake(CGRectGetMaxX(self.createRecoveryPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
+    [self.createPowerPrescriptionBtn setTitle:@"开具力量处方" forState:UIControlStateNormal];
+    self.createPowerPrescriptionBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
+    self.createPowerPrescriptionBtn.layer.masksToBounds = YES;
+    [self.createPowerPrescriptionBtn addTarget:self action:@selector(createPowerPrescription:) forControlEvents:UIControlEventTouchUpInside];
+    [self.createPowerPrescriptionBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
+    [self.createPowerPrescriptionBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.scrollview addSubview:self.createPowerPrescriptionBtn];
         
     self.checkEvaluateBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.checkEvaluateBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
-    self.checkEvaluateBtn.frame = CGRectMake(CGRectGetMaxX(self.createRecoveryPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
+    self.checkEvaluateBtn.frame = CGRectMake(CGRectGetMaxX(self.createPowerPrescriptionBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomShortButton_Width * kXScal, kBottomButton_Height * kYScal);
     [self.checkEvaluateBtn setTitle:@"查看体能评估结果" forState:UIControlStateNormal];
     self.checkEvaluateBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
     self.checkEvaluateBtn.layer.masksToBounds = YES;
@@ -708,6 +698,16 @@ CGSize testResultsListViewSize;
     [self.checkEvaluateBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
     [self.checkEvaluateBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.scrollview addSubview:self.checkEvaluateBtn];
+    
+    self.powerReportBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.powerReportBtn.backgroundColor = [UIColor colorWithHexString:@"#10A9CB"];
+    self.powerReportBtn.frame = CGRectMake(CGRectGetMaxX(self.checkEvaluateBtn.frame) + button_space, CGRectGetMaxY(self.leftView.frame) + kBottomButton_TopMargin * kYScal, kBottomLongButton_Width * kXScal, kBottomButton_Height * kYScal);
+    [self.powerReportBtn setTitle:@"查看自主运动报告" forState:UIControlStateNormal];
+    self.powerReportBtn.layer.cornerRadius = kBottomButton_Height * kYScal / 2.0;
+    self.powerReportBtn.layer.masksToBounds = YES;
+    [self.powerReportBtn.titleLabel setFont:[UIFont systemFontOfSize:kBottomButton_FontSize * kYScal]];
+    [self.powerReportBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [self.scrollview addSubview:self.powerReportBtn];
 }
 
 - (void)configLatestInfoView {
@@ -3120,14 +3120,6 @@ CGSize testResultsListViewSize;
             report.precriptionsArr = [results mutableCopy];
             report.patientInfo = self.latestInfoDict;
             report.deviceTypeArr = [self.deviceTypeArr mutableCopy];
-//            if (self.deviceTypeArr.count > 0) {
-//                for (NSDictionary *dict in self.deviceTypeArr) {
-//                    NSString *name = [dict valueForKey:@"name"];
-//                    if ([name isEqualToString:@"有氧设备"]) {
-//                        report.deviceTypeArr = [self.deviceTypeArr mutableCopy];
-//                    }
-//                }
-//            }
             [weakSelf.navigationController pushViewController:report animated:NO];
         } else if (code == 10011) {
             [STTextHudTool showText:@"该账号已在其他设备登录或已过期"];
