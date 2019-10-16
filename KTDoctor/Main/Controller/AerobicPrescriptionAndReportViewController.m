@@ -167,8 +167,6 @@
     CGFloat tfWidth = (self.searchBgView.frame.size.width - 2 * kNameTF_LeftMargin * kXScal - 5 * KSearchContent_Space * kXScal - kSearch_Button_Width * kXScal)/5;
     CGFloat TF_TopMargin = (self.searchBgView.frame.size.height - kSearch_TF_Height * kYScal)/2;
     self.prescriptionTF = [[UITextField alloc] initWithFrame:CGRectMake(kNameTF_LeftMargin * kXScal, TF_TopMargin, tfWidth, kSearch_TF_Height * kYScal)];
-//    self.prescriptionTF.layer.borderWidth = 1;
-//    self.prescriptionTF.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.prescriptionTF.backgroundColor = [UIColor whiteColor];
     self.prescriptionTF.placeholder = @"处方名称";
     [self.searchBgView addSubview:self.prescriptionTF];

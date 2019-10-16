@@ -10,7 +10,7 @@
 #import <AVFoundation/AVCaptureDevice.h>
 #import <AVFoundation/AVMediaFormat.h>
 #import "LoginViewController.h"
-#import "DropdownMenu.h"
+#import "KTDropDownMenus.h"
 #import "WHC_PhotoListCell.h"
 #import "WHC_PictureListVC.h"
 #import "WHC_CameraVC.h"
@@ -28,7 +28,7 @@
 #define kRegistView_HeadLbl_TopMargin 15
 #define kRegistView_HeadLbl_Width 50
 #define kRegistView_HeadLbl_Height 20
-#define kRegistView_Lbl_FontSize 18.0
+#define kRegistView_Lbl_FontSize 14.0
 #define kRegistView_RedStar_LeftMargin 2
 #define kRegistView_RedStar_Width 10
 #define kRegistView_NameLbl_TopMargin 15
@@ -48,7 +48,7 @@
 #define kRegistView_OKBtn_TopMargin 20
 #define kRegistView_OKBtn_Height 44
 
-@interface DoctorRegistView()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,DropdownMenuDelegate,UITextViewDelegate,WHC_ChoicePictureVCDelegate,WHC_CameraVCDelegate>
+@interface DoctorRegistView()<UIImagePickerControllerDelegate,UINavigationControllerDelegate,XXTGDropdownMenuDelegate,UITextViewDelegate,WHC_ChoicePictureVCDelegate,WHC_CameraVCDelegate>
 @property (nonatomic,assign)CGRect contentFrame;
 @property (nonatomic,strong)UIView *contentView;
 @property (nonatomic,copy)NSString *title;
@@ -61,7 +61,7 @@
 @property (nonatomic,strong)UITextField *usernameTF;
 @property (nonatomic,strong)UILabel *sexLbl;
 @property (nonatomic,strong)UIImageView *sexRedStar;
-@property (nonatomic,strong)DropdownMenu *sexMenu;
+@property (nonatomic,strong)KTDropDownMenus *sexMenu;
 @property (nonatomic,strong)UILabel *birthLbl;
 @property (nonatomic,strong)UIImageView *birthRedStar;
 @property (nonatomic,strong)UIButton *birthTF;
@@ -199,9 +199,15 @@
     [self.contentView addSubview:self.sexRedStar];
 
     self.sexArr = @[@"男",@"女"];
-    self.sexMenu = [[DropdownMenu alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.sexLbl.frame.origin.y, kRegistView_SexSelect_Width * kXScal, kRegistView_TextField_Height * kYScal)];
-    [self.sexMenu setMenuTitlesWithMainTitle:@"请选择" bgColor:[UIColor colorWithHexString:@"#c6eff2"] titleArr:self.sexArr rowHeight:kRegistView_TextField_Height * kYScal];
+    self.sexMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.sexLbl.frame.origin.y, kRegistView_SexSelect_Width * kXScal, kRegistView_TextField_Height * kYScal)];
+    [self.sexMenu setDropdownHeight:kRegistView_TextField_Height * kYScal];
+    self.sexMenu.defualtStr = @"男";
     self.sexMenu.delegate = self;
+    self.sexMenu.dropDownImage.image = [UIImage imageNamed:@"dropdownMenu"];
+    [self.sexMenu.mainBtn.titleLabel setFont:[UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal]];
+//    self.sexMenu.mainBtn.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
+    self.sexMenu.titles = @[@"男",@"女"];
+
     [self.contentView addSubview:self.sexMenu];
     
     self.birthLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.usernameLbl.frame.origin.x, CGRectGetMaxY(self.sexLbl.frame) + kRegistView_Vertical_Space * kYScal, kRegistView_NameLbl_Width * kXScal, kRegistView_TextField_Height * kYScal)];
@@ -221,9 +227,10 @@
     self.birthTF.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
     [self.birthTF setImage:[UIImage imageNamed:@"dropdownMenu"] forState:UIControlStateNormal];
     [self.birthTF setTitle:@"请选择出生日期" forState:UIControlStateNormal];
+    self.birthTF.titleLabel.textAlignment = NSTextAlignmentLeft;
     [self.birthTF setTitleColor:[UIColor colorWithHexString:@"#9fb5bd"] forState:UIControlStateNormal];
     [self.birthTF setImageEdgeInsets:UIEdgeInsetsMake(0, self.birthTF.frame.size.width - 20, 0, 0)];
-    [self.birthTF setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 35)];
+    [self.birthTF setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.birthTF.frame.size.width/2, 0, 0)];
     [self.birthTF addTarget:self action:@selector(chooseBirthDay:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.birthTF];
     
@@ -264,8 +271,8 @@
     self.skillsView.font = [UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal];
     self.skillsView.delegate = self;
     [self.contentView addSubview:self.skillsView];
-    self.placeholderLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.skillsView.frame.size.width, kRegistView_TextField_Height * kYScal)];
-    self.placeholderLbl.textColor = [UIColor colorWithHexString:@"#b6d6dc"];
+    self.placeholderLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, -5, self.skillsView.frame.size.width, kRegistView_TextField_Height * kYScal)];
+    self.placeholderLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.placeholderLbl.textColor = [UIColor lightGrayColor];
     self.placeholderLbl.text = @"限制400字";
     self.placeholderLbl.font = [UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal];
@@ -455,7 +462,7 @@
 
 #pragma mark - UITextViewDelegate
 
-- (void)textViewDidBeginEditing:(UITextView *)textView {
+- (void)textViewDidChange:(UITextView *)textView {
     if (textView.text.length > 0) {
         self.placeholderLbl.hidden = YES;
     } else {
@@ -463,24 +470,21 @@
     }
 }
 
-- (void)textViewDidEndEditing:(UITextView *)textView {
-    if (textView.text.length > 0) {
-        self.placeholderLbl.hidden = YES;
-    } else {
-        self.placeholderLbl.hidden = NO;
+#pragma mark - XXTGDropdownMenuDelegate
+
+- (void)dropdownMenu:(KTDropDownMenus *)menu selectedCellStr:(NSString *)string
+{
+    if (menu == self.sexMenu) {
+        if ([string isEqualToString:@"男"]) {
+            self.sex = @"1";
+        } else {
+            self.sex = @"2";
+        }
     }
 }
 
-#pragma mark - DropdownMenuDelegate Delegate
-
-- (void)dropdownMenu:(DropdownMenu *)menu selectedCellNumber:(NSInteger)number{
-    NSLog(@"你选择了：%@",self.sexArr[number]);
-    NSString *selectedStr = self.sexArr[number];
-    if ([selectedStr isEqualToString:@"男"]) {
-        self.sex = @"1";
-    } else {
-        self.sex = @"2";
-    }
+- (void)dropdownMenu:(KTDropDownMenus *)menu mainBtnClick:(UIButton *)sender {
+    
 }
 
 #pragma mark - WHC_ChoicePictureVCDelegate
