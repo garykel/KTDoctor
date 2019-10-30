@@ -53,6 +53,7 @@
 #define kReportList_CellHeight 195
 #define kInfoView_Height 67
 #define kReportCell_Height 200
+#define kAccomplishLbl_FontSize 10.0
 
 @interface AerobicPrescriptionAndReportViewController ()<UITableViewDelegate,UITableViewDataSource,XXTGDropdownMenuDelegate,CustomTextFieldDelegate,PGDatePickerDelegate,PGDatePickManagerDelegate>
 @property (nonatomic,strong)UIView *navView;
@@ -497,7 +498,7 @@
         NSDictionary *reportDict = [reports objectAtIndex:(indexPath.row - 1)];
         cell.sequenceLbl.text = [NSString stringWithFormat:@"%d",reports.count - (indexPath.row - 1)];
         NSInteger completePercent = [[reportDict valueForKey:@"completePercent"] integerValue];
-        cell.percentLbl.text = [NSString stringWithFormat:@"%d%%",completePercent];
+        [cell.accomplishImg setProgress:completePercent strokeColor:[UIColor colorWithHexString:@"#10a9cc"] font:[UIFont systemFontOfSize:kAccomplishLbl_FontSize * kYScal]];
         cell.startTimeLbl.text = [NSString stringWithFormat:@"开始时间:%@",[reportDict valueForKey:@"startTime"]];
         NSInteger totalTime = [[reportDict valueForKey:@"totalTime"] integerValue];
         NSString *totalTimeStr = [self getTimeString:totalTime];

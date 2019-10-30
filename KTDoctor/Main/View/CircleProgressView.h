@@ -11,7 +11,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CircleProgressView : UIView
-- (instancetype)initWithFrame:(CGRect)frame percent:(NSInteger)percent color:(UIColor*)color;
+//- (instancetype)initWithFrame:(CGRect)frame percent:(NSInteger)percent color:(UIColor*)color;
+- (void)setProgress:(double)progress strokeColor:(UIColor*)color font:(UIFont*)font;
+//设置进度 范围0~1.0
+@property(nonatomic, assign) double progress;
 @end
 
 NS_ASSUME_NONNULL_END

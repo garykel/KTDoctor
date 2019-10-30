@@ -69,8 +69,10 @@
     self.sequenceLbl.font = [UIFont systemFontOfSize:kSequenceLbl_FontSize * kYScal];
     [self.contentView addSubview:self.sequenceLbl];
     
-    self.accomplishImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accomplish"]];
-    self.accomplishImg.frame = CGRectMake(kAccomplishImg_LeftMargin * kXScal, kAccomplishImg_TopMargin * kYScal, kAccomplishImg_Width * kYScal, kAccomplishImg_Width * kYScal);
+    self.accomplishImg = [[CircleProgressView alloc] initWithFrame:CGRectMake(kAccomplishImg_LeftMargin * kXScal, kAccomplishImg_TopMargin * kYScal, kAccomplishImg_Width * kYScal, kAccomplishImg_Width * kYScal)];
+//    [self.accomplishImg setProgress:0 strokeColor:[UIColor colorWithHexString:@"#10a9cc"] font:[UIFont systemFontOfSize:kAccomplishLbl_FontSize * kYScal]];
+//    self.accomplishImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"accomplish"]];
+//    self.accomplishImg.frame = CGRectMake(kAccomplishImg_LeftMargin * kXScal, kAccomplishImg_TopMargin * kYScal, kAccomplishImg_Width * kYScal, kAccomplishImg_Width * kYScal);
     [self.contentView addSubview:self.accomplishImg];
     
     self.percentLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.accomplishImg.frame.size.width, kAccomplishLbl_Height * kYScal)];
@@ -78,7 +80,7 @@
     self.percentLbl.textColor = [UIColor colorWithHexString:@"#000033"];
     self.percentLbl.font = [UIFont systemFontOfSize:kAccomplishLbl_FontSize * kYScal];
     self.percentLbl.center = self.accomplishImg.center;
-    [self.contentView addSubview:self.percentLbl];
+//    [self.contentView addSubview:self.percentLbl];
     
     self.accomplishLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.accomplishImg.frame.size.width, kAccomplishLbl_FontSize * kYScal)];
     self.accomplishLbl.textColor = [UIColor colorWithHexString:@"#000033"];
