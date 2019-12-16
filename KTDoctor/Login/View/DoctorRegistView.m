@@ -14,12 +14,13 @@
 #import "WHC_PhotoListCell.h"
 #import "WHC_PictureListVC.h"
 #import "WHC_CameraVC.h"
+#import "UIImagePickerController+MyImagePicker.h"
 #import <AFNetworking/AFURLSessionManager.h>
 
 #define kRegistView_LeftMargin 200
 #define kRegistView_TopMargin 150
 #define kRegistView_TopView_Height 80
-#define kRegistView_TitleLbl_FontSize 40.0
+#define kRegistView_TitleLbl_FontSize 30.0
 #define kRegistView_ExitBtn_Width 50
 #define kRegistView_ExitBtn_RightMargin 20
 #define kRegistView_HeadImg_TopMargin 30
@@ -79,16 +80,18 @@
 @property (nonatomic,copy)NSString *birthday;
 @property (nonatomic,strong)UIImage *selectedImg;
 @property (nonatomic,assign)DocotorReistPopViewType type;
+@property (nonatomic,strong)UserModel *userInfo;
 @property (nonatomic,strong)UIView *topView;
 @end
 
 @implementation DoctorRegistView
 
-- (instancetype)initWithFrame:(CGRect)frame basicInfo:(NSDictionary*)basicInfo type:(DocotorReistPopViewType)type{
+- (instancetype)initWithFrame:(CGRect)frame basicInfo:(NSDictionary*)basicInfo userInfo:(UserModel*)userInfo type:(DocotorReistPopViewType)type{
     if (self = [super init]) {
         self.contentFrame = frame;
         self.basicinfo = [NSDictionary dictionaryWithDictionary:basicInfo];
         self.type = type;
+        self.userInfo = userInfo;
         [self setUpView];
     }
     return self;
@@ -143,7 +146,16 @@
     [self.topView addSubview:exitBtn];
     
     self.headImg = [[UIImageView alloc] initWithFrame:CGRectMake(kRegistView_HeadImg_LeftMargin * kXScal,CGRectGetMaxY(self.topView.frame) + kRegistView_HeadImg_TopMargin * kYScal, kRegistView_HeadImg_Width * kXScal, kRegistView_HeadImg_Width * kXScal)];
-    self.headImg.image = [UIImage imageNamed:@"default_head"];
+    if (self.type == DoctorModifyInfoPopView) {
+        if (self.userInfo !=nil) {
+            NSString *headUrl = [self.userInfo valueForKey:@"headUrl"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.headImg sd_setImageWithURL:[NSURL URLWithString:headUrl] placeholderImage:[UIImage imageNamed:@"default_head"]];
+            });
+        }
+    } else {
+        self.headImg.image = [UIImage imageNamed:@"default_head"];
+    }
     self.headImg.layer.cornerRadius = kRegistView_HeadImg_Width * kXScal / 2.0;
     self.headImg.layer.masksToBounds = YES;
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePhoto:)];
@@ -183,6 +195,14 @@
     self.usernameTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.usernameRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.usernameLbl.frame.origin.y, kRegistView_TextField_Width * kXScal, kRegistView_TextField_Height * kYScal)];
     self.usernameTF.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
     self.usernameTF.placeholder = @"请输入姓名";
+    if (self.type == DoctorModifyInfoPopView) {
+        if (self.userInfo !=nil) {
+            NSString *name = [self.userInfo valueForKey:@"name"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.usernameTF.text = name;
+            });
+        }
+    }
     [self.contentView addSubview:self.usernameTF];
     
     self.sexLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.usernameLbl.frame.origin.x, CGRectGetMaxY(self.usernameLbl.frame) + kRegistView_Vertical_Space * kYScal, kRegistView_NameLbl_Width * kXScal, kRegistView_TextField_Height * kYScal)];
@@ -201,7 +221,23 @@
     self.sexArr = @[@"男",@"女"];
     self.sexMenu = [[KTDropDownMenus alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.sexLbl.frame.origin.y, kRegistView_SexSelect_Width * kXScal, kRegistView_TextField_Height * kYScal)];
     [self.sexMenu setDropdownHeight:kRegistView_TextField_Height * kYScal];
-    self.sexMenu.defualtStr = @"男";
+    if (self.type == DoctorModifyInfoPopView) {
+        if (self.userInfo !=nil) {
+            NSInteger sex = [[self.userInfo valueForKey:@"sex"] integerValue];
+            NSString *sexStr = @"";
+            if (sex == 2) {
+                sexStr = @"女";
+            } else {
+                sexStr = @"男";
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.sexMenu.defualtStr = sexStr;
+                self.sex = sexStr;
+            });
+        }
+    } else {
+        self.sexMenu.defualtStr = @"男";
+    }
     self.sexMenu.delegate = self;
     self.sexMenu.dropDownImage.image = [UIImage imageNamed:@"dropdownMenu"];
     [self.sexMenu.mainBtn.titleLabel setFont:[UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal]];
@@ -226,11 +262,21 @@
     self.birthTF = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.birthRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.birthLbl.frame.origin.y, kRegistView_BirthSelect_Width * kXScal, kRegistView_TextField_Height * kYScal)];
     self.birthTF.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
     [self.birthTF setImage:[UIImage imageNamed:@"dropdownMenu"] forState:UIControlStateNormal];
-    [self.birthTF setTitle:@"请选择出生日期" forState:UIControlStateNormal];
+    if (self.type == DoctorModifyInfoPopView) {
+        if (self.userInfo !=nil) {
+            NSString *birthdate = [self.userInfo valueForKey:@"birthdate"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.birthTF setTitle:birthdate forState:UIControlStateNormal];
+                self.birthday = birthdate;
+            });
+        }
+    } else {
+        [self.birthTF setTitle:@"请选择出生日期" forState:UIControlStateNormal];
+    }
     self.birthTF.titleLabel.textAlignment = NSTextAlignmentLeft;
     [self.birthTF setTitleColor:[UIColor colorWithHexString:@"#9fb5bd"] forState:UIControlStateNormal];
     [self.birthTF setImageEdgeInsets:UIEdgeInsetsMake(0, self.birthTF.frame.size.width - 20, 0, 0)];
-    [self.birthTF setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.birthTF.frame.size.width/2, 0, 0)];
+    [self.birthTF setTitleEdgeInsets:UIEdgeInsetsMake(0, -self.birthTF.frame.size.width/2 + 10, 0, 0)];
     [self.birthTF addTarget:self action:@selector(chooseBirthDay:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.birthTF];
     
@@ -250,6 +296,20 @@
     self.organizeTF = [[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.sexRedStar.frame) + kRegistView_TextField_LeftMargin * kXScal, self.organizeLbl.frame.origin.y, kRegistView_TextField_Width * kXScal, kRegistView_TextField_Height * kYScal)];
     self.organizeTF.backgroundColor = [UIColor colorWithHexString:@"#c6eff2"];
     self.organizeTF.placeholder = @"请填写机构ID";
+    if (self.type == DoctorModifyInfoPopView) {
+        if (self.userInfo !=nil) {
+            NSArray *organs = [self.userInfo valueForKey:@"organ"];
+            if (organs.count > 0) {
+                NSDictionary *organDict = [organs firstObject];
+                if (organDict) {
+                    NSString *organCode = [organDict valueForKey:@"orgCode"];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.organizeTF.text = organCode;
+                    });
+                }
+            }
+        }
+    }
     [self.contentView addSubview:self.organizeTF];
     
     self.skillsLbl = [[UILabel alloc] initWithFrame:CGRectMake(self.usernameLbl.frame.origin.x, CGRectGetMaxY(self.organizeLbl.frame) + kRegistView_Vertical_Space * kYScal, kRegistView_NameLbl_Width * kXScal, kRegistView_SkillsLbl_Height * kYScal)];
@@ -275,6 +335,17 @@
     self.placeholderLbl.textColor = [UIColor colorWithHexString:@"#333333"];
     self.placeholderLbl.textColor = [UIColor lightGrayColor];
     self.placeholderLbl.text = @"限制400字";
+    if (self.type == DoctorModifyInfoPopView) {
+        if (self.userInfo !=nil) {
+            NSString *speciality = [self.userInfo valueForKey:@"speciality"];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.skillsView.text = speciality;
+                self.placeholderLbl.text = @"";
+            });
+        }
+    } else {
+        self.placeholderLbl.text = @"限制400字";
+    }
     self.placeholderLbl.font = [UIFont systemFontOfSize:kRegistView_Lbl_FontSize * kYScal];
     [self.placeholderLbl setEnabled:NO];
     [self.skillsView addSubview:self.placeholderLbl];
@@ -309,7 +380,11 @@
             imagePicker.view.transform  =   CGAffineTransformMakeRotation(M_PI*2);
             [[NSOperationQueue mainQueue] addOperationWithBlock:^{
                 [[self currentViewController] presentViewController:imagePicker animated:YES completion:nil];
+//                [self showImagePicker:UIImagePickerControllerSourceTypePhotoLibrary];
             }];
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self showImagePicker:UIImagePickerControllerSourceTypePhotoLibrary];
+//            });
                                                              }];
         UIAlertAction* saveAction = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction * action) {
@@ -333,6 +408,15 @@
         }
         [[self currentViewController] presentViewController:alert animated:YES completion:nil]; 
     }
+}
+
+- (void)showImagePicker:(UIImagePickerControllerSourceType)type{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeDirection" object:@"1"];
+    UIImagePickerController *myPicker = [[UIImagePickerController alloc] init];
+    myPicker.delegate = self;
+    myPicker.sourceType = type;
+    myPicker.allowsEditing = YES;
+    [[self currentViewController] presentViewController:myPicker animated:YES completion:nil];
 }
 
 - (UIViewController *)currentViewController
@@ -508,13 +592,17 @@
 
 - (void)upLoadImage {
     UIImage *image = self.selectedImg;
-    NSString  *jpgPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Portrait.jpg"];
-    BOOL success = [UIImageJPEGRepresentation(image, 0.5) writeToFile:jpgPath atomically:YES]; //其中0.5表示压缩比例，1表示不压缩，数值越小压缩比例越大
-    if (success) {
-        NSLog(@"写入本地成功");
-        NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-        [parameter setObject:jpgPath forKey:@"file"];
-        [self uploadPhoto:parameter];
+    if (image != nil) {
+        NSString  *jpgPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Portrait.jpg"];
+        BOOL success = [UIImageJPEGRepresentation(image, 0.5) writeToFile:jpgPath atomically:YES]; //其中0.5表示压缩比例，1表示不压缩，数值越小压缩比例越大
+        if (success) {
+            NSLog(@"写入本地成功");
+            NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+            [parameter setObject:jpgPath forKey:@"file"];
+            [self uploadPhoto:parameter];
+        }
+    } else {
+        [self dismiss];
     }
 }
 

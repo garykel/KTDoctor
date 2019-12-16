@@ -725,7 +725,7 @@ CGSize systemListviewSize;
         }
         cell.timeLbl.text = timeStr;
         if (self.customeTemplateCheckArr.count > 0) {
-            BOOL hasSelect = [[self.customeTemplateCheckArr objectAtIndex:indexPath.row] boolValue];
+            BOOL hasSelect = NO;//[[self.customeTemplateCheckArr objectAtIndex:indexPath.row] boolValue];
             if (hasSelect) {
                 [cell.checkBtn setImage:[UIImage imageNamed:@"template_selected"] forState:UIControlStateNormal];
             } else {
@@ -1114,6 +1114,9 @@ CGSize systemListviewSize;
 
 //搜索
 - (void)searchBtnClick:(UIButton*)sender {
+    if (self.customeTemplateCheckArr.count > 0) {
+        [self.customeTemplateCheckArr removeAllObjects];
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideDropDownNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kHideCellDropDownNotification object:nil];
     if (self.nameTf.text.length == 0 && [self.dieaseMenu.mainBtn.titleLabel.text isEqualToString:@"适应病症"] && [self.riskLevelMenu.mainBtn.titleLabel.text isEqualToString:@"风险等级"] && [self.deviceMenu.mainBtn.titleLabel.text isEqualToString:@"有氧设备"] && [self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"] && [self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
@@ -1171,146 +1174,7 @@ CGSize systemListviewSize;
         [parameter setValue:@"-create_time" forKey:@"sort"];
         [self searchTemplates:parameter];
         return;
-        if (self.type == 1) {
-            self.searchResults = [self.systemTemplateArr mutableCopy];
-            if (self.nameTf.text.length > 0) {
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.nameTf.text];
-                self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
-            }
-            if (![riskLevelStr isEqualToString:@"风险等级"]) {
-                if ([riskLevelStr isEqualToString:@"高"]) {
-                    riskLevel = 3;
-                } else if ([riskLevelStr isEqualToString:@"中"]) {
-                    riskLevel = 2;
-                } else if ([riskLevelStr isEqualToString:@"低"]) {
-                    riskLevel = 1;
-                }
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.riskLevel = %d",riskLevel];
-                if (self.searchResults.count > 0) {
-                    self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
-                }
-            }
-            if (self.searchResults.count > 0) {
-                NSString *trainingTypeStr = self.deviceMenu.mainBtn.titleLabel.text;
-                NSMutableArray *tempArr = [NSMutableArray array];
-                for (NSDictionary *dict in self.searchResults) {
-                    NSArray *typeList = [dict valueForKey:@"typeList"];
-                    if (typeList.count > 2) {
-                        NSDictionary *typeDict = [typeList objectAtIndex:0];
-                        NSString *typeStr = [typeDict valueForKey:@"name"];
-                        if ([trainingTypeStr isEqualToString:typeStr]) {
-                            [tempArr addObject:dict];
-                        }
-                    }
-                }
-                self.searchResults = [tempArr mutableCopy];
-            }
-            if (![self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
-                NSString *positionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
-                if (self.searchResults.count > 0) {
-                    NSMutableArray *tempArr = [NSMutableArray array];
-                    for (NSDictionary *dict in self.searchResults) {
-                        NSArray *typeList = [dict valueForKey:@"typeList"];
-                        if (typeList.count > 2) {
-                            NSDictionary *positionDict = [typeList objectAtIndex:1];
-                            NSString *position = [positionDict valueForKey:@"name"];
-                            if ([positionStr isEqualToString:position]) {
-                                [tempArr addObject:dict];
-                            }
-                        }
-                    }
-                    self.searchResults = [tempArr mutableCopy];
-                }
-            }
-            if (![self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
-                NSString *deviceStr = self.trainingDeviceMenu.mainBtn.titleLabel.text;
-                if (self.searchResults.count > 0) {
-                    NSMutableArray *tempArr = [NSMutableArray array];
-                    for (NSDictionary *dict in self.searchResults) {
-                        NSArray *typeList = [dict valueForKey:@"typeList"];
-                        if (typeList.count > 2) {
-                            NSDictionary *deviceDict = [typeList objectAtIndex:2];
-                            NSString *device = [deviceDict valueForKey:@"name"];
-                            if ([deviceStr isEqualToString:device]) {
-                                [tempArr addObject:dict];
-                            }
-                        }
-                    }
-                    self.searchResults = [tempArr mutableCopy];
-                }
-            }
-            [self.systemTemplateListView reloadData];
-        } else {
-            self.searchResults = [self.customTemplateArr mutableCopy];
-            if (self.nameTf.text.length > 0) {
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title CONTAINS[c] %@",self.nameTf.text];
-                self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
-                [self.customTemplateListView reloadData];
-            }
-            if (![riskLevelStr isEqualToString:@"风险等级"]) {
-                if ([riskLevelStr isEqualToString:@"高"]) {
-                    riskLevel = 3;
-                } else if ([riskLevelStr isEqualToString:@"中"]) {
-                    riskLevel = 2;
-                } else if ([riskLevelStr isEqualToString:@"低"]) {
-                    riskLevel = 1;
-                }
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.riskLevel = %d",riskLevel];
-                if (self.searchResults.count > 0) {
-                    self.searchResults = [NSMutableArray arrayWithArray:[self.searchResults filteredArrayUsingPredicate:predicate]];
-                }
-            }
-            if (self.searchResults.count > 0) {
-                NSString *trainingTypeStr = self.deviceMenu.mainBtn.titleLabel.text;
-                NSMutableArray *tempArr = [NSMutableArray array];
-                for (NSDictionary *dict in self.searchResults) {
-                    NSArray *typeList = [dict valueForKey:@"typeList"];
-                    if (typeList.count > 2) {
-                        NSDictionary *typeDict = [typeList objectAtIndex:0];
-                        NSString *typeStr = [typeDict valueForKey:@"name"];
-                        if ([trainingTypeStr isEqualToString:typeStr]) {
-                            [tempArr addObject:dict];
-                        }
-                    }
-                }
-                self.searchResults = [tempArr mutableCopy];
-            }
-            if (![self.trainingPositionMenu.mainBtn.titleLabel.text isEqualToString:@"训练部位"]) {
-                NSString *positionStr = self.trainingPositionMenu.mainBtn.titleLabel.text;
-                if (self.searchResults.count > 0) {
-                    NSMutableArray *tempArr = [NSMutableArray array];
-                    for (NSDictionary *dict in self.searchResults) {
-                        NSArray *typeList = [dict valueForKey:@"typeList"];
-                        if (typeList.count > 2) {
-                            NSDictionary *positionDict = [typeList objectAtIndex:1];
-                            NSString *position = [positionDict valueForKey:@"name"];
-                            if ([positionStr isEqualToString:position]) {
-                                [tempArr addObject:dict];
-                            }
-                        }
-                    }
-                    self.searchResults = [tempArr mutableCopy];
-                }
-            }
-            if (![self.trainingDeviceMenu.mainBtn.titleLabel.text isEqualToString:@"训练设备"]) {
-                NSString *deviceStr = self.trainingDeviceMenu.mainBtn.titleLabel.text;
-                if (self.searchResults.count > 0) {
-                    NSMutableArray *tempArr = [NSMutableArray array];
-                    for (NSDictionary *dict in self.searchResults) {
-                        NSArray *typeList = [dict valueForKey:@"typeList"];
-                        if (typeList.count > 2) {
-                            NSDictionary *deviceDict = [typeList objectAtIndex:2];
-                            NSString *device = [deviceDict valueForKey:@"name"];
-                            if ([deviceStr isEqualToString:device]) {
-                                [tempArr addObject:dict];
-                            }
-                        }
-                    }
-                    self.searchResults = [tempArr mutableCopy];
-                }
-            }
-            [self.customTemplateListView reloadData];
-        }
+        
     }
 }
 

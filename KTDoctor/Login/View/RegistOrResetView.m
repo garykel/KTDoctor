@@ -278,7 +278,7 @@
         if (self.type == RegistPopView ) {
             CGRect frame = CGRectMake(kWhiteView_LeftMargin * kXScal, kWhiteView_TopMargin * kYScal, kWidth - 2 * kWhiteView_LeftMargin * kXScal, kHeight - kWhiteView_TopMargin * kYScal - (kBlueView_TopMargin * kYScal + (kBlueView_TopMargin * kYScal - kWhiteView_TopMargin * kYScal)));
             NSDictionary *dict = @{@"smsCode":self.codeTF.text,@"mobile":self.phoneTF.text,@"password":self.passwordTF.text};
-            DoctorRegistView *registView = [[DoctorRegistView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - 2 * kDoctor_RegistView_LeftMargin, frame.size.height) basicInfo:dict type:DoctorRegistPopView];
+            DoctorRegistView *registView = [[DoctorRegistView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width - 2 * kDoctor_RegistView_LeftMargin, frame.size.height) basicInfo:dict userInfo:nil type:DoctorRegistPopView];
             [registView show];
         } else {
             //重置密码

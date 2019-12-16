@@ -21,7 +21,8 @@
 
 #define kMain_NavView_LogoutBtn_LeftMargin 15
 #define kMain_NavView_LogoutBtn_Height 45
-#define kMain_Organ_LogoView_Width 150
+#define kMain_Organ_LogoView_Width 120
+#define kMain_Organ_LogoView_RightMargin 60
 #define kMain_Organ_LogoView_Height 25
 #define kMain_NavView_LogoutBtn_Width 150
 #define kMain_NavView_LogoutBtn_FontSize 18.0
@@ -90,12 +91,12 @@
         NSDictionary *organDict = [organArr objectAtIndex:0];
         logo = [organDict valueForKey:@"logo"];
     }
-    self.organLogo = [[UIImageView alloc] initWithFrame:CGRectMake(kWidth - kMain_NavView_LogoutBtn_LeftMargin * kXScal - kMain_Organ_LogoView_Width * kXScal, (kNavView_Height * kYScal - kMain_Organ_LogoView_Height * kYScal)/2.0 , kMain_Organ_LogoView_Width * kXScal, kMain_Organ_LogoView_Height * kYScal)];
+    self.organLogo = [[UIImageView alloc] initWithFrame:CGRectMake(kWidth - kMain_NavView_LogoutBtn_LeftMargin * kXScal - kMain_Organ_LogoView_Width * kXScal - kMain_Organ_LogoView_RightMargin * kXScal, 0 , kMain_Organ_LogoView_Width * kXScal, kNavView_Height)];
     [self.organLogo sd_setImageWithURL:[NSURL URLWithString:logo]];
     UIImage *orgLogo = self.organLogo.image;
-    orgLogo = [self imageCompressWithSimple:orgLogo scaledToSize:CGSizeMake(kMain_Organ_LogoView_Width * kXScal, kMain_Organ_LogoView_Height * kYScal)];
+    orgLogo = [self imageCompressWithSimple:orgLogo scaledToSize:CGSizeMake(kMain_Organ_LogoView_Width * kXScal, kNavView_Height)];
     self.organLogo.image = orgLogo;
-    self.organLogo.center = CGPointMake(kWidth - kMain_NavView_LogoutBtn_LeftMargin * kXScal - kMain_Organ_LogoView_Width * kXScal + kMain_Organ_LogoView_Width * kXScal / 2.0, self.logoutBtn.center.y);
+    self.organLogo.center = CGPointMake(kWidth - kMain_NavView_LogoutBtn_LeftMargin * kXScal - kMain_Organ_LogoView_Width * kXScal - kMain_Organ_LogoView_RightMargin * kXScal + kMain_Organ_LogoView_Width * kXScal / 2.0, self.logoutBtn.center.y);
     [self.navView addSubview:self.organLogo];
 }
 
@@ -309,7 +310,7 @@
     if (index == 0) {//资料修改
         [self.pop dismissViewControllerAnimated:NO completion:nil];
         NSDictionary *dict = @{};
-        DoctorRegistView *registView = [[DoctorRegistView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 2 * kMain_Btn_RestPasswordView_LeftMargin, kHeight - 2 * kMain_Btn_RestPasswordView_TopMargin) basicInfo:dict type:DoctorModifyInfoPopView];
+        DoctorRegistView *registView = [[DoctorRegistView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 2 * kMain_Btn_RestPasswordView_LeftMargin, kHeight - 2 * kMain_Btn_RestPasswordView_TopMargin) basicInfo:dict userInfo:self.user type:DoctorModifyInfoPopView];
         [registView show];
     } else if (index == 1) {//密码修改
         [self.pop dismissViewControllerAnimated:NO completion:nil];

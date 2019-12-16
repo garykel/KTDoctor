@@ -246,28 +246,28 @@
 }
 
 - (void)chooseStartTime:(UIButton *)sender {
-//    __weak typeof (self)weakSelf = self;
-//    WSDatePickerView *datepicker = [[WSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDay CompleteBlock:^(NSDate *selectDate) {
-//        NSString *date = [selectDate stringWithFormat:@"yyyy-MM-dd"];
-//        [weakSelf.startTimeTF setTitle:date forState:UIControlStateNormal];
-//        weakSelf.startTimeStr = date;
-//    }];
-//    datepicker.dateLabelColor = [UIColor orangeColor];//年-月-日-时-分 颜色
-//    datepicker.datePickerColor = [UIColor blackColor];//滚轮日期颜色
-//    datepicker.doneButtonColor = [UIColor grayColor];//确定按钮的颜色
-//    [datepicker show];
-    self.datePickManager = [[PGDatePickManager alloc]init];
-    self.datePickManager.isShadeBackground = true;
-    self.datePickManager.style = PGDatePickManagerStyleAlertBottomButton;
-    self.datePickManager.delegate = self;
-    PGDatePicker *datePicker = self.datePickManager.datePicker;
-    datePicker.delegate = self;
-    //    datePicker.datePickerType = PGDatePickerTypeVertical;
-    datePicker.isHiddenMiddleText = false;
-    //    datePicker.isCycleScroll = true;
-    datePicker.datePickerType = PGDatePickerTypeSegment;
-    datePicker.datePickerMode = PGDatePickerModeDate;
-    [self presentViewController:self.datePickManager animated:false completion:nil];
+    __weak typeof (self)weakSelf = self;
+    WSDatePickerView *datepicker = [[WSDatePickerView alloc] initWithDateStyle:DateStyleShowYearMonthDay CompleteBlock:^(NSDate *selectDate) {
+        NSString *date = [selectDate stringWithFormat:@"yyyy-MM-dd"];
+        [weakSelf.startTimeTF setTitle:date forState:UIControlStateNormal];
+        weakSelf.startTimeStr = date;
+    }];
+    datepicker.dateLabelColor = [UIColor orangeColor];//年-月-日-时-分 颜色
+    datepicker.datePickerColor = [UIColor blackColor];//滚轮日期颜色
+    datepicker.doneButtonColor = [UIColor grayColor];//确定按钮的颜色
+    [datepicker show];
+//    self.datePickManager = [[PGDatePickManager alloc]init];
+//    self.datePickManager.isShadeBackground = true;
+//    self.datePickManager.style = PGDatePickManagerStyleAlertBottomButton;
+//    self.datePickManager.delegate = self;
+//    PGDatePicker *datePicker = self.datePickManager.datePicker;
+//    datePicker.delegate = self;
+//    //    datePicker.datePickerType = PGDatePickerTypeVertical;
+//    datePicker.isHiddenMiddleText = false;
+//    //    datePicker.isCycleScroll = true;
+//    datePicker.datePickerType = PGDatePickerTypeSegment;
+//    datePicker.datePickerMode = PGDatePickerModeDate;
+//    [self presentViewController:self.datePickManager animated:false completion:nil];
 }
 
 - (NSString *)getCurrentTimeString{

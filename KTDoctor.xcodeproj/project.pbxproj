@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -65,6 +65,7 @@
 		5B2889FE22A4FAAF00607F7D /* SymbolsValueFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B2889FD22A4FAAF00607F7D /* SymbolsValueFormatter.m */; };
 		5B35692022801DED001BD84C /* PrescriptionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B35691F22801DED001BD84C /* PrescriptionCell.m */; };
 		5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3868D0223F8C88009FC661 /* DoctorRegistView.m */; };
+		5B388348239798EE005044CF /* UIImagePickerController+MyImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B388347239798ED005044CF /* UIImagePickerController+MyImagePicker.m */; };
 		5B3E7B722278488C00A564CC /* SGQRCode.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5B3E7B6A2278488A00A564CC /* SGQRCode.bundle */; };
 		5B3E7B732278488C00A564CC /* SGQRCodeObtainConfigure.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3E7B6C2278488B00A564CC /* SGQRCodeObtainConfigure.m */; };
 		5B3E7B742278488C00A564CC /* SGQRCodeScanView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3E7B702278488B00A564CC /* SGQRCodeScanView.m */; };
@@ -324,6 +325,8 @@
 		5B35691F22801DED001BD84C /* PrescriptionCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PrescriptionCell.m; sourceTree = "<group>"; };
 		5B3868CF223F8C88009FC661 /* DoctorRegistView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DoctorRegistView.h; sourceTree = "<group>"; };
 		5B3868D0223F8C88009FC661 /* DoctorRegistView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoctorRegistView.m; sourceTree = "<group>"; };
+		5B388346239798ED005044CF /* UIImagePickerController+MyImagePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImagePickerController+MyImagePicker.h"; sourceTree = "<group>"; };
+		5B388347239798ED005044CF /* UIImagePickerController+MyImagePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImagePickerController+MyImagePicker.m"; sourceTree = "<group>"; };
 		5B3E7B6A2278488A00A564CC /* SGQRCode.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SGQRCode.bundle; sourceTree = "<group>"; };
 		5B3E7B6B2278488A00A564CC /* SGQRCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SGQRCode.h; sourceTree = "<group>"; };
 		5B3E7B6C2278488B00A564CC /* SGQRCodeObtainConfigure.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SGQRCodeObtainConfigure.m; sourceTree = "<group>"; };
@@ -834,6 +837,15 @@
 			path = Base;
 			sourceTree = "<group>";
 		};
+		5B388345239798AF005044CF /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				5B388346239798ED005044CF /* UIImagePickerController+MyImagePicker.h */,
+				5B388347239798ED005044CF /* UIImagePickerController+MyImagePicker.m */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
 		5B518ECA223794EA0071AF80 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -919,6 +931,7 @@
 		5BD9640822390AA6006FD9CD /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				5B388345239798AF005044CF /* Category */,
 				09B6811422885F6500255F5D /* Model */,
 				5B02F7AE2249D8EC00BE8269 /* View */,
 				5B02F7A422487E6900BE8269 /* Controller */,
@@ -1666,6 +1679,7 @@
 				5BF8D94F22802901002199E4 /* KTOpenAerobicModel.m in Sources */,
 				5BAEB8932275B8470087CA76 /* UnitTextView.m in Sources */,
 				5BCEB5E222A7985A0053CAEC /* PGDatePicker+MinuteAndSecond.m in Sources */,
+				5B388348239798EE005044CF /* UIImagePickerController+MyImagePicker.m in Sources */,
 				5BCEB8B02251A8AB005185B5 /* MonitorDetailViewController.m in Sources */,
 				5B3868D1223F8C88009FC661 /* DoctorRegistView.m in Sources */,
 				5BF8D90E22802689002199E4 /* NSString+Base64.m in Sources */,
