@@ -42,7 +42,6 @@
 		5B02F7AA2248B45100BE8269 /* SortViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7A92248B45100BE8269 /* SortViewController.m */; };
 		5B02F7B12249D91A00BE8269 /* PatientListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B02249D91A00BE8269 /* PatientListView.m */; };
 		5B02F7B4224A262F00BE8269 /* PatientCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B3224A262F00BE8269 /* PatientCell.m */; };
-		5B02F7BA224B75D700BE8269 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7B9224B75D700BE8269 /* GCDAsyncUdpSocket.m */; };
 		5B02F7BD224B7F4F00BE8269 /* SportDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */; };
 		5B0AC3112254A1570001C48F /* DS-DIGIB.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */; };
 		5B110FE422979C3D00471B8D /* CreatePowerTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B110FE322979C3D00471B8D /* CreatePowerTemplateViewController.m */; };
@@ -72,6 +71,7 @@
 		5B3E7B752278488C00A564CC /* SGQRCodeObtain.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3E7B712278488C00A564CC /* SGQRCodeObtain.m */; };
 		5B3FD009227013CF007DC605 /* AerobicReportCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B3FD008227013CF007DC605 /* AerobicReportCell.m */; };
 		5B518ECD223795050071AF80 /* DashView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B518ECC223795050071AF80 /* DashView.m */; };
+		5B5AFCF923ACE5810089C925 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B5AFCF823ACE5800089C925 /* GCDAsyncUdpSocket.m */; };
 		5B5E2E122270552000DB7534 /* ReportListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B5E2E112270551F00DB7534 /* ReportListCell.m */; };
 		5B6067572268672B003E8DF4 /* PatientInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B6067562268672B003E8DF4 /* PatientInfoViewController.m */; };
 		5B6DCD07229F85E0007299D2 /* CheckEvaluateReportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B6DCD06229F85E0007299D2 /* CheckEvaluateReportViewController.m */; };
@@ -279,8 +279,6 @@
 		5B02F7B2224A262F00BE8269 /* PatientCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientCell.h; sourceTree = "<group>"; };
 		5B02F7B3224A262F00BE8269 /* PatientCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PatientCell.m; sourceTree = "<group>"; };
 		5B02F7B5224B636100BE8269 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
-		5B02F7B8224B75D600BE8269 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
-		5B02F7B9224B75D700BE8269 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		5B02F7BB224B7F4F00BE8269 /* SportDataModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SportDataModel.h; sourceTree = "<group>"; };
 		5B02F7BC224B7F4F00BE8269 /* SportDataModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SportDataModel.m; sourceTree = "<group>"; };
 		5B0AC3102254A1570001C48F /* DS-DIGIB.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DS-DIGIB.TTF"; sourceTree = "<group>"; };
@@ -339,6 +337,8 @@
 		5B3FD008227013CF007DC605 /* AerobicReportCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AerobicReportCell.m; sourceTree = "<group>"; };
 		5B518ECB223795050071AF80 /* DashView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DashView.h; sourceTree = "<group>"; };
 		5B518ECC223795050071AF80 /* DashView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DashView.m; sourceTree = "<group>"; };
+		5B5AFCF723ACE5800089C925 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		5B5AFCF823ACE5800089C925 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
 		5B5E2E102270551F00DB7534 /* ReportListCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReportListCell.h; sourceTree = "<group>"; };
 		5B5E2E112270551F00DB7534 /* ReportListCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReportListCell.m; sourceTree = "<group>"; };
 		5B6067552268672B003E8DF4 /* PatientInfoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PatientInfoViewController.h; sourceTree = "<group>"; };
@@ -812,8 +812,8 @@
 		5B02F7B7224B74B700BE8269 /* AsyncUdpSocket */ = {
 			isa = PBXGroup;
 			children = (
-				5B02F7B8224B75D600BE8269 /* GCDAsyncUdpSocket.h */,
-				5B02F7B9224B75D700BE8269 /* GCDAsyncUdpSocket.m */,
+				5B5AFCF723ACE5800089C925 /* GCDAsyncUdpSocket.h */,
+				5B5AFCF823ACE5800089C925 /* GCDAsyncUdpSocket.m */,
 			);
 			path = AsyncUdpSocket;
 			sourceTree = "<group>";
@@ -1595,7 +1595,6 @@
 				5B875B99224CAEC400736FC2 /* PatientCell9.m in Sources */,
 				09062674225CE8B2009A182D /* SearchAndSelectView.m in Sources */,
 				5BF8D95222802916002199E4 /* OpenAerobicPrescriptionVC.m in Sources */,
-				5B02F7BA224B75D700BE8269 /* GCDAsyncUdpSocket.m in Sources */,
 				5BF8D91022802689002199E4 /* NSString+Method.m in Sources */,
 				5B875B8D224CAE7400736FC2 /* PatientCell2.m in Sources */,
 				5BCEB5DF22A7985A0053CAEC /* PGDatePicker+DateHour.m in Sources */,
@@ -1633,6 +1632,7 @@
 				5B875B9C224CAEDB00736FC2 /* PatientCell12.m in Sources */,
 				6157CFF922816EF200411DA8 /* KTRecommendAerobicModel.m in Sources */,
 				5BF8D94C228028EF002199E4 /* OpenAerobicPrescriptionCell.m in Sources */,
+				5B5AFCF923ACE5810089C925 /* GCDAsyncUdpSocket.m in Sources */,
 				5BECDBBD22365CA50025D6F2 /* main.m in Sources */,
 				5BF8D9572280294A002199E4 /* OpenAerobicPrescriptionHeader.m in Sources */,
 				5BB39802228E91EE00A56A38 /* ChooseTemplateTypeView.m in Sources */,

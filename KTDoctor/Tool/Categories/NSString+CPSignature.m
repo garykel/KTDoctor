@@ -11,6 +11,35 @@
 #import "NSString+TimeConvert.h"
 
 @implementation NSString (CPSignature)
+
++ (NSString*)signtureWithDict:(NSDictionary*)parameter token:(NSString*)token  timestamp:(NSString*)timestamp{
+    NSString *signatureStr = @"";
+    NSString *jsonStr = [NSString jsonStringWithDict:parameter];
+    NSString *body = jsonStr;
+    NSLog(@"body :%@",body);
+    
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    //AppKey
+    [dict setValue:kAPPKEY forKey:@"appkey"];
+    //body
+    [dict setValue:body forKey:@"body"];
+//    //当前时间戳
+//    NSString *utcStr = [NSString obtainCurrentDateUTCTimeString];
+    [dict setObject:timestamp forKey:@"timestamp"];
+    //token
+    if (![token isEqualToString:@""] && token != nil) {
+        [dict setValue:token forKey:@"token"];
+    }
+    NSString *sortedStr = [NSString sort:dict isASC:YES];
+//    sortedStr = @"appkey100000body{\"username\":\"Chenxiaomeng@coolplay.cn\",\"password\":\"asd123\"}timestamp2019-07-05T03:13:52Z";
+    //HMAC SHA256计算
+    signatureStr = [NSString hmac:sortedStr withKey:kSECRET];
+    signatureStr = [signatureStr lowercaseString];
+    NSLog(@"sign = %@,string = %@,secrect = %@",signatureStr,sortedStr,kSECRET);
+    return signatureStr;
+}
+
+
 + (NSString*)signtureWithDict:(NSDictionary*)parameter token:(NSString*)token {
     NSString *signatureStr = @"";
     NSString *jsonStr = [NSString jsonStringWithDict:parameter];

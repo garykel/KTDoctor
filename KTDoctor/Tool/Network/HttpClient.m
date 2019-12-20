@@ -68,40 +68,40 @@ static const NSString * ERROR_NET = @"网络连接失败";
 
 + (void)postJSONWithUrl:(NSString *)urlStr parameters:(id)parameters success:(void (^)(NSDictionary* responseObject))success fail:(void (^)(NSError *))fail
 {
-    
-    AFHTTPSessionManager *manager = [HttpClient sharedSessionManager];
+    //更新代码签名
+    NSString *str = [NSString jsonStringWithDict:parameters];
+    NSData *postData = [str dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
+    AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    NSMutableURLRequest *request = [[AFJSONRequestSerializer serializer] requestWithMethod:@"POST" URLString:urlStr parameters:nil error:nil];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     NSString *token = @"";
     UserModel *user = [[UserModel sharedUserModel] getCurrentUser];
     if (user) {
         token = [user valueForKey:@"token"];
     }
-    NSString *signatureString = [[NSString signtureWithDict:parameters token:token] lowercaseString];
-    NSLog(@"signature value:%@",signatureString);
+    NSLog(@"token is :%@",token);
     NSString *timestamp = [NSString obtainCurrentDateUTCTimeString];
+    NSString *signatureString = [[NSString signtureWithDict:parameters token:token timestamp:timestamp] lowercaseString];
     NSString *authString = [NSString stringWithFormat:@"sports-auth-v2/%@/%@/%@",kAPPKEY,timestamp,signatureString];
     NSLog(@"authString:%@",authString);
-    
-    [manager.requestSerializer setValue:authString forHTTPHeaderField:@"Authorization"];
-    [manager.requestSerializer setValue:token forHTTPHeaderField:@"token"];
-    [manager POST:urlStr parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
-        
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (responseObject) {
-            NSDictionary *jsonObject=[NSJSONSerialization
-                                      JSONObjectWithData:responseObject
-                                      options:NSJSONReadingMutableLeaves
-                                      error:nil];
-            success(jsonObject);
-        } else{
-            //            DLog(@"error = %@", responseObject);
-        }
-        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (fail) {
+    [request setValue:authString forHTTPHeaderField:@"Authorization"];
+    if (token.length > 0) {
+        [request setValue:token forHTTPHeaderField:@"token"];
+    }
+    else {
+        [request setValue:@"" forHTTPHeaderField:@"token"];
+    }
+    [request setHTTPBody:postData];
+    [[manager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+        if (!error) {
+            NSLog(@"responseObject: %@", responseObject);
+            success(responseObject);
+        } else {
             fail(error);
+            NSLog(@"error: %@, %@, %@", error, response, responseObject);
         }
-    }];
-    
+    }] resume];
 }
 
 + (void)postJSONWithUrl:(NSString *)urlStr

@@ -18,4 +18,6 @@
 + (NSString*)signtureWithDict:(NSDictionary*)parameter token:(NSString*)token;
 
 + (NSString*)signtureWithJsonStr:(NSString*)jsonStr token:(NSString*)token;
+
++ (NSString*)signtureWithDict:(NSDictionary*)parameter token:(NSString*)token  timestamp:(NSString*)timestamp;
 @end
